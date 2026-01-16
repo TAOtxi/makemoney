@@ -3,13 +3,13 @@
 	"id": "makemoney",
 	"version": "${version}",
 	"name": "makemoney",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "拾玖世界赚钱大大滴好",
 	"authors": [
-		"Me!"
+		"读博痛失1000万的TAOtxi"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "http://wiki.nineteenmc.com/",
+		"sources": "https://github.com/TAOtxi/makemoney"
 	},
 	"license": "CC0-1.0",
 	"icon": "assets/makemoney/icon.png",
@@ -17,15 +17,19 @@
 	"entrypoints": {
 		"main": [
 			"com.example.Makemoney"
-		]
+		],
+		"modmenu": [
+        	"com.example.config.ModMenuIntegration"
+    	]
 	},
 	"mixins": [
 		"makemoney.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.18.4",
+		"fabricloader": ">=0.17.2",
 		"minecraft": "~1.21.8",
 		"java": ">=21",
-		"fabric-api": "*"
+		"fabric-api": "*",
+		"yet_another_config_lib_v3": ">=3.8.0+1.21.6-fabric"
 	}
 }

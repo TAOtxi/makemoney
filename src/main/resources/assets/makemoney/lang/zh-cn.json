@@ -1,0 +1,23 @@
+{
+    "makemoney.name": "赚大钱",
+    "makemoney.gui.config.title": "拾玖世界的钱都是我的嘎嘎嘎嘎嘎",
+    "makemoney.gui.config.category.fishing.name": "钓鱼模块",
+    "makemoney.gui.config.category.fishing.tooltip": "专属于钓鱼佬的辅助功能",
+    
+    "makemoney.message.value.on": "§a开启",
+    "makemoney.message.value.off": "§c关闭",
+    "key.categories.makemoney": "makemoney",
+
+    "makemoney.autorepair.name": "自动经验修补",
+    "makemoney.autorepair.desc": "玩家附近有经验球时，会尝试将背包内带有经验修补且耐久未满的装备替换到副手",
+    "makemoney.autorepair.enabled": "自动经验修补功能开关",
+    "makemoney.autorepair.showMessage": "是否在修复时显示修复信息",
+    "makemoney.autorepair.showMessage.desc": "开启后，在修复装备时会在屏幕下方显示修复信息",
+    "makemoney.autorepair.checkInterval": "检查间隔（tick）",
+    "makemoney.autorepair.checkInterval.desc": "检查经验球的时间间隔，单位为tick",
+    "makemoney.autorepair.expCheckBound": "经验球侦测范围",
+    "makemoney.autorepair.expCheckBound.desc": "设定范围内如果有经验球，将会尝试修复装备",
+    "key.makemoney.autorepair.toggle": "自动经验修补功能开关",
+    "makemoney.autorepair.message.toggled": "自动经验修补功能已 %s",
+    "makemoney.autorepair.message.repair": "已将 §a%s §r放入副手修复"
+}
