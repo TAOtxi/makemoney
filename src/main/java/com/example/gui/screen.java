@@ -18,6 +18,7 @@ import dev.isxander.yacl3.gui.controllers.string.StringControllerElement;
 
 import com.example.util.T;
 import com.example.module.AutoRepair.AutoRepair;
+import com.example.module.AutoRepair.ModConfig;
 
 public class screen {
     public static Screen getConfigScreen(Screen parent) {
@@ -26,7 +27,7 @@ public class screen {
             YetAnotherConfigLib.createBuilder()
                 .title(T.tl("makemoney.gui.config.title"))
                 .save(() -> {
-                // AutoRepair.config.save();
+                    AutoRepair.config.save();
                 });
 
         ConfigCategory.Builder fishingCategory = 
@@ -41,11 +42,11 @@ public class screen {
 
         autorepairGroup.option(Option.<Boolean>createBuilder()
                 .name(T.tl("makemoney.autorepair.enabled"))
-                .description(OptionDescription.of(T.tl("makemoney.autorepair.enabled.desc")))
+                .description(OptionDescription.of(T.tl("makemoney.autorepair.desc")))
                 .binding(
-                    AutoRepair.config.getBoolean("enabled", true),
-                    () -> AutoRepair.config.getBoolean("enabled"),
-                    val -> AutoRepair.config.set("enabled", val)
+                    ModConfig.getDefaultEnabled(),
+                    () -> AutoRepair.config.enabled,
+                    val -> AutoRepair.config.enabled = val
                 )
                 .controller(BooleanControllerBuilder::create)
                 .build()
@@ -55,35 +56,47 @@ public class screen {
                 .name(T.tl("makemoney.autorepair.showMessage"))
                 .description(OptionDescription.of(T.tl("makemoney.autorepair.showMessage.desc")))
                 .binding(
-                    AutoRepair.config.getBoolean("showMessage", true),
-                    () -> AutoRepair.config.getBoolean("showMessage"),
-                    val -> AutoRepair.config.set("showMessage", val)
+                    ModConfig.getDefaultShowMessage(),
+                    () -> AutoRepair.config.showMessage,
+                    val -> AutoRepair.config.showMessage = val
+                )
+                .controller(BooleanControllerBuilder::create)
+                .build()
+        );
+
+        autorepairGroup.option(Option.<Boolean>createBuilder()
+                .name(T.tl("makemoney.autorepair.replaceEnabled"))
+                .description(OptionDescription.of(T.tl("makemoney.autorepair.replaceEnabled.desc")))
+                .binding(
+                    ModConfig.getDefaultReplaceEnabled(),
+                    () -> AutoRepair.config.replaceEnabled,
+                    val -> AutoRepair.config.replaceEnabled = val
                 )
                 .controller(BooleanControllerBuilder::create)
                 .build()
         );
 
         autorepairGroup.option(Option.<Integer>createBuilder()
-                .name(T.tl("makemoney.autorepair.checkInterval"))
-                .description(OptionDescription.of(T.tl("makemoney.autorepair.checkInterval.desc")))
+                .name(T.tl("makemoney.autorepair.checkExpInterval"))
+                .description(OptionDescription.of(T.tl("makemoney.autorepair.checkExpInterval.desc")))
                 .binding(
-                    AutoRepair.config.getInt("checkInterval", true),
-                    () -> AutoRepair.config.getInt("checkInterval"),
-                    val -> AutoRepair.config.set("checkInterval", val)
+                    ModConfig.getDefaultCheckExpInterval(),
+                    () -> AutoRepair.config.checkExpInterval,
+                    val -> AutoRepair.config.checkExpInterval = val
                 )
                 .controller(opt -> IntegerFieldControllerBuilder.create(opt)
                         .range(1, 100)
                 )
                 .build()
-        );
+        );  
 
         autorepairGroup.option(Option.<Double>createBuilder()
                 .name(T.tl("makemoney.autorepair.expCheckBound"))
                 .description(OptionDescription.of(T.tl("makemoney.autorepair.expCheckBound.desc")))
                 .binding(
-                    AutoRepair.config.getDouble("expCheckBound", true),
-                    () -> AutoRepair.config.getDouble("expCheckBound"),
-                    val -> AutoRepair.config.set("expCheckBound", val)
+                    ModConfig.getDefaultExpCheckBound(),
+                    () -> AutoRepair.config.expCheckBound,
+                    val -> AutoRepair.config.expCheckBound = val
                 )
                 .controller(opt -> DoubleFieldControllerBuilder.create(opt)
                         .min(0.0d)
@@ -91,6 +104,34 @@ public class screen {
                 )
                 .build()
         );
+
+        autorepairGroup.option(Option.<Boolean>createBuilder()
+                .name(T.tl("makemoney.autorepair.repairEnabled"))
+                .description(OptionDescription.of(T.tl("makemoney.autorepair.repairEnabled.desc")))
+                .binding(
+                    ModConfig.getDefaultRepairEnabled(),
+                    () -> AutoRepair.config.repairEnabled,
+                    val -> AutoRepair.config.repairEnabled = val
+                )
+                .controller(BooleanControllerBuilder::create)
+                .build()
+        );
+
+        autorepairGroup.option(Option.<Integer>createBuilder()
+                .name(T.tl("makemoney.autorepair.repairInterval"))
+                .description(OptionDescription.of(T.tl("makemoney.autorepair.repairInterval.desc")))
+                .binding(
+                    ModConfig.getDefaultRepairInterval(),
+                    () -> AutoRepair.config.repairInterval,
+                    val -> AutoRepair.config.repairInterval = val
+                )
+                .controller(opt -> IntegerFieldControllerBuilder.create(opt)
+                        .range(2, 100)
+                )
+                .build()
+        );  
+
+
 
         fishingCategory.group(autorepairGroup.build());
 

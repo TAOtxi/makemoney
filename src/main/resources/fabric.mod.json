@@ -2,7 +2,7 @@
 	"schemaVersion": 1,
 	"id": "makemoney",
 	"version": "${version}",
-	"name": "makemoney",
+	"name": "Makemoney",
 	"description": "拾玖世界赚钱大大滴好",
 	"authors": [
 		"读博痛失1000万的TAOtxi"
@@ -13,7 +13,7 @@
 	},
 	"license": "CC0-1.0",
 	"icon": "assets/makemoney/icon.png",
-	"environment": "*",
+	"environment": "client",
 	"entrypoints": {
 		"main": [
 			"com.example.Makemoney"

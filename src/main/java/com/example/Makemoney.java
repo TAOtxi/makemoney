@@ -1,6 +1,10 @@
 package com.example;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.loader.api.FabricLoader;
+
+import java.io.File;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +18,17 @@ public class Makemoney implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		LOGGER.info("Starting mod...");
-		LOGGER.info("Mod Name: {}", T.t("makemoney.name"));
+		LOGGER.info("Mod description: {}", T.t("makemoney.gui.config.category.fishing.tooltip"));
+
+        File configDir = FabricLoader.getInstance().getConfigDir().toFile();
+        configDir = new File(configDir, MOD_ID);
+        if (configDir.exists()) {
+            File configFile = new File(configDir, AutoRepair.MODULE_NAME + ".json");
+            if (configFile.exists()) {
+                configFile.delete();
+            }
+        }
+
 		AutoRepair.init();
 	}
 }
