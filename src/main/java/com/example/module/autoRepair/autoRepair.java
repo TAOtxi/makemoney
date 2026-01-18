@@ -13,7 +13,6 @@ import com.example.util.MLogger;
 
 
 public class AutoRepair {
-    public static final String MOD_ID = Makemoney.MOD_ID;
     public static final String MODULE_NAME = "autorepair";
     public static final MLogger LOGGER = new MLogger(MODULE_NAME);
     public static ModConfig config;

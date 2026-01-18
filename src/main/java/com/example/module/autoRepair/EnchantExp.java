@@ -17,11 +17,7 @@ import com.example.util.SwapSlot;
 public class EnchantExp {
     private static int tickCounter = 0;
     private static final Minecraft client = Minecraft.getInstance();
-    private static final Enchantment mending = client.level
-                .registryAccess()
-                .lookupOrThrow(Registries.ENCHANTMENT)
-                .getOrThrow(Enchantments.MENDING)
-                .value();
+    private static Enchantment mending;
 
     public static void tryToEnchantMending() {
         if (!AutoRepair.config.repairEnabled ||
@@ -64,7 +60,7 @@ public class EnchantExp {
                 // AutoRepair.LOGGER.info("Found Mending Book on slot {}", i);
                 resultSlots[1] = i;
             } else if (resultSlots[0] == Code.NOT_FOUND 
-                && mending.canEnchant(item) && 
+                && getMending().canEnchant(item) && 
                 !Replace.hasEnchantment(item, Enchantments.MENDING)
 
             ) {
@@ -94,7 +90,7 @@ public class EnchantExp {
         if (slot == AnvilMenu.INPUT_SLOT) {
             // 第一格不能是附魔书，并且要能附魔经验修补且本身也没有经验修补的附魔
             if (item.is(Items.ENCHANTED_BOOK) ||
-                !mending.canEnchant(item) ||
+                !getMending().canEnchant(item) ||
                 !Replace.hasEnchantment(item, Enchantments.MENDING)
             ) {
                 client.gameMode.handleInventoryMouseClick(
@@ -114,5 +110,16 @@ public class EnchantExp {
             }
         }
         return false;
+    }
+
+    public static Enchantment getMending() {
+        if (mending == null) {
+            mending = client.level
+                .registryAccess()
+                .lookupOrThrow(Registries.ENCHANTMENT)
+                .getOrThrow(Enchantments.MENDING)
+                .value();
+        }
+        return mending;
     }
 }

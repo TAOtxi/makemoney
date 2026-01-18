@@ -1,12 +1,10 @@
 {
     "makemoney.name": "赚大钱",
+    "makemoney.message.value.on": "§a开启",
+    "makemoney.message.value.off": "§c关闭",
     "makemoney.gui.config.title": "拾玖世界的钱都是我的嘎嘎嘎嘎嘎",
     "makemoney.gui.config.category.fishing.name": "钓鱼模块",
     "makemoney.gui.config.category.fishing.tooltip": "专属于钓鱼佬的辅助功能",
-    
-    "makemoney.message.value.on": "§a开启",
-    "makemoney.message.value.off": "§c关闭",
-    "key.categories.makemoney": "makemoney",
 
     "makemoney.autorepair.name": "自动经验修补",
     "makemoney.autorepair.desc": "玩家附近有经验球时，会尝试将背包内带有经验修补且耐久未满的装备替换到副手",
@@ -24,7 +22,19 @@
     "makemoney.autorepair.repairEnabled": "铁砧自动附魔经验修补开关",
     "makemoney.autorepair.repairEnabled.desc": "开启后，打开铁砧时，会尝试为背包内没有经验修补的装备附魔",
 
-    "key.makemoney.autorepair.toggle": "自动经验修补功能开关",
     "makemoney.autorepair.message.toggled": "自动经验修补功能已 %s",
-    "makemoney.autorepair.message.repair": "已将 §a%s §r放入副手修复"
+    "makemoney.autorepair.message.repair": "已将 §a%s §r放入副手修复",
+
+
+    "makemoney.autoreconnect.name": "自动重连世界",
+    "makemoney.autoreconnect.desc": "在指定的世界中，会自动执行指定的命令",
+    "makemoney.autoreconnect.enabled": "模块总开关",
+    "makemoney.autoreconnect.worldName": "世界的名字",
+    "makemoney.autoreconnect.worldName.desc": "指定在哪个世界中自动执行命令，比如 minecraft:overworld",
+    "makemoney.autoreconnect.command": "命令",
+    "makemoney.autoreconnect.command.desc": "指定要执行的命令",
+    "makemoney.autoreconnect.tryTimes": "尝试次数",
+    "makemoney.autoreconnect.tryTimes.desc": "指定尝试执行命令的次数，值为-1时无限尝试，现在剩余尝试次数为 %s",
+    "makemoney.autoreconnect.checkInterval": "执行命令的时间延迟 (tick)",
+    "makemoney.autoreconnect.checkInterval.desc": "如题"
 }
