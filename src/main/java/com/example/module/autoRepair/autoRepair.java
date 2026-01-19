@@ -7,6 +7,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
 import com.example.util.T;
+import com.example.util.TickCounter;
 import com.example.Makemoney;
 import com.example.util.Message;
 import com.example.util.MLogger;
@@ -15,12 +16,11 @@ import com.example.util.MLogger;
 public class AutoRepair {
     public static final String MODULE_NAME = "autorepair";
     public static final MLogger LOGGER = new MLogger(MODULE_NAME);
-    public static ModConfig config;
+    public static final AutoRepairConfig config = AutoRepairConfig.load(AutoRepairConfig.class, MODULE_NAME);
     public static KeyMapping toggleKey;
 
     public static void init() {
         LOGGER.info("Initializing AutoRepair module...");
-        config = ModConfig.load(ModConfig.class, MODULE_NAME);
 
         // toggleKey = new KeyMapping(
         //     "key.autorepair.toggle",
@@ -35,6 +35,7 @@ public class AutoRepair {
     public static void registerTickEvents() {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (!config.enabled) return;
+            if (client.player == null || client.level == null) return;
             // if (toggleKey.consumeClick()) {
             //     config.enabled = !config.enabled;
             //     config.save();
@@ -42,7 +43,7 @@ public class AutoRepair {
             //     Message.subTitleMsg(T.t("makemoney.autorepair.message.toggled", config.enabled));
             // }
 
-            Replace.tryToReplace(client);
+            Replace.tryToReplace();
             EnchantExp.tryToEnchantMending();
         });
     }

@@ -2,18 +2,18 @@ package com.example.module.AutoRepair;
 
 import com.example.config.BaseConfig;
 
-public class ModConfig extends BaseConfig {
-    public ModConfig(String moduleName) {
+public class AutoRepairConfig extends BaseConfig {
+    public AutoRepairConfig(String moduleName) {
         super(moduleName);
     }
 
-    public boolean enabled = ModConfig.getDefaultEnabled();
-    public boolean showMessage = ModConfig.getDefaultShowMessage();
-    public boolean replaceEnabled = ModConfig.getDefaultReplaceEnabled();
-    public int checkExpInterval = ModConfig.getDefaultCheckExpInterval();
-    public double expCheckBound = ModConfig.getDefaultExpCheckBound();
-    public boolean repairEnabled = ModConfig.getDefaultRepairEnabled();
-    public int repairInterval = ModConfig.getDefaultRepairInterval();
+    public boolean enabled = AutoRepairConfig.getDefaultEnabled();
+    public boolean showMessage = AutoRepairConfig.getDefaultShowMessage();
+    public boolean replaceEnabled = AutoRepairConfig.getDefaultReplaceEnabled();
+    public int checkExpInterval = AutoRepairConfig.getDefaultCheckExpInterval();
+    public double expCheckBound = AutoRepairConfig.getDefaultExpCheckBound();
+    public boolean repairEnabled = AutoRepairConfig.getDefaultRepairEnabled();
+    public int repairInterval = AutoRepairConfig.getDefaultRepairInterval();
 
     public static boolean getDefaultEnabled() {
         return false;

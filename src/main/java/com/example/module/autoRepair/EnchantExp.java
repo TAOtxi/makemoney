@@ -20,10 +20,7 @@ public class EnchantExp {
     private static Enchantment mending;
 
     public static void tryToEnchantMending() {
-        if (!AutoRepair.config.repairEnabled ||
-            client.level == null ||
-            client.player == null
-        )
+        if (!AutoRepair.config.repairEnabled)
             return;
         if (++tickCounter < AutoRepair.config.repairInterval) return;
         tickCounter = 0;

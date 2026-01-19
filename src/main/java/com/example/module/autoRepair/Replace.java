@@ -27,11 +27,9 @@ import com.example.util.Message;
 
 public class Replace {
     private static int tickCounter = 0;
-    public static void tryToReplace(Minecraft client) {
-        if (!AutoRepair.config.replaceEnabled ||
-            client.level == null ||
-            client.player == null
-        )
+    private static Minecraft client = Minecraft.getInstance();
+    public static void tryToReplace() {
+        if (!AutoRepair.config.replaceEnabled)
             return;
 
         Player player = client.player;
@@ -49,7 +47,7 @@ public class Replace {
         
         ItemStack itemToRepair = player.inventoryMenu.getSlot(canReplaceSlot).getItem();
         if (AutoRepair.config.showMessage) {
-            Message.subTitleMsg(
+            Message.actionBarMsg(
                 T.t("makemoney.autorepair.message.repair", 
                 itemToRepair.getHoverName().getString())
             );

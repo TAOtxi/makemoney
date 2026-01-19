@@ -26,15 +26,22 @@
     "makemoney.autorepair.message.repair": "已将 §a%s §r放入副手修复",
 
 
-    "makemoney.autoreconnect.name": "自动重连世界",
-    "makemoney.autoreconnect.desc": "在指定的世界中，会自动执行指定的命令",
-    "makemoney.autoreconnect.enabled": "模块总开关",
-    "makemoney.autoreconnect.worldName": "世界的名字",
-    "makemoney.autoreconnect.worldName.desc": "指定在哪个世界中自动执行命令，比如 minecraft:overworld",
-    "makemoney.autoreconnect.command": "命令",
-    "makemoney.autoreconnect.command.desc": "指定要执行的命令",
-    "makemoney.autoreconnect.tryTimes": "尝试次数",
-    "makemoney.autoreconnect.tryTimes.desc": "指定尝试执行命令的次数，值为-1时无限尝试，现在剩余尝试次数为 %s",
-    "makemoney.autoreconnect.checkInterval": "执行命令的时间延迟 (tick)",
-    "makemoney.autoreconnect.checkInterval.desc": "如题"
+    "makemoney.autocommand.name": "自动命令执行",
+    "makemoney.autocommand.desc": "在指定的世界中，会自动执行指定的命令",
+    "makemoney.autocommand.enabled": "模块总开关",
+    "makemoney.autocommand.enabled.desc": "关闭后，将停止运行此模块",
+    "makemoney.autocommand.block.enabled": "消息组开关",
+    "makemoney.autocommand.block.enabled.desc": "关闭后，将禁用此消息组",
+    "makemoney.autocommand.block.name": "消息组名称",
+    "makemoney.autocommand.block.name.desc": "指定此消息组的名称，填不填无所谓",
+    "makemoney.autocommand.block.ip": "服务器IP地址",
+    "makemoney.autocommand.block.ip.desc": "要匹配的服务器IP地址，不要写端口，我懒得判断了。为\"*\"时，匹配所有的IP地址",
+    "makemoney.autocommand.block.worldName": "世界的名字",
+    "makemoney.autocommand.block.worldName.desc": "指定在哪个世界中自动执行命令，比如 minecraft:overworld。为\"*\"时，将匹配所有的世界",
+    "makemoney.autocommand.block.command": "消息或命令",
+    "makemoney.autocommand.block.command.desc": "要发送的消息或命令，以\"/\"开头的消息将会被视作命令",
+    "makemoney.autocommand.block.runCounts": "发送次数",
+    "makemoney.autocommand.block.runCounts.desc": "指定要发送消息或命令的次数，负数时无限次，现在剩余尝试次数为 %s",
+    "makemoney.autocommand.block.delay": "执行命令的时间延迟 (tick)",
+    "makemoney.autocommand.block.delay.desc": "指定在每次发送消息或命令之间的延迟时间，单位为tick"
 }

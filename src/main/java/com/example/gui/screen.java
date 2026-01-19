@@ -1,5 +1,6 @@
 package com.example.gui;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.OptionGroup;
@@ -17,8 +18,10 @@ import dev.isxander.yacl3.gui.controllers.string.IStringController;
 import dev.isxander.yacl3.gui.controllers.string.StringControllerElement;
 
 import com.example.util.T;
+import com.example.Makemoney;
+import com.example.module.AutoCommand.AutoCommand;
 import com.example.module.AutoRepair.AutoRepair;
-import com.example.module.AutoRepair.ModConfig;
+import com.example.module.AutoRepair.AutoRepairConfig;
 
 public class screen {
     public static Screen getConfigScreen(Screen parent) {
@@ -44,7 +47,7 @@ public class screen {
                 .name(T.tl("makemoney.autorepair.enabled"))
                 .description(OptionDescription.of(T.tl("makemoney.autorepair.desc")))
                 .binding(
-                    ModConfig.getDefaultEnabled(),
+                    AutoRepairConfig.getDefaultEnabled(),
                     () -> AutoRepair.config.enabled,
                     val -> AutoRepair.config.enabled = val
                 )
@@ -56,7 +59,7 @@ public class screen {
                 .name(T.tl("makemoney.autorepair.showMessage"))
                 .description(OptionDescription.of(T.tl("makemoney.autorepair.showMessage.desc")))
                 .binding(
-                    ModConfig.getDefaultShowMessage(),
+                    AutoRepairConfig.getDefaultShowMessage(),
                     () -> AutoRepair.config.showMessage,
                     val -> AutoRepair.config.showMessage = val
                 )
@@ -68,7 +71,7 @@ public class screen {
                 .name(T.tl("makemoney.autorepair.replaceEnabled"))
                 .description(OptionDescription.of(T.tl("makemoney.autorepair.replaceEnabled.desc")))
                 .binding(
-                    ModConfig.getDefaultReplaceEnabled(),
+                    AutoRepairConfig.getDefaultReplaceEnabled(),
                     () -> AutoRepair.config.replaceEnabled,
                     val -> AutoRepair.config.replaceEnabled = val
                 )
@@ -80,7 +83,7 @@ public class screen {
                 .name(T.tl("makemoney.autorepair.checkExpInterval"))
                 .description(OptionDescription.of(T.tl("makemoney.autorepair.checkExpInterval.desc")))
                 .binding(
-                    ModConfig.getDefaultCheckExpInterval(),
+                    AutoRepairConfig.getDefaultCheckExpInterval(),
                     () -> AutoRepair.config.checkExpInterval,
                     val -> AutoRepair.config.checkExpInterval = val
                 )
@@ -94,7 +97,7 @@ public class screen {
                 .name(T.tl("makemoney.autorepair.expCheckBound"))
                 .description(OptionDescription.of(T.tl("makemoney.autorepair.expCheckBound.desc")))
                 .binding(
-                    ModConfig.getDefaultExpCheckBound(),
+                    AutoRepairConfig.getDefaultExpCheckBound(),
                     () -> AutoRepair.config.expCheckBound,
                     val -> AutoRepair.config.expCheckBound = val
                 )
@@ -109,7 +112,7 @@ public class screen {
                 .name(T.tl("makemoney.autorepair.repairEnabled"))
                 .description(OptionDescription.of(T.tl("makemoney.autorepair.repairEnabled.desc")))
                 .binding(
-                    ModConfig.getDefaultRepairEnabled(),
+                    AutoRepairConfig.getDefaultRepairEnabled(),
                     () -> AutoRepair.config.repairEnabled,
                     val -> AutoRepair.config.repairEnabled = val
                 )
@@ -121,7 +124,7 @@ public class screen {
                 .name(T.tl("makemoney.autorepair.repairInterval"))
                 .description(OptionDescription.of(T.tl("makemoney.autorepair.repairInterval.desc")))
                 .binding(
-                    ModConfig.getDefaultRepairInterval(),
+                    AutoRepairConfig.getDefaultRepairInterval(),
                     () -> AutoRepair.config.repairInterval,
                     val -> AutoRepair.config.repairInterval = val
                 )
@@ -132,6 +135,11 @@ public class screen {
         );  
 
 
+        ConfigCategory.Builder autocommandCategory = ConfigCategory.createBuilder()
+                .name(T.tl("makemoney.autocommand.name"))
+                .tooltip(T.tl("makemoney.autocommand.desc"));
+
+
 
         fishingCategory.group(autorepairGroup.build());
 
@@ -139,5 +147,33 @@ public class screen {
 
         YetAnotherConfigLib yacl = builder.build();
         return yacl.generateScreen(parent);
+    }
+
+    private static void reload(YACLScreen screen, Screen parent) {
+        Minecraft client = Minecraft.getInstance();
+        try {
+            int tab = screen.tabNavigationBar == null
+                    ? 0
+                    : screen.tabNavigationBar.getTabs().indexOf(screen.tabManager.getCurrentTab());
+            if (tab == -1)
+                tab = 0;
+            screen.finishOrSave();
+            screen.onClose(); // In case finishOrSave doesn't close it.
+            YACLScreen newScreen = (YACLScreen) getConfigScreen(parent);
+            newScreen.init(client, screen.width, screen.height);
+            try {
+                newScreen.tabNavigationBar.selectTab(tab, false);
+            } catch (IndexOutOfBoundsException e) {
+                Makemoney.LOGGER.warn(
+                        "YACL reload hack attempted to select tab {} but max index was {}",
+                        tab,
+                        newScreen.tabNavigationBar.getTabs().size() - 1
+                );
+            }
+            client.setScreen(newScreen);
+        } catch (Exception e) {
+            client.setScreen(parent);
+            Makemoney.LOGGER.error("YACL reload hack failed with exception\n{}", e);
+        }
     }
 }
