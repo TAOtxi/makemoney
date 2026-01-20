@@ -14,6 +14,7 @@ import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
 import dev.isxander.yacl3.api.controller.DoubleFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.StringControllerBuilder;
+import dev.isxander.yacl3.api.controller.DropdownStringControllerBuilder;
 import dev.isxander.yacl3.gui.YACLScreen;
 
 import com.example.util.T;
@@ -32,17 +33,21 @@ public class screen {
         
         YetAnotherConfigLib.Builder builder = 
             YetAnotherConfigLib.createBuilder()
-                .title(T.tl("makemoney.gui.config.title"))
+                .title(T.tl("gui.config.title"))
                 .save(() -> {
                     AutoRepair.config.save();
                     AutoCommand.config.save();
                     AutoCommand.updateTickCounter();
-                    Makemoney.LOGGER.info("Config saved.");
+                    Makemoney.LOGGER.info("Config saved...");
                 });
 
         // 钓鱼相关模块
         ConfigCategory.Builder fishingCategory = createFishingCategoryBuilder(parent);
         builder.category(fishingCategory.build());
+
+        // 自动丢弃模块
+        ConfigCategory.Builder autodropCategory = createAuDropCategoryBuilder(parent);
+        builder.category(autodropCategory.build());
 
         // 自动命令模块
         ConfigCategory.Builder commandCategory = createCommandCategoryBuilder(parent);
@@ -56,17 +61,17 @@ public class screen {
     public static ConfigCategory.Builder createFishingCategoryBuilder(Screen parent) {
         ConfigCategory.Builder fishingCategory = 
             ConfigCategory.createBuilder()
-                .name(T.tl("makemoney.gui.config.category.fishing.name"))
-                .tooltip(T.tl("makemoney.gui.config.category.fishing.tooltip"));
+                .name(T.tl("gui.config.category.fishing.name"))
+                .tooltip(T.tl("gui.config.category.fishing.tooltip"));
 
         OptionGroup.Builder autorepairGroup = 
             OptionGroup.createBuilder()
-                .name(T.tl("makemoney.autorepair.name"))
-                .description(OptionDescription.of(T.tl("makemoney.autorepair.desc")));
+                .name(T.tl("autorepair.name"))
+                .description(OptionDescription.of(T.tl("autorepair.desc")));
 
         autorepairGroup.option(Option.<Boolean>createBuilder()
-                .name(T.tl("makemoney.autorepair.enabled"))
-                .description(OptionDescription.of(T.tl("makemoney.autorepair.desc")))
+                .name(T.tl("autorepair.enabled"))
+                .description(OptionDescription.of(T.tl("autorepair.desc")))
                 .binding(
                     AutoRepairConfig.getDefaultEnabled(),
                     () -> AutoRepair.config.enabled,
@@ -77,8 +82,8 @@ public class screen {
         );
 
         autorepairGroup.option(Option.<Boolean>createBuilder()
-                .name(T.tl("makemoney.autorepair.showMessage"))
-                .description(OptionDescription.of(T.tl("makemoney.autorepair.showMessage.desc")))
+                .name(T.tl("autorepair.showMessage"))
+                .description(OptionDescription.of(T.tl("autorepair.showMessage.desc")))
                 .binding(
                     AutoRepairConfig.getDefaultShowMessage(),
                     () -> AutoRepair.config.showMessage,
@@ -89,8 +94,8 @@ public class screen {
         );
 
         autorepairGroup.option(Option.<Boolean>createBuilder()
-                .name(T.tl("makemoney.autorepair.replaceEnabled"))
-                .description(OptionDescription.of(T.tl("makemoney.autorepair.replaceEnabled.desc")))
+                .name(T.tl("autorepair.replaceEnabled"))
+                .description(OptionDescription.of(T.tl("autorepair.replaceEnabled.desc")))
                 .binding(
                     AutoRepairConfig.getDefaultReplaceEnabled(),
                     () -> AutoRepair.config.replaceEnabled,
@@ -101,8 +106,8 @@ public class screen {
         );
 
         autorepairGroup.option(Option.<Integer>createBuilder()
-                .name(T.tl("makemoney.autorepair.checkExpInterval"))
-                .description(OptionDescription.of(T.tl("makemoney.autorepair.checkExpInterval.desc")))
+                .name(T.tl("autorepair.checkExpInterval"))
+                .description(OptionDescription.of(T.tl("autorepair.checkExpInterval.desc")))
                 .binding(
                     AutoRepairConfig.getDefaultCheckExpInterval(),
                     () -> AutoRepair.config.checkExpInterval,
@@ -115,8 +120,8 @@ public class screen {
         );  
 
         autorepairGroup.option(Option.<Double>createBuilder()
-                .name(T.tl("makemoney.autorepair.expCheckBound"))
-                .description(OptionDescription.of(T.tl("makemoney.autorepair.expCheckBound.desc")))
+                .name(T.tl("autorepair.expCheckBound"))
+                .description(OptionDescription.of(T.tl("autorepair.expCheckBound.desc")))
                 .binding(
                     AutoRepairConfig.getDefaultExpCheckBound(),
                     () -> AutoRepair.config.expCheckBound,
@@ -130,8 +135,8 @@ public class screen {
         );
 
         autorepairGroup.option(Option.<Boolean>createBuilder()
-                .name(T.tl("makemoney.autorepair.repairEnabled"))
-                .description(OptionDescription.of(T.tl("makemoney.autorepair.repairEnabled.desc")))
+                .name(T.tl("autorepair.repairEnabled"))
+                .description(OptionDescription.of(T.tl("autorepair.repairEnabled.desc")))
                 .binding(
                     AutoRepairConfig.getDefaultRepairEnabled(),
                     () -> AutoRepair.config.repairEnabled,
@@ -142,8 +147,8 @@ public class screen {
         );
 
         autorepairGroup.option(Option.<Integer>createBuilder()
-                .name(T.tl("makemoney.autorepair.repairInterval"))
-                .description(OptionDescription.of(T.tl("makemoney.autorepair.repairInterval.desc")))
+                .name(T.tl("autorepair.repairInterval"))
+                .description(OptionDescription.of(T.tl("autorepair.repairInterval.desc")))
                 .binding(
                     AutoRepairConfig.getDefaultRepairInterval(),
                     () -> AutoRepair.config.repairInterval,
@@ -159,14 +164,37 @@ public class screen {
         return fishingCategory;
     }
 
+    public static ConfigCategory.Builder createAuDropCategoryBuilder(Screen parent) {
+        ConfigCategory.Builder autodropCategory = 
+            ConfigCategory.createBuilder()
+                .name(T.tl("autodrop"))
+                .tooltip(T.tl("autodrop.desc"));
+
+        autodropCategory.option(Option.<String>createBuilder()
+                .name(T.tl("autodrop.enabled"))
+                .description(OptionDescription.of(T.tl("autodrop.enabled.desc")))
+                .binding(
+                    "",
+                    () -> "orange",
+                    val -> {}
+                )
+                .controller(opt -> DropdownStringControllerBuilder.create(opt)
+                        .values("apple", "orange", "banana")
+                )
+                .build()
+        );
+        
+        return autodropCategory;
+    }
+
     public static ConfigCategory.Builder createCommandCategoryBuilder(Screen parent) {
         ConfigCategory.Builder autocommandCategory = ConfigCategory.createBuilder()
-                .name(T.tl("makemoney.autocommand.name"))
-                .tooltip(T.tl("makemoney.autocommand.desc"));
+                .name(T.tl("autocommand.name"))
+                .tooltip(T.tl("autocommand.desc"));
 
         autocommandCategory.option(Option.<Boolean>createBuilder()
-                .name(T.tl("makemoney.autocommand.enabled"))
-                .description(OptionDescription.of(T.tl("makemoney.autocommand.enabled.desc")))
+                .name(T.tl("autocommand.enabled"))
+                .description(OptionDescription.of(T.tl("autocommand.enabled.desc")))
                 .binding(
                     AutoCommandConfig.getDefaultEnabled(),
                     () -> AutoCommand.config.enabled,
@@ -177,9 +205,9 @@ public class screen {
         );
 
         autocommandCategory.option(ButtonOption.createBuilder()
-                .name(T.tl("makemoney.autocommand.addBlock")
+                .name(T.tl("autocommand.addBlock")
                        .withStyle(ChatFormatting.GREEN))
-                .description(OptionDescription.of(T.tl("makemoney.autocommand.addBlock.desc")))
+                .description(OptionDescription.of(T.tl("autocommand.addBlock.desc")))
                 .action((yaclScreen, button) -> {
                     AutoCommand.config.addCommandBlock();
                     reload(yaclScreen, parent);
@@ -190,12 +218,12 @@ public class screen {
         for (int i = 0; i < AutoCommand.config.commandBlocks.size(); i++) {
             CommandBlock block = AutoCommand.config.commandBlocks.get(i);
             OptionGroup.Builder blockGroup = OptionGroup.createBuilder()
-                    .name(block.name.isEmpty() ? T.tl("makemoney.autocommand.block.defaultName", i+1) : T.l(block.name))
-                    .description(OptionDescription.of(T.tl("makemoney.autocommand.block.defaultName.desc", i+1)));
+                    .name(block.name.isEmpty() ? T.tl("autocommand.block.defaultName", i+1) : T.l(block.name))
+                    .description(OptionDescription.of(T.tl("autocommand.block.defaultName.desc", i+1)));
             
             blockGroup.option(Option.<Boolean>createBuilder()
-                    .name(T.tl("makemoney.autocommand.block.enabled"))
-                    .description(OptionDescription.of(T.tl("makemoney.autocommand.block.enabled.desc")))
+                    .name(T.tl("autocommand.block.enabled"))
+                    .description(OptionDescription.of(T.tl("autocommand.block.enabled.desc")))
                     .binding(
                             AutoCommandConfig.getDefaultEnabled(),
                             () -> block.enabled,
@@ -209,8 +237,8 @@ public class screen {
             );
 
             blockGroup.option(Option.<String>createBuilder()
-                    .name(T.tl("makemoney.autocommand.block.name"))
-                    .description(OptionDescription.of(T.tl("makemoney.autocommand.block.name.desc")))
+                    .name(T.tl("autocommand.block.name"))
+                    .description(OptionDescription.of(T.tl("autocommand.block.name.desc")))
                     .binding(
                             AutoCommandConfig.getDefaultName(),
                             () -> block.name,
@@ -224,8 +252,8 @@ public class screen {
             );
 
             blockGroup.option(Option.<String>createBuilder()
-                    .name(T.tl("makemoney.autocommand.block.ip"))
-                    .description(OptionDescription.of(T.tl("makemoney.autocommand.block.ip.desc")))
+                    .name(T.tl("autocommand.block.ip"))
+                    .description(OptionDescription.of(T.tl("autocommand.block.ip.desc")))
                     .binding(
                             AutoCommandConfig.getDefaultIp(),
                             () -> block.ip,
@@ -239,8 +267,8 @@ public class screen {
             );
 
             blockGroup.option(Option.<String>createBuilder()
-                    .name(T.tl("makemoney.autocommand.block.worldName"))
-                    .description(OptionDescription.of(T.tl("makemoney.autocommand.block.worldName.desc")))
+                    .name(T.tl("autocommand.block.worldName"))
+                    .description(OptionDescription.of(T.tl("autocommand.block.worldName.desc")))
                     .binding(
                             AutoCommandConfig.getDefaultWorldName(),
                             () -> block.worldName,
@@ -254,9 +282,9 @@ public class screen {
                 );
 
             blockGroup.option(ButtonOption.createBuilder()
-                    .name(T.tl("makemoney.autocommand.block.runCounts.reset")
+                    .name(T.tl("autocommand.block.runCounts.reset")
                             .withStyle(ChatFormatting.RED))
-                    .description(OptionDescription.of(T.tl("makemoney.autocommand.block.runCounts.reset.desc")))
+                    .description(OptionDescription.of(T.tl("autocommand.block.runCounts.reset.desc")))
                     .action((yaclScreen, button) -> {
                         block.isUpdate = true;
                     })
@@ -264,8 +292,8 @@ public class screen {
                 );
 
             blockGroup.option(Option.<Integer>createBuilder()
-                    .name(T.tl("makemoney.autocommand.block.runCounts"))
-                    .description(OptionDescription.of(T.tl("makemoney.autocommand.block.runCounts.desc")))
+                    .name(T.tl("autocommand.block.runCounts"))
+                    .description(OptionDescription.of(T.tl("autocommand.block.runCounts.desc")))
                     .binding(
                             AutoCommandConfig.getDefaultRunCounts(),
                             () -> block.runCounts,
@@ -279,8 +307,8 @@ public class screen {
             );
 
             blockGroup.option(Option.<Integer>createBuilder()
-                    .name(T.tl("makemoney.autocommand.block.delay"))
-                    .description(OptionDescription.of(T.tl("makemoney.autocommand.block.delay.desc")))
+                    .name(T.tl("autocommand.block.delay"))
+                    .description(OptionDescription.of(T.tl("autocommand.block.delay.desc")))
                     .binding(
                             AutoCommandConfig.getDefaultDelay(),
                             () -> block.delay,
@@ -296,9 +324,9 @@ public class screen {
 
             
             blockGroup.option(ButtonOption.createBuilder()
-            .name(T.tl("makemoney.autocommand.block.delete")
+            .name(T.tl("autocommand.block.delete")
                     .withStyle(ChatFormatting.RED))
-            .description(OptionDescription.of(T.tl("makemoney.autocommand.block.delete.desc")))
+            .description(OptionDescription.of(T.tl("autocommand.block.delete.desc")))
             .action((yaclScreen, button) -> {
                 AutoCommand.config.removeCommandBlock(block);
                 reload(yaclScreen, parent);
@@ -308,8 +336,8 @@ public class screen {
         
             autocommandCategory.group(blockGroup.build());
             autocommandCategory.group(ListOption.<String>createBuilder()
-                    .name(T.tl("makemoney.autocommand.block.command"))
-                    .description(OptionDescription.of(T.tl("makemoney.autocommand.block.command.desc")))
+                    .name(T.tl("autocommand.block.command"))
+                    .description(OptionDescription.of(T.tl("autocommand.block.command.desc")))
                     .binding(
                             new ArrayList<String>(),
                             () -> block.commands,
@@ -325,6 +353,7 @@ public class screen {
         }
         return autocommandCategory;
     }
+
 
     private static void reload(YACLScreen screen, Screen parent) {
         Minecraft client = Minecraft.getInstance();

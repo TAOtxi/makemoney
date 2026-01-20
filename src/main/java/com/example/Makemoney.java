@@ -19,7 +19,7 @@ public class Makemoney implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		LOGGER.info("Starting mod...");
-		LOGGER.info("Mod description: {}", T.t("makemoney.gui.config.category.fishing.tooltip"));
+		LOGGER.info("Mod description: {}", T.t("gui.config.category.fishing.tooltip"));
 
         // File configDir = FabricLoader.getInstance().getConfigDir().toFile();
         // configDir = new File(configDir, MOD_ID);

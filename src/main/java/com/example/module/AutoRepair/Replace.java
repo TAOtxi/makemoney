@@ -47,7 +47,7 @@ public class Replace {
         ItemStack itemToRepair = player.inventoryMenu.getSlot(canReplaceSlot).getItem();
         if (AutoRepair.config.showMessage) {
             Message.actionBarMsg(
-                T.t("makemoney.autorepair.message.repair", 
+                T.t("autorepair.message.repair", 
                 itemToRepair.getHoverName().getString())
             );
         }

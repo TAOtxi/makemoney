@@ -33,7 +33,7 @@ public class AutoRepair {
             //     config.enabled = !config.enabled;
             //     config.save();
             //     LOGGER.info("AutoRepair toggled to {}", config.enabled);
-            //     Message.subTitleMsg(T.t("makemoney.autorepair.message.toggled", config.enabled));
+            //     Message.subTitleMsg(T.t(".message.toggled", config.enabled));
             // }
 
             Replace.tryToReplace();
