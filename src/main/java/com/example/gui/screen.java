@@ -1,32 +1,32 @@
 package com.example.gui;
 
+import java.util.ArrayList;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import dev.isxander.yacl3.api.Option;
+import dev.isxander.yacl3.api.ListOption;
 import dev.isxander.yacl3.api.OptionGroup;
 import dev.isxander.yacl3.api.ButtonOption;
 import dev.isxander.yacl3.api.ConfigCategory;
-import dev.isxander.yacl3.api.ListOption;
 import dev.isxander.yacl3.api.OptionDescription;
 import dev.isxander.yacl3.api.YetAnotherConfigLib;
+import dev.isxander.yacl3.api.controller.StringControllerBuilder;
 import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
+import dev.isxander.yacl3.api.controller.ValueFormattableController;
 import dev.isxander.yacl3.api.controller.DoubleFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerFieldControllerBuilder;
-import dev.isxander.yacl3.api.controller.StringControllerBuilder;
 import dev.isxander.yacl3.api.controller.DropdownStringControllerBuilder;
+import dev.isxander.yacl3.api.controller.EnumDropdownControllerBuilder;
 import dev.isxander.yacl3.gui.YACLScreen;
 
 import com.example.util.T;
-
-import java.util.ArrayList;
-
 import com.example.Makemoney;
+import com.example.module.AutoRepair.AutoRepair;
+import com.example.module.AutoRepair.AutoRepairConfig;
 import com.example.module.AutoCommand.AutoCommand;
 import com.example.module.AutoCommand.AutoCommandConfig;
 import com.example.module.AutoCommand.AutoCommandConfig.CommandBlock;
-import com.example.module.AutoRepair.AutoRepair;
-import com.example.module.AutoRepair.AutoRepairConfig;
 
 public class screen {
     public static Screen getConfigScreen(Screen parent) {
@@ -181,6 +181,18 @@ public class screen {
                 .controller(opt -> DropdownStringControllerBuilder.create(opt)
                         .values("apple", "orange", "banana")
                 )
+                .build()
+        );
+
+        autodropCategory.option(Option.<String>createBuilder()
+                .name(T.tl("autodrop.replaceEnabled"))
+                .description(OptionDescription.of(T.tl("autodrop.replaceEnabled.desc")))
+                .binding(
+                    "",
+                    () -> "abcdeft",
+                    val -> {}
+                )
+                .controller(StringControllerBuilder::create)
                 .build()
         );
         

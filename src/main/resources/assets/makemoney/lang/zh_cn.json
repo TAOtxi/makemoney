@@ -25,6 +25,20 @@
     "makemoney.autorepair.message.toggled": "自动经验修补功能已 %s",
     "makemoney.autorepair.message.repair": "已将 §a%s §r放入副手修复",
 
+    "makemoney.autodrop.name": "自动丢弃",
+    "makemoney.autodrop.desc": "丢弃背包内不在白名单的物品",
+    "makemoney.autodrop.enabled": "模块总开关",
+    "makemoney.autodrop.enabled.desc": "关闭后，将停止运行此模块",
+    "makemoney.autodrop.addBlock": "添加白名单",
+    "makemoney.autodrop.addBlock.desc": "添加一个新的白名单组",
+    "makemoney.autodrop.block.name": "白名单1",
+    "makemoney.autodrop.block.enabled": "是否启用",
+    "makemoney.autodrop.block.enabled.desc": "关闭后，将禁用此白名单",
+    "makemoney.autodrop.block.itemName": "物品名称",
+    "makemoney.autodrop.block.itemName.desc": "指定要添加到白名单的物品名称，比如 minecraft:stick。\n置空则忽略此项",
+    "makemoney.autodrop.block.itemName.placeholder": "minecraft:stick",
+
+
 
     "makemoney.autocommand.name": "自动命令执行",
     "makemoney.autocommand.desc": "在指定的世界中，会自动执行指定的命令",

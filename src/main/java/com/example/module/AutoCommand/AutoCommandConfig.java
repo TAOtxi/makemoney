@@ -43,7 +43,7 @@ public class AutoCommandConfig extends BaseConfig {
     }
 
     public static String getDefaultCommand() {
-        return "/stp survival2";
+        return "/me hhh";
     }
 
     public static int getDefaultDelay() {
@@ -51,7 +51,7 @@ public class AutoCommandConfig extends BaseConfig {
     }
 
     public static String getDefaultIp() {
-        return "nineteenmc.top";
+        return "2b2t.org";
     }
 
     public static String getDefaultName() {
