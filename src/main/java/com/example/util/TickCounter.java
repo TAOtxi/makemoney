@@ -40,7 +40,7 @@ public class TickCounter {
         tasks.removeIf(task -> task.id.equals(id));
     }
 
-    public void clearTasks() {
+    public void clear() {
         tasks.clear();
     }
 

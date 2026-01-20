@@ -29,7 +29,7 @@ public class BaseConfig {
         File configFile = new File(configDir, moduleName + ".json");
         try {
             if (!configFile.exists()) {
-                Makemoney.LOGGER.info("Config file does not exist, creating...");
+                Makemoney.LOGGER.info("Config file does not exist, creating {}", configFile.getPath());
                 T config = clazz.getDeclaredConstructor(String.class).newInstance(moduleName);
                 try (FileWriter writer = new FileWriter(configFile)) {
                     gson.toJson(config, writer);
@@ -53,7 +53,7 @@ public class BaseConfig {
     public void save() {
         File configDir = new File(FabricLoader.getInstance().getConfigDir().toFile(), Makemoney.MOD_ID);
         if (!configDir.exists()) {
-            Makemoney.LOGGER.info("Config directory does not exist, creating...");
+            Makemoney.LOGGER.info("Config directory does not exist, creating {}", configDir.getPath());
             configDir.mkdirs();
         }
         File configFile = new File(configDir, MODULE_NAME + ".json");

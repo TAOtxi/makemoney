@@ -1,25 +1,29 @@
 package com.example.gui;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.OptionGroup;
+import dev.isxander.yacl3.api.ButtonOption;
 import dev.isxander.yacl3.api.ConfigCategory;
+import dev.isxander.yacl3.api.ListOption;
 import dev.isxander.yacl3.api.OptionDescription;
 import dev.isxander.yacl3.api.YetAnotherConfigLib;
 import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
 import dev.isxander.yacl3.api.controller.DoubleFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerFieldControllerBuilder;
+import dev.isxander.yacl3.api.controller.StringControllerBuilder;
 import dev.isxander.yacl3.gui.YACLScreen;
-import dev.isxander.yacl3.gui.AbstractWidget;
-import dev.isxander.yacl3.api.utils.Dimension;
-import dev.isxander.yacl3.gui.controllers.string.StringController;
-import dev.isxander.yacl3.gui.controllers.string.IStringController;
-import dev.isxander.yacl3.gui.controllers.string.StringControllerElement;
 
 import com.example.util.T;
+
+import java.util.ArrayList;
+
 import com.example.Makemoney;
 import com.example.module.AutoCommand.AutoCommand;
+import com.example.module.AutoCommand.AutoCommandConfig;
+import com.example.module.AutoCommand.AutoCommandConfig.CommandBlock;
 import com.example.module.AutoRepair.AutoRepair;
 import com.example.module.AutoRepair.AutoRepairConfig;
 
@@ -31,8 +35,25 @@ public class screen {
                 .title(T.tl("makemoney.gui.config.title"))
                 .save(() -> {
                     AutoRepair.config.save();
+                    AutoCommand.config.save();
+                    AutoCommand.updateTickCounter();
+                    Makemoney.LOGGER.info("Config saved.");
                 });
 
+        // 钓鱼相关模块
+        ConfigCategory.Builder fishingCategory = createFishingCategoryBuilder(parent);
+        builder.category(fishingCategory.build());
+
+        // 自动命令模块
+        ConfigCategory.Builder commandCategory = createCommandCategoryBuilder(parent);
+        builder.category(commandCategory.build());
+
+
+        YetAnotherConfigLib yacl = builder.build();
+        return yacl.generateScreen(parent);
+    }
+
+    public static ConfigCategory.Builder createFishingCategoryBuilder(Screen parent) {
         ConfigCategory.Builder fishingCategory = 
             ConfigCategory.createBuilder()
                 .name(T.tl("makemoney.gui.config.category.fishing.name"))
@@ -134,19 +155,175 @@ public class screen {
                 .build()
         );  
 
+        fishingCategory.group(autorepairGroup.build());
+        return fishingCategory;
+    }
 
+    public static ConfigCategory.Builder createCommandCategoryBuilder(Screen parent) {
         ConfigCategory.Builder autocommandCategory = ConfigCategory.createBuilder()
                 .name(T.tl("makemoney.autocommand.name"))
                 .tooltip(T.tl("makemoney.autocommand.desc"));
 
+        autocommandCategory.option(Option.<Boolean>createBuilder()
+                .name(T.tl("makemoney.autocommand.enabled"))
+                .description(OptionDescription.of(T.tl("makemoney.autocommand.enabled.desc")))
+                .binding(
+                    AutoCommandConfig.getDefaultEnabled(),
+                    () -> AutoCommand.config.enabled,
+                    val -> AutoCommand.config.enabled = val
+                )
+                .controller(BooleanControllerBuilder::create)
+                .build()
+        );
+
+        autocommandCategory.option(ButtonOption.createBuilder()
+                .name(T.tl("makemoney.autocommand.addBlock")
+                       .withStyle(ChatFormatting.GREEN))
+                .description(OptionDescription.of(T.tl("makemoney.autocommand.addBlock.desc")))
+                .action((yaclScreen, button) -> {
+                    AutoCommand.config.addCommandBlock();
+                    reload(yaclScreen, parent);
+                })
+                .build()
+        );
+
+        for (int i = 0; i < AutoCommand.config.commandBlocks.size(); i++) {
+            CommandBlock block = AutoCommand.config.commandBlocks.get(i);
+            OptionGroup.Builder blockGroup = OptionGroup.createBuilder()
+                    .name(block.name.isEmpty() ? T.tl("makemoney.autocommand.block.defaultName", i+1) : T.l(block.name))
+                    .description(OptionDescription.of(T.tl("makemoney.autocommand.block.defaultName.desc", i+1)));
+            
+            blockGroup.option(Option.<Boolean>createBuilder()
+                    .name(T.tl("makemoney.autocommand.block.enabled"))
+                    .description(OptionDescription.of(T.tl("makemoney.autocommand.block.enabled.desc")))
+                    .binding(
+                            AutoCommandConfig.getDefaultEnabled(),
+                            () -> block.enabled,
+                            val -> {
+                                block.enabled = val;
+                                block.isUpdate = true;
+                            }
+                    )
+                    .controller(BooleanControllerBuilder::create)
+                    .build()
+            );
+
+            blockGroup.option(Option.<String>createBuilder()
+                    .name(T.tl("makemoney.autocommand.block.name"))
+                    .description(OptionDescription.of(T.tl("makemoney.autocommand.block.name.desc")))
+                    .binding(
+                            AutoCommandConfig.getDefaultName(),
+                            () -> block.name,
+                            val -> {
+                                block.name = val;
+                                block.isUpdate = true;
+                            }
+                    )
+                    .controller(StringControllerBuilder::create)
+                    .build()
+            );
+
+            blockGroup.option(Option.<String>createBuilder()
+                    .name(T.tl("makemoney.autocommand.block.ip"))
+                    .description(OptionDescription.of(T.tl("makemoney.autocommand.block.ip.desc")))
+                    .binding(
+                            AutoCommandConfig.getDefaultIp(),
+                            () -> block.ip,
+                            val -> {
+                                block.ip = val;
+                                block.isUpdate = true;
+                            }
+                    )
+                    .controller(StringControllerBuilder::create)
+                    .build()
+            );
+
+            blockGroup.option(Option.<String>createBuilder()
+                    .name(T.tl("makemoney.autocommand.block.worldName"))
+                    .description(OptionDescription.of(T.tl("makemoney.autocommand.block.worldName.desc")))
+                    .binding(
+                            AutoCommandConfig.getDefaultWorldName(),
+                            () -> block.worldName,
+                            val -> {
+                                block.worldName = val;
+                                block.isUpdate = true;
+                            }
+                    )
+                    .controller(StringControllerBuilder::create)
+                    .build()
+                );
+
+            blockGroup.option(ButtonOption.createBuilder()
+                    .name(T.tl("makemoney.autocommand.block.runCounts.reset")
+                            .withStyle(ChatFormatting.RED))
+                    .description(OptionDescription.of(T.tl("makemoney.autocommand.block.runCounts.reset.desc")))
+                    .action((yaclScreen, button) -> {
+                        block.isUpdate = true;
+                    })
+                    .build()
+                );
+
+            blockGroup.option(Option.<Integer>createBuilder()
+                    .name(T.tl("makemoney.autocommand.block.runCounts"))
+                    .description(OptionDescription.of(T.tl("makemoney.autocommand.block.runCounts.desc")))
+                    .binding(
+                            AutoCommandConfig.getDefaultRunCounts(),
+                            () -> block.runCounts,
+                            val -> {
+                                block.runCounts = val;
+                                block.isUpdate = true;
+                            }
+                    )
+                    .controller(IntegerFieldControllerBuilder::create)
+                    .build()
+            );
+
+            blockGroup.option(Option.<Integer>createBuilder()
+                    .name(T.tl("makemoney.autocommand.block.delay"))
+                    .description(OptionDescription.of(T.tl("makemoney.autocommand.block.delay.desc")))
+                    .binding(
+                            AutoCommandConfig.getDefaultDelay(),
+                            () -> block.delay,
+                            val -> {
+                                block.delay = val;
+                                block.isUpdate = true;
+                            }
+                    )
+                    .controller(IntegerFieldControllerBuilder::create)
+                    .build()
+            );
 
 
-        fishingCategory.group(autorepairGroup.build());
-
-        builder.category(fishingCategory.build());
-
-        YetAnotherConfigLib yacl = builder.build();
-        return yacl.generateScreen(parent);
+            
+            blockGroup.option(ButtonOption.createBuilder()
+            .name(T.tl("makemoney.autocommand.block.delete")
+                    .withStyle(ChatFormatting.RED))
+            .description(OptionDescription.of(T.tl("makemoney.autocommand.block.delete.desc")))
+            .action((yaclScreen, button) -> {
+                AutoCommand.config.removeCommandBlock(block);
+                reload(yaclScreen, parent);
+            })
+            .build()
+            );
+        
+            autocommandCategory.group(blockGroup.build());
+            autocommandCategory.group(ListOption.<String>createBuilder()
+                    .name(T.tl("makemoney.autocommand.block.command"))
+                    .description(OptionDescription.of(T.tl("makemoney.autocommand.block.command.desc")))
+                    .binding(
+                            new ArrayList<String>(),
+                            () -> block.commands,
+                            val -> {
+                                block.commands = val;
+                                block.isUpdate = true;
+                            }
+                    )
+                    .initial("")
+                    .controller(StringControllerBuilder::create)
+                    .build()
+            );
+        }
+        return autocommandCategory;
     }
 
     private static void reload(YACLScreen screen, Screen parent) {

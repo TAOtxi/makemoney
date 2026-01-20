@@ -1,15 +1,8 @@
 package com.example.module.AutoRepair;
 
-import org.lwjgl.glfw.GLFW;
-
 import net.minecraft.client.KeyMapping;
-import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
-import com.example.util.T;
-import com.example.util.TickCounter;
-import com.example.Makemoney;
-import com.example.util.Message;
 import com.example.util.MLogger;
 
 

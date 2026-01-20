@@ -31,6 +31,7 @@ public class Makemoney implements ModInitializer {
         // }
 
 		AutoRepair.init();
-        AutoCommand.init();
+        // TODO: 待测试 ~~~oh mdfk
+        // AutoCommand.init();
 	}
 }
