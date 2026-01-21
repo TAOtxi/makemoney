@@ -6,12 +6,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class StringUtil {
-    public static <T> String listToString(List<T> list, String sep) {
+    public static <Type> String listToString(List<Type> list, String sep) {
         if (list.size() < 1) return "";
         if (list.size() < 2) return String.valueOf(list.get(0));
         
         StringBuilder sb = new StringBuilder();
-        for (T t : list) {
+        for (Type t : list) {
             sb.append(String.valueOf(t)).append(sep);
         }
         sb.setLength(sb.length() - sep.length());

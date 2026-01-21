@@ -35,7 +35,7 @@ import com.example.module.AutoCommand.AutoCommand;
 import com.example.module.AutoCommand.AutoCommandConfig;
 import com.example.module.AutoDrop.AutoDrop;
 import com.example.module.AutoDrop.AutoDropConfig;
-import com.example.module.AutoDrop.Droper;
+import com.example.module.AutoDrop.Dropper;
 
 public class screen {
     public static Screen getConfigScreen(Screen parent) {
@@ -207,6 +207,8 @@ public class screen {
                      *  也就是将执行待做任务队列中的任务，但此时的待做任务是将ignoreSlots置空的任务，
                      *  因此ignoreSlots被覆盖掉了，也就是置空，唉。没想到有啥好解决的办法。
                      */
+                    if (Minecraft.getInstance().player == null) return;
+                    
                     List<Integer> slots = Inventory.getInventoryNotEmptySlots();
                     AutoDrop.config.ingnoreSlots.addAll(slots);
 
@@ -238,6 +240,7 @@ public class screen {
                 .build()
         );
 
+        // TODO: 玩家自定义更精确的丢弃朝向
         category.option(Option.<String>createBuilder()
                 .name(T.tl("autodrop.throwDirection"))
                 .description(OptionDescription.of(T.tl("autodrop.throwDirection.desc")))

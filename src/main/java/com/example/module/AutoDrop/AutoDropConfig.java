@@ -62,15 +62,15 @@ public class AutoDropConfig extends BaseConfig {
         }
 
         public static String getDefaultName() {
-            return "*";
+            return "";
         }
 
         public static String getDefaultID() {
-            return "*";
+            return "";
         }
 
         public static String getDefaultTag() {
-            return "*";
+            return "";
         }
 
         public static List<String> getDefaultEnchantments() {

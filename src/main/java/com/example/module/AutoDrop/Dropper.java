@@ -10,7 +10,7 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.InventoryMenu;
 
 
-public class Droper {
+public class Dropper {
     private static final Minecraft client = Minecraft.getInstance();
     public static void tryToDropItems() {
         LocalPlayer player = client.player;
@@ -33,6 +33,34 @@ public class Droper {
         if (item.isEmpty()) return false;
         if (item.getCount() <= 0) return false;
         return true;
+    }
+
+    public static void setPlayerDirection(String direction) {
+        switch (direction) {
+            case "up":
+                setPlayerRotation(0, -90);
+                break;
+            case "down":
+                setPlayerRotation(0, 90);
+                break;
+            case "east":
+                setPlayerRotation(0, 0);
+                break;
+            case "west":
+                setPlayerRotation(180, 0);
+                break;
+            case "north":
+                setPlayerRotation(90, 0);
+                break;
+            case "south":
+                setPlayerRotation(-90, 0);
+                break;
+            // case "looking":
+            //     setPlayerRotation(player.getYRot(), player.getXRot());
+            //     break;
+            default:
+                break;
+        }
     }
 
     public static void setPlayerRotation(float yaw, float pitch) {

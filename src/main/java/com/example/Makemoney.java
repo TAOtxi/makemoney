@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.example.module.AutoCommand.AutoCommand;
+import com.example.module.AutoDrop.AutoDrop;
 import com.example.module.AutoRepair.AutoRepair;
 import com.example.util.T;
 
@@ -23,9 +24,11 @@ public class Makemoney implements ModInitializer {
 
         AutoRepair.config.remove();
         AutoCommand.config.remove();
+        AutoDrop.config.remove();
         
 		AutoRepair.init();
         // TODO: 待测试 ~~~oh mdfk
         // AutoCommand.init();
+        AutoDrop.init();
 	}
 }

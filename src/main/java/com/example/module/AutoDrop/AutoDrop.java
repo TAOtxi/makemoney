@@ -17,10 +17,11 @@ public class AutoDrop {
     public static void registerTickEvents() {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (client.level == null || client.player == null) return;
-            if (++tickCounter < config.checkInterval) return;
+            if (++tickCounter < 40) return;
             tickCounter = 0;
             
-            Droper.tryToDropItems();
+            // Dropper.setPlayerRotation(0, 0);
+            Dropper.tryToDropItems();
         });
     }
 }
