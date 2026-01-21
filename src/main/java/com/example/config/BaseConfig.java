@@ -14,13 +14,13 @@ import com.example.Makemoney;
 public class BaseConfig {
     public final transient String MODULE_NAME;
     public static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    public static final File configDir = new File(FabricLoader.getInstance().getConfigDir().toFile(), Makemoney.MOD_ID);
 
     public BaseConfig(String moduleName) {
         this.MODULE_NAME = moduleName;
     }
 
     public static <T extends BaseConfig> T load(Class<T> clazz, String moduleName) {
-        File configDir = new File(FabricLoader.getInstance().getConfigDir().toFile(), Makemoney.MOD_ID);
         if (!configDir.exists()) {
             Makemoney.LOGGER.info("Config directory does not exist, creating...");
             configDir.mkdirs();
@@ -50,8 +50,14 @@ public class BaseConfig {
         }
     }
 
+    public void remove() {
+        File configFile = new File(configDir, MODULE_NAME + ".json");
+        if (configFile.exists()) {
+            configFile.delete();
+        }
+    }
+
     public void save() {
-        File configDir = new File(FabricLoader.getInstance().getConfigDir().toFile(), Makemoney.MOD_ID);
         if (!configDir.exists()) {
             Makemoney.LOGGER.info("Config directory does not exist, creating {}", configDir.getPath());
             configDir.mkdirs();

@@ -49,5 +49,17 @@ public class T {
         return ttl(keyPrefix + key, objects);
     }
 
+    public static MutableComponent ls(Object... objs) {
+        MutableComponent component = Component.empty();
+        for (Object obj : objs) {
+            if (obj instanceof MutableComponent) {
+                component.append((MutableComponent) obj);
+            } else {
+                component.append(obj.toString());
+            }
+        }
+        return component;
+    }
+
 
 }

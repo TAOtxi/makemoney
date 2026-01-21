@@ -44,4 +44,20 @@ public class MLogger {
     public void error(String message, Object... args) {
         logger.error("[{}] " + message, moduleName, args);
     }
+
+    public void warn(String message) {
+        logger.warn("[{}] " + message, moduleName);
+    }
+
+    public void warn(String message, Object arg1) {
+        logger.warn("[{}] " + message, moduleName, arg1);
+    }
+
+    public void warn(String message, Object arg1, Object arg2) {
+        logger.warn("[{}] " + message, moduleName, arg1, arg2);
+    }
+
+    public void warn(String message, Object... args) {
+        logger.warn("[{}] " + message, moduleName, args);
+    }
 }

@@ -21,15 +21,9 @@ public class Makemoney implements ModInitializer {
 		LOGGER.info("Starting mod...");
 		LOGGER.info("Mod description: {}", T.t("gui.config.category.fishing.tooltip"));
 
-        // File configDir = FabricLoader.getInstance().getConfigDir().toFile();
-        // configDir = new File(configDir, MOD_ID);
-        // if (configDir.exists()) {
-        //     File configFile = new File(configDir, AutoRepair.MODULE_NAME + ".json");
-        //     if (configFile.exists()) {
-        //         configFile.delete();
-        //     }
-        // }
-
+        AutoRepair.config.remove();
+        AutoCommand.config.remove();
+        
 		AutoRepair.init();
         // TODO: 待测试 ~~~oh mdfk
         // AutoCommand.init();
