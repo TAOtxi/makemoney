@@ -21,6 +21,7 @@ public class AutoDrop {
             tickCounter = 0;
             
             // Dropper.setPlayerRotation(0, 0);
+            if (!config.enabled) return;
             Dropper.tryToDropItems();
         });
     }

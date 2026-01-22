@@ -32,6 +32,7 @@ public class Dropper {
             ItemStack item = inventoryMenu.getSlot(i).getItem();
 
             if (!shouldDrop(item)) return;
+            AutoDrop.LOGGER.info("Dropping item {} in slot {}", item.getItemName(), i);
             dropItemAnywhere(i, AutoDrop.config.throwDirection);
         }
     }
@@ -105,6 +106,7 @@ public class Dropper {
         Minecraft client = Minecraft.getInstance();
         LocalPlayer player = client.player;
         InventoryMenu inventoryMenu = player.inventoryMenu;
+
         if (direction.equals(AutoDropConfig.Direction.LOOKING)) {
             client.gameMode.handleInventoryMouseClick(inventoryMenu.containerId, slot, 0, ClickType.THROW, player);
             return;

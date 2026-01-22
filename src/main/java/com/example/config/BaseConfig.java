@@ -64,6 +64,7 @@ public class BaseConfig {
         }
         File configFile = new File(configDir, MODULE_NAME + ".json");
         try (FileWriter writer = new FileWriter(configFile)) {
+            Makemoney.LOGGER.info("[{}] Saving config file {}", MODULE_NAME, configFile.getPath());
             gson.toJson(this, writer);
         } catch (IOException e) {
             Makemoney.LOGGER.error("[{}] Can not save config file", MODULE_NAME, e);

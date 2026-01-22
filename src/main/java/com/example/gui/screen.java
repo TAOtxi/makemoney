@@ -195,6 +195,7 @@ public class screen {
                 .build()
         );
 
+        // TODO: Bug: 点击此按钮后，文件保存不会生效
         category.option(ButtonOption.createBuilder()
                 .name(T.tl("autodrop.ignoreCurrentSlot"))
                 .description(OptionDescription.of(T.tl("autodrop.ignoreCurrentSlot.desc")))

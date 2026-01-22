@@ -28,7 +28,7 @@ public class StringUtil {
     public static List<String> strToList(String str) {
         str = str.replace(" ", "")
                  .replace("，", ",");
-        return strToList(str, ", ");
+        return strToList(str, ",");
     }
 
     public static List<Integer> strToIntList(String str, String sep) {
@@ -39,6 +39,6 @@ public class StringUtil {
     public static List<Integer> strToIntList(String str) {
         str = str.replace(" ", "")
                  .replace("，", ",");
-        return strToIntList(str, ", ");
+        return strToIntList(str, ",");
     }
 }
