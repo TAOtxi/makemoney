@@ -229,12 +229,8 @@ public class screen {
                 .description(OptionDescription.of(T.tl("autodrop.ignoreSlots.desc")))
                 .binding(
                     AutoDropConfig.getDefaultIngnoreSlot(),
-                    () -> StringUtil.listToString(AutoDrop.config.ingnoreSlots, ", "),
-                    val -> { 
-                        val = val.replace(" ", "")
-                                 .replace("，", ",");
-                        AutoDrop.config.ingnoreSlots = StringUtil.strToIntList(val, ", ");
-                    }
+                    () -> StringUtil.listToStr(AutoDrop.config.ingnoreSlots),
+                    val -> AutoDrop.config.ingnoreSlots = StringUtil.strToIntList(val)
                 )
                 .controller(StringControllerBuilder::create)
                 .build()
@@ -326,17 +322,14 @@ public class screen {
                     .description(OptionDescription.of(T.tl("autodrop.block.itemTags.desc")))
                     .binding(
                         AutoDropConfig.Item.getDefaultTag(),
-                        () -> StringUtil.listToString(item.tags, ", "),
-                        val -> {
-                            val = val.replace(" ", "")
-                                     .replace("，", ",");
-                            item.tags = StringUtil.strToList(val, ",");
-                        }
+                        () -> StringUtil.listToStr(item.tags),
+                        val -> item.saveTags(val)
                     )
                     .controller(StringControllerBuilder::create)
                     .build()
             );
 
+            // TODO: 增加只匹配任意一种魔咒的选项
             whiteListGroup.option(Option.<Boolean>createBuilder()
                     .name(T.tl("autodrop.block.isAllEnchantment"))
                     .description(OptionDescription.of(T.tl("autodrop.block.isAllEnchantment.desc")))

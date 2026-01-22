@@ -26,8 +26,8 @@ public class SwapSlot {
             inventorySwaper(inventory, slot1, slot2);
         } else if (player.containerMenu instanceof AnvilMenu anvil) {
             anvilSwaper(anvil, slot1, slot2);
-        } else if (player.containerMenu instanceof InventoryMenu inventory) {
-            inventorySwaper(inventory, slot1, slot2);
+        // } else if (player.containerMenu instanceof InventoryMenu inventory) {
+        //     inventorySwaper(inventory, slot1, slot2);
         }
     }
 

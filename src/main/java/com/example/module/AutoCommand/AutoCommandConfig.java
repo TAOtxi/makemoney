@@ -15,7 +15,7 @@ public class AutoCommandConfig extends BaseConfig {
     public List<CommandBlock> commandBlocks = new ArrayList<>();
 
     public void addCommandBlock(CommandBlock block) {
-        commandBlocks.add(block);
+        commandBlocks.addFirst(block);
     }
 
     public void removeCommandBlock(CommandBlock block) {
@@ -59,7 +59,7 @@ public class AutoCommandConfig extends BaseConfig {
         }
 
         public static String getDefaultCommand() {
-            return "I hate the world";
+            return "/say I hate the world";
         }
 
         public static int getDefaultDelay() {

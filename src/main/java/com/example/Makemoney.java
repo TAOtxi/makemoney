@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.example.module.AutoCommand.AutoCommand;
 import com.example.module.AutoDrop.AutoDrop;
 import com.example.module.AutoRepair.AutoRepair;
+import com.example.test.TestMod;
 import com.example.util.T;
 
 public class Makemoney implements ModInitializer {
@@ -21,6 +22,8 @@ public class Makemoney implements ModInitializer {
 	public void onInitialize() {
 		LOGGER.info("Starting mod...");
 		LOGGER.info("Mod description: {}", T.t("gui.config.category.fishing.tooltip"));
+
+		TestMod.register();
 
         AutoRepair.config.remove();
         AutoCommand.config.remove();

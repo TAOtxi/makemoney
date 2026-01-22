@@ -16,6 +16,7 @@ public class Inventory {
     private static final Minecraft client = Minecraft.getInstance();
 
     // TODO: 待测试
+    // TODO: 待完善异常抛出及处理
     public static List<Integer> getInventoryNotEmptySlots() {
         LocalPlayer player = client.player;
         InventoryMenu inventoryMenu = player.inventoryMenu;

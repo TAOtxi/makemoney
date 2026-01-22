@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.example.config.BaseConfig;
+import com.example.util.StringUtil;
 import com.example.util.T;
 
 public class AutoDropConfig extends BaseConfig {
@@ -30,10 +31,10 @@ public class AutoDropConfig extends BaseConfig {
     }
 
     /**
-     * 所有方向请参考 {@link AutoDrop#getAllThrowDirections()}
+     * 所有方向请参考 {@link Direction}
      */
     public static String getDefaultThrowDirection() {
-        return "down";
+        return Direction.LOOKING;
     }
 
     public static int getDefaultCheckInterval() {
@@ -41,12 +42,11 @@ public class AutoDropConfig extends BaseConfig {
     }
 
     public static List<String> getAllThrowDirections() {
-        return List.of("up", "down", "east", "west", "north", "south", "looking");
+        return List.of(Direction.DOWN, Direction.UP, Direction.EAST, Direction.WEST, Direction.NORTH, Direction.SOUTH, Direction.LOOKING);
     }
 
     public void addItems() {
-        // 在开头插入
-        items.add(0, new Item());
+        items.addFirst(new Item());
     }
 
     public class Item {
@@ -89,23 +89,53 @@ public class AutoDropConfig extends BaseConfig {
             return list;
         }
 
+        public void saveTags(String tagsStr) {
+            tags.clear();
+            tags = StringUtil.strToList(tagsStr);
+            tags.removeIf(tag -> !tag.startsWith("#"));
+        }
+
         public void saveEnchantList(List<String> enchantments) {
             this.enchantments.clear();
-            for (int i=enchantments.size()-1; i>=0; i--) {
-                String ent = enchantments.get(i);
-                if (ent.isEmpty() || !ent.contains(":")) {
+            for (String ent: enchantments) {
+                ent = ent.replace(" ", "")
+                         .replace("：", ":");  // 唉，为什么会有这东西呢
+                if (ent.isEmpty() || ent.charAt(ent.length()-1) == ':') {
                     AutoDrop.LOGGER.warn("invalidFormat: `{}`", ent);
                     continue;
                 }
 
-                String[] entSplit = ent.split(":");
-                if (entSplit.length != 2) {
+                List<Integer> idx = new ArrayList<>();
+                for (int i = 0; i < ent.length(); i++) {
+                    if (ent.charAt(i) == ':') {
+                        idx.add(i);
+                    }
+                }
+                if (idx.size() != 1 && idx.size() != 2) {   // case => minecraft:mending:
                     AutoDrop.LOGGER.warn("invalidFormat: `{}`", ent);
-                    enchantments.remove(i);
                     continue;
                 }
-                this.enchantments.put(entSplit[0].toLowerCase(), Integer.parseInt(entSplit[1]));
+                // case => minecraft:mending
+                if (idx.size() == 1) {
+                    // level default to 1
+                    this.enchantments.put(ent, 1);
+                } else {
+                    // case => minecraft:sharpness:5
+                    String ID = ent.substring(0, idx.get(1));
+                    int level = Integer.valueOf(ent.substring(idx.get(1) + 1));
+                    this.enchantments.put(ID, level);
+                }
             }
         }
+    }
+
+    public class Direction {
+        public static final String DOWN = "down";
+        public static final String UP = "up";
+        public static final String EAST = "east";
+        public static final String WEST = "west";
+        public static final String NORTH = "north";
+        public static final String SOUTH = "south";
+        public static final String LOOKING = "looking";
     }
 }
