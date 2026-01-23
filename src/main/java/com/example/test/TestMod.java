@@ -19,8 +19,10 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
 
+import com.example.Makemoney;
 import com.example.module.AutoDrop.AutoDropConfig;
 import com.example.module.AutoDrop.Dropper;
+import com.example.util.ItemStackUtil;
 import com.example.util.Message;
 import com.example.util.T;
 
@@ -59,17 +61,34 @@ public class TestMod {
             LiteralArgumentBuilder<FabricClientCommandSource> showhand = ClientCommandManager.literal("showhand")
                     .executes(context -> {
                         LocalPlayer player = Minecraft.getInstance().player;
+                        if (player == null) {
+                            context.getSource().sendFeedback(T.l("Player is null."));
+                            return 0;
+                        }
                         ItemStack item = player.getMainHandItem();
-                        String id = BuiltInRegistries.ITEM.getKey(item.getItem()).toString();
-                        Message.chatMsg("\n");
-                        Message.chatMsg("\nItem: ", item.toString());
-                        Message.chatMsg("\nItemId: ", id);
-                        Message.chatMsg("\nItemName: ", item.getItemName());
-                        Message.chatMsg("\nHoverName: ", item.getHoverName());
-                        Message.chatMsg("\nCustomName: ", item.getCustomName());
-                        Message.chatMsg("\nDisplayName: ", item.getDisplayName());
-                        Message.chatMsg("\nStyledHoverName: ", item.getStyledHoverName());
-                        Message.chatMsg("\nItemTags: ", item.getTags().toString());
+                        // Message.chatMsg("\n");
+                        // Message.chatMsg("\nItem: ", item.toString());
+                        // Message.chatMsg("\nItemId: ", id);
+                        // Message.chatMsg("\nItemName: ", item.getItemName());
+                        // Message.chatMsg("\nHoverName: ", item.getHoverName());
+                        // Message.chatMsg("\nCustomName: ", item.getCustomName());
+                        // Message.chatMsg("\nDisplayName: ", item.getDisplayName());
+                        // Message.chatMsg("\nStyledHoverName: ", item.getStyledHoverName());
+                        // Message.chatMsg("\nItemTags: ", item.getTags().toString());
+
+                        Makemoney.LOGGER.info("Item: {}", item.toString());
+                        Makemoney.LOGGER.info("ItemId: {}", item.getItem().toString());
+                        Makemoney.LOGGER.info("ItemName: {}", item.getItemName());
+                        Makemoney.LOGGER.info("HoverName: {}", item.getHoverName());
+                        Makemoney.LOGGER.info("CustomName: {}", item.getCustomName());
+                        Makemoney.LOGGER.info("DisplayName: {}", item.getDisplayName());
+                        Makemoney.LOGGER.info("StyledHoverName: {}", item.getStyledHoverName());
+                        Makemoney.LOGGER.info("ItemTags: {}", item.getTags().map(tagKey -> "#" + tagKey.location().toString()).toList());
+
+                        // Makemoney.LOGGER.info("ItemName: {}", ItemStackUtil.getName(item));
+                        // Makemoney.LOGGER.info("ItemID: {}", ItemStackUtil.getId(item));
+                        // Makemoney.LOGGER.info("ItemTags: {}", item.getTags().map(tagKey -> "#" + tagKey.location().toString()).toList());
+
                         return 1;
                     });
 

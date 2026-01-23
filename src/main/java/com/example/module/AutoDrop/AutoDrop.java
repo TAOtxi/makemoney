@@ -1,6 +1,7 @@
 package com.example.module.AutoDrop;
 
 import com.example.util.MLogger;
+import com.example.util.TickCounter;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
@@ -14,15 +15,20 @@ public class AutoDrop {
         registerTickEvents();
     }
 
-    public static void registerTickEvents() {
+    private static void registerTickEvents() {
+        TickCounter ticker = new TickCounter();
+        ticker.addTask(new TickCounter.Task(tick -> {
+            LOGGER.info("ticking...");
+        }, 40));
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (client.level == null || client.player == null) return;
-            if (++tickCounter < config.checkInterval) return;
-            tickCounter = 0;
+            // ticker.run();
+            // if (++tickCounter < config.checkInterval) return;
+            // tickCounter = 0;
             
-            // Dropper.setPlayerRotation(0, 0);
-            if (!config.enabled) return;
-            Dropper.tryToDropItems();
+            // // Dropper.setPlayerRotation(0, 0);
+            // if (!config.enabled) return;
+            // Dropper.tryToDropItems();
         });
     }
 }

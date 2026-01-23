@@ -1,9 +1,12 @@
 package com.example.module.AutoDrop;
 
 
+import java.util.List;
 import java.util.Map;
 
 import com.example.Makemoney;
+import com.example.util.CommonUtil;
+import com.example.util.ItemStackUtil;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -25,14 +28,15 @@ import net.minecraft.world.inventory.InventoryMenu;
 
 public class Dropper {
     public static void tryToDropItems() {
-        for (int i = InventoryMenu.INV_SLOT_START; i < InventoryMenu.USE_ROW_SLOT_END - InventoryMenu.INV_SLOT_START; i++) {
+        for (int i = InventoryMenu.INV_SLOT_START; i < InventoryMenu.USE_ROW_SLOT_END; i++) {
             if (AutoDrop.config.ingnoreSlots.contains(i)) continue;
 
             InventoryMenu inventoryMenu = Minecraft.getInstance().player.inventoryMenu;
             ItemStack item = inventoryMenu.getSlot(i).getItem();
 
-            if (!shouldDrop(item)) return;
-            AutoDrop.LOGGER.info("Dropping item {} in slot {}", item.getItemName(), i);
+            AutoDrop.LOGGER.info("Check item {} in slot {}", item.getItemName(), i);
+            if (!shouldDrop(item)) continue;
+            AutoDrop.LOGGER.info("Dropping !!!");
             dropItemAnywhere(i, AutoDrop.config.throwDirection);
         }
     }
@@ -41,44 +45,44 @@ public class Dropper {
         if (item.isEmpty()) return false;
 
         for (AutoDropConfig.Item check: AutoDrop.config.items){
+            // TODO: 适配多颜色文本
             // check name
-            String name = item.getCustomName().getString();
+            String name = ItemStackUtil.getName(item);
             if (!check.name.equals("*") && !check.name.equals(name)) {
                 continue; 
             }
-            // TODO: 待测试
             // check id
-            String id = BuiltInRegistries.ITEM.getKey(item.getItem()).toString();
+            String id = ItemStackUtil.getId(item);
             if (!check.id.equals("*") && !check.id.equals(id)) {
                 continue;
             }
+
+            /**
+             * 有点绕，梳理下思路
+             * 1. 如果check.tags包含`*`，匹配直接通过
+             * 2. 如果check.tags为空，即便itemTags也为空，匹配也不通过    TODO: 有待斟酌是否合理
+             * 3. 如果itemTags和check.tags有交集，则通过
+             * 下面第一个if不赘述
+             * 第二个if：没有包含`*`，且itemTags和check.tags没有交集，表示匹配不通过
+             */
+            List<String> itemTags = ItemStackUtil.getTags(item);
             // check tag
-            boolean hasAnyTag = false;
-            for (String tag : check.tags) {
-                if (tag.equals("*") || hasTag(item, tag)) {
-                    hasAnyTag = true;
-                    break;
-                }
-            }
-            if (!hasAnyTag) continue;
+            if (check.tags.isEmpty()) continue;
+            if (!check.tags.contains("*") && !CommonUtil.hasIntersection(itemTags, check.tags)) continue;
 
             int size = check.enchantments.size();
             int needToSatisfiedCounts = size;
-            if (size == 0) {
+            if (size == 0) {    // 匹配通过
                 return false;
             }
             if (!check.isAllEnchantment && size > 2) {
                 needToSatisfiedCounts = 2;
             }
             if (calEnchantCounts(item, check.enchantments) >= needToSatisfiedCounts) {
-                return false;
+                return false;   // ✔
             }
         }
         return true;
-    }
-
-    public static boolean hasTag(ItemStack item, String tag) {
-        return false;
     }
 
     // TODO: 验证附魔书是否适用此函数
@@ -89,7 +93,7 @@ public class Dropper {
             item.getOrDefault(DataComponents.STORED_ENCHANTMENTS, ItemEnchantments.EMPTY) :
             item.getEnchantments();
         for (Holder<Enchantment> enchant: it.keySet()) {
-            String ID = enchant.getRegisteredName();    // TODO: to be checked
+            String ID = enchant.getRegisteredName();
             int level = it.getLevel(enchant);
             if (enchantments.containsKey(ID) && enchantments.getOrDefault(ID, -666) == level) {
                 counter++;

@@ -4,6 +4,7 @@ import net.minecraft.client.KeyMapping;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
 import com.example.util.MLogger;
+import com.example.util.TickCounter;
 
 
 public class AutoRepair {
@@ -25,9 +26,14 @@ public class AutoRepair {
         registerTickEvents();
     }
 
-    public static void registerTickEvents() {
+    private static void registerTickEvents() {
+        TickCounter ticker = new TickCounter();
+        ticker.addTask(new TickCounter.Task(tick -> {
+            LOGGER.info("ticking...");
+        }, 40));
+        
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (!config.enabled) return;
+            // if (!config.enabled) return;
             if (client.player == null || client.level == null) return;
             // if (toggleKey.consumeClick()) {
             //     config.enabled = !config.enabled;
@@ -35,9 +41,10 @@ public class AutoRepair {
             //     LOGGER.info("AutoRepair toggled to {}", config.enabled);
             //     Message.subTitleMsg(T.t(".message.toggled", config.enabled));
             // }
+            // ticker.run();
 
-            Replace.tryToReplace();
-            EnchantExp.tryToEnchantMending();
+            // Replace.tryToReplace();
+            // EnchantExp.tryToEnchantMending();
         });
     }
 }

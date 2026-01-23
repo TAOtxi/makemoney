@@ -37,6 +37,7 @@ public class BaseConfig {
                 return config;
             } else {
                 try (FileReader reader = new FileReader(configFile)) {
+                    Makemoney.LOGGER.info("[{}] Loading config file {}", moduleName, configFile.getPath());
                     return gson.fromJson(reader, clazz);
                 }
             }
@@ -54,6 +55,7 @@ public class BaseConfig {
         File configFile = new File(configDir, MODULE_NAME + ".json");
         if (configFile.exists()) {
             configFile.delete();
+            Makemoney.LOGGER.info("[{}] Config file deleted from {}", MODULE_NAME, configFile.getPath());
         }
     }
 

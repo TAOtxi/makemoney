@@ -13,18 +13,21 @@ import com.example.module.AutoCommand.AutoCommandConfig.CommandBlock;
 public class AutoCommand {
     public static boolean isGame = false;
     public static final String MODULE_NAME = "autocommand";
-    public static final Minecraft client = Minecraft.getInstance();
     public static final MLogger LOGGER = new MLogger(MODULE_NAME);
-    public static final TickCounter tickCounter = new TickCounter();
+    public static final TickCounter ticker = new TickCounter();
     public static final AutoCommandConfig config = AutoCommandConfig.load(AutoCommandConfig.class, MODULE_NAME);
 
 
     public static void init() {
-        updateTickCounter();
+        // updateTickCounter();
         registerTickEvents();
     }
 
-    public static void registerTickEvents() {
+    private static void registerTickEvents() {
+        ticker.addTask(new TickCounter.Task(tick -> {
+            LOGGER.info("ticking...");
+        }, 40));
+
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             // 判断是否是多人游戏
             // if (Minecraft.getInstance().getCurrentServer() == null) {
@@ -35,23 +38,25 @@ public class AutoCommand {
                 isGame = false;
                 return;
             };
-            if (!isGame) {
-                isGame = true;
-                tickCounter.clear();
-                updateTickCounter();
-            }
-            if (!config.enabled) return;
-            tickCounter.run();
+            // ticker.run();
+            // if (!isGame) {
+            //     isGame = true;
+            //     ticker.clear();
+            //     updateTickCounter();
+            // }
+            // if (!config.enabled) return;
+            // ticker.run();
         });
     }
 
     public static void updateTickCounter() {
+        Minecraft client = Minecraft.getInstance();
         for (CommandBlock block : config.commandBlocks) {
             if (!block.enabled) {
-                tickCounter.removeTask(block.id);
+                ticker.removeTask(block.id);
                 continue;
             }
-            TickCounter.Task task = tickCounter.getTask(block.id);
+            TickCounter.Task task = ticker.getTask(block.id);
             if (task == null) {
                 block.cmdPtr = 0;
                 block.isUpdate = false;
@@ -74,7 +79,7 @@ public class AutoCommand {
                     block.delay,
                     block.runCounts * block.commands.size()
                 );
-                tickCounter.addTask(newTask);
+                ticker.addTask(newTask);
             } else if (block.isUpdate) {    // 配置界面修改config时， 会令当前的isUpdate为true
                 block.cmdPtr = 0;
                 block.isUpdate = false;

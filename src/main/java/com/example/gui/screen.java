@@ -25,17 +25,18 @@ import dev.isxander.yacl3.api.controller.DropdownStringControllerBuilder;
 import dev.isxander.yacl3.api.controller.EnumDropdownControllerBuilder;
 import dev.isxander.yacl3.gui.YACLScreen;
 
-import com.example.util.Inventory;
+import com.example.util.InventoryUtil;
 import com.example.util.StringUtil;
 import com.example.util.T;
 import com.example.Makemoney;
 import com.example.module.AutoRepair.AutoRepair;
 import com.example.module.AutoRepair.AutoRepairConfig;
-import com.example.module.AutoCommand.AutoCommand;
-import com.example.module.AutoCommand.AutoCommandConfig;
+import com.example.module.AutoDrop.Dropper;
 import com.example.module.AutoDrop.AutoDrop;
 import com.example.module.AutoDrop.AutoDropConfig;
-import com.example.module.AutoDrop.Dropper;
+import com.example.module.AutoCommand.AutoCommand;
+import com.example.module.AutoCommand.AutoCommandConfig;
+import com.example.module.EntityHighlightBox.EntityHighlightBox;
 
 public class screen {
     public static Screen getConfigScreen(Screen parent) {
@@ -48,6 +49,7 @@ public class screen {
                     AutoCommand.config.save();
                     AutoCommand.updateTickCounter();
                     AutoDrop.config.save();
+                    EntityHighlightBox.config.save();
                     Makemoney.LOGGER.info("Config saved...");
                 });
 
@@ -210,7 +212,7 @@ public class screen {
                      */
                     if (Minecraft.getInstance().player == null) return;
                     
-                    List<Integer> slots = Inventory.getInventoryNotEmptySlots();
+                    List<Integer> slots = InventoryUtil.getInventoryNotEmptySlots();
                     AutoDrop.config.ingnoreSlots.addAll(slots);
 
                     // 去重

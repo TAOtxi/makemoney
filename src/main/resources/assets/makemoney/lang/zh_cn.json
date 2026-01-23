@@ -44,7 +44,7 @@
     "makemoney.autodrop.block.enabled": "是否启用",
     "makemoney.autodrop.block.enabled.desc": "关闭后，将禁用此白名单",
     "makemoney.autodrop.block.itemName": "物品名称",
-    "makemoney.autodrop.block.itemName.desc": "指定要匹配的物品名称，比如 \"烈焰棒\"。\n置空则忽略此项。\n\n\" * \"表示匹配所有物品名称",
+    "makemoney.autodrop.block.itemName.desc": "指定要匹配的物品名称，比如 \"烈焰棒\"。\n置空则忽略此项。\n\n\" * \"表示匹配所有物品名称。\n\n不要带上颜色符号。",
     "makemoney.autodrop.block.itemID": "物品ID",
     "makemoney.autodrop.block.itemID.desc": "指定要匹配的物品ID，格式为\"命名空间\" + \":\" + \"ID\"，比如 \"minecraft:stick\"。\n\n置空则忽略此项。\n\" * \"表示匹配所有物品ID。\n\n详细物品ID请查阅：https://zh.minecraft.wiki/w/Java版数据值#物品",
     "makemoney.autodrop.block.itemTags": "物品标签",
