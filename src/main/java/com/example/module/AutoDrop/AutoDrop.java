@@ -1,5 +1,6 @@
 package com.example.module.AutoDrop;
 
+import com.example.Makemoney;
 import com.example.util.MLogger;
 import com.example.util.TickCounter;
 
@@ -22,13 +23,10 @@ public class AutoDrop {
         }, 40));
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (client.level == null || client.player == null) return;
-            // ticker.run();
-            // if (++tickCounter < config.checkInterval) return;
-            // tickCounter = 0;
+            if (!config.enabled || Makemoney.isOpenYaclScreen) return;
+            if (++tickCounter % config.checkInterval != 0) return;
             
-            // // Dropper.setPlayerRotation(0, 0);
-            // if (!config.enabled) return;
-            // Dropper.tryToDropItems();
+            Dropper.tryToDropItems();
         });
     }
 }

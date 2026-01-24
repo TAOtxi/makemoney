@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import java.awt.Color;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -17,6 +18,7 @@ import dev.isxander.yacl3.api.OptionDescription;
 import dev.isxander.yacl3.api.YetAnotherConfigLib;
 import dev.isxander.yacl3.api.controller.StringControllerBuilder;
 import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
+import dev.isxander.yacl3.api.controller.ColorControllerBuilder;
 import dev.isxander.yacl3.api.controller.ValueFormattableController;
 import dev.isxander.yacl3.api.controller.DoubleFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerFieldControllerBuilder;
@@ -31,14 +33,14 @@ import com.example.util.T;
 import com.example.Makemoney;
 import com.example.module.AutoRepair.AutoRepair;
 import com.example.module.AutoRepair.AutoRepairConfig;
-import com.example.module.AutoDrop.Dropper;
 import com.example.module.AutoDrop.AutoDrop;
 import com.example.module.AutoDrop.AutoDropConfig;
 import com.example.module.AutoCommand.AutoCommand;
 import com.example.module.AutoCommand.AutoCommandConfig;
 import com.example.module.EntityHighlightBox.EntityHighlightBox;
+import com.example.module.EntityHighlightBox.HighlightConfig;
 
-public class screen {
+public class ConfigScreen {
     public static Screen getConfigScreen(Screen parent) {
         
         YetAnotherConfigLib.Builder builder = 
@@ -84,41 +86,29 @@ public class screen {
                 .name(T.tl("autorepair.name"))
                 .description(OptionDescription.of(T.tl("autorepair.desc")));
 
-        autorepairGroup.option(Option.<Boolean>createBuilder()
-                .name(T.tl("module.enabled"))
-                .description(OptionDescription.of(T.tl("autorepair.desc")))
-                .binding(
-                    AutoRepairConfig.getDefaultEnabled(),
-                    () -> AutoRepair.config.enabled,
-                    val -> AutoRepair.config.enabled = val
-                )
-                .controller(BooleanControllerBuilder::create)
-                .build()
-        );
+        autorepairGroup.option(Factory.addToggleOption(
+            T.tl("module.enabled"),
+            T.tl("module.enabled.desc"),
+            AutoRepairConfig.getDefaultEnabled(),
+            () -> AutoRepair.config.enabled,
+            val -> AutoRepair.config.enabled = val
+        ));
 
-        autorepairGroup.option(Option.<Boolean>createBuilder()
-                .name(T.tl("autorepair.replaceEnabled"))
-                .description(OptionDescription.of(T.tl("autorepair.replaceEnabled.desc")))
-                .binding(
-                    AutoRepairConfig.getDefaultReplaceEnabled(),
-                    () -> AutoRepair.config.replaceEnabled,
-                    val -> AutoRepair.config.replaceEnabled = val
-                )
-                .controller(BooleanControllerBuilder::create)
-                .build()
-        );
+        autorepairGroup.option(Factory.addToggleOption(
+            T.tl("autorepair.replaceEnabled"),
+            T.tl("autorepair.replaceEnabled.desc"),
+            AutoRepairConfig.getDefaultReplaceEnabled(),
+            () -> AutoRepair.config.replaceEnabled,
+            val -> AutoRepair.config.replaceEnabled = val
+        ));
 
-        autorepairGroup.option(Option.<Boolean>createBuilder()
-                .name(T.tl("autorepair.showMessage"))
-                .description(OptionDescription.of(T.tl("autorepair.showMessage.desc")))
-                .binding(
-                    AutoRepairConfig.getDefaultShowMessage(),
-                    () -> AutoRepair.config.showMessage,
-                    val -> AutoRepair.config.showMessage = val
-                )
-                .controller(BooleanControllerBuilder::create)
-                .build()
-        );
+        autorepairGroup.option(Factory.addToggleOption(
+            T.tl("autorepair.showMessage"),
+            T.tl("autorepair.showMessage.desc"),
+            AutoRepairConfig.getDefaultShowMessage(),
+            () -> AutoRepair.config.showMessage,
+            val -> AutoRepair.config.showMessage = val
+        ));
 
         autorepairGroup.option(Option.<Integer>createBuilder()
                 .name(T.tl("autorepair.checkExpInterval"))
@@ -149,17 +139,13 @@ public class screen {
                 .build()
         );
 
-        autorepairGroup.option(Option.<Boolean>createBuilder()
-                .name(T.tl("autorepair.repairEnabled"))
-                .description(OptionDescription.of(T.tl("autorepair.repairEnabled.desc")))
-                .binding(
-                    AutoRepairConfig.getDefaultRepairEnabled(),
-                    () -> AutoRepair.config.repairEnabled,
-                    val -> AutoRepair.config.repairEnabled = val
-                )
-                .controller(BooleanControllerBuilder::create)
-                .build()
-        );
+        autorepairGroup.option(Factory.addToggleOption(
+            T.tl("autorepair.repairEnabled"),
+            T.tl("autorepair.repairEnabled.desc"),
+            AutoRepairConfig.getDefaultRepairEnabled(),
+            () -> AutoRepair.config.repairEnabled,
+            val -> AutoRepair.config.repairEnabled = val
+        ));
 
         autorepairGroup.option(Option.<Integer>createBuilder()
                 .name(T.tl("autorepair.repairInterval"))
@@ -185,17 +171,13 @@ public class screen {
                 .name(T.tl("autodrop.name"))
                 .tooltip(T.tl("autodrop.desc"));
 
-        category.option(Option.<Boolean>createBuilder()
-                .name(T.tl("module.enabled"))
-                .description(OptionDescription.of(T.tl("module.enabled.desc")))
-                .binding(
-                    AutoDropConfig.getDefaultEnabled(),
-                    () -> AutoDrop.config.enabled,
-                    val -> AutoDrop.config.enabled = val
-                )
-                .controller(BooleanControllerBuilder::create)
-                .build()
-        );
+        category.option(Factory.addToggleOption(
+            T.tl("module.enabled"),
+            T.tl("module.enabled.desc"),
+            AutoDropConfig.getDefaultEnabled(),
+            () -> AutoDrop.config.enabled,
+            val -> AutoDrop.config.enabled = val
+        ));
 
         // TODO: Bug: 点击此按钮后，文件保存不会生效
         category.option(ButtonOption.createBuilder()
@@ -221,8 +203,8 @@ public class screen {
                            .distinct()
                            .collect(Collectors.toList());
 
-                    // AutoDrop.config.save();
-                    reload(yaclScreen, parent); // TODO: 需要确认reload是否会保存更改的配置
+                    AutoDrop.config.save();
+                    reload(yaclScreen, parent);
                 })
                 .build()
         );
@@ -269,10 +251,11 @@ public class screen {
         );
 
         category.option(ButtonOption.createBuilder()
-                .name(T.tl("autodrop.addBlock"))
+                .name(T.tl("autodrop.addBlock").withStyle(ChatFormatting.GREEN))
                 .description(OptionDescription.of(T.tl("autodrop.addBlock.desc")))
                 .action((yaclScreen, button) -> {
                     AutoDrop.config.addItems();
+                    AutoDrop.config.save();
                     reload(yaclScreen, parent);
                 })
                 .build()
@@ -284,17 +267,25 @@ public class screen {
                     .name(T.tl("autodrop.block.name", i+1))
                     .description(OptionDescription.of(T.tl("autodrop.block.name.desc", i+1)));
             
-            whiteListGroup.option(Option.<Boolean>createBuilder()
-                    .name(T.tl("autodrop.block.enabled"))
-                    .description(OptionDescription.of(T.tl("autodrop.block.enabled.desc")))
-                    .binding(
-                        AutoDropConfig.Item.getDefaultItemEnabled(),
-                        () -> item.enabled,
-                        val -> item.enabled = val
-                    )
-                    .controller(BooleanControllerBuilder::create)
-                    .build()
+
+            whiteListGroup.option(ButtonOption.createBuilder()
+                .name(T.tl("autodrop.block.remove").withStyle(ChatFormatting.RED))
+                .description(OptionDescription.of(T.tl("autodrop.block.remove.desc")))
+                .action((yaclScreen, button) -> {
+                    AutoDrop.config.removeItem(item);
+                    AutoDrop.config.save();
+                    reload(yaclScreen, parent);
+                })
+                .build()
             );
+
+             whiteListGroup.option(Factory.addToggleOption(
+                T.tl("autodrop.block.enabled"),
+                T.tl("autodrop.block.enabled.desc"),
+                AutoDropConfig.Item.getDefaultItemEnabled(),
+                () -> item.enabled,
+                val -> item.enabled = val
+            ));
 
             whiteListGroup.option(Option.<String>createBuilder()
                     .name(T.tl("autodrop.block.itemName"))
@@ -333,17 +324,14 @@ public class screen {
             );
 
             // TODO: 增加只匹配任意一种魔咒的选项
-            whiteListGroup.option(Option.<Boolean>createBuilder()
-                    .name(T.tl("autodrop.block.isAllEnchantment"))
-                    .description(OptionDescription.of(T.tl("autodrop.block.isAllEnchantment.desc")))
-                    .binding(
-                        AutoDropConfig.Item.getDefaultIsAllEnchantment(),
-                        () -> item.isAllEnchantment,
-                        val -> item.isAllEnchantment = val
-                    )
-                    .controller(BooleanControllerBuilder::create)
-                    .build()
-            );
+             whiteListGroup.option(Factory.addToggleOption(
+                T.tl("autodrop.block.isAllEnchantment"),
+                T.tl("autodrop.block.isAllEnchantment.desc"),
+                AutoDropConfig.Item.getDefaultIsAllEnchantment(),
+                () -> item.isAllEnchantment,
+                val -> item.isAllEnchantment = val
+            ));
+
             category.group(whiteListGroup.build());
             category.group(ListOption.<String>createBuilder()
                     .name(T.tl("autodrop.block.enchantment.name"))
@@ -367,17 +355,13 @@ public class screen {
                 .name(T.tl("autocommand.name"))
                 .tooltip(T.tl("autocommand.desc"));
 
-        category.option(Option.<Boolean>createBuilder()
-                .name(T.tl("module.enabled"))
-                .description(OptionDescription.of(T.tl("module.enabled.desc")))
-                .binding(
-                    AutoCommandConfig.getDefaultEnabled(),
-                    () -> AutoCommand.config.enabled,
-                    val -> AutoCommand.config.enabled = val
-                )
-                .controller(BooleanControllerBuilder::create)
-                .build()
-        );
+        category.option(Factory.addToggleOption(
+            T.tl("module.enabled"),
+            T.tl("module.enabled.desc"),
+            AutoCommandConfig.getDefaultEnabled(),
+            () -> AutoCommand.config.enabled,
+            val -> AutoCommand.config.enabled = val
+        ));
 
         category.option(ButtonOption.createBuilder()
                 .name(T.tl("autocommand.addBlock")
@@ -385,6 +369,7 @@ public class screen {
                 .description(OptionDescription.of(T.tl("autocommand.addBlock.desc")))
                 .action((yaclScreen, button) -> {
                     AutoCommand.config.addCommandBlock();
+                    AutoCommand.config.save();
                     reload(yaclScreen, parent);
                 })
                 .build()
@@ -396,20 +381,16 @@ public class screen {
                     .name(block.name.isEmpty() ? T.tl("autocommand.block.defaultName", i+1) : T.l(block.name))
                     .description(OptionDescription.of(T.tl("autocommand.block.defaultName.desc", i+1)));
             
-            blockGroup.option(Option.<Boolean>createBuilder()
-                    .name(T.tl("autocommand.block.enabled"))
-                    .description(OptionDescription.of(T.tl("autocommand.block.enabled.desc")))
-                    .binding(
-                            AutoCommandConfig.CommandBlock.getDefaultEnabled(),
-                            () -> block.enabled,
-                            val -> {
-                                block.enabled = val;
-                                block.isUpdate = true;
-                            }
-                    )
-                    .controller(BooleanControllerBuilder::create)
-                    .build()
-            );
+            blockGroup.option(Factory.addToggleOption(
+                T.tl("autocommand.block.enabled"),
+                T.tl("autocommand.block.enabled.desc"),
+                AutoCommandConfig.CommandBlock.getDefaultEnabled(),
+                () -> block.enabled,
+                val -> {
+                    block.enabled = val;
+                    block.isUpdate = true;
+                }
+            ));
 
             blockGroup.option(Option.<String>createBuilder()
                     .name(T.tl("autocommand.block.name"))
@@ -504,10 +485,11 @@ public class screen {
                 .description(OptionDescription.of(T.tl("autocommand.block.delete.desc")))
                 .action((yaclScreen, button) -> {
                     AutoCommand.config.removeCommandBlock(block);
+                    AutoCommand.config.save();
                     reload(yaclScreen, parent);
                 })
                 .build()
-                );
+            );
         
             category.group(blockGroup.build());
             category.group(ListOption.<String>createBuilder()
@@ -534,6 +516,160 @@ public class screen {
                 .name(T.tl("entityhighlightBox.name"))
                 .tooltip(T.tl("entityhighlightBox.desc"));
 
+        category.option(Factory.addToggleOption(
+            T.tl("module.enabled"),
+            T.tl("module.enabled.desc"),
+            HighlightConfig.getDefaultEnabled(),
+            () -> EntityHighlightBox.config.enabled,
+            val -> EntityHighlightBox.config.enabled = val
+        ));
+
+        category.option(Factory.addToggleOption(
+            T.tl("entityhighlightBox.colorful.enabled"),
+            T.tl("entityhighlightBox.colorful.enabled.desc"),
+            HighlightConfig.getDefaultColorful(),
+            () -> EntityHighlightBox.config.colorful,
+            val -> EntityHighlightBox.config.colorful = val
+        ));
+
+        if (EntityHighlightBox.config.colorful) {
+            category.option(Option.<Color>createBuilder()
+                    .name(T.tl("entityhighlightBox.color.monster"))
+                    .description(OptionDescription.of(T.tl("entityhighlightBox.color.monster.desc")))
+                    .binding(
+                            StringUtil.strToColor(HighlightConfig.getDefaultMonsterColor()),
+                            () -> StringUtil.strToColor(EntityHighlightBox.config.monsterColor),
+                            val -> EntityHighlightBox.config.monsterColor = StringUtil.colorToStr(val)
+                    )
+                    .controller(opt -> ColorControllerBuilder.create(opt)
+                        .allowAlpha(true))
+                    .build()
+            );
+
+            category.option(Option.<String>createBuilder()
+                    .name(T.tl("entityhighlightBox.color.friend"))
+                    .description(OptionDescription.of(T.tl("entityhighlightBox.color.friend.desc")))
+                    .binding(
+                            HighlightConfig.getDefaultFriendColor(),
+                            () -> EntityHighlightBox.config.friendColor,
+                            val -> EntityHighlightBox.config.friendColor = val
+                    )
+                    .controller(StringControllerBuilder::create)
+                    .build()
+            );
+
+            category.option(Option.<String>createBuilder()
+                    .name(T.tl("entityhighlightBox.color.neutral"))
+                    .description(OptionDescription.of(T.tl("entityhighlightBox.color.neutral.desc")))
+                    .binding(
+                            HighlightConfig.getDefaultNeutralColor(),
+                            () -> EntityHighlightBox.config.neutralColor,
+                            val -> EntityHighlightBox.config.neutralColor = val
+                    )
+                    .controller(StringControllerBuilder::create)
+                    .build()
+            );
+
+            category.option(Option.<String>createBuilder()
+                    .name(T.tl("entityhighlightBox.color.player"))
+                    .description(OptionDescription.of(T.tl("entityhighlightBox.color.player.desc")))
+                    .binding(
+                            HighlightConfig.getDefaultPlayerColor(),
+                            () -> EntityHighlightBox.config.playerColor,
+                            val -> EntityHighlightBox.config.playerColor = val
+                    )
+                    .controller(StringControllerBuilder::create)
+                    .build()
+            );
+
+            category.option(Option.<String>createBuilder()
+                    .name(T.tl("entityhighlightBox.color.unknown"))
+                    .description(OptionDescription.of(T.tl("entityhighlightBox.color.unknown.desc")))
+                    .binding(
+                            HighlightConfig.getDefaultUnknownColor(),
+                            () -> EntityHighlightBox.config.unknownColor,
+                            val -> EntityHighlightBox.config.unknownColor = val
+                    )
+                    .controller(StringControllerBuilder::create)
+                    .build()
+            );
+        }
+
+        category.option(Option.<Boolean>createBuilder()
+                    .name(T.tl("entityhighlightBox.isWhitelist"))
+                    .description(OptionDescription.of(T.tl("entityhighlightBox.isWhitelist.desc")))
+                    .binding(
+                            HighlightConfig.getDefaultIsWhitelist(),
+                            () -> EntityHighlightBox.config.isWhitelist,
+                            val -> EntityHighlightBox.config.isWhitelist = val
+                    )
+                    .controller(opt -> BooleanControllerBuilder.create(opt)
+                        .formatValue(val -> val ? 
+                            T.tl("entityhighlightBox.isWhitelist.true").withStyle(ChatFormatting.GREEN) : 
+                            T.tl("entityhighlightBox.isWhitelist.false").withStyle(ChatFormatting.RED))
+                        )
+                    .build()
+        );
+
+        category.option(Factory.addToggleOption(
+            T.tl("entityhighlightBox.isRenderName"),
+            T.tl("entityhighlightBox.isRenderName.desc"),
+            HighlightConfig.getDefaultIsRenderName(),
+            () -> EntityHighlightBox.config.isRenderName,
+            val -> EntityHighlightBox.config.isRenderName = val
+        ));
+
+        category.option(Option.<Integer>createBuilder()
+                    .name(T.tl("entityhighlightBox.renderRadius"))
+                    .description(OptionDescription.of(T.tl("entityhighlightBox.renderRadius.desc")))
+                    .binding(
+                            HighlightConfig.getDefaultRenderRadius(),
+                            () -> EntityHighlightBox.config.renderRadius,
+                            val -> EntityHighlightBox.config.renderRadius = val
+                    )
+                    .controller(opt -> IntegerSliderControllerBuilder.create(opt)
+                                .range(1, 512)
+                                .step(1))
+                    .build()
+        );
+
+        category.option(Option.<Integer>createBuilder()
+                    .name(T.tl("entityhighlightBox.renderMaxCounts"))
+                    .description(OptionDescription.of(T.tl("entityhighlightBox.renderMaxCounts.desc")))
+                    .binding(
+                            HighlightConfig.getDefaultRenderMaxCounts(),
+                            () -> EntityHighlightBox.config.renderMaxCounts,
+                            val -> EntityHighlightBox.config.renderMaxCounts = val
+                    )
+                    .controller(IntegerSliderControllerBuilder::create)
+                    .build()
+        );
+
+        category.option(Option.<Integer>createBuilder()
+                    .name(T.tl("entityhighlightBox.updateInterval"))
+                    .description(OptionDescription.of(T.tl("entityhighlightBox.updateInterval.desc")))
+                    .binding(
+                            HighlightConfig.getDefaultUpdateInterval(),
+                            () -> EntityHighlightBox.config.updateInterval,
+                            val -> EntityHighlightBox.config.updateInterval = val
+                    )
+                    .controller(IntegerSliderControllerBuilder::create)
+                    .build()
+        );
+
+        category.group(ListOption.<String>createBuilder()
+                    .name(T.tl("entityhighlightBox.entityTypes"))
+                    .description(OptionDescription.of(T.tl("entityhighlightBox.entityTypes.desc")))
+                    .binding(
+                            new ArrayList<String>(),
+                            () -> EntityHighlightBox.config.entityTypes,
+                            val -> EntityHighlightBox.config.entityTypes = val
+                    )
+                    .initial("")
+                    .controller(StringControllerBuilder::create)
+                    .build()
+            );
+        
         return category;
     }
 
@@ -564,4 +700,6 @@ public class screen {
             Makemoney.LOGGER.error("YACL reload hack failed with exception\n{}", e);
         }
     }
+
+
 }

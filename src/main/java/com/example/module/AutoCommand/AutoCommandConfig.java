@@ -19,11 +19,7 @@ public class AutoCommandConfig extends BaseConfig {
     }
 
     public void removeCommandBlock(CommandBlock block) {
-        removeCommandBlock(block.id);
-    }
-
-    public void removeCommandBlock(String id) {
-        commandBlocks.removeIf(b -> b.id.equals(id));
+        this.commandBlocks.remove(block);
     }
 
     public void addCommandBlock() {

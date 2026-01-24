@@ -13,10 +13,10 @@ public class InventoryUtil {
     public static List<Integer> getInventoryNotEmptySlots() {
         InventoryMenu inventoryMenu = Minecraft.getInstance().player.inventoryMenu;
         List<Integer> result = new ArrayList<>();
-        for (int i = 0; i < InventoryMenu.USE_ROW_SLOT_END - InventoryMenu.ARMOR_SLOT_END; i++) {
+        for (int i = InventoryMenu.INV_SLOT_START; i < InventoryMenu.USE_ROW_SLOT_END; i++) {
             ItemStack item = inventoryMenu.getSlot(i).getItem();
             
-            if (!item.isEmpty()) continue;
+            if (item.isEmpty()) continue;
             result.add(i);
         }
         return result;

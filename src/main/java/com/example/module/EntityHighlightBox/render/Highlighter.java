@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.ShapeRenderer;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
@@ -75,13 +76,16 @@ public class Highlighter {
 
     // TODO: 根据配置的白名单判断是否需要渲染
     private static boolean shouldRender(Entity entity) {
-        if (!entity.isAlive() || entity.isInvisible()) {
+        if (!entity.isRemoved() || entity.isInvisible()) {
             return false;
         }
+        // if (entity instanceof ItemEntity && EntityHighlightBox.config.renderItem) {
+        //     return true;
+        // }
 
 
 
-        return true;
+        return false;
     }
 
     private static Vector3f getColor(Entity entity) {
@@ -101,11 +105,15 @@ public class Highlighter {
             return colorHexToInt(EntityHighlightBox.config.neutralColor);
         }
         
-        EntityHighlightBox.LOGGER.warn("Unknown entity type: " + entity.getType().toString());
-        return colorHexToInt("FFFFFF");
+        // EntityHighlightBox.LOGGER.warn("Unknown entity type: " + entity.getType().toString());
+        return colorHexToInt(EntityHighlightBox.config.unknownColor);
     }
 
     private static Vector3f colorHexToInt(String colorHex) {
+        if (!colorHex.matches("#[0-9A-Fa-f]{6}")) {
+            return colorHexToInt(HighlightConfig.getDefaultUnknownColor());
+        }
+        colorHex = colorHex.substring(1);
         int color = Integer.parseUnsignedInt(colorHex, 16);
         float red = (color >> 16 & 255) / 255.0f;
         float green = (color >> 8 & 255) / 255.0f;

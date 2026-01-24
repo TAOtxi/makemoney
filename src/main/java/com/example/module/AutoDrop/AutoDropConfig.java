@@ -2,14 +2,11 @@ package com.example.module.AutoDrop;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.example.config.BaseConfig;
 import com.example.util.StringUtil;
-import com.example.util.T;
 
 public class AutoDropConfig extends BaseConfig {
     public AutoDropConfig(String moduleName) {
@@ -38,7 +35,7 @@ public class AutoDropConfig extends BaseConfig {
     }
 
     public static int getDefaultCheckInterval() {
-        return 100;
+        return 1;
     }
 
     public static List<String> getAllThrowDirections() {
@@ -47,6 +44,10 @@ public class AutoDropConfig extends BaseConfig {
 
     public void addItems() {
         items.addFirst(new Item());
+    }
+
+    public void removeItem(Item item) {
+        items.remove(item);
     }
 
     public class Item {
@@ -92,7 +93,7 @@ public class AutoDropConfig extends BaseConfig {
         public void saveTags(String tagsStr) {
             tags.clear();
             tags = StringUtil.strToList(tagsStr);
-            tags.removeIf(tag -> !tag.startsWith("#"));
+            tags.removeIf(tag -> !tag.equals("*") && !tag.startsWith("#"));
         }
 
         public void saveEnchantList(List<String> enchantments) {

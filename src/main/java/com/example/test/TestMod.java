@@ -20,8 +20,12 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
 
 import com.example.Makemoney;
+import com.example.module.AutoCommand.AutoCommand;
+import com.example.module.AutoDrop.AutoDrop;
 import com.example.module.AutoDrop.AutoDropConfig;
 import com.example.module.AutoDrop.Dropper;
+import com.example.module.AutoRepair.AutoRepair;
+import com.example.module.EntityHighlightBox.EntityHighlightBox;
 import com.example.util.ItemStackUtil;
 import com.example.util.Message;
 import com.example.util.T;
@@ -95,6 +99,16 @@ public class TestMod {
             dispatcher.register(look);
             dispatcher.register(drop);
             dispatcher.register(showhand);
+
+            dispatcher.register(ClientCommandManager.literal("removeConfig").executes(context -> {
+                context.getSource().sendFeedback(T.l("Called /removeConfig with no arguments."));
+                
+                EntityHighlightBox.config.remove();
+                AutoDrop.config.remove();
+                AutoRepair.config.remove();
+                AutoCommand.config.remove();
+                return 1;
+            }));
         });
     }
 

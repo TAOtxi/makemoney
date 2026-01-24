@@ -6,29 +6,30 @@ import java.util.List;
 import com.example.config.BaseConfig;
 
 public class HighlightConfig extends BaseConfig {
-    public boolean enabled = true;
+    public boolean enabled = getDefaultEnabled();
     public boolean colorful = getDefaultColorful();
-    public boolean renderName = getDefaultRenderName();         // 是否渲染实体名称
-    public boolean renderItem = getDefaultRenderItem();         // 是否渲染掉落物
-    public int renderRadius = getDefaultRenderRadius();         // 渲染半径
-    public int renderMaxCounts = getDefaultRenderMaxCounts();   // 最大渲染数量
-    public int updateInterval = getDefaultUpdateInterval();     // 渲染的实体更新间隔（tick）
     public String monsterColor = getDefaultMonsterColor();      // 敌对生物（红色）
     public String friendColor = getDefaultFriendColor();        // 友好生物（绿色）
     public String neutralColor = getDefaultNeutralColor();      // 中立生物（蓝色）
     public String playerColor = getDefaultPlayerColor();        // 玩家（黄色）
+    public String unknownColor = getDefaultUnknownColor();      // 未知实体（白色）
     public boolean isWhitelist = getDefaultIsWhitelist();       // 是否启用白名单模式
+    public boolean isRenderName = getDefaultIsRenderName();         // 是否渲染实体名称
+    public int renderRadius = getDefaultRenderRadius();         // 渲染半径
+    public int renderMaxCounts = getDefaultRenderMaxCounts();   // 最大渲染数量
+    public int updateInterval = getDefaultUpdateInterval();     // 渲染的实体更新间隔（tick）
     public List<String> entityTypes = new ArrayList<>();        // 实体类型列表（白名单模式下有效，反之不渲染此实体列表）
     
+
+    public static boolean getDefaultEnabled() {
+        return false;
+    }
+
     public static boolean getDefaultColorful() {
         return true;
     }
     
-    public static boolean getDefaultRenderName() {
-        return true;
-    }
-    
-    public static boolean getDefaultRenderItem() {
+    public static boolean getDefaultIsRenderName() {
         return true;
     }
     
@@ -45,18 +46,22 @@ public class HighlightConfig extends BaseConfig {
     }
 
     public static String getDefaultMonsterColor() {
-        return "FF5555FF";
+        return "#FF5555";
     }
 
     public static String getDefaultFriendColor() {
-        return "55FF55FF";
+        return "#55FF55";
     }
 
     public static String getDefaultNeutralColor() {
-        return "5555FFFF";
+        return "#5555FF";
     }
     public static String getDefaultPlayerColor() {
-        return "FFFF55FF";
+        return "#FFFF55";
+    }
+
+    public static String getDefaultUnknownColor() {
+        return "#FFFFFF";
     }
 
     public static boolean getDefaultIsWhitelist() {

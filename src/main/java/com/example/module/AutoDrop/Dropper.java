@@ -4,39 +4,39 @@ package com.example.module.AutoDrop;
 import java.util.List;
 import java.util.Map;
 
-import com.example.Makemoney;
 import com.example.util.CommonUtil;
 import com.example.util.ItemStackUtil;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.InventoryMenu;
 
 
 public class Dropper {
     public static void tryToDropItems() {
+        Minecraft client = Minecraft.getInstance();
+        LocalPlayer player = client.player;
+
+        // TODO: 待优化
+        if (player.hasContainerOpen()) return;
+
         for (int i = InventoryMenu.INV_SLOT_START; i < InventoryMenu.USE_ROW_SLOT_END; i++) {
             if (AutoDrop.config.ingnoreSlots.contains(i)) continue;
 
-            InventoryMenu inventoryMenu = Minecraft.getInstance().player.inventoryMenu;
+            InventoryMenu inventoryMenu = player.inventoryMenu;
             ItemStack item = inventoryMenu.getSlot(i).getItem();
 
-            AutoDrop.LOGGER.info("Check item {} in slot {}", item.getItemName(), i);
+            // AutoDrop.LOGGER.info("Check item {} in slot {}", item.getItemName(), i);
             if (!shouldDrop(item)) continue;
-            AutoDrop.LOGGER.info("Dropping !!!");
+            AutoDrop.LOGGER.info("Dropping item {} in slot {}", ItemStackUtil.getName(item), i);
             dropItemAnywhere(i, AutoDrop.config.throwDirection);
         }
     }
@@ -102,6 +102,7 @@ public class Dropper {
         return counter;
     }
 
+    // TODO: Bug: 创造模式会丢弃两个物品，但背包实际减少的是一个
     public static void dropItemAnywhere(int slot, String direction) {
         // if (!AutoDropConfig.getAllThrowDirections().contains(direction)) {
         //     AutoDrop.LOGGER.error("Error direction !!!");
@@ -112,14 +113,14 @@ public class Dropper {
         InventoryMenu inventoryMenu = player.inventoryMenu;
 
         if (direction.equals(AutoDropConfig.Direction.LOOKING)) {
-            client.gameMode.handleInventoryMouseClick(inventoryMenu.containerId, slot, 0, ClickType.THROW, player);
+            client.gameMode.handleInventoryMouseClick(inventoryMenu.containerId, slot, 1, ClickType.THROW, player);
             return;
         }
 
         float xRot = player.getXRot();
         float yRot = player.getYRot();
         setPlayerRotation(direction);
-        client.gameMode.handleInventoryMouseClick(inventoryMenu.containerId, slot, 0, ClickType.THROW, player);
+        client.gameMode.handleInventoryMouseClick(inventoryMenu.containerId, slot, 1, ClickType.THROW, player);
         setPlayerRotation(yRot, xRot);
     }
 

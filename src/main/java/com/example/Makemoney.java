@@ -2,12 +2,14 @@ package com.example;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.Minecraft;
 
 import java.io.File;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.example.gui.ConfigScreen;
 import com.example.module.AutoCommand.AutoCommand;
 import com.example.module.AutoDrop.AutoDrop;
 import com.example.module.AutoRepair.AutoRepair;
@@ -15,8 +17,12 @@ import com.example.module.EntityHighlightBox.EntityHighlightBox;
 import com.example.test.TestMod;
 import com.example.util.T;
 
+import dev.isxander.yacl3.gui.YACLScreen;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+
 public class Makemoney implements ModInitializer {
 	public static final String MOD_ID = "makemoney";
+    public static boolean isOpenYaclScreen = false;
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
 	@Override
@@ -26,14 +32,22 @@ public class Makemoney implements ModInitializer {
 
 		TestMod.register();
 
-        AutoRepair.config.remove();
-        AutoDrop.config.remove();
-        AutoCommand.config.remove();
-        EntityHighlightBox.config.remove();
+        // AutoRepair.config.remove();
+        // AutoDrop.config.remove();
+        // AutoCommand.config.remove();
+        // EntityHighlightBox.config.remove();
         
 		AutoRepair.init();
         AutoCommand.init();
         AutoDrop.init();
 		EntityHighlightBox.init();
+
+        ScreenEvents.AFTER_INIT.register((client, screen, width, height) -> {
+            if (screen instanceof YACLScreen) {
+                isOpenYaclScreen = true;
+            } else {
+                isOpenYaclScreen = false;
+            }
+        });
 	}
 }
