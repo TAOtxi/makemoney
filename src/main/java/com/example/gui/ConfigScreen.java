@@ -41,8 +41,8 @@ import com.example.module.EntityHighlightBox.EntityHighlightBox;
 import com.example.module.EntityHighlightBox.HighlightConfig;
 
 public class ConfigScreen {
+    // TODO: 增加快捷键打开配置界面
     public static Screen getConfigScreen(Screen parent) {
-        
         YetAnotherConfigLib.Builder builder = 
             YetAnotherConfigLib.createBuilder()
                 .title(T.tl("gui.config.title"))
@@ -68,7 +68,7 @@ public class ConfigScreen {
         builder.category(commandCategory.build());
         
         // 实体高亮模块
-        ConfigCategory.Builder entityHighlightBoxCategory = createEntityHighlightBoxCategory();
+        ConfigCategory.Builder entityHighlightBoxCategory = createEntityHighlightBoxCategory(parent);
         builder.category(entityHighlightBoxCategory.build());
 
         YetAnotherConfigLib yacl = builder.build();
@@ -179,6 +179,26 @@ public class ConfigScreen {
             val -> AutoDrop.config.enabled = val
         ));
 
+        category.option(Option.<Integer>createBuilder()
+                .name(T.tl("autodrop.launchDelay"))
+                .description(OptionDescription.of(T.tl("autodrop.launchDelay.desc")))
+                .binding(
+                    AutoDropConfig.getDefaultLaunchDelay(),
+                    () -> AutoDrop.config.launchDelay,
+                    val -> AutoDrop.config.launchDelay = val
+                )
+                .controller(IntegerFieldControllerBuilder::create)
+                .build()
+        );
+
+        category.option(Factory.addToggleOption(
+            T.tl("autodrop.showAttentionMsg"),
+            T.tl("autodrop.showAttentionMsg.desc"),
+            AutoDropConfig.getDefaultShowAttentionMsg(),
+            () -> AutoDrop.config.showAttentionMsg,
+            val -> AutoDrop.config.showAttentionMsg = val
+        ));
+
         // TODO: Bug: 点击此按钮后，文件保存不会生效
         category.option(ButtonOption.createBuilder()
                 .name(T.tl("autodrop.ignoreCurrentSlot"))
@@ -244,7 +264,7 @@ public class ConfigScreen {
                     val -> AutoDrop.config.checkInterval = val
                 )
                 .controller(opt -> IntegerSliderControllerBuilder.create(opt)
-                        .range(5, 10000)
+                        .range(1, 500)
                         .step(1)
                         .formatValue(val -> T.l(val + " tick")))
                 .build()
@@ -255,6 +275,17 @@ public class ConfigScreen {
                 .description(OptionDescription.of(T.tl("autodrop.addBlock.desc")))
                 .action((yaclScreen, button) -> {
                     AutoDrop.config.addItems();
+                    AutoDrop.config.save();
+                    reload(yaclScreen, parent);
+                })
+                .build()
+        );
+
+        category.option(ButtonOption.createBuilder()
+                .name(T.tl("autodrop.addPresetBlock").withStyle(ChatFormatting.GREEN))
+                .description(OptionDescription.of(T.tl("autodrop.addPresetBlock.desc")))
+                .action((yaclScreen, button) -> {
+                    AutoDrop.config.addPresetItems();
                     AutoDrop.config.save();
                     reload(yaclScreen, parent);
                 })
@@ -511,7 +542,7 @@ public class ConfigScreen {
         return category;
     }
 
-    public static ConfigCategory.Builder createEntityHighlightBoxCategory() {
+    public static ConfigCategory.Builder createEntityHighlightBoxCategory(Screen parent) {
         ConfigCategory.Builder category = ConfigCategory.createBuilder()
                 .name(T.tl("entityhighlightBox.name"))
                 .tooltip(T.tl("entityhighlightBox.desc"));
@@ -524,16 +555,35 @@ public class ConfigScreen {
             val -> EntityHighlightBox.config.enabled = val
         ));
 
-        category.option(Factory.addToggleOption(
-            T.tl("entityhighlightBox.colorful.enabled"),
-            T.tl("entityhighlightBox.colorful.enabled.desc"),
-            HighlightConfig.getDefaultColorful(),
-            () -> EntityHighlightBox.config.colorful,
-            val -> EntityHighlightBox.config.colorful = val
-        ));
+        // category.option(Factory.addToggleOption(
+        //     T.tl("entityhighlightBox.colorful"),
+        //     T.tl("entityhighlightBox.colorful.desc", HighlightConfig.getDefaultUnknownColor()),
+        //     HighlightConfig.getDefaultColorful(),
+        //     () -> EntityHighlightBox.config.colorful,
+        //     val -> EntityHighlightBox.config.colorful = val
+        // ));
+
+        category.option(ButtonOption.createBuilder()
+                .name(T.tl("entityhighlightBox.colorful"))
+                .text(EntityHighlightBox.config.colorful ? 
+                    T.tl("message.value.on").withStyle(ChatFormatting.GREEN) : 
+                    T.tl("message.value.off").withStyle(ChatFormatting.RED))
+                .description(OptionDescription.of(T.tl("entityhighlightBox.colorful.desc", EntityHighlightBox.config.unknownColor)))
+                .action((yaclScreen, button) -> {
+                    EntityHighlightBox.config.colorful = !EntityHighlightBox.config.colorful;
+                    EntityHighlightBox.config.save();
+                    reload(yaclScreen, parent);
+                })
+                .build()
+        );
 
         if (EntityHighlightBox.config.colorful) {
-            category.option(Option.<Color>createBuilder()
+            OptionGroup.Builder colorGroup = 
+                OptionGroup.createBuilder()
+                    .name(T.tl("entityhighlightBox.color.group"))
+                    .description(OptionDescription.of(T.tl("entityhighlightBox.color.group.desc")));
+
+            colorGroup.option(Option.<Color>createBuilder()
                     .name(T.tl("entityhighlightBox.color.monster"))
                     .description(OptionDescription.of(T.tl("entityhighlightBox.color.monster.desc")))
                     .binding(
@@ -546,55 +596,62 @@ public class ConfigScreen {
                     .build()
             );
 
-            category.option(Option.<String>createBuilder()
+            colorGroup.option(Option.<Color>createBuilder()
                     .name(T.tl("entityhighlightBox.color.friend"))
                     .description(OptionDescription.of(T.tl("entityhighlightBox.color.friend.desc")))
                     .binding(
-                            HighlightConfig.getDefaultFriendColor(),
-                            () -> EntityHighlightBox.config.friendColor,
-                            val -> EntityHighlightBox.config.friendColor = val
+                            StringUtil.strToColor(HighlightConfig.getDefaultFriendColor()),
+                            () -> StringUtil.strToColor(EntityHighlightBox.config.friendColor),
+                            val -> EntityHighlightBox.config.friendColor = StringUtil.colorToStr(val)
                     )
-                    .controller(StringControllerBuilder::create)
+                    .controller(opt -> ColorControllerBuilder.create(opt)
+                        .allowAlpha(true))
                     .build()
             );
 
-            category.option(Option.<String>createBuilder()
+            colorGroup.option(Option.<Color>createBuilder()
                     .name(T.tl("entityhighlightBox.color.neutral"))
                     .description(OptionDescription.of(T.tl("entityhighlightBox.color.neutral.desc")))
                     .binding(
-                            HighlightConfig.getDefaultNeutralColor(),
-                            () -> EntityHighlightBox.config.neutralColor,
-                            val -> EntityHighlightBox.config.neutralColor = val
+                            StringUtil.strToColor(HighlightConfig.getDefaultNeutralColor()),
+                            () -> StringUtil.strToColor(EntityHighlightBox.config.neutralColor),
+                            val -> EntityHighlightBox.config.neutralColor = StringUtil.colorToStr(val)
                     )
-                    .controller(StringControllerBuilder::create)
+                    .controller(opt -> ColorControllerBuilder.create(opt)
+                        .allowAlpha(true))
                     .build()
             );
 
-            category.option(Option.<String>createBuilder()
+            colorGroup.option(Option.<Color>createBuilder()
                     .name(T.tl("entityhighlightBox.color.player"))
                     .description(OptionDescription.of(T.tl("entityhighlightBox.color.player.desc")))
                     .binding(
-                            HighlightConfig.getDefaultPlayerColor(),
-                            () -> EntityHighlightBox.config.playerColor,
-                            val -> EntityHighlightBox.config.playerColor = val
+                            StringUtil.strToColor(HighlightConfig.getDefaultPlayerColor()),
+                            () -> StringUtil.strToColor(EntityHighlightBox.config.playerColor),
+                            val -> EntityHighlightBox.config.playerColor = StringUtil.colorToStr(val)
                     )
-                    .controller(StringControllerBuilder::create)
+                    .controller(opt -> ColorControllerBuilder.create(opt)
+                        .allowAlpha(true))
                     .build()
             );
 
-            category.option(Option.<String>createBuilder()
+            colorGroup.option(Option.<Color>createBuilder()
                     .name(T.tl("entityhighlightBox.color.unknown"))
                     .description(OptionDescription.of(T.tl("entityhighlightBox.color.unknown.desc")))
                     .binding(
-                            HighlightConfig.getDefaultUnknownColor(),
-                            () -> EntityHighlightBox.config.unknownColor,
-                            val -> EntityHighlightBox.config.unknownColor = val
+                            StringUtil.strToColor(HighlightConfig.getDefaultUnknownColor()),
+                            () -> StringUtil.strToColor(EntityHighlightBox.config.unknownColor),
+                            val -> EntityHighlightBox.config.unknownColor = StringUtil.colorToStr(val)
                     )
-                    .controller(StringControllerBuilder::create)
+                    .controller(opt -> ColorControllerBuilder.create(opt)
+                        .allowAlpha(true))
                     .build()
             );
+
+            category.group(colorGroup.build());
         }
 
+        // TODO: 更改为三种可选值：白名单、黑名单、全部
         category.option(Option.<Boolean>createBuilder()
                     .name(T.tl("entityhighlightBox.isWhitelist"))
                     .description(OptionDescription.of(T.tl("entityhighlightBox.isWhitelist.desc")))
@@ -641,7 +698,9 @@ public class ConfigScreen {
                             () -> EntityHighlightBox.config.renderMaxCounts,
                             val -> EntityHighlightBox.config.renderMaxCounts = val
                     )
-                    .controller(IntegerSliderControllerBuilder::create)
+                    .controller(opt -> IntegerSliderControllerBuilder.create(opt)
+                                .range(1, 500)
+                                .step(1))
                     .build()
         );
 
@@ -653,7 +712,10 @@ public class ConfigScreen {
                             () -> EntityHighlightBox.config.updateInterval,
                             val -> EntityHighlightBox.config.updateInterval = val
                     )
-                    .controller(IntegerSliderControllerBuilder::create)
+                    .controller(opt -> IntegerSliderControllerBuilder.create(opt)
+                                .range(1, 500)
+                                .step(1)
+                                .formatValue(val -> T.l(val + " tick")))
                     .build()
         );
 
@@ -661,7 +723,7 @@ public class ConfigScreen {
                     .name(T.tl("entityhighlightBox.entityTypes"))
                     .description(OptionDescription.of(T.tl("entityhighlightBox.entityTypes.desc")))
                     .binding(
-                            new ArrayList<String>(),
+                            HighlightConfig.getDefaultEntityTypes(),
                             () -> EntityHighlightBox.config.entityTypes,
                             val -> EntityHighlightBox.config.entityTypes = val
                     )

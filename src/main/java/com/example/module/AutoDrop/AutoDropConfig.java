@@ -14,6 +14,8 @@ public class AutoDropConfig extends BaseConfig {
     }
 
     public boolean enabled = getDefaultEnabled();
+    public int launchDelay = getDefaultLaunchDelay();
+    public boolean showAttentionMsg = getDefaultShowAttentionMsg();
     public List<Integer> ingnoreSlots = new ArrayList<>();
     public String throwDirection = getDefaultThrowDirection();
     public int checkInterval = getDefaultCheckInterval();
@@ -21,6 +23,14 @@ public class AutoDropConfig extends BaseConfig {
     
     public static boolean getDefaultEnabled() {
         return false;
+    }
+
+    public static int getDefaultLaunchDelay() {
+        return 20 * 30; // 30s
+    }
+
+    public static boolean getDefaultShowAttentionMsg() {
+        return true;
     }
 
     public static String getDefaultIngnoreSlot() {
@@ -35,7 +45,7 @@ public class AutoDropConfig extends BaseConfig {
     }
 
     public static int getDefaultCheckInterval() {
-        return 1;
+        return 20;
     }
 
     public static List<String> getAllThrowDirections() {
@@ -48,6 +58,41 @@ public class AutoDropConfig extends BaseConfig {
 
     public void removeItem(Item item) {
         items.remove(item);
+    }
+
+    public void addPresetItems() {
+        Item bowPreset = new Item();
+        bowPreset.enabled = true;
+        bowPreset.name = "*";
+        bowPreset.id = "minecraft:bow";
+        bowPreset.tags.add("*");
+        bowPreset.isAllEnchantment = true;
+        bowPreset.enchantments.put("minecraft:infinity", 1);
+        bowPreset.enchantments.put("minecraft:mending", 1);
+        items.add(bowPreset);
+
+        Item swordPreset = new Item();
+        swordPreset.enabled = true;
+        swordPreset.name = "*";
+        swordPreset.id = "*";
+        swordPreset.tags = List.of("#minecraft:swords", "#minecraft:axes");
+        swordPreset.isAllEnchantment = false;
+        swordPreset.enchantments.put("minecraft:sharpness", 5);
+        swordPreset.enchantments.put("minecraft:smite", 5);
+        swordPreset.enchantments.put("minecraft:bane_of_arthropods", 5);
+        items.add(swordPreset);
+
+        Item armorPreset = new Item();
+        armorPreset.enabled = true;
+        armorPreset.name = "*";
+        armorPreset.id = "*";
+        armorPreset.tags.add("#minecraft:enchantable/armor");
+        armorPreset.isAllEnchantment = false;
+        armorPreset.enchantments.put("minecraft:protection", 4);
+        armorPreset.enchantments.put("minecraft:fire_protection", 4);
+        armorPreset.enchantments.put("minecraft:projectile_protection", 4);
+        armorPreset.enchantments.put("minecraft:blast_protection", 4);
+        items.add(armorPreset);
     }
 
     public class Item {

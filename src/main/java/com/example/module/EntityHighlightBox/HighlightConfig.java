@@ -14,11 +14,11 @@ public class HighlightConfig extends BaseConfig {
     public String playerColor = getDefaultPlayerColor();        // 玩家（黄色）
     public String unknownColor = getDefaultUnknownColor();      // 未知实体（白色）
     public boolean isWhitelist = getDefaultIsWhitelist();       // 是否启用白名单模式
-    public boolean isRenderName = getDefaultIsRenderName();         // 是否渲染实体名称
+    public boolean isRenderName = getDefaultIsRenderName();     // 是否渲染实体名称
     public int renderRadius = getDefaultRenderRadius();         // 渲染半径
     public int renderMaxCounts = getDefaultRenderMaxCounts();   // 最大渲染数量
     public int updateInterval = getDefaultUpdateInterval();     // 渲染的实体更新间隔（tick）
-    public List<String> entityTypes = new ArrayList<>();        // 实体类型列表（白名单模式下有效，反之不渲染此实体列表）
+    public List<String> entityTypes = getDefaultEntityTypes();  // 实体类型列表（白名单模式下有效，反之不渲染此实体列表）
     
 
     public static boolean getDefaultEnabled() {
@@ -34,7 +34,7 @@ public class HighlightConfig extends BaseConfig {
     }
     
     public static int getDefaultRenderRadius() {
-        return 60;
+        return 128;
     }
     
     public static int getDefaultRenderMaxCounts() {
@@ -42,7 +42,7 @@ public class HighlightConfig extends BaseConfig {
     }
     
     public static int getDefaultUpdateInterval() {
-        return 20;
+        return 5;
     }
 
     public static String getDefaultMonsterColor() {
@@ -66,6 +66,10 @@ public class HighlightConfig extends BaseConfig {
 
     public static boolean getDefaultIsWhitelist() {
         return false;
+    }
+
+    public static List<String> getDefaultEntityTypes() {
+        return new ArrayList<>();
     }
 
     public HighlightConfig(String moduleName) {

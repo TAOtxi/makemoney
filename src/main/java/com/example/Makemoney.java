@@ -37,8 +37,8 @@ public class Makemoney implements ModInitializer {
         // AutoCommand.config.remove();
         // EntityHighlightBox.config.remove();
         
-		AutoRepair.init();
-        AutoCommand.init();
+		// AutoRepair.init();
+        // AutoCommand.init();
         AutoDrop.init();
 		EntityHighlightBox.init();
 

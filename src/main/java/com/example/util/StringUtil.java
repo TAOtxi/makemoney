@@ -44,7 +44,8 @@ public class StringUtil {
     }
 
     public static String colorToStr(Color color) {
-        return String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue());
+        return String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue())
+            .toUpperCase();
     }
 
     public static Color strToColor(String str) {

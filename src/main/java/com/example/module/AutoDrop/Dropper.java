@@ -36,7 +36,7 @@ public class Dropper {
 
             // AutoDrop.LOGGER.info("Check item {} in slot {}", item.getItemName(), i);
             if (!shouldDrop(item)) continue;
-            AutoDrop.LOGGER.info("Dropping item {} in slot {}", ItemStackUtil.getName(item), i);
+            // AutoDrop.LOGGER.info("Dropping item {} in slot {}", ItemStackUtil.getName(item), i);
             dropItemAnywhere(i, AutoDrop.config.throwDirection);
         }
     }

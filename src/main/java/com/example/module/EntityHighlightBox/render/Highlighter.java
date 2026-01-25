@@ -19,6 +19,7 @@ import net.minecraft.world.phys.Vec3;
 
 import com.example.module.EntityHighlightBox.EntityHighlightBox;
 import com.example.module.EntityHighlightBox.HighlightConfig;
+import com.example.util.EntityUtil;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -76,14 +77,18 @@ public class Highlighter {
 
     // TODO: 根据配置的白名单判断是否需要渲染
     private static boolean shouldRender(Entity entity) {
-        if (!entity.isRemoved() || entity.isInvisible()) {
+        if (entity.isRemoved() || entity.isInvisible()) {
             return false;
         }
         // if (entity instanceof ItemEntity && EntityHighlightBox.config.renderItem) {
         //     return true;
         // }
-
-
+        String type = EntityUtil.getType(entity);
+        boolean isContain = EntityHighlightBox.config.entityTypes.contains(type);
+        if ((EntityHighlightBox.config.isWhitelist && isContain) || 
+            (!EntityHighlightBox.config.isWhitelist && !isContain)) {
+            return true;
+        }
 
         return false;
     }

@@ -17,7 +17,9 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.AABB;
 
 import com.example.Makemoney;
 import com.example.module.AutoCommand.AutoCommand;
@@ -26,6 +28,7 @@ import com.example.module.AutoDrop.AutoDropConfig;
 import com.example.module.AutoDrop.Dropper;
 import com.example.module.AutoRepair.AutoRepair;
 import com.example.module.EntityHighlightBox.EntityHighlightBox;
+import com.example.util.EntityUtil;
 import com.example.util.ItemStackUtil;
 import com.example.util.Message;
 import com.example.util.T;
@@ -47,17 +50,6 @@ public class TestMod {
                         .executes(context -> {
                             context.getSource().sendFeedback(T.l("This is an feedback."));
                             Dropper.setPlayerRotation(d);
-                            return 1;
-                        });
-            }
-
-            LiteralArgumentBuilder<FabricClientCommandSource> drop = ClientCommandManager.literal("drop");
-
-            for (int i = 0; i < 36; i++) {
-                final int slot = i;
-                drop.then(ClientCommandManager.literal(String.valueOf(i)))
-                        .executes(context -> {
-                            Dropper.dropItemAnywhere(slot, AutoDropConfig.Direction.EAST);
                             return 1;
                         });
             }
@@ -97,7 +89,7 @@ public class TestMod {
                     });
 
             dispatcher.register(look);
-            dispatcher.register(drop);
+            // dispatcher.register(drop);
             dispatcher.register(showhand);
 
             dispatcher.register(ClientCommandManager.literal("removeConfig").executes(context -> {
@@ -109,6 +101,20 @@ public class TestMod {
                 AutoCommand.config.remove();
                 return 1;
             }));
+
+            dispatcher.register(ClientCommandManager.literal("show").executes(context -> {
+                context.getSource().sendFeedback(T.l("Called Show Command"));
+                return 1;
+            }).then(ClientCommandManager.literal("entity").executes(context -> {
+                context.getSource().sendFeedback(T.l("Show entity information"));
+                LocalPlayer player = context.getSource().getPlayer();
+                Makemoney.LOGGER.info("Name: {}", player.getName().getString());
+                Makemoney.LOGGER.info("DisplayName: {}", player.getDisplayName().getString());
+                Makemoney.LOGGER.info("Type: {}", EntityUtil.getType(player));
+                Makemoney.LOGGER.info("TypeDescription: {}", player.getType().getDescription().getString());
+                Makemoney.LOGGER.info("TypeDescriptionId: {}", player.getType().getDescriptionId());
+                return 1;
+            })));
         });
     }
 
