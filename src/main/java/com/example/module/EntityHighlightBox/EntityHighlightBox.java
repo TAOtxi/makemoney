@@ -1,6 +1,7 @@
 package com.example.module.EntityHighlightBox;
 
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import net.minecraft.client.Minecraft;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
 import com.example.module.EntityHighlightBox.render.Highlighter;
@@ -35,16 +36,10 @@ public class EntityHighlightBox {
         });
     }
 
-    // public static void registerTickEvents() {
-    //     TickCounter ticker = new TickCounter();
-    //     ticker.addTask(new TickCounter.Task(tick -> {
-    //         LOGGER.info("ticking...");
-    //     }, 40));
-        
-    //     ClientTickEvents.END_CLIENT_TICK.register(client -> {
-    //         if (client.player == null || client.level == null) return;
-
-    //         // ticker.run();
-    //     });
-    // }
+    public static void registerTickEvents(Minecraft client, int tickCounter) {
+        // if (client.player == null || client.level == null) return;
+        if (!config.enabled) return;
+        if (tickCounter % config.updateInterval != 0) return;
+        Highlighter.updateRenderEntities();
+    }
 }

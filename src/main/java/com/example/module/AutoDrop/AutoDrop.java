@@ -8,6 +8,7 @@ import com.example.util.T;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.minecraft.client.Minecraft;
 
 public class AutoDrop {
     public static final String MODULE_NAME = "autodrop";
@@ -16,22 +17,19 @@ public class AutoDrop {
     public static int tickCounter = 0;
 
     public static void init() {
-        registerTickEvents();
         registerCommand();
     }
 
-    private static void registerTickEvents() {
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (client.level == null || client.player == null) return;
-            if (!config.enabled || Makemoney.isOpenYaclScreen) return;
-            tickCounter++;
-            if (tickCounter < config.launchDelay) return;
-            if (tickCounter % config.checkInterval != 0) return;
-            if (config.showAttentionMsg) {
-                Message.actionBarMsg(T.tl("autodrop.message.attention"));
-            }
-            Dropper.tryToDropItems();
-        });
+    public static void registerTickEvents(Minecraft client, int tickCounter) {
+        if (client.level == null || client.player == null) return;
+        if (!config.enabled || Makemoney.isOpenYaclScreen) return;
+        if (tickCounter < config.launchDelay) return;
+        if (tickCounter % config.checkInterval != 0) return;
+
+        if (config.showAttentionMsg) {
+            Message.actionBarMsg(T.tl("autodrop.message.attention"));
+        }
+        Dropper.tryToDropItems();
     }
 
     private static void registerCommand() {
