@@ -18,12 +18,14 @@ import com.example.test.TestMod;
 import com.example.util.T;
 
 import dev.isxander.yacl3.gui.YACLScreen;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 
 public class Makemoney implements ModInitializer {
 	public static final String MOD_ID = "makemoney";
     public static boolean isOpenYaclScreen = false;
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+    private static int tickCounter = 0;
 
 	@Override
 	public void onInitialize() {
@@ -40,7 +42,7 @@ public class Makemoney implements ModInitializer {
 		// AutoRepair.init();
         // AutoCommand.init();
         AutoDrop.init();
-		EntityHighlightBox.init();
+		// EntityHighlightBox.init();
 
         ScreenEvents.AFTER_INIT.register((client, screen, width, height) -> {
             if (screen instanceof YACLScreen) {
@@ -49,5 +51,18 @@ public class Makemoney implements ModInitializer {
                 isOpenYaclScreen = false;
             }
         });
+        registerTickEvents();
 	}
+
+    public void registerTickEvents() {
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            if (client.level == null || client.player == null) return;
+            
+            tickCounter++;
+            // AutoRepair.registerTickEvents(client, tickCounter);
+            // AutoCommand.registerTickEvents(client, tickCounter);
+            AutoDrop.registerTickEvents(client, tickCounter);
+            // EntityHighlightBox.registerTickEvents(client, tickCounter);
+        });
+    }
 }

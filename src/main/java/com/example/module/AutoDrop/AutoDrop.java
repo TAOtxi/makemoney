@@ -21,7 +21,6 @@ public class AutoDrop {
     }
 
     public static void registerTickEvents(Minecraft client, int tickCounter) {
-        if (client.level == null || client.player == null) return;
         if (!config.enabled || Makemoney.isOpenYaclScreen) return;
         if (tickCounter < config.launchDelay) return;
         if (tickCounter % config.checkInterval != 0) return;

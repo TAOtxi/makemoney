@@ -1,6 +1,7 @@
 package com.example.module.AutoRepair;
 
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
 import com.example.util.MLogger;
@@ -22,29 +23,20 @@ public class AutoRepair {
         //     GLFW.GLFW_KEY_F10,
         //     "key.categories.makemoney"
         // );
-
-        registerTickEvents();
     }
 
-    private static void registerTickEvents() {
-        TickCounter ticker = new TickCounter();
-        ticker.addTask(new TickCounter.Task(tick -> {
-            LOGGER.info("ticking...");
-        }, 40));
-        
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            // if (!config.enabled) return;
-            if (client.player == null || client.level == null) return;
-            // if (toggleKey.consumeClick()) {
-            //     config.enabled = !config.enabled;
-            //     config.save();
-            //     LOGGER.info("AutoRepair toggled to {}", config.enabled);
-            //     Message.subTitleMsg(T.t(".message.toggled", config.enabled));
-            // }
-            // ticker.run();
+    public static void registerTickEvents(Minecraft client, int tickCounter) {
+        if (!config.enabled) return;
+        // if (client.player == null || client.level == null) return;
+        // if (toggleKey.consumeClick()) {
+        //     config.enabled = !config.enabled;
+        //     config.save();
+        //     LOGGER.info("AutoRepair toggled to {}", config.enabled);
+        //     Message.subTitleMsg(T.t(".message.toggled", config.enabled));
+        // }
+        // ticker.run();
 
-            // Replace.tryToReplace();
-            // EnchantExp.tryToEnchantMending();
-        });
+        // Replace.tryToReplace();
+        // EnchantExp.tryToEnchantMending();
     }
 }

@@ -20,33 +20,30 @@ public class AutoCommand {
 
     public static void init() {
         // updateTickCounter();
-        registerTickEvents();
+        // registerTickEvents();
     }
 
-    private static void registerTickEvents() {
-        ticker.addTask(new TickCounter.Task(tick -> {
-            LOGGER.info("ticking...");
-        }, 40));
-
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            // 判断是否是多人游戏
-            // if (Minecraft.getInstance().getCurrentServer() == null) {
-            //     LOGGER.info("当前不是多人游戏");
-            //     return;
-            // }
-            if (client.level == null || client.player == null) {
-                isGame = false;
-                return;
-            };
-            // ticker.run();
-            // if (!isGame) {
-            //     isGame = true;
-            //     ticker.clear();
-            //     updateTickCounter();
-            // }
-            // if (!config.enabled) return;
-            // ticker.run();
-        });
+    public static void registerTickEvents(Minecraft client, int tickCounter) {
+        // ticker.addTask(new TickCounter.Task(tick -> {
+        //     LOGGER.info("ticking...");
+        // }, 40));
+        // 判断是否是多人游戏
+        // if (Minecraft.getInstance().getCurrentServer() == null) {
+        //     LOGGER.info("当前不是多人游戏");
+        //     return;
+        // }
+        // if (client.level == null || client.player == null) {
+        //     isGame = false;
+        //     return;
+        // };
+        // ticker.run();
+        // if (!isGame) {
+        //     isGame = true;
+        //     ticker.clear();
+        //     updateTickCounter();
+        // }
+        if (!config.enabled) return;
+        // ticker.run();
     }
 
     public static void updateTickCounter() {

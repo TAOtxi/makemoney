@@ -9,6 +9,7 @@ import java.awt.Color;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.resources.ResourceLocation;
 import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.ListOption;
 import dev.isxander.yacl3.api.OptionGroup;
@@ -49,7 +50,7 @@ public class ConfigScreen {
                 .save(() -> {
                     AutoRepair.config.save();
                     AutoCommand.config.save();
-                    AutoCommand.updateTickCounter();
+                    // AutoCommand.updateTickCounter();
                     AutoDrop.config.save();
                     EntityHighlightBox.config.save();
                     Makemoney.LOGGER.info("Config saved...");
@@ -171,6 +172,8 @@ public class ConfigScreen {
                 .name(T.tl("autodrop.name"))
                 .tooltip(T.tl("autodrop.desc"));
 
+
+        // TODO: 重新打开后，延迟计时器也归零
         category.option(Factory.addToggleOption(
             T.tl("module.enabled"),
             T.tl("module.enabled.desc"),
@@ -199,7 +202,6 @@ public class ConfigScreen {
             val -> AutoDrop.config.showAttentionMsg = val
         ));
 
-        // TODO: Bug: 点击此按钮后，文件保存不会生效
         category.option(ButtonOption.createBuilder()
                 .name(T.tl("autodrop.ignoreCurrentSlot"))
                 .description(OptionDescription.of(T.tl("autodrop.ignoreCurrentSlot.desc")))
@@ -231,7 +233,11 @@ public class ConfigScreen {
 
         category.option(Option.<String>createBuilder()
                 .name(T.tl("autodrop.ignoreSlots"))
-                .description(OptionDescription.of(T.tl("autodrop.ignoreSlots.desc")))
+                .description(OptionDescription.createBuilder()
+                    .text(T.tl("autodrop.ignoreSlots.desc"))
+                    // TODO: 图片大小待优化或找其它替代方式
+                    .webpImage(ResourceLocation.fromNamespaceAndPath(Makemoney.MOD_ID, "images/slot_example.webp"))
+                    .build())
                 .binding(
                     AutoDropConfig.getDefaultIngnoreSlot(),
                     () -> StringUtil.listToStr(AutoDrop.config.ingnoreSlots),

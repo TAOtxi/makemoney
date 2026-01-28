@@ -15,7 +15,7 @@ public class EntityHighlightBox {
     private static int tickCounter = 0;
 
     public static void init() {
-        registerTickEvents();
+        // registerTickEvents();
         registerRenderEvents();
     }
 
@@ -23,16 +23,6 @@ public class EntityHighlightBox {
         WorldRenderEvents.AFTER_ENTITIES.register(context -> {
             if (!config.enabled) return;
             Highlighter.drawHighlightBox(context);
-        });
-    }
-
-    // TODO: 待整合各个模块的tick事件
-    private static void registerTickEvents() {
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (client.player == null || client.level == null) return;
-            if (!config.enabled) return;
-            if (tickCounter++ % config.updateInterval != 0) return;
-            Highlighter.updateRenderEntities();
         });
     }
 

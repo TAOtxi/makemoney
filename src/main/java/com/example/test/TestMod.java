@@ -36,24 +36,6 @@ import com.example.util.T;
 public class TestMod {
     public static void register() {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-            dispatcher.register(ClientCommandManager.literal("trydrop").executes(context -> {
-                context.getSource().sendFeedback(T.l("Called /trydrop with no arguments."));
-                Dropper.tryToDropItems();
-                return 1;
-            }));
-
-            LiteralArgumentBuilder<FabricClientCommandSource> look = ClientCommandManager.literal("look");
-
-            List<String> direction = AutoDropConfig.getAllThrowDirections();
-            for (String d : direction) {
-                look.then(ClientCommandManager.literal(d))
-                        .executes(context -> {
-                            context.getSource().sendFeedback(T.l("This is an feedback."));
-                            Dropper.setPlayerRotation(d);
-                            return 1;
-                        });
-            }
-
             LiteralArgumentBuilder<FabricClientCommandSource> showhand = ClientCommandManager.literal("showhand")
                     .executes(context -> {
                         LocalPlayer player = Minecraft.getInstance().player;
@@ -87,22 +69,10 @@ public class TestMod {
 
                         return 1;
                     });
+            // dispatcher.register(showhand);
 
-            dispatcher.register(look);
-            // dispatcher.register(drop);
-            dispatcher.register(showhand);
-
-            dispatcher.register(ClientCommandManager.literal("removeConfig").executes(context -> {
-                context.getSource().sendFeedback(T.l("Called /removeConfig with no arguments."));
-                
-                EntityHighlightBox.config.remove();
-                AutoDrop.config.remove();
-                AutoRepair.config.remove();
-                AutoCommand.config.remove();
-                return 1;
-            }));
-
-            dispatcher.register(ClientCommandManager.literal("show").executes(context -> {
+            
+            LiteralArgumentBuilder<FabricClientCommandSource> showinfo = ClientCommandManager.literal("showinfo").executes(context -> {
                 context.getSource().sendFeedback(T.l("Called Show Command"));
                 return 1;
             }).then(ClientCommandManager.literal("entity").executes(context -> {
@@ -114,7 +84,8 @@ public class TestMod {
                 Makemoney.LOGGER.info("TypeDescription: {}", player.getType().getDescription().getString());
                 Makemoney.LOGGER.info("TypeDescriptionId: {}", player.getType().getDescriptionId());
                 return 1;
-            })));
+            }));
+            dispatcher.register(showinfo);
         });
     }
 

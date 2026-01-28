@@ -75,7 +75,6 @@ public class Highlighter {
         CustomRenderPipeline.drawFilledThroughWalls(client, CustomRenderPipeline.FILLED_THROUGH_WALLS, buffer);
     }
 
-    // TODO: 根据配置的白名单判断是否需要渲染
     private static boolean shouldRender(Entity entity) {
         if (entity.isRemoved() || entity.isInvisible()) {
             return false;
