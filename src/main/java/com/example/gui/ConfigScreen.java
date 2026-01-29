@@ -41,6 +41,7 @@ import com.example.module.AutoCommand.AutoCommandConfig;
 import com.example.module.EntityHighlightBox.EntityHighlightBox;
 import com.example.module.EntityHighlightBox.HighlightConfig;
 
+// TODO: 将类别写成模块，代码分离到模组各自模块中
 public class ConfigScreen {
     // TODO: 增加快捷键打开配置界面
     public static Screen getConfigScreen(Screen parent) {
