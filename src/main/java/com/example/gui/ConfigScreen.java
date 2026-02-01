@@ -43,7 +43,6 @@ import com.example.module.EntityHighlightBox.HighlightConfig;
 
 // TODO: 将类别写成模块，代码分离到模组各自模块中
 public class ConfigScreen {
-    // TODO: 增加快捷键打开配置界面
     public static Screen getConfigScreen(Screen parent) {
         YetAnotherConfigLib.Builder builder = 
             YetAnotherConfigLib.createBuilder()
@@ -83,12 +82,7 @@ public class ConfigScreen {
                 .name(T.tl("gui.config.category.fishing.name"))
                 .tooltip(T.tl("gui.config.category.fishing.tooltip"));
 
-        OptionGroup.Builder autorepairGroup = 
-            OptionGroup.createBuilder()
-                .name(T.tl("autorepair.name"))
-                .description(OptionDescription.of(T.tl("autorepair.desc")));
-
-        autorepairGroup.option(Factory.addToggleOption(
+        category.option(Factory.addToggleOption(
             T.tl("module.enabled"),
             T.tl("module.enabled.desc"),
             AutoRepairConfig.getDefaultEnabled(),
@@ -96,7 +90,12 @@ public class ConfigScreen {
             val -> AutoRepair.config.enabled = val
         ));
 
-        autorepairGroup.option(Factory.addToggleOption(
+        OptionGroup.Builder replaceGroup = 
+            OptionGroup.createBuilder()
+                .name(T.tl("autorepair.replace.name"))
+                .description(OptionDescription.of(T.tl("autorepair.replace.desc")));
+
+        replaceGroup.option(Factory.addToggleOption(
             T.tl("autorepair.replaceEnabled"),
             T.tl("autorepair.replaceEnabled.desc"),
             AutoRepairConfig.getDefaultReplaceEnabled(),
@@ -104,7 +103,7 @@ public class ConfigScreen {
             val -> AutoRepair.config.replaceEnabled = val
         ));
 
-        autorepairGroup.option(Factory.addToggleOption(
+        replaceGroup.option(Factory.addToggleOption(
             T.tl("autorepair.showMessage"),
             T.tl("autorepair.showMessage.desc"),
             AutoRepairConfig.getDefaultShowMessage(),
@@ -112,36 +111,27 @@ public class ConfigScreen {
             val -> AutoRepair.config.showMessage = val
         ));
 
-        autorepairGroup.option(Option.<Integer>createBuilder()
-                .name(T.tl("autorepair.checkExpInterval"))
-                .description(OptionDescription.of(T.tl("autorepair.checkExpInterval.desc")))
+        replaceGroup.option(Option.<Integer>createBuilder()
+                .name(T.tl("autorepair.checkoffHandInterval"))
+                .description(OptionDescription.of(T.tl("autorepair.checkoffHandInterval.desc")))
                 .binding(
-                    AutoRepairConfig.getDefaultCheckExpInterval(),
-                    () -> AutoRepair.config.checkExpInterval,
-                    val -> AutoRepair.config.checkExpInterval = val
+                    AutoRepairConfig.getDefaultCheckoffHandInterval(),
+                    () -> AutoRepair.config.checkoffHandInterval,
+                    val -> AutoRepair.config.checkoffHandInterval = val
                 )
                 .controller(opt -> IntegerFieldControllerBuilder.create(opt)
                         .range(1, 100)
                 )
                 .build()
-        );  
-
-        autorepairGroup.option(Option.<Double>createBuilder()
-                .name(T.tl("autorepair.expCheckBound"))
-                .description(OptionDescription.of(T.tl("autorepair.expCheckBound.desc")))
-                .binding(
-                    AutoRepairConfig.getDefaultExpCheckBound(),
-                    () -> AutoRepair.config.expCheckBound,
-                    val -> AutoRepair.config.expCheckBound = val
-                )
-                .controller(opt -> DoubleFieldControllerBuilder.create(opt)
-                        .min(0.0d)
-                        .max(128.0d)
-                )
-                .build()
         );
+        category.group(replaceGroup.build());
 
-        autorepairGroup.option(Factory.addToggleOption(
+        OptionGroup.Builder enchantGroup = 
+            OptionGroup.createBuilder()
+                .name(T.tl("autorepair.enchant.name"))
+                .description(OptionDescription.of(T.tl("autorepair.enchant.desc")));
+
+        enchantGroup.option(Factory.addToggleOption(
             T.tl("autorepair.repairEnabled"),
             T.tl("autorepair.repairEnabled.desc"),
             AutoRepairConfig.getDefaultRepairEnabled(),
@@ -149,7 +139,7 @@ public class ConfigScreen {
             val -> AutoRepair.config.repairEnabled = val
         ));
 
-        autorepairGroup.option(Option.<Integer>createBuilder()
+        enchantGroup.option(Option.<Integer>createBuilder()
                 .name(T.tl("autorepair.repairInterval"))
                 .description(OptionDescription.of(T.tl("autorepair.repairInterval.desc")))
                 .binding(
@@ -163,7 +153,7 @@ public class ConfigScreen {
                 .build()
         );  
 
-        category.group(autorepairGroup.build());
+        category.group(enchantGroup.build());
         return category;
     }
 

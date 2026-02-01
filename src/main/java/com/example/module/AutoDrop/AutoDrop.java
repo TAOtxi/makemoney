@@ -1,6 +1,10 @@
 package com.example.module.AutoDrop;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import com.example.Makemoney;
+import com.example.gui.ConfigScreen;
 import com.example.util.MLogger;
 import com.example.util.Message;
 import com.example.util.T;
@@ -23,11 +27,11 @@ public class AutoDrop {
     public static void registerTickEvents(Minecraft client, int tickCounter) {
         if (!config.enabled || Makemoney.isOpenYaclScreen) return;
         if (tickCounter < config.launchDelay) return;
-        if (tickCounter % config.checkInterval != 0) return;
-
         if (config.showAttentionMsg) {
             Message.actionBarMsg(T.tl("autodrop.message.attention"));
         }
+
+        if (tickCounter % config.checkInterval != 0) return;
         Dropper.tryToDropItems();
     }
 
@@ -36,10 +40,32 @@ public class AutoDrop {
             dispatcher.register(ClientCommandManager.literal("autodrop")
                 .then(ClientCommandManager.literal("reload")
                     .executes(context -> {
-                        context.getSource().sendFeedback(T.l("Reload config..."));
+                        context.getSource().sendFeedback(T.tl("message.reload", MODULE_NAME));
                         config = AutoDropConfig.load(AutoDropConfig.class, MODULE_NAME);
                         return 1;
-                    })));
+                    }))
+                .then(ClientCommandManager.literal("enable")
+                    .executes(context -> {
+                        config.enabled = true;
+                        config.save();
+                        context.getSource().sendFeedback(T.tl("message.enable", MODULE_NAME));
+                        return 1;
+                    }))
+                .then(ClientCommandManager.literal("disable")
+                    .executes(context -> {
+                        config.enabled = false;
+                        config.save();
+                        context.getSource().sendFeedback(T.tl("message.disable", MODULE_NAME));
+                        return 1;
+                    }))
+                // TODO: 寻找用指令打开配置界面的方法
+                .then(ClientCommandManager.literal("config")
+                    .executes(context -> {
+                        Minecraft client = context.getSource().getClient();
+                        client.setScreen(ConfigScreen.getConfigScreen(client.screen));
+                        return 1;
+                    }))
+                );
         });
     }
 }

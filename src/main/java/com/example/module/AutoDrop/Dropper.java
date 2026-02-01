@@ -4,9 +4,7 @@ package com.example.module.AutoDrop;
 import java.util.List;
 import java.util.Map;
 
-import com.example.util.CommonUtil;
-import com.example.util.ItemStackUtil;
-
+import dev.isxander.yacl3.gui.YACLScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.Holder;
@@ -19,6 +17,9 @@ import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.InventoryMenu;
 
+import com.example.util.CommonUtil;
+import com.example.util.ItemStackUtil;
+
 
 public class Dropper {
     public static void tryToDropItems() {
@@ -26,7 +27,7 @@ public class Dropper {
         LocalPlayer player = client.player;
 
         // TODO: 待优化
-        if (player.hasContainerOpen()) return;
+        if (player.hasContainerOpen() || client.screen instanceof YACLScreen) return;
 
         for (int i = InventoryMenu.INV_SLOT_START; i < InventoryMenu.USE_ROW_SLOT_END; i++) {
             if (AutoDrop.config.ingnoreSlots.contains(i)) continue;

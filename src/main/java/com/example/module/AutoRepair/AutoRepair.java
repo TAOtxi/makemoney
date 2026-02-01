@@ -2,21 +2,26 @@ package com.example.module.AutoRepair;
 
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
+import com.example.gui.ConfigScreen;
+import com.example.module.AutoDrop.AutoDropConfig;
 import com.example.util.MLogger;
+import com.example.util.T;
 import com.example.util.TickCounter;
 
 
 public class AutoRepair {
     public static final String MODULE_NAME = "autorepair";
     public static final MLogger LOGGER = new MLogger(MODULE_NAME);
-    public static final AutoRepairConfig config = AutoRepairConfig.load(AutoRepairConfig.class, MODULE_NAME);
+    public static AutoRepairConfig config = AutoRepairConfig.load(AutoRepairConfig.class, MODULE_NAME);
     public static KeyMapping toggleKey;
 
     public static void init() {
         LOGGER.info("Initializing AutoRepair module...");
-
+        registerCommand();
         // toggleKey = new KeyMapping(
         //     "key.autorepair.toggle",
         //     InputConstants.Type.KEYSYM,
@@ -35,8 +40,45 @@ public class AutoRepair {
         //     Message.subTitleMsg(T.t(".message.toggled", config.enabled));
         // }
         // ticker.run();
+        if (tickCounter % config.checkoffHandInterval == 0) {
+            Replace.tryToReplace();
+        }
+        if (tickCounter % config.repairInterval == 0) {
+            EnchantExp.tryToEnchantMending();
+        }
+    }
 
-        // Replace.tryToReplace();
-        // EnchantExp.tryToEnchantMending();
+        private static void registerCommand() {
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+            dispatcher.register(ClientCommandManager.literal("autorepair")
+                .then(ClientCommandManager.literal("reload")
+                    .executes(context -> {
+                        context.getSource().sendFeedback(T.tl("message.reload", MODULE_NAME));
+                        config = AutoRepairConfig.load(AutoRepairConfig.class, MODULE_NAME);
+                        return 1;
+                    }))
+                .then(ClientCommandManager.literal("enable")
+                    .executes(context -> {
+                        config.enabled = true;
+                        config.save();
+                        context.getSource().sendFeedback(T.tl("message.enable", MODULE_NAME));
+                        return 1;
+                    }))
+                .then(ClientCommandManager.literal("disable")
+                    .executes(context -> {
+                        config.enabled = false;
+                        config.save();
+                        context.getSource().sendFeedback(T.tl("message.disable", MODULE_NAME));
+                        return 1;
+                    }))
+                // TODO: 寻找用指令打开配置界面的方法
+                .then(ClientCommandManager.literal("config")
+                    .executes(context -> {
+                        Minecraft client = context.getSource().getClient();
+                        client.setScreen(ConfigScreen.getConfigScreen(client.screen));
+                        return 1;
+                    }))
+                );
+        });
     }
 }

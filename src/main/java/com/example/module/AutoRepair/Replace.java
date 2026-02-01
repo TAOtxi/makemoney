@@ -1,19 +1,14 @@
 package com.example.module.AutoRepair;
 
-import java.util.List;
-
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
@@ -21,26 +16,22 @@ import net.minecraft.world.item.enchantment.ItemEnchantments;
 import com.example.util.T;
 import com.example.util.SwapSlot;
 import com.example.common.Code;
+import com.example.util.ItemStackUtil;
 import com.example.util.Message;
 
 
 public class Replace {
-    private static int tickCounter = 0;
-    private static Minecraft client = Minecraft.getInstance();
     public static void tryToReplace() {
         if (!AutoRepair.config.replaceEnabled)
             return;
 
+        Minecraft client = Minecraft.getInstance();
         Player player = client.player;
-
-        if (++tickCounter < AutoRepair.config.checkExpInterval) return;
-        tickCounter = 0;
 
         ItemStack offHandItem = player.getOffhandItem();
         // Check if there is experience in repairing and if the durability is not satisfactory
         // Check if there are any experience balls around
-        if (canRepair(offHandItem) || !checkExpAround(client)) return;
-        
+        if (canRepair(offHandItem)) return;
         int canReplaceSlot = findItemToRepair(player);
         if (canReplaceSlot == Code.NOT_FOUND) return;
         
@@ -48,14 +39,15 @@ public class Replace {
         if (AutoRepair.config.showMessage) {
             Message.actionBarMsg(
                 T.t("autorepair.message.repair", 
-                itemToRepair.getHoverName().getString())
+                    ItemStackUtil.getName(itemToRepair)
+                )
             );
         }
 
         AutoRepair.LOGGER.info(
             "swap item to offhand with slot {} name {}", 
             canReplaceSlot, 
-            itemToRepair.getHoverName().getString()
+            ItemStackUtil.getName(itemToRepair)
         );
         playSwapSound(client);
         SwapSlot.swaper(canReplaceSlot, InventoryMenu.SHIELD_SLOT);
@@ -96,14 +88,6 @@ public class Replace {
             }
         }
         return Code.NOT_FOUND;
-    }
-
-    private static boolean checkExpAround(Minecraft client) {
-        AABB searchBox = client.player.getBoundingBox().inflate(AutoRepair.config.expCheckBound);
-        List<Entity> entities = client.level.getEntities(client.player, searchBox, (Entity entity) -> {
-            return entity instanceof ExperienceOrb;
-        });
-        return !entities.isEmpty();
     }
 
     private static void playSwapSound(Minecraft client) {

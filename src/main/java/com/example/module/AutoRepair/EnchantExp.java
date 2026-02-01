@@ -14,19 +14,15 @@ import com.example.common.Code;
 import com.example.util.SwapSlot;
 
 public class EnchantExp {
-    private static int tickCounter = 0;
-    private static final Minecraft client = Minecraft.getInstance();
     private static Enchantment mending;
 
     public static void tryToEnchantMending() {
         if (!AutoRepair.config.repairEnabled)
             return;
-        if (++tickCounter < AutoRepair.config.repairInterval) return;
-        tickCounter = 0;
         
+        Minecraft client = Minecraft.getInstance();
         Player player = client.player;
-        if (!player.hasContainerOpen() || !(player.containerMenu instanceof AnvilMenu anvilMenu)) return;
-        AutoRepair.LOGGER.info("open anvil menu");
+        if (!(player.containerMenu instanceof AnvilMenu anvilMenu)) return;
 
         int[] resultSlots = findExpEquitmentSlot();
         if (resultSlots[0] == Code.NOT_FOUND || resultSlots[1] == Code.NOT_FOUND) return;
@@ -42,7 +38,7 @@ public class EnchantExp {
     }
 
     public static int[] findExpEquitmentSlot() {
-        Player player = client.player;
+        Player player = Minecraft.getInstance().player;
 
         int[] resultSlots = new int[] {Code.NOT_FOUND, Code.NOT_FOUND};
 
@@ -82,7 +78,8 @@ public class EnchantExp {
         }
         ItemStack item = anvilMenu.getSlot(slot).getItem();
         if (item.isEmpty()) return true;
-
+        Minecraft client = Minecraft.getInstance();
+        
         if (slot == AnvilMenu.INPUT_SLOT) {
             // 第一格不能是附魔书，并且要能附魔经验修补且本身也没有经验修补的附魔
             if (item.is(Items.ENCHANTED_BOOK) ||
@@ -109,6 +106,7 @@ public class EnchantExp {
     }
 
     public static Enchantment getMending() {
+        Minecraft client = Minecraft.getInstance();
         if (mending == null) {
             mending = client.level
                 .registryAccess()

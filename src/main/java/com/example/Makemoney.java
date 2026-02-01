@@ -15,6 +15,7 @@ import com.example.module.AutoDrop.AutoDrop;
 import com.example.module.AutoRepair.AutoRepair;
 import com.example.module.EntityHighlightBox.EntityHighlightBox;
 import com.example.test.TestMod;
+import com.example.util.Message;
 import com.example.util.T;
 
 import dev.isxander.yacl3.gui.YACLScreen;
@@ -39,19 +40,15 @@ public class Makemoney implements ModInitializer {
         // AutoCommand.config.remove();
         // EntityHighlightBox.config.remove();
         
-		// AutoRepair.init();
+		AutoRepair.init();
         // AutoCommand.init();
         AutoDrop.init();
 		// EntityHighlightBox.init();
+        registerTickEvents();
 
         ScreenEvents.AFTER_INIT.register((client, screen, width, height) -> {
-            if (screen instanceof YACLScreen) {
-                isOpenYaclScreen = true;
-            } else {
-                isOpenYaclScreen = false;
-            }
+            Message.sendMessage("Screen: " + screen.getClass().getSimpleName());
         });
-        registerTickEvents();
 	}
 
     public void registerTickEvents() {
@@ -59,10 +56,14 @@ public class Makemoney implements ModInitializer {
             if (client.level == null || client.player == null) return;
             
             tickCounter++;
-            // AutoRepair.registerTickEvents(client, tickCounter);
+            AutoRepair.registerTickEvents(client, tickCounter);
             // AutoCommand.registerTickEvents(client, tickCounter);
             AutoDrop.registerTickEvents(client, tickCounter);
             // EntityHighlightBox.registerTickEvents(client, tickCounter);
+            // if (tickCounter % 100 == 0) {
+            //     Message.sendMessage("try...");
+            //     client.setScreen(ConfigScreen.getConfigScreen(client.screen));
+            // }
         });
     }
 }

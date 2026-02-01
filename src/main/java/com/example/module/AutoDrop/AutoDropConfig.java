@@ -45,7 +45,7 @@ public class AutoDropConfig extends BaseConfig {
     }
 
     public static int getDefaultCheckInterval() {
-        return 20;
+        return 20 * 20; // 20s
     }
 
     public static List<String> getAllThrowDirections() {
