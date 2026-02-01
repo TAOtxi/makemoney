@@ -13,7 +13,7 @@
     "makemoney.module.enabled": "模块总开关",
     "makemoney.module.enabled.desc": "关闭后，将禁用此模块",
 
-    "makemoney.autorepair.replace.name": "自动经验修补",
+    "makemoney.autorepair.replace.name": "自动替换经验修补",
     "makemoney.autorepair.replace.desc": "会尝试将背包内带有经验修补且耐久未满的装备替换到副手",
     "makemoney.autorepair.replaceEnabled": "装备自动替换开关",
     "makemoney.autorepair.replaceEnabled.desc": "开启后，会在检查到副手装备需要替换时，尝试将装备替换到副手",

@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
 import com.example.gui.ConfigScreen;
 import com.example.module.AutoDrop.AutoDropConfig;
+import com.example.util.EventBus;
 import com.example.util.MLogger;
 import com.example.util.T;
 import com.example.util.TickCounter;
@@ -71,11 +72,9 @@ public class AutoRepair {
                         context.getSource().sendFeedback(T.tl("message.disable", MODULE_NAME));
                         return 1;
                     }))
-                // TODO: 寻找用指令打开配置界面的方法
                 .then(ClientCommandManager.literal("config")
                     .executes(context -> {
-                        Minecraft client = context.getSource().getClient();
-                        client.setScreen(ConfigScreen.getConfigScreen(client.screen));
+                        EventBus.post("openConfigGui");
                         return 1;
                     }))
                 );

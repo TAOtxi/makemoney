@@ -15,6 +15,7 @@ import com.example.module.AutoDrop.AutoDrop;
 import com.example.module.AutoRepair.AutoRepair;
 import com.example.module.EntityHighlightBox.EntityHighlightBox;
 import com.example.test.TestMod;
+import com.example.util.EventBus;
 import com.example.util.Message;
 import com.example.util.T;
 
@@ -45,15 +46,13 @@ public class Makemoney implements ModInitializer {
         AutoDrop.init();
 		// EntityHighlightBox.init();
         registerTickEvents();
-
-        ScreenEvents.AFTER_INIT.register((client, screen, width, height) -> {
-            Message.sendMessage("Screen: " + screen.getClass().getSimpleName());
-        });
+        registerSomeEvents();
 	}
 
-    public void registerTickEvents() {
+    private void registerTickEvents() {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (client.level == null || client.player == null) return;
+            EventBus.checkQueue();
             
             tickCounter++;
             AutoRepair.registerTickEvents(client, tickCounter);
@@ -65,5 +64,18 @@ public class Makemoney implements ModInitializer {
             //     client.setScreen(ConfigScreen.getConfigScreen(client.screen));
             // }
         });
+    }
+
+    private void registerSomeEvents() {
+        ScreenEvents.AFTER_INIT.register((client, screen, width, height) -> {
+            // Message.sendMessage("Screen: " + screen.getClass().getSimpleName());
+        });
+
+        EventBus.register("openConfigGui", () -> {
+            Minecraft client = Minecraft.getInstance();
+            if (client.screen != null) return;
+            client.setScreen(ConfigScreen.getConfigScreen(null));
+            EventBus.removeFromQueue("openConfigGui");
+        }, false);
     }
 }

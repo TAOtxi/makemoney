@@ -5,6 +5,7 @@ import java.util.TimerTask;
 
 import com.example.Makemoney;
 import com.example.gui.ConfigScreen;
+import com.example.util.EventBus;
 import com.example.util.MLogger;
 import com.example.util.Message;
 import com.example.util.T;
@@ -58,11 +59,9 @@ public class AutoDrop {
                         context.getSource().sendFeedback(T.tl("message.disable", MODULE_NAME));
                         return 1;
                     }))
-                // TODO: 寻找用指令打开配置界面的方法
                 .then(ClientCommandManager.literal("config")
                     .executes(context -> {
-                        Minecraft client = context.getSource().getClient();
-                        client.setScreen(ConfigScreen.getConfigScreen(client.screen));
+                        EventBus.post("openConfigGui");
                         return 1;
                     }))
                 );
