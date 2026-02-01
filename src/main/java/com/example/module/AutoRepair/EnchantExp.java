@@ -11,6 +11,7 @@ import net.minecraft.world.inventory.AnvilMenu;
 import net.minecraft.world.inventory.ClickType;
 
 import com.example.common.Code;
+import com.example.util.Message;
 import com.example.util.SwapSlot;
 
 public class EnchantExp {
@@ -24,55 +25,65 @@ public class EnchantExp {
         Player player = client.player;
         if (!(player.containerMenu instanceof AnvilMenu anvilMenu)) return;
 
-        int[] resultSlots = findExpEquitmentSlot();
-        if (resultSlots[0] == Code.NOT_FOUND || resultSlots[1] == Code.NOT_FOUND) return;
+        int equitmentSlot = Code.NOT_FOUND;
+        int mendingBookSlot = Code.NOT_FOUND;
 
-
-        if (checkIsNeedOrDrop(anvilMenu, AnvilMenu.INPUT_SLOT))
-            SwapSlot.anvilSwaper(anvilMenu, resultSlots[0], AnvilMenu.INPUT_SLOT);
-        if (checkIsNeedOrDrop(anvilMenu, AnvilMenu.ADDITIONAL_SLOT))
-            SwapSlot.anvilSwaper(anvilMenu, resultSlots[1], AnvilMenu.ADDITIONAL_SLOT);
+        // check INPUT_SLOT
+        if (checkIsNeed(anvilMenu, AnvilMenu.INPUT_SLOT)) {
+            equitmentSlot = findEquitment(player);
+            if (equitmentSlot == Code.NOT_FOUND) return;
+            SwapSlot.anvilSwaper(anvilMenu, equitmentSlot, AnvilMenu.INPUT_SLOT);
+        }
+        // check ADDITIONAL_SLOT
+        if (checkIsNeed(anvilMenu, AnvilMenu.ADDITIONAL_SLOT)) {
+            mendingBookSlot = findMendingBook(player);
+            if (mendingBookSlot == Code.NOT_FOUND) return;
+            SwapSlot.anvilSwaper(anvilMenu, mendingBookSlot, AnvilMenu.ADDITIONAL_SLOT);
+        }
+        
+        if (player.experienceLevel < anvilMenu.getCost()) {
+            // Message.sendMessage("Not enough experience to enchant Mending");
+            return;
+        }
         client.gameMode.handleInventoryMouseClick(anvilMenu.containerId, AnvilMenu.RESULT_SLOT, 0, ClickType.THROW, player);
 
-        AutoRepair.LOGGER.info("Enchanting Mending on slot {} and {}", resultSlots[0], resultSlots[1]);
+        // AutoRepair.LOGGER.info("Enchanting Mending on slot {} and {}", equitmentSlot, mendingBookSlot);
     }
 
-    public static int[] findExpEquitmentSlot() {
-        Player player = Minecraft.getInstance().player;
-
-        int[] resultSlots = new int[] {Code.NOT_FOUND, Code.NOT_FOUND};
-
-        AnvilMenu anvilMenu = (AnvilMenu) player.containerMenu;
-        for (int i=AnvilMenu.RESULT_SLOT+1; i<AnvilMenu.RESULT_SLOT+1+3*9; i++) {
+    private static int findEquitment(Player player) {
+        if (!(player.containerMenu instanceof AnvilMenu anvilMenu)) return Code.NOT_FOUND;
+        for (int i=AnvilMenu.RESULT_SLOT+1; i<AnvilMenu.RESULT_SLOT+1+4*9; i++) {
             ItemStack item = anvilMenu.getSlot(i).getItem();
-            if (resultSlots[1] == Code.NOT_FOUND && 
-                item.is(Items.ENCHANTED_BOOK) && 
-                Replace.hasEnchantment(item, Enchantments.MENDING)
-            ) {
-                // AutoRepair.LOGGER.info("Found Mending Book on slot {}", i);
-                resultSlots[1] = i;
-            } else if (resultSlots[0] == Code.NOT_FOUND 
-                && getMending().canEnchant(item) && 
+            if (!item.is(Items.ENCHANTED_BOOK) &&
+                getMending().canEnchant(item) &&
                 !Replace.hasEnchantment(item, Enchantments.MENDING)
-
             ) {
-                // AutoRepair.LOGGER.info("Found none mending equiment {} on slot {}", item.getHoverName().getString(), i);
-                resultSlots[0] = i;
-            }
-            if (resultSlots[0] != Code.NOT_FOUND && resultSlots[1] != Code.NOT_FOUND) {
-                break;
+                return i;
             }
         }
-        return resultSlots;
+        return Code.NOT_FOUND;
     }
 
-    /* 
+    private static int findMendingBook(Player player) {
+        if (!(player.containerMenu instanceof AnvilMenu anvilMenu)) return Code.NOT_FOUND;
+        for (int i=AnvilMenu.RESULT_SLOT+1; i<AnvilMenu.RESULT_SLOT+1+4*9; i++) {
+            ItemStack item = anvilMenu.getSlot(i).getItem();
+            if (item.is(Items.ENCHANTED_BOOK) && 
+                Replace.hasEnchantment(item, Enchantments.MENDING)
+            ) {
+                return i;
+            }
+        }
+        return Code.NOT_FOUND;
+    }
+
+    /** 
      * 检查anvil容器的slot是否需要从背包添加物品
      * @param anvilMenu anvil容器
      * @param slot 要检查的slot，必须是AnvilMenu.INPUT_SLOT或AnvilMenu.ADDITIONAL_SLOT
      * @return 是否需要添加
-     */
-    public static boolean checkIsNeedOrDrop(AnvilMenu anvilMenu, int slot) {
+     **/
+    public static boolean checkIsNeed(AnvilMenu anvilMenu, int slot) {
         if (slot != AnvilMenu.INPUT_SLOT && slot != AnvilMenu.ADDITIONAL_SLOT) {
             throw new IllegalArgumentException("slot must be AnvilMenu.INPUT_SLOT or AnvilMenu.ADDITIONAL_SLOT");
         }
@@ -84,7 +95,7 @@ public class EnchantExp {
             // 第一格不能是附魔书，并且要能附魔经验修补且本身也没有经验修补的附魔
             if (item.is(Items.ENCHANTED_BOOK) ||
                 !getMending().canEnchant(item) ||
-                !Replace.hasEnchantment(item, Enchantments.MENDING)
+                Replace.hasEnchantment(item, Enchantments.MENDING)
             ) {
                 client.gameMode.handleInventoryMouseClick(
                     anvilMenu.containerId, AnvilMenu.INPUT_SLOT, 0, ClickType.THROW, client.player

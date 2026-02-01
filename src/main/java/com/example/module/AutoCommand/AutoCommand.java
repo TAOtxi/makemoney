@@ -19,8 +19,7 @@ public class AutoCommand {
 
 
     public static void init() {
-        // updateTickCounter();
-        // registerTickEvents();
+        updateTickCounter();
     }
 
     public static void registerTickEvents(Minecraft client, int tickCounter) {

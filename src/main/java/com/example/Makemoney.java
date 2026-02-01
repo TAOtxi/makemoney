@@ -56,7 +56,7 @@ public class Makemoney implements ModInitializer {
             
             tickCounter++;
             AutoRepair.registerTickEvents(client, tickCounter);
-            // AutoCommand.registerTickEvents(client, tickCounter);
+            AutoCommand.registerTickEvents(client, tickCounter);
             AutoDrop.registerTickEvents(client, tickCounter);
             // EntityHighlightBox.registerTickEvents(client, tickCounter);
             // if (tickCounter % 100 == 0) {
