@@ -1,14 +1,10 @@
 package com.example.util;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import com.example.Makemoney;
 
-import net.minecraft.client.Minecraft;
 
 public class Message {
     private static final Minecraft client = Minecraft.getInstance();

@@ -9,7 +9,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.example.util.T;
+
+import dev.isxander.yacl3.gui.YACLScreen;
+
 import com.example.util.EventBus;
+import com.example.util.Message;
 import com.example.test.TestMod;
 import com.example.gui.ConfigScreen;
 import com.example.module.AutoDrop.AutoDrop;
@@ -59,15 +63,34 @@ public class Makemoney implements ModInitializer {
     }
 
     private void registerSomeEvents() {
-        ScreenEvents.AFTER_INIT.register((client, screen, width, height) -> {
-            // Message.sendMessage("Screen: " + screen.getClass().getSimpleName());
-        });
+        // ScreenEvents.AFTER_INIT.register((client, screen, width, height) -> {
+        //     Message.sendMessage("Screen: " + screen.getClass().getSimpleName());
+        // });
 
-        EventBus.register("openConfigGui", () -> {
+        EventBus.register("openConfigGui", (args) -> {
             Minecraft client = Minecraft.getInstance();
-            if (client.screen != null) return;
-            client.setScreen(ConfigScreen.getConfigScreen(null));
-            EventBus.removeFromQueue("openConfigGui");
-        }, false);
+            if (client.screen != null) {
+                EventBus.post("openConfigGui", args);
+                return;
+            }
+            
+            YACLScreen configScreen = (YACLScreen) ConfigScreen.getConfigScreen(null);
+            configScreen.init(client, client.getWindow().getGuiScaledWidth(), client.getWindow().getGuiScaledHeight());
+            int tabIndex = -1;
+            String title = (String) args.get("title");
+            for (int i=0; i<configScreen.tabNavigationBar.getTabs().size(); i++) {
+                if (configScreen.tabNavigationBar.getTabs().get(i).getTabTitle().getString().equals(title)) {
+                    tabIndex = i;
+                    break;
+                }
+            }
+            if (tabIndex == -1) {
+                LOGGER.error("Can not find tab with title: " + title);
+                return;
+            }
+            // true: play click sound
+            configScreen.tabNavigationBar.selectTab(tabIndex, true);
+            client.setScreen(configScreen);
+        });
     }
 }

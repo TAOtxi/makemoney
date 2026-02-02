@@ -11,7 +11,6 @@ import net.minecraft.world.inventory.AnvilMenu;
 import net.minecraft.world.inventory.ClickType;
 
 import com.example.common.Code;
-import com.example.util.Message;
 import com.example.util.SwapSlot;
 
 public class EnchantExp {

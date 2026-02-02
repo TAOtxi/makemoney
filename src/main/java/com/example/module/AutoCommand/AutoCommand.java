@@ -1,7 +1,6 @@
 package com.example.module.AutoCommand;
 
 
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.Minecraft;
 
 import com.example.util.MLogger;

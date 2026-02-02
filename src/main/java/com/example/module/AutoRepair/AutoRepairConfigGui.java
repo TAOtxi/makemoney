@@ -14,8 +14,8 @@ public class AutoRepairConfigGui {
     public static ConfigCategory.Builder createFishingCategoryBuilder(Screen parent) {
         ConfigCategory.Builder category = 
             ConfigCategory.createBuilder()
-                .name(T.tl("gui.config.category.fishing.name"))
-                .tooltip(T.tl("gui.config.category.fishing.tooltip"));
+                .name(T.tl("autorepair.name"))
+                .tooltip(T.tl("autorepair.desc"));
 
         category.option(Factory.addToggleOption(
             T.tl("module.enabled"),

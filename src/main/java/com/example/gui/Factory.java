@@ -3,16 +3,13 @@ package com.example.gui;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import com.example.module.AutoRepair.AutoRepair;
 import com.example.util.T;
 
-import dev.isxander.yacl3.api.ConfigCategory;
-import dev.isxander.yacl3.api.Option;
-import dev.isxander.yacl3.api.OptionDescription;
-import dev.isxander.yacl3.api.OptionGroup;
-import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import dev.isxander.yacl3.api.Option;
+import dev.isxander.yacl3.api.OptionDescription;
+import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
 
 public class Factory {
     public static Option<Boolean> addToggleOption(

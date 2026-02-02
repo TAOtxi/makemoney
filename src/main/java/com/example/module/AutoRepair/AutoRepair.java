@@ -4,14 +4,12 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
-import com.example.gui.ConfigScreen;
-import com.example.module.AutoDrop.AutoDropConfig;
+import java.util.Map;
+
 import com.example.util.EventBus;
 import com.example.util.MLogger;
 import com.example.util.T;
-import com.example.util.TickCounter;
 
 
 public class AutoRepair {
@@ -51,7 +49,7 @@ public class AutoRepair {
 
         private static void registerCommand() {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-            dispatcher.register(ClientCommandManager.literal("autorepair")
+            dispatcher.register(ClientCommandManager.literal(MODULE_NAME)
                 .then(ClientCommandManager.literal("reload")
                     .executes(context -> {
                         context.getSource().sendFeedback(T.tl("message.reload", MODULE_NAME));
@@ -70,11 +68,11 @@ public class AutoRepair {
                         config.enabled = false;
                         config.save();
                         context.getSource().sendFeedback(T.tl("message.disable", MODULE_NAME));
-                        return 1;
+                        return 1;   
                     }))
                 .then(ClientCommandManager.literal("config")
                     .executes(context -> {
-                        EventBus.post("openConfigGui");
+                        EventBus.post("openConfigGui", Map.of("title", T.t("autorepair.name")));
                         return 1;
                     }))
                 );

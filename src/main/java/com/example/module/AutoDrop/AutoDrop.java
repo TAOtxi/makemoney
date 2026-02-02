@@ -1,10 +1,8 @@
 package com.example.module.AutoDrop;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.Map;
 
 import com.example.Makemoney;
-import com.example.gui.ConfigScreen;
 import com.example.util.EventBus;
 import com.example.util.MLogger;
 import com.example.util.Message;
@@ -12,7 +10,6 @@ import com.example.util.T;
 
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.Minecraft;
 
 public class AutoDrop {
@@ -61,7 +58,7 @@ public class AutoDrop {
                     }))
                 .then(ClientCommandManager.literal("config")
                     .executes(context -> {
-                        EventBus.post("openConfigGui");
+                        EventBus.post("openConfigGui", Map.of("title", T.t("autodrop.name")));
                         return 1;
                     }))
                 );
