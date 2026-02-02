@@ -38,7 +38,7 @@ public class AutoDrop {
 
     private static void registerCommand() {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-            dispatcher.register(ClientCommandManager.literal("autodrop")
+            dispatcher.register(ClientCommandManager.literal(MODULE_NAME)
                 .then(ClientCommandManager.literal("reload")
                     .executes(context -> {
                         context.getSource().sendFeedback(T.tl("message.reload", MODULE_NAME));

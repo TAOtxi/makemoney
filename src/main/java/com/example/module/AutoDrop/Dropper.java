@@ -22,11 +22,12 @@ import com.example.util.ItemStackUtil;
 
 
 public class Dropper {
+    // TODO: 如果命名空间是minecraft，可以省略命名空间
     public static void tryToDropItems() {
         Minecraft client = Minecraft.getInstance();
         LocalPlayer player = client.player;
 
-        // TODO: 待优化
+        // when player is open a container or in a config GUI, do not drop items
         if (player.hasContainerOpen() || client.screen instanceof YACLScreen) return;
 
         for (int i = InventoryMenu.INV_SLOT_START; i < InventoryMenu.USE_ROW_SLOT_END; i++) {
@@ -61,7 +62,7 @@ public class Dropper {
             /**
              * 有点绕，梳理下思路
              * 1. 如果check.tags包含`*`，匹配直接通过
-             * 2. 如果check.tags为空，即便itemTags也为空，匹配也不通过    TODO: 有待斟酌是否合理
+             * 2. 如果check.tags为空，即便itemTags也为空，匹配也不通过
              * 3. 如果itemTags和check.tags有交集，则通过
              * 下面第一个if不赘述
              * 第二个if：没有包含`*`，且itemTags和check.tags没有交集，表示匹配不通过
