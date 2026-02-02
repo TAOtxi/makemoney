@@ -22,7 +22,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 
 import com.example.Makemoney;
-import com.example.module.AutoCommand.AutoCommand;
 import com.example.module.AutoDrop.AutoDrop;
 import com.example.module.AutoDrop.AutoDropConfig;
 import com.example.module.AutoDrop.Dropper;
