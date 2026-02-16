@@ -37,13 +37,13 @@ public class Makemoney implements ModInitializer {
         // AutoDrop.config.remove();
         // EntityHighlightBox.config.remove();
         
-		AutoRepair.init();
+		// AutoRepair.init();
         AutoDrop.init();
-		EntityHighlightBox.init();
+		// EntityHighlightBox.init();
         registerTickEvents();
         registerSomeEvents();
         
-        TestMod.register();
+        // TestMod.register();
 	}
 
     private void registerTickEvents() {
@@ -52,7 +52,7 @@ public class Makemoney implements ModInitializer {
             EventBus.checkQueue();
             
             tickCounter++;
-            AutoRepair.registerTickEvents(client, tickCounter);
+            // AutoRepair.registerTickEvents(client, tickCounter);
             AutoDrop.registerTickEvents(client, tickCounter);
             // EntityHighlightBox.registerTickEvents(client, tickCounter);
             // if (tickCounter % 100 == 0) {

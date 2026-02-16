@@ -17,9 +17,11 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.entity.projectile.FishingHook;
 
 import com.example.Makemoney;
 import com.example.module.AutoDrop.AutoDrop;
@@ -76,12 +78,14 @@ public class TestMod {
                 return 1;
             }).then(ClientCommandManager.literal("entity").executes(context -> {
                 context.getSource().sendFeedback(T.l("Show entity information"));
-                LocalPlayer player = context.getSource().getPlayer();
-                Makemoney.LOGGER.info("Name: {}", player.getName().getString());
-                Makemoney.LOGGER.info("DisplayName: {}", player.getDisplayName().getString());
-                Makemoney.LOGGER.info("Type: {}", EntityUtil.getType(player));
-                Makemoney.LOGGER.info("TypeDescription: {}", player.getType().getDescription().getString());
-                Makemoney.LOGGER.info("TypeDescriptionId: {}", player.getType().getDescriptionId());
+                Minecraft client = context.getSource().getClient();
+                
+                LocalPlayer player = client.player;
+                AABB box = player.getBoundingBox().inflate(10);
+                List<Entity> list = client.level.getEntities(player, box);
+                for (Entity entity : list) {
+                    if (entity instanceof LocalPlayer) continue;
+                }
                 return 1;
             }));
             dispatcher.register(showinfo);

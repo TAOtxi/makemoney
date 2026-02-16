@@ -23,23 +23,23 @@ public class ConfigScreen {
             YetAnotherConfigLib.createBuilder()
                 .title(T.tl("gui.config.title"))
                 .save(() -> {
-                    AutoRepair.config.save();
+                    // AutoRepair.config.save();
                     AutoDrop.config.save();
-                    EntityHighlightBox.config.save();
+                    // EntityHighlightBox.config.save();
                     Makemoney.LOGGER.info("Config saved...");
                 });
 
         // 钓鱼相关模块
-        ConfigCategory.Builder fishingCategory = AutoRepairConfigGui.createFishingCategoryBuilder(parent);
-        builder.category(fishingCategory.build());
+        // ConfigCategory.Builder fishingCategory = AutoRepairConfigGui.createFishingCategoryBuilder(parent);
+        // builder.category(fishingCategory.build());
 
         // 自动丢弃模块
         ConfigCategory.Builder autodropCategory = AutoDropConfigGui.createAutoDropCategoryBuilder(parent);
         builder.category(autodropCategory.build());
         
         // 实体高亮模块
-        ConfigCategory.Builder entityHighlightBoxCategory = EntityHighlightBoxConfigGui.createEntityHighlightBoxCategoryBuilder(parent);
-        builder.category(entityHighlightBoxCategory.build());
+        // ConfigCategory.Builder entityHighlightBoxCategory = EntityHighlightBoxConfigGui.createEntityHighlightBoxCategoryBuilder(parent);
+        // builder.category(entityHighlightBoxCategory.build());
 
         YetAnotherConfigLib yacl = builder.build();
         return yacl.generateScreen(parent);
