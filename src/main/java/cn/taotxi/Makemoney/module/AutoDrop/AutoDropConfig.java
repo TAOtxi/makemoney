@@ -20,6 +20,10 @@ public class AutoDropConfig extends BaseConfig {
     public String throwDirection = getDefaultThrowDirection();
     public int checkInterval = getDefaultCheckInterval();
     public List<Item> items = new ArrayList<>();
+
+    public static String getDefaultConfigVersion() {
+        return "1.0";
+    }
     
     public static boolean getDefaultEnabled() {
         return false;

@@ -14,6 +14,10 @@ public class AutoRepairConfig extends BaseConfig {
     public boolean repairEnabled = AutoRepairConfig.getDefaultRepairEnabled();
     public int repairInterval = AutoRepairConfig.getDefaultRepairInterval();
 
+    public static String getDefaultConfigVersion() {
+        return "1.0";
+    }
+
     public static boolean getDefaultEnabled() {
         return false;
     }
