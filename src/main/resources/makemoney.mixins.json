@@ -1,6 +1,6 @@
 {
 	"required": true,
-	"package": "com.example.mixin",
+	"package": "cn.taotxi.Makemoney.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
 		"ExampleMixin"

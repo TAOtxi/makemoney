@@ -16,10 +16,10 @@
 	"environment": "client",
 	"entrypoints": {
 		"main": [
-			"com.example.Makemoney"
+			"cn.taotxi.Makemoney.Makemoney"
 		],
 		"modmenu": [
-        	"com.example.config.ModMenuIntegration"
+        	"cn.taotxi.Makemoney.config.ModMenuIntegration"
     	]
 	},
 	"mixins": [
