@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cn.taotxi.Makemoney.gui.ConfigScreen;
+import cn.taotxi.Makemoney.module.AutoAction.AutoAction;
 import cn.taotxi.Makemoney.module.AutoDrop.AutoDrop;
 import cn.taotxi.Makemoney.module.AutoRepair.AutoRepair;
 import cn.taotxi.Makemoney.module.EntityHighlightBox.EntityHighlightBox;
@@ -36,6 +37,7 @@ public class Makemoney implements ModInitializer {
         
 		// AutoRepair.init();
         AutoDrop.init();
+        AutoAction.init();
 		// EntityHighlightBox.init();
         registerTickEvents();
         registerSomeEvents();
@@ -51,6 +53,8 @@ public class Makemoney implements ModInitializer {
             tickCounter++;
             // AutoRepair.registerTickEvents(client, tickCounter);
             AutoDrop.registerTickEvents(client, tickCounter);
+            AutoAction.registerTickEvents(client, tickCounter);
+
             // EntityHighlightBox.registerTickEvents(client, tickCounter);
             // if (tickCounter % 100 == 0) {
             //     Message.sendMessage("try...");
