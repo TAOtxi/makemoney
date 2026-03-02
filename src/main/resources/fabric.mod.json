@@ -11,7 +11,7 @@
 		"homepage": "https://github.com/TAOtxi",
 		"sources": "https://github.com/TAOtxi/makemoney"
 	},
-	"license": "CC0-1.0",
+	"license": "AGPL-3.0",
 	"icon": "assets/makemoney/icon.png",
 	"environment": "client",
 	"entrypoints": {
