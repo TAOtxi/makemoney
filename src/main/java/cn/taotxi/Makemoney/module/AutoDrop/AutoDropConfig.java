@@ -22,7 +22,7 @@ public class AutoDropConfig extends BaseConfig {
     public List<Item> items = new ArrayList<>();
 
     public static String getDefaultConfigVersion() {
-        return "1.0";
+        return "0.0.1";
     }
     
     public static boolean getDefaultEnabled() {

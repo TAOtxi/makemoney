@@ -15,7 +15,7 @@ public class AutoRepairConfig extends BaseConfig {
     public int repairInterval = AutoRepairConfig.getDefaultRepairInterval();
 
     public static String getDefaultConfigVersion() {
-        return "1.0";
+        return "0.0.1";
     }
 
     public static boolean getDefaultEnabled() {
