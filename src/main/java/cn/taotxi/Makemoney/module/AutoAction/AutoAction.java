@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -19,6 +20,7 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickType;
@@ -32,13 +34,6 @@ public class AutoAction {
     private static int nextRunTick = 0;
     private static boolean isRunning = false;
     private static List<Action> actions = new ArrayList<>();
-
-    public static void init() {
-        registerCommand();
-        ScreenEvents.AFTER_INIT.register((client, screen, width, height) -> {
-            Message.chatMsg("Screen: " + screen.getClass().getSimpleName());
-        });
-    }
 
     public static void registerTickEvents(Minecraft client, int tickCounter) {
         sellWitherSkeletonSkull(client);
@@ -76,30 +71,29 @@ public class AutoAction {
         runActionIndex++;
     }
 
-    private static void registerCommand() {
-        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-            dispatcher.register(ClientCommandManager.literal(MODULE_NAME)
-                .then(ClientCommandManager.literal("start").executes(AutoAction::start))
-                .then(ClientCommandManager.literal("reset").executes(AutoAction::stop))
-                .then(ClientCommandManager.literal("delay")
+    public static void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher,
+            CommandBuildContext registryAccess) {
+        dispatcher.register(ClientCommandManager.literal(MODULE_NAME)
+            .then(ClientCommandManager.literal("start").executes(AutoAction::start))
+            .then(ClientCommandManager.literal("reset").executes(AutoAction::stop))
+            .then(ClientCommandManager.literal("delay")
+                .then(ClientCommandManager.argument("delay", IntegerArgumentType.integer(1))
+                    .executes(AutoAction::setDelay)))
+            .then(ClientCommandManager.literal("cmdAction")
+                .then(ClientCommandManager.argument("cmd", StringArgumentType.string())
                     .then(ClientCommandManager.argument("delay", IntegerArgumentType.integer(1))
-                        .executes(AutoAction::setDelay)))
-                .then(ClientCommandManager.literal("cmdAction")
-                    .then(ClientCommandManager.argument("cmd", StringArgumentType.string())
+                        .executes(AutoAction::addCommand))))
+            .then(ClientCommandManager.literal("clickAction")
+                .then(ClientCommandManager.argument("slot", IntegerArgumentType.integer(0))
+                    .then(ClientCommandManager.argument("clickType", StringArgumentType.string())
                         .then(ClientCommandManager.argument("delay", IntegerArgumentType.integer(1))
-                            .executes(AutoAction::addCommand))))
-                .then(ClientCommandManager.literal("clickAction")
-                    .then(ClientCommandManager.argument("slot", IntegerArgumentType.integer(0))
-                        .then(ClientCommandManager.argument("clickType", StringArgumentType.string())
-                            .then(ClientCommandManager.argument("delay", IntegerArgumentType.integer(1))
-                                .executes(AutoAction::addClick)))))
-                .then(ClientCommandManager.literal("delayAction")
-                    .then(ClientCommandManager.argument("delay", IntegerArgumentType.integer(1))
-                        .executes(AutoAction::addDelayLaunch)))
-                .then(ClientCommandManager.literal("loopAction")
-                    .executes(AutoAction::addLoop))
-            );
-        });
+                            .executes(AutoAction::addClick)))))
+            .then(ClientCommandManager.literal("delayAction")
+                .then(ClientCommandManager.argument("delay", IntegerArgumentType.integer(1))
+                    .executes(AutoAction::addDelayLaunch)))
+            .then(ClientCommandManager.literal("loopAction")
+                .executes(AutoAction::addLoop))
+        );
     }
 
     private static int start(CommandContext<FabricClientCommandSource> context) {

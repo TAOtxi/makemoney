@@ -2,6 +2,7 @@ package cn.taotxi.Makemoney;
 
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.Minecraft;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
 import org.slf4j.Logger;
@@ -28,22 +29,20 @@ public class Makemoney implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		LOGGER.info("Starting mod...");
-		LOGGER.info("Mod description: {}", T.t("gui.config.category.fishing.tooltip"));
-
         
-        // AutoRepair.config.remove();
-        // AutoDrop.config.remove();
-        // EntityHighlightBox.config.remove();
-        
-		// AutoRepair.init();
-        AutoDrop.init();
-        AutoAction.init();
-		// EntityHighlightBox.init();
         registerTickEvents();
         registerSomeEvents();
-        
+        registerCommand();
         // TestMod.register();
 	}
+
+    private void registerCommand() {
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+            AutoRepair.registerCommand(dispatcher, registryAccess);
+            AutoDrop.registerCommand(dispatcher, registryAccess);
+            AutoAction.registerCommand(dispatcher, registryAccess);
+        });
+    }
 
     private void registerTickEvents() {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
@@ -56,10 +55,6 @@ public class Makemoney implements ModInitializer {
             AutoAction.registerTickEvents(client, tickCounter);
 
             // EntityHighlightBox.registerTickEvents(client, tickCounter);
-            // if (tickCounter % 100 == 0) {
-            //     Message.sendMessage("try...");
-            //     client.setScreen(ConfigScreen.getConfigScreen(client.screen));
-            // }
         });
     }
 

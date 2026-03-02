@@ -1,44 +1,28 @@
 package cn.taotxi.Makemoney.module.AutoRepair;
 
-import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.network.chat.MutableComponent;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 
 import java.util.Map;
+
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.context.CommandContext;
 
 import cn.taotxi.Makemoney.util.EventBus;
 import cn.taotxi.Makemoney.util.MLogger;
 import cn.taotxi.Makemoney.util.T;
 
-
 public class AutoRepair {
     public static final String MODULE_NAME = "autorepair";
     public static final MLogger LOGGER = new MLogger(MODULE_NAME);
     public static AutoRepairConfig config = AutoRepairConfig.load(AutoRepairConfig.class, MODULE_NAME);
-    public static KeyMapping toggleKey;
-
-    public static void init() {
-        LOGGER.info("Initializing AutoRepair module...");
-        registerCommand();
-        // toggleKey = new KeyMapping(
-        //     "key.autorepair.toggle",
-        //     InputConstants.Type.KEYSYM,
-        //     GLFW.GLFW_KEY_F10,
-        //     "key.categories.makemoney"
-        // );
-    }
 
     public static void registerTickEvents(Minecraft client, int tickCounter) {
-        if (!config.enabled) return;
-        // if (client.player == null || client.level == null) return;
-        // if (toggleKey.consumeClick()) {
-        //     config.enabled = !config.enabled;
-        //     config.save();
-        //     LOGGER.info("AutoRepair toggled to {}", config.enabled);
-        //     Message.subTitleMsg(T.t(".message.toggled", config.enabled));
-        // }
-        // ticker.run();
+        if (!config.enabled)
+            return;
         if (tickCounter % config.checkoffHandInterval == 0) {
             Replace.tryToReplace();
         }
@@ -47,35 +31,42 @@ public class AutoRepair {
         }
     }
 
-        private static void registerCommand() {
-        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-            dispatcher.register(ClientCommandManager.literal(MODULE_NAME)
-                .then(ClientCommandManager.literal("reload")
-                    .executes(context -> {
-                        context.getSource().sendFeedback(T.tl("message.reload", MODULE_NAME));
-                        config = AutoRepairConfig.load(AutoRepairConfig.class, MODULE_NAME);
-                        return 1;
-                    }))
-                .then(ClientCommandManager.literal("enable")
-                    .executes(context -> {
-                        config.enabled = true;
-                        config.save();
-                        context.getSource().sendFeedback(T.tl("message.enable", MODULE_NAME));
-                        return 1;
-                    }))
-                .then(ClientCommandManager.literal("disable")
-                    .executes(context -> {
-                        config.enabled = false;
-                        config.save();
-                        context.getSource().sendFeedback(T.tl("message.disable", MODULE_NAME));
-                        return 1;   
-                    }))
-                .then(ClientCommandManager.literal("config")
-                    .executes(context -> {
-                        EventBus.post("openConfigGui", Map.of("title", T.t("autorepair.name")));
-                        return 1;
-                    }))
-                );
-        });
+    public static void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher,
+            CommandBuildContext registryAccess) {
+        dispatcher.register(ClientCommandManager.literal(MODULE_NAME).executes(AutoRepair::showHelp)
+            .then(ClientCommandManager.literal("help").executes(AutoRepair::showHelp))
+            .then(ClientCommandManager.literal("reload").executes(AutoRepair::reloadConfig))
+            .then(ClientCommandManager.literal("config").executes(AutoRepair::openConfigGui))
+            .then(ClientCommandManager.literal("true")
+                .executes(context -> toggleAutoRepair(context, true)))
+            .then(ClientCommandManager.literal("false")
+                .executes(context -> toggleAutoRepair(context, false)))
+        );
+    }
+
+    private static int showHelp(CommandContext<FabricClientCommandSource> context) {
+        context.getSource().sendFeedback(T.tl(MODULE_NAME + ".message.help"));
+        return 1;
+    }
+
+    private static int reloadConfig(CommandContext<FabricClientCommandSource> context) {
+        config = AutoRepairConfig.load(AutoRepairConfig.class, MODULE_NAME);
+        return 1;
+    }
+
+    private static int toggleAutoRepair(CommandContext<FabricClientCommandSource> context, boolean enable) {
+        MutableComponent feedbackMsg = T.tl("message." + (enable ? "enable" : "disable"), MODULE_NAME);
+        context.getSource().sendFeedback(feedbackMsg);
+        if (config.enabled == enable) {
+            return 1;
+        }
+        config.enabled = enable;
+        config.save();
+        return 1;
+    }
+
+    private static int openConfigGui(CommandContext<FabricClientCommandSource> context) {
+        EventBus.post("openConfigGui", Map.of("title", T.t(MODULE_NAME + ".name")));
+        return 1;
     }
 }
