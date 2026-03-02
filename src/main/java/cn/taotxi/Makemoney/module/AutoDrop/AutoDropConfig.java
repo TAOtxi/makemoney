@@ -45,14 +45,14 @@ public class AutoDropConfig extends BaseConfig {
      * 所有方向请参考 {@link Direction}
      */
     public static String getDefaultThrowDirection() {
-        return Direction.LOOKING;
+        return Direction.LOOKING.name();
     }
 
     public static int getDefaultCheckInterval() {
         return 20 * 20; // 20s
     }
 
-    public static List<String> getAllThrowDirections() {
+    public static List<Direction> getAllThrowDirections() {
         return List.of(Direction.DOWN, Direction.UP, Direction.EAST, Direction.WEST, Direction.NORTH, Direction.SOUTH, Direction.LOOKING);
     }
 
@@ -179,13 +179,7 @@ public class AutoDropConfig extends BaseConfig {
         }
     }
 
-    public class Direction {
-        public static final String DOWN = "down";
-        public static final String UP = "up";
-        public static final String EAST = "east";
-        public static final String WEST = "west";
-        public static final String NORTH = "north";
-        public static final String SOUTH = "south";
-        public static final String LOOKING = "looking";
+    public enum Direction {
+        DOWN, UP, EAST, WEST, NORTH, SOUTH, LOOKING
     }
 }

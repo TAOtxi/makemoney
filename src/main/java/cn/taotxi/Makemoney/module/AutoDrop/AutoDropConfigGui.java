@@ -115,7 +115,7 @@ public class AutoDropConfigGui {
                     val -> AutoDrop.config.throwDirection = val
                 )
                 .controller(opt -> DropdownStringControllerBuilder.create(opt)
-                        .values(AutoDropConfig.getAllThrowDirections()))
+                        .values(AutoDropConfig.getAllThrowDirections().stream().map(Enum::name).collect(Collectors.toList())))
                 .build()
         );
 

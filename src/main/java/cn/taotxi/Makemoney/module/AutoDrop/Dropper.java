@@ -126,26 +126,27 @@ public class Dropper {
     }
 
     public static void setPlayerRotation(String direction) {
-        switch (direction) {
-            case AutoDropConfig.Direction.UP:
+        AutoDropConfig.Direction dir = AutoDropConfig.Direction.valueOf(direction);
+        switch (dir) {
+            case UP:
                 setPlayerRotation(0, -90);
                 break;
-            case AutoDropConfig.Direction.DOWN:
+            case DOWN:
                 setPlayerRotation(0, 90);
                 break;
-            case AutoDropConfig.Direction.EAST:
+            case EAST:
                 setPlayerRotation(-90, 0);
                 break;
-            case AutoDropConfig.Direction.WEST:
+            case WEST:
                 setPlayerRotation(90, 0);
                 break;
-            case AutoDropConfig.Direction.NORTH:
+            case NORTH:
                 setPlayerRotation(-180, 0);
                 break;
-            case AutoDropConfig.Direction.SOUTH:
+            case SOUTH:
                 setPlayerRotation(0, 0);
                 break;
-            case AutoDropConfig.Direction.LOOKING:
+            case LOOKING:
                 break;
             default:
                 AutoDrop.LOGGER.error("Error direction: {} !!!", direction);
