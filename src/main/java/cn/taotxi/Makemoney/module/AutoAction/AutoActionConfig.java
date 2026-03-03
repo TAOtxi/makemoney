@@ -1,7 +1,9 @@
 package cn.taotxi.Makemoney.module.AutoAction;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cn.taotxi.Makemoney.config.BaseConfig;
 import net.minecraft.world.inventory.ClickType;
@@ -11,75 +13,66 @@ public class AutoActionConfig extends BaseConfig {
         super(moduleName);
     }
 
-    public List<ActionsConfig> actionConfigList = new ArrayList<>();
+    private Map<String, List<Map<String, String>>> actionConfigList;
 
     public List<Action> loadActions(String name) {
-        for (ActionsConfig config : actionConfigList) {
-            if (config.name.equals(name)) {
-                List<Action> actions = new ArrayList<>();
-                for (ActionConfig actionConfig : config.actions) {
-                    actions.add(createActions(actionConfig));
-                }
-                return actions;
-            }
+        List<Map<String, String>> actionsConfig = actionConfigList.get(name);
+        if (actionsConfig == null) {
+            return null;
         }
-        return null;
+        List<Action> actions = new ArrayList<>();
+        for (Map<String, String> actionConfig : actionsConfig) {
+            actions.add(configToAction(actionConfig));
+        }
+        return actions;
     }
 
     public List<String> getActionNames() {
-        List<String> names = new ArrayList<>();
-        for (ActionsConfig config : actionConfigList) {
-            names.add(config.name);
-        }
-        return names;
+        return new ArrayList<>(actionConfigList.keySet());
     }
 
     public void removeAction(String name) {
-        actionConfigList.removeIf(config -> config.name.equals(name));
-        save();
+        var result = actionConfigList.remove(name);
+        if (result != null) {
+            save();
+        }
     }
 
     public void toConfig(String name, List<Action> actions) {
-        actionConfigList.removeIf(config -> config.name.equals(name));
-
-        ActionsConfig config = new ActionsConfig();
-        config.name = name;
-        config.actions = new ArrayList<>();
+        List<Map<String, String>> actionsConfig = new ArrayList<>();
         for (Action action : actions) {
-            config.actions.add(createActionConfig(action));
+            actionsConfig.add(actionToConfig(action));
         }
-        actionConfigList.add(config);
+        actionConfigList.put(name, actionsConfig);
         save();
     }
 
-    public ActionConfig createActionConfig(Action action) {
-        ActionConfig config = new ActionConfig();
-        config.type = action.getClass().getSimpleName();
-        config.delay = action.delay;
+    public Map<String, String> actionToConfig(Action action) {
+        Map<String, String> data = new HashMap<>();
+        data.put("type", action.getClass().getSimpleName());
+        data.put("delay", String.valueOf(action.delay));
         if (action instanceof CommandAction cmd) {
-            config.data = cmd.command;
+            data.put("cmd", cmd.command);
         } else if (action instanceof ClickAction click) {
-            config.data = click.slot + ", " + click.clickType.name();
-        } else {
-            config.data = "";
+            data.put("slot", String.valueOf(click.slot));
+            data.put("clickType", click.clickType.name());
         }
-        return config;
+        return data;
     }
 
-    public Action createActions(ActionConfig config) {
-        if (config.type.equals(CommandAction.class.getSimpleName())) {
-            return new CommandAction(config.data, config.delay);
+    public Action configToAction(Map<String, String> config) {
+        if (config.get("type").equals(CommandAction.class.getSimpleName())) {
+            return new CommandAction(config.get("cmd"), Integer.parseInt(config.get("delay")));
 
-        } else if (config.type.equals(ClickAction.class.getSimpleName())) {
-            String[] clickData = config.data.replace(" ", "").split(",");
-            int slot = Integer.parseInt(clickData[0]);
-            ClickType clickType = ClickType.valueOf(clickData[1]);
-            return new ClickAction(slot, clickType, config.delay);
+        } else if (config.get("type").equals(ClickAction.class.getSimpleName())) {
+            int slot = Integer.parseInt(config.get("slot"));
+            ClickType clickType = ClickType.valueOf(config.get("clickType"));
+            return new ClickAction(slot, clickType, Integer.parseInt(config.get("delay")));
 
-        } else if (config.type.equals(LoopAction.class.getSimpleName())) {
+        } else if (config.get("type").equals(LoopAction.class.getSimpleName())) {
             return new LoopAction();
 
-        } else if (config.type.equals(CutAction.class.getSimpleName())) {
+        } else if (config.get("type").equals(CutAction.class.getSimpleName())) {
             return new CutAction();
         }
         return null;
@@ -87,17 +80,6 @@ public class AutoActionConfig extends BaseConfig {
     }
 
     public static String getDefaultConfigVersion() {
-        return "0.0.1";
+        return "0.0.2";
     }
-}
-
-class ActionsConfig {
-    public String name;
-    public List<ActionConfig> actions;
-}
-
-class ActionConfig {
-    public String type;
-    public String data;
-    public int delay;
 }
