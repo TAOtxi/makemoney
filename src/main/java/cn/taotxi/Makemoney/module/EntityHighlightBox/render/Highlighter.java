@@ -3,11 +3,11 @@ package cn.taotxi.Makemoney.module.EntityHighlightBox.render;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.joml.Matrix4fc;
 import org.joml.Vector3f;
 
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ShapeRenderer;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -51,10 +51,9 @@ public class Highlighter {
         if (client.player == null || client.level == null) return;
         if (entities.isEmpty()) return;
 
-        PoseStack matrices = context.matrixStack();
-        Vec3 camera = context.camera().getPosition();
+        PoseStack matrices = context.matrices();
+        Vec3 camera = context.worldState().cameraRenderState.pos;
 
-        assert matrices != null;
         matrices.pushPose();
         matrices.translate(-camera.x, -camera.y, -camera.z);
 
@@ -64,32 +63,30 @@ public class Highlighter {
             if (entity.isRemoved()) continue;
 
             Vector3f color = getColor(entity);
-            ShapeRenderer.renderLineBox(
-                matrices, 
-                buffer, 
-                entity.getBoundingBox().inflate(0.1), 
-                color.x, color.y, color.z, 1
-            );
+            renderBox(entity, matrices.last().pose(), buffer, color.x, color.y, color.z, 1);
         }
         matrices.popPose();
         CustomRenderPipeline.drawFilledThroughWalls(client, CustomRenderPipeline.FILLED_THROUGH_WALLS, buffer);
+    }
+
+    private static void renderBox(Entity entity, Matrix4fc positionMatrix, BufferBuilder buffer, 
+            float red, float green, float blue, float alpha) {
+        AABB box = entity.getBoundingBox().inflate(0.1);
+        buffer.addVertex(positionMatrix, (float)box.minX, (float)box.minY, (float)box.maxZ).setColor(red, green, blue, alpha);
+        buffer.addVertex(positionMatrix, (float)box.maxX, (float)box.minY, (float)box.maxZ).setColor(red, green, blue, alpha);
+        buffer.addVertex(positionMatrix, (float)box.maxX, (float)box.maxY, (float)box.maxZ).setColor(red, green, blue, alpha);
+        buffer.addVertex(positionMatrix, (float)box.minX, (float)box.maxY, (float)box.maxZ).setColor(red, green, blue, alpha);
     }
 
     private static boolean shouldRender(Entity entity) {
         if (entity.isRemoved() || entity.isInvisible()) {
             return false;
         }
-        // if (entity instanceof ItemEntity && EntityHighlightBox.config.renderItem) {
-        //     return true;
-        // }
+        
         String type = EntityUtil.getType(entity);
         boolean isContain = EntityHighlightBox.config.entityTypes.contains(type);
-        if ((EntityHighlightBox.config.isWhitelist && isContain) || 
-            (!EntityHighlightBox.config.isWhitelist && !isContain)) {
-            return true;
-        }
 
-        return false;
+        return !(isContain ^ EntityHighlightBox.config.isWhitelist);
     }
 
     private static Vector3f getColor(Entity entity) {

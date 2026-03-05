@@ -21,7 +21,7 @@ import dev.isxander.yacl3.api.controller.StringControllerBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class AutoDropConfigGui {
     public static ConfigCategory.Builder createAutoDropCategoryBuilder(Screen parent) {
@@ -94,7 +94,7 @@ public class AutoDropConfigGui {
                 .description(OptionDescription.createBuilder()
                     .text(T.tl("autodrop.ignoreSlots.desc"))
                     // TODO: 图片大小待优化或找其它替代方式
-                    .webpImage(ResourceLocation.fromNamespaceAndPath(Makemoney.MOD_ID, "images/slot_example.webp"))
+                    .webpImage(Identifier.fromNamespaceAndPath(Makemoney.MOD_ID, "images/slot_example.webp"))
                     .build())
                 .binding(
                     AutoDropConfig.getDefaultIngnoreSlot(),

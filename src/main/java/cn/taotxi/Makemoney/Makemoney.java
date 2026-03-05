@@ -71,7 +71,7 @@ public class Makemoney implements ModInitializer {
             }
             
             YACLScreen configScreen = (YACLScreen) ConfigScreen.getConfigScreen(null);
-            configScreen.init(client, client.getWindow().getGuiScaledWidth(), client.getWindow().getGuiScaledHeight());
+            configScreen.init(client.getWindow().getGuiScaledWidth(), client.getWindow().getGuiScaledHeight());
             int tabIndex = -1;
             String title = (String) args.get("title");
             for (int i=0; i<configScreen.tabNavigationBar.getTabs().size(); i++) {

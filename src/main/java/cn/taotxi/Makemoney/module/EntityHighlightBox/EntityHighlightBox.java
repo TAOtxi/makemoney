@@ -2,7 +2,7 @@ package cn.taotxi.Makemoney.module.EntityHighlightBox;
 
 import cn.taotxi.Makemoney.module.EntityHighlightBox.render.Highlighter;
 import cn.taotxi.Makemoney.util.MLogger;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
 import net.minecraft.client.Minecraft;
 
 

@@ -1,5 +1,7 @@
 package cn.taotxi.Makemoney.module.EntityHighlightBox.render;
 
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.joml.Vector4f;
 import java.util.OptionalInt;
 import java.util.OptionalDouble;
@@ -22,16 +24,16 @@ import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.DepthTestFunction;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.MappableRingBuffer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class CustomRenderPipeline {
     // :::custom-pipelines:define-pipeline
     public static final RenderPipeline FILLED_THROUGH_WALLS = RenderPipelines.register(RenderPipeline
             .builder(RenderPipelines.DEBUG_FILLED_SNIPPET)
-            .withLocation(ResourceLocation.fromNamespaceAndPath(EntityHighlightBox.MODULE_NAME,
+            .withLocation(Identifier.fromNamespaceAndPath(EntityHighlightBox.MODULE_NAME,
                     "pipeline/debug_filled_box_through_walls"))
             .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.DEBUG_LINES)
             .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
@@ -43,6 +45,8 @@ public class CustomRenderPipeline {
     // :::custom-pipelines:extraction-phase
     // :::custom-pipelines:drawing-phase
     private static final Vector4f COLOR_MODULATOR = new Vector4f(1f, 1f, 1f, 1f);
+    private static final Vector3f MODEL_OFFSET = new Vector3f();
+	private static final Matrix4f TEXTURE_MATRIX = new Matrix4f();
     private static MappableRingBuffer vertexBuffer;
 
 
@@ -141,9 +145,13 @@ public class CustomRenderPipeline {
         }
 
         // Actually execute the draw
-        GpuBufferSlice dynamicTransforms = RenderSystem.getDynamicUniforms()
-                .writeTransform(RenderSystem.getModelViewMatrix(), COLOR_MODULATOR, RenderSystem.getModelOffset(),
-                        RenderSystem.getTextureMatrix(), 1f);
+        GpuBufferSlice dynamicTransforms = RenderSystem
+                .getDynamicUniforms()
+                .writeTransform(RenderSystem.getModelViewMatrix(), 
+                        COLOR_MODULATOR, 
+                        MODEL_OFFSET,
+                        TEXTURE_MATRIX
+                    );
         try (RenderPass renderPass = RenderSystem.getDevice()
                 .createCommandEncoder()
                 .createRenderPass(() -> EntityHighlightBox.MODULE_NAME + " example render pipeline rendering",

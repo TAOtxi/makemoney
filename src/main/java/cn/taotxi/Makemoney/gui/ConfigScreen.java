@@ -55,7 +55,7 @@ public class ConfigScreen {
             screen.finishOrSave();
             screen.onClose(); // In case finishOrSave doesn't close it.
             YACLScreen newScreen = (YACLScreen) getConfigScreen(parent);
-            newScreen.init(client, screen.width, screen.height);
+            newScreen.init(screen.width, screen.height);
             try {
                 newScreen.tabNavigationBar.selectTab(tab, false);
             } catch (IndexOutOfBoundsException e) {
