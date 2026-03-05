@@ -3,7 +3,7 @@
 	"package": "cn.taotxi.Makemoney.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
-		"ExampleMixin"
+		"GameRendererMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

@@ -30,7 +30,6 @@ import net.minecraft.client.renderer.MappableRingBuffer;
 import net.minecraft.resources.Identifier;
 
 public class CustomRenderPipeline {
-    // :::custom-pipelines:define-pipeline
     public static final RenderPipeline FILLED_THROUGH_WALLS = RenderPipelines.register(RenderPipeline
             .builder(RenderPipelines.DEBUG_FILLED_SNIPPET)
             .withLocation(Identifier.fromNamespaceAndPath(EntityHighlightBox.MODULE_NAME,
@@ -38,51 +37,18 @@ public class CustomRenderPipeline {
             .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.DEBUG_LINES)
             .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
             .build());
-    // :::custom-pipelines:define-pipeline
-    // :::custom-pipelines:extraction-phase
-    private static final ByteBufferBuilder allocator = new ByteBufferBuilder(RenderType.SMALL_BUFFER_SIZE);
 
-    // :::custom-pipelines:extraction-phase
-    // :::custom-pipelines:drawing-phase
+    private static final ByteBufferBuilder allocator = new ByteBufferBuilder(RenderType.SMALL_BUFFER_SIZE);
     private static final Vector4f COLOR_MODULATOR = new Vector4f(1f, 1f, 1f, 1f);
     private static final Vector3f MODEL_OFFSET = new Vector3f();
 	private static final Matrix4f TEXTURE_MATRIX = new Matrix4f();
-    private static MappableRingBuffer vertexBuffer;
-
-
-    // @Override
-    // public void onInitializeClient() {
-    //     WorldRenderEvents.AFTER_TRANSLUCENT.register(this::extractAndDrawWaypoint);
-    // }
+    private static MappableRingBuffer vertexBuffer = null;
 
     public static BufferBuilder getBuffer(RenderPipeline pipeline) {
         return new BufferBuilder(allocator, pipeline.getVertexFormatMode(),
                     pipeline.getVertexFormat());
     }
 
-    // private void extractAndDrawWaypoint(WorldRenderContext context) {
-    //     renderWaypoint(context);
-    //     drawFilledThroughWalls(Minecraft.getInstance(), FILLED_THROUGH_WALLS);
-    // }
-
-    // :::custom-pipelines:extraction-phase
-    // private void renderWaypoint(WorldRenderContext context) {
-    //     PoseStack matrices = context.matrixStack();
-    //     Vec3 camera = context.camera().getPosition();
-
-    //     assert matrices != null;
-    //     matrices.pushPose();
-    //     matrices.translate(-camera.x, -camera.y, -camera.z);
-
-    //     BufferBuilder buffer = getBuffer(FILLED_THROUGH_WALLS);
-
-    //     ShapeRenderer.addChainedFilledBoxVertices(matrices, buffer, 0f, 100f, 0f, 1f, 101f, 1f, 0f, 1f, 0f, 0.5f);
-
-    //     matrices.popPose();
-    // }
-    // :::custom-pipelines:extraction-phase
-
-    // :::custom-pipelines:drawing-phase
     public static void drawFilledThroughWalls(Minecraft client,
             @SuppressWarnings("SameParameterValue") RenderPipeline pipeline, BufferBuilder buffer) {
         // Build the buffer
@@ -99,19 +65,17 @@ public class CustomRenderPipeline {
         vertexBuffer.rotate();
     }
 
-    private static MappableRingBuffer getVertexBuffer(MeshData.DrawState drawParameters, VertexFormat format) {
-        int vertexBufferSize = drawParameters.vertexCount() * format.getVertexSize();
-        return new MappableRingBuffer(() -> EntityHighlightBox.MODULE_NAME + " example render pipeline",
-                    GpuBuffer.USAGE_VERTEX | GpuBuffer.USAGE_MAP_WRITE, vertexBufferSize);
-    }
-
     private static GpuBuffer upload(MeshData.DrawState drawParameters, VertexFormat format, MeshData builtBuffer) {
         // Calculate the size needed for the vertex buffer
         int vertexBufferSize = drawParameters.vertexCount() * format.getVertexSize();
 
         // Initialize or resize the vertex buffer as needed
         if (vertexBuffer == null || vertexBuffer.size() < vertexBufferSize) {
-            vertexBuffer = getVertexBuffer(drawParameters, format);
+            if (vertexBuffer != null) {
+                vertexBuffer.close();
+            }
+            vertexBuffer = new MappableRingBuffer(() -> EntityHighlightBox.MODULE_NAME + " example render pipeline",
+                    GpuBuffer.USAGE_VERTEX | GpuBuffer.USAGE_MAP_WRITE, vertexBufferSize);
         }
 
         // Copy vertex data into the vertex buffer
@@ -177,10 +141,7 @@ public class CustomRenderPipeline {
 
         builtBuffer.close();
     }
-    // :::custom-pipelines:drawing-phase
-
-    // :::custom-pipelines:clean-up
-    public void close() {
+    public static void close() {
         allocator.close();
 
         if (vertexBuffer != null) {
@@ -188,5 +149,4 @@ public class CustomRenderPipeline {
             vertexBuffer = null;
         }
     }
-    // :::custom-pipelines:clean-up
 }

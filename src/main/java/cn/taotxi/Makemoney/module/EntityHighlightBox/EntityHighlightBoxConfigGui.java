@@ -129,23 +129,6 @@ public class EntityHighlightBoxConfigGui {
             category.group(colorGroup.build());
         }
 
-        // TODO: 更改为三种可选值：白名单、黑名单、全部
-        category.option(Option.<Boolean>createBuilder()
-                    .name(T.tl("entityhighlightBox.isWhitelist"))
-                    .description(OptionDescription.of(T.tl("entityhighlightBox.isWhitelist.desc")))
-                    .binding(
-                            HighlightConfig.getDefaultIsWhitelist(),
-                            () -> EntityHighlightBox.config.isWhitelist,
-                            val -> EntityHighlightBox.config.isWhitelist = val
-                    )
-                    .controller(opt -> BooleanControllerBuilder.create(opt)
-                        .formatValue(val -> val ? 
-                            T.tl("entityhighlightBox.isWhitelist.true").withStyle(ChatFormatting.GREEN) : 
-                            T.tl("entityhighlightBox.isWhitelist.false").withStyle(ChatFormatting.RED))
-                        )
-                    .build()
-        );
-
         category.option(Factory.addToggleOption(
             T.tl("entityhighlightBox.isRenderName"),
             T.tl("entityhighlightBox.isRenderName.desc"),
@@ -194,6 +177,23 @@ public class EntityHighlightBoxConfigGui {
                                 .range(1, 500)
                                 .step(1)
                                 .formatValue(val -> T.l(val + " tick")))
+                    .build()
+        );
+
+        // TODO: 更改为三种可选值：白名单、黑名单、全部
+        category.option(Option.<Boolean>createBuilder()
+                    .name(T.tl("entityhighlightBox.isWhitelist"))
+                    .description(OptionDescription.of(T.tl("entityhighlightBox.isWhitelist.desc")))
+                    .binding(
+                            HighlightConfig.getDefaultIsWhitelist(),
+                            () -> EntityHighlightBox.config.isWhitelist,
+                            val -> EntityHighlightBox.config.isWhitelist = val
+                    )
+                    .controller(opt -> BooleanControllerBuilder.create(opt)
+                        .formatValue(val -> val ? 
+                            T.tl("entityhighlightBox.isWhitelist.true").withStyle(ChatFormatting.GREEN) : 
+                            T.tl("entityhighlightBox.isWhitelist.false").withStyle(ChatFormatting.RED))
+                        )
                     .build()
         );
 

@@ -13,7 +13,6 @@ import cn.taotxi.Makemoney.module.AutoAction.AutoAction;
 import cn.taotxi.Makemoney.module.AutoDrop.AutoDrop;
 import cn.taotxi.Makemoney.module.AutoRepair.AutoRepair;
 import cn.taotxi.Makemoney.module.EntityHighlightBox.EntityHighlightBox;
-import cn.taotxi.Makemoney.test.TestMod;
 import cn.taotxi.Makemoney.util.EventBus;
 import cn.taotxi.Makemoney.util.Message;
 import cn.taotxi.Makemoney.util.T;
@@ -33,7 +32,6 @@ public class Makemoney implements ModInitializer {
         registerTickEvents();
         registerSomeEvents();
         registerCommand();
-        // TestMod.register();
 	}
 
     private void registerCommand() {
@@ -53,8 +51,7 @@ public class Makemoney implements ModInitializer {
             // AutoRepair.registerTickEvents(client, tickCounter);
             AutoDrop.registerTickEvents(client, tickCounter);
             AutoAction.registerTickEvents(client, tickCounter);
-
-            // EntityHighlightBox.registerTickEvents(client, tickCounter);
+            EntityHighlightBox.registerTickEvents(client, tickCounter);
         });
     }
 
@@ -62,7 +59,7 @@ public class Makemoney implements ModInitializer {
         // ScreenEvents.AFTER_INIT.register((client, screen, width, height) -> {
         //     Message.sendMessage("Screen: " + screen.getClass().getSimpleName());
         // });
-
+        EntityHighlightBox.registerRenderEvents();
         EventBus.register("openConfigGui", (args) -> {
             Minecraft client = Minecraft.getInstance();
             if (client.screen != null) {

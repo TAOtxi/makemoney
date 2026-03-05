@@ -11,22 +11,16 @@ public class EntityHighlightBox {
     public static final MLogger LOGGER = new MLogger(MODULE_NAME);
     public static HighlightConfig config = HighlightConfig.load(HighlightConfig.class, MODULE_NAME);
 
-    public static void init() {
-        // registerTickEvents();
-        registerRenderEvents();
-    }
-
-    private static void registerRenderEvents() {
-        WorldRenderEvents.AFTER_ENTITIES.register(context -> {
+    public static void registerRenderEvents() {
+        WorldRenderEvents.BEFORE_TRANSLUCENT.register(context -> {
             if (!config.enabled) return;
             Highlighter.drawHighlightBox(context);
         });
     }
 
     public static void registerTickEvents(Minecraft client, int tickCounter) {
-        // if (client.player == null || client.level == null) return;
         if (!config.enabled) return;
         if (tickCounter % config.updateInterval != 0) return;
-        Highlighter.updateRenderEntities();
+        Highlighter.updateRenderEntities(client);
     }
 }

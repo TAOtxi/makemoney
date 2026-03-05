@@ -22,9 +22,9 @@ public class ConfigScreen {
             YetAnotherConfigLib.createBuilder()
                 .title(T.tl("gui.config.title"))
                 .save(() -> {
-                    // AutoRepair.config.save();
+                    AutoRepair.config.save();
                     AutoDrop.config.save();
-                    // EntityHighlightBox.config.save();
+                    EntityHighlightBox.config.save();
                     Makemoney.LOGGER.info("Config saved...");
                 });
 
