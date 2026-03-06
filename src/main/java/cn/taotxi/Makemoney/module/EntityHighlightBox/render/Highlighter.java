@@ -63,10 +63,10 @@ public class Highlighter {
         matrices.translate(-camera.x, -camera.y, -camera.z);
 
         BufferBuilder buffer = CustomRenderPipeline.getBuffer(CustomRenderPipeline.FILLED_THROUGH_WALLS);
-        boolean hasDrawing = false;
+        boolean hasDrawn = false;
         for (Entity entity : entities) {
             if (entity.isRemoved()) continue;
-            hasDrawing = true;
+            hasDrawn = true;
             ShapeRenderer.renderShape(
                 matrices,
                 buffer, 
@@ -75,11 +75,11 @@ public class Highlighter {
                 getColor(entity), 1 // width
             );
         }
-        if (!hasDrawing) {
+        if (!hasDrawn) {
             return;
         }
         matrices.popPose();
-        CustomRenderPipeline.drawFilledThroughWalls(client, CustomRenderPipeline.FILLED_THROUGH_WALLS, buffer);
+        CustomRenderPipeline.startDrawing(client, CustomRenderPipeline.FILLED_THROUGH_WALLS, buffer);
     }
 
     private static boolean shouldRender(Entity entity) {

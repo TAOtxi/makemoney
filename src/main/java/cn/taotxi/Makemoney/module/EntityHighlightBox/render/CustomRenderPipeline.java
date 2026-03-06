@@ -49,8 +49,13 @@ public class CustomRenderPipeline {
                     pipeline.getVertexFormat());
     }
 
-    public static void drawFilledThroughWalls(Minecraft client,
+    public static void startDrawing(Minecraft client,
             @SuppressWarnings("SameParameterValue") RenderPipeline pipeline, BufferBuilder buffer) {
+                
+        if (!RenderSystem.isOnRenderThread()) {
+            EntityHighlightBox.LOGGER.warn("Must be called on the render thread");
+            return;
+        }
         // Build the buffer
         MeshData builtBuffer = buffer.buildOrThrow();
         MeshData.DrawState drawParameters = builtBuffer.drawState();
@@ -63,6 +68,8 @@ public class CustomRenderPipeline {
         // Rotate the vertex buffer so we are less likely to use buffers that the GPU is
         // using
         vertexBuffer.rotate();
+        vertexBuffer.close();
+        vertexBuffer = null;
     }
 
     private static GpuBuffer upload(MeshData.DrawState drawParameters, VertexFormat format, MeshData builtBuffer) {
