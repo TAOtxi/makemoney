@@ -53,6 +53,8 @@ public class Dropper {
         if (item.isEmpty()) return false;
 
         for (AutoDropConfig.Item check: AutoDrop.config.items){
+            if (!check.enabled) continue;
+
             // TODO: 适配多颜色文本
             // check name
             String name = ItemStackUtil.getName(item);
