@@ -5,6 +5,7 @@ import cn.taotxi.Makemoney.config.BaseConfig;
 public class AutoRepairConfig extends BaseConfig {
     public AutoRepairConfig(String moduleName) {
         super(moduleName);
+        CONFIG_VERSION = getDefaultConfigVersion();
     }
 
     public boolean enabled = AutoRepairConfig.getDefaultEnabled();

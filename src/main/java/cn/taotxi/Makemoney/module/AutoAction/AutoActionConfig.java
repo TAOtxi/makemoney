@@ -11,6 +11,7 @@ import net.minecraft.world.inventory.ClickType;
 public class AutoActionConfig extends BaseConfig {
     public AutoActionConfig(String moduleName) {
         super(moduleName);
+        CONFIG_VERSION = getDefaultConfigVersion();
     }
 
     private Map<String, List<Map<String, String>>> actionConfigList;

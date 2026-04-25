@@ -11,6 +11,7 @@ import cn.taotxi.Makemoney.util.StringUtil;
 public class AutoDropConfig extends BaseConfig {
     public AutoDropConfig(String moduleName) {
         super(moduleName);
+        CONFIG_VERSION = getDefaultConfigVersion();
     }
 
     public transient boolean enabled = getDefaultEnabled();
@@ -22,7 +23,7 @@ public class AutoDropConfig extends BaseConfig {
     public List<Item> items = new ArrayList<>();
 
     public static String getDefaultConfigVersion() {
-        return "0.0.2";
+        return "0.0.3";
     }
     
     public static boolean getDefaultEnabled() {
