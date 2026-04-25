@@ -1,11 +1,13 @@
 package cn.taotxi.Makemoney.module.AutoDrop;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import cn.taotxi.Makemoney.util.CommonUtil;
 import cn.taotxi.Makemoney.util.ItemStackUtil;
+import cn.taotxi.Makemoney.util.StringUtil;
 import dev.isxander.yacl3.gui.YACLScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -29,17 +31,22 @@ public class Dropper {
         // when player is open a container or in a config GUI, do not drop items
         if (player.hasContainerOpen() || client.screen instanceof YACLScreen) return;
 
+        final List<Integer> dropSlots = new ArrayList<>();
+        InventoryMenu inventoryMenu = player.inventoryMenu;
         for (int i = InventoryMenu.INV_SLOT_START; i < InventoryMenu.USE_ROW_SLOT_END; i++) {
             if (AutoDrop.config.ingnoreSlots.contains(i)) continue;
 
-            InventoryMenu inventoryMenu = player.inventoryMenu;
             ItemStack item = inventoryMenu.getSlot(i).getItem();
 
             // AutoDrop.LOGGER.info("Check item {} in slot {}", item.getItemName(), i);
             if (!shouldDrop(item)) continue;
             // AutoDrop.LOGGER.info("Dropping item {} in slot {}", ItemStackUtil.getName(item), i);
-            dropItemAnywhere(i, AutoDrop.config.throwDirection);
+            dropSlots.add(i);
         }
+        if (dropSlots.isEmpty()) return;
+
+        dropItemAnywhere(dropSlots, AutoDrop.config.throwDirection);
+
     }
 
     public static boolean shouldDrop(ItemStack item) {
@@ -49,12 +56,12 @@ public class Dropper {
             // TODO: 适配多颜色文本
             // check name
             String name = ItemStackUtil.getName(item);
-            if (!check.name.equals("*") && !check.name.equals(name)) {
+            if (!check.name.equals("*") && !StringUtil.regMatch(name, check.name)) {
                 continue; 
             }
             // check id
             String id = ItemStackUtil.getId(item);
-            if (!check.id.equals("*") && !check.id.equals(id)) {
+            if (!check.id.equals("*") && !StringUtil.regMatch(id, check.id)) {
                 continue;
             }
 
@@ -69,17 +76,13 @@ public class Dropper {
             List<String> itemTags = ItemStackUtil.getTags(item);
             // check tag
             if (check.tags.isEmpty()) continue;
-            if (!check.tags.contains("*") && !CommonUtil.hasIntersection(itemTags, check.tags)) continue;
+            if (!check.tags.contains("*") && !CommonUtil.hasIntersection_regMatch(itemTags, check.tags)) continue;
 
-            int size = check.enchantments.size();
-            int needToSatisfiedCounts = size;
-            if (size == 0) {    // 匹配通过
+            if (check.enchantments.size() == 0) {    // 匹配通过
                 return false;
             }
-            if (!check.isAllEnchantment && size > 2) {
-                needToSatisfiedCounts = 2;
-            }
-            if (calEnchantCounts(item, check.enchantments) >= needToSatisfiedCounts) {
+
+            if (calEnchantCounts(item, check.enchantments) >= check.minEnchantRequir) {
                 return false;   // ✔
             }
         }
@@ -103,8 +106,12 @@ public class Dropper {
         return counter;
     }
 
-    // TODO: Bug: 创造模式会丢弃两个物品，但背包实际减少的是一个
     public static void dropItemAnywhere(int slot, String direction) {
+        dropItemAnywhere(List.of(slot), direction);
+    }
+
+    // TODO: Bug: 创造模式会丢弃两个物品，但背包实际减少的是一个
+    public static void dropItemAnywhere(List<Integer> slots, String direction) {
         // if (!AutoDropConfig.getAllThrowDirections().contains(direction)) {
         //     AutoDrop.LOGGER.error("Error direction !!!");
         // }
@@ -114,14 +121,18 @@ public class Dropper {
         InventoryMenu inventoryMenu = player.inventoryMenu;
 
         if (direction.equals(AutoDropConfig.Direction.LOOKING)) {
+          for (int slot: slots) {
             client.gameMode.handleInventoryMouseClick(inventoryMenu.containerId, slot, 1, ClickType.THROW, player);
-            return;
+          }
+          return;
         }
 
         float xRot = player.getXRot();
         float yRot = player.getYRot();
         setPlayerRotation(direction);
-        client.gameMode.handleInventoryMouseClick(inventoryMenu.containerId, slot, 1, ClickType.THROW, player);
+        for (int slot: slots) {
+            client.gameMode.handleInventoryMouseClick(inventoryMenu.containerId, slot, 1, ClickType.THROW, player);
+        }
         setPlayerRotation(yRot, xRot);
     }
 

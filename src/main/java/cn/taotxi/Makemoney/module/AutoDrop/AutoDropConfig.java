@@ -22,7 +22,7 @@ public class AutoDropConfig extends BaseConfig {
     public List<Item> items = new ArrayList<>();
 
     public static String getDefaultConfigVersion() {
-        return "0.0.1";
+        return "0.0.2";
     }
     
     public static boolean getDefaultEnabled() {
@@ -65,22 +65,12 @@ public class AutoDropConfig extends BaseConfig {
     }
 
     public void addPresetItems() {
-        Item bowPreset = new Item();
-        bowPreset.enabled = true;
-        bowPreset.name = "*";
-        bowPreset.id = "minecraft:bow";
-        bowPreset.tags.add("*");
-        bowPreset.isAllEnchantment = true;
-        bowPreset.enchantments.put("minecraft:infinity", 1);
-        bowPreset.enchantments.put("minecraft:mending", 1);
-        items.add(bowPreset);
-
         Item swordPreset = new Item();
         swordPreset.enabled = true;
         swordPreset.name = "*";
-        swordPreset.id = "*";
-        swordPreset.tags = List.of("#minecraft:swords", "#minecraft:axes");
-        swordPreset.isAllEnchantment = false;
+        swordPreset.id = "/minecraft:(?:diamond|netherite)_.*/";
+        swordPreset.tags = List.of("#minecraft:enchantable/sharp_weapon");
+        swordPreset.minEnchantRequir = 2;
         swordPreset.enchantments.put("minecraft:sharpness", 5);
         swordPreset.enchantments.put("minecraft:smite", 5);
         swordPreset.enchantments.put("minecraft:bane_of_arthropods", 5);
@@ -89,9 +79,9 @@ public class AutoDropConfig extends BaseConfig {
         Item armorPreset = new Item();
         armorPreset.enabled = true;
         armorPreset.name = "*";
-        armorPreset.id = "*";
+        armorPreset.id = "/minecraft:(?:diamond|netherite)_.*/";
         armorPreset.tags.add("#minecraft:enchantable/armor");
-        armorPreset.isAllEnchantment = false;
+        armorPreset.minEnchantRequir = 3;
         armorPreset.enchantments.put("minecraft:protection", 4);
         armorPreset.enchantments.put("minecraft:fire_protection", 4);
         armorPreset.enchantments.put("minecraft:projectile_protection", 4);
@@ -104,7 +94,7 @@ public class AutoDropConfig extends BaseConfig {
         public String name = getDefaultName();
         public String id = getDefaultID();
         public List<String> tags = new ArrayList<>();
-        public boolean isAllEnchantment = getDefaultIsAllEnchantment();
+        public int minEnchantRequir = getDefaultMinEnchantRequir();
         public Map<String, Integer> enchantments = new HashMap<>();
 
         public static boolean getDefaultItemEnabled() {
@@ -127,8 +117,8 @@ public class AutoDropConfig extends BaseConfig {
             return new ArrayList<>();
         }
 
-        public static boolean getDefaultIsAllEnchantment() {
-            return false;
+        public static int getDefaultMinEnchantRequir() {
+            return 1;
         }
 
         public List<String> getEnchantList() {

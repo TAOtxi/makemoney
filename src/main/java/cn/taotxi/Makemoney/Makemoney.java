@@ -38,7 +38,7 @@ public class Makemoney implements ModInitializer {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
             AutoRepair.registerCommand(dispatcher, registryAccess);
             AutoDrop.registerCommand(dispatcher, registryAccess);
-            AutoAction.registerCommand(dispatcher, registryAccess);
+            // AutoAction.registerCommand(dispatcher, registryAccess);
         });
     }
 
@@ -50,7 +50,7 @@ public class Makemoney implements ModInitializer {
             tickCounter++;
             // AutoRepair.registerTickEvents(client, tickCounter);
             AutoDrop.registerTickEvents(client, tickCounter);
-            AutoAction.registerTickEvents(client, tickCounter);
+            // AutoAction.registerTickEvents(client, tickCounter);
             EntityHighlightBox.registerTickEvents(client, tickCounter);
         });
     }

@@ -215,14 +215,19 @@ public class AutoDropConfigGui {
                     .build()
             );
 
-            // TODO: 增加只匹配任意一种魔咒的选项
-             whiteListGroup.option(Factory.addToggleOption(
-                T.tl("autodrop.block.isAllEnchantment"),
-                T.tl("autodrop.block.isAllEnchantment.desc"),
-                AutoDropConfig.Item.getDefaultIsAllEnchantment(),
-                () -> item.isAllEnchantment,
-                val -> item.isAllEnchantment = val
-            ));
+             whiteListGroup.option(Option.<Integer>createBuilder()
+                    .name(T.tl("autodrop.block.minEnchantRequir"))
+                    .description(OptionDescription.of(T.tl("autodrop.block.minEnchantRequir.desc")))
+                    .binding(
+                        AutoDropConfig.Item.getDefaultMinEnchantRequir(),
+                        () -> item.minEnchantRequir,
+                        val -> item.minEnchantRequir = val
+                    )
+                    .controller(opt -> IntegerFieldControllerBuilder.create(opt)
+                        .min(0)
+                        .max(100))
+                    .build()
+            );
 
             category.group(whiteListGroup.build());
             category.group(ListOption.<String>createBuilder()

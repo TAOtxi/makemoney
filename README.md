@@ -7,12 +7,12 @@
 > 拾玖世界Q群：`518271249`
 
 ## 前置模组
-[Yacl >=3.8.0+1.21.6-fabric](https://modrinth.com/mod/yacl)
+[Yacl >=3.8.2+1.21.11-fabric](https://modrinth.com/mod/yacl)
 
 
 ## Feature
 
-`autorepair`    `#暂时禁用`
+`autorepair`    `# 有bug，没测试完`
 - [x] 自动将背包内的带有经验修补且耐久为满的物品替换到副手
 - [x] 自动为装备附魔经验修补
 
@@ -24,14 +24,14 @@
 命令
 ```
 /autodrop reload        # 重新加载配置文件
-/autodrop enable        # 开启此功能
-/autodrop disable       # 关闭此功能
+/autodrop true          # 开启此功能
+/autodrop false         # 关闭此功能
 /autodrop config        # 打开配置界面
 ```
 
 `autocommand`   `#已弃用`
 - [x] 当玩家在某个世界时，自动执行指定命令，例如在大厅服时，切换到生存服（配合自动重连模组使用）唉
 
-`highlightBox`  `#暂时禁用`
+`highlightBox`  `# 有Bug，不要用`
 - [x] 高亮实体 `#待测试`
 - [x] 自定义要高亮的实体 `#待测试`

@@ -1,5 +1,7 @@
 package cn.taotxi.Makemoney.util;
 
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,5 +56,15 @@ public class StringUtil {
         str = str.substring(1);
         int color = Integer.parseUnsignedInt(str, 16);
         return new Color(color);
+    }
+
+    public static boolean isRegex(String str) {
+        return str.startsWith("/") && str.endsWith("/");
+    }
+
+    public static boolean regMatch(String str, String regex) {
+        if (!isRegex(regex)) return str.equals(regex);
+        regex = regex.substring(1, regex.length() - 1);
+        return Pattern.matches(regex, str);
     }
 }
