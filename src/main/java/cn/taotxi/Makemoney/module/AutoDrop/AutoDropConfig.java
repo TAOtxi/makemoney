@@ -13,7 +13,7 @@ public class AutoDropConfig extends BaseConfig {
         super(moduleName);
     }
 
-    public boolean enabled = getDefaultEnabled();
+    public transient boolean enabled = getDefaultEnabled();
     public int launchDelay = getDefaultLaunchDelay();
     public boolean showAttentionMsg = getDefaultShowAttentionMsg();
     public List<Integer> ingnoreSlots = new ArrayList<>();
