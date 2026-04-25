@@ -13,7 +13,7 @@ public class AutoActionConfig extends BaseConfig {
         super(moduleName);
         CONFIG_VERSION = getDefaultConfigVersion();
     }
-
+    
     private Map<String, List<Map<String, String>>> actionConfigList;
 
     public List<Action> loadActions(String name) {
@@ -80,7 +80,8 @@ public class AutoActionConfig extends BaseConfig {
 
     }
 
-    public static String getDefaultConfigVersion() {
+    @Override
+    public String getDefaultConfigVersion() {
         return "0.0.2";
     }
 }

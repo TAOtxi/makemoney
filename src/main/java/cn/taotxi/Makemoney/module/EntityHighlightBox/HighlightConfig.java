@@ -20,7 +20,8 @@ public class HighlightConfig extends BaseConfig {
     public int updateInterval = getDefaultUpdateInterval();     // 渲染的实体更新间隔（tick）
     public List<String> entityTypes = getDefaultEntityTypes();  // 实体类型列表（白名单模式下有效，反之不渲染此实体列表）
     
-    public static String getDefaultConfigVersion() {
+    @Override
+    public String getDefaultConfigVersion() {
         return "0.0.1";
     }
 
@@ -77,5 +78,6 @@ public class HighlightConfig extends BaseConfig {
 
     public HighlightConfig(String moduleName) {
         super(moduleName);
+        CONFIG_VERSION = getDefaultConfigVersion();
     }
 }

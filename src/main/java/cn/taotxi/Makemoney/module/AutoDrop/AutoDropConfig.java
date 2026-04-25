@@ -22,7 +22,8 @@ public class AutoDropConfig extends BaseConfig {
     public int checkInterval = getDefaultCheckInterval();
     public List<Item> items = new ArrayList<>();
 
-    public static String getDefaultConfigVersion() {
+    @Override
+    public String getDefaultConfigVersion() {
         return "0.0.3";
     }
     

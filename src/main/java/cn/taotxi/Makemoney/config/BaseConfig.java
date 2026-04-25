@@ -16,7 +16,7 @@ public class BaseConfig {
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private static final File configDir = new File(FabricLoader.getInstance().getConfigDir().toFile(), Makemoney.MOD_ID);
     public transient String MODULE_NAME;
-    public transient Debouncer debouncer;
+    private transient Debouncer debouncer;
     public String CONFIG_VERSION = getDefaultConfigVersion();
 
     public BaseConfig(String moduleName) {
@@ -47,9 +47,9 @@ public class BaseConfig {
                     Makemoney.LOGGER.info("[{}] Loading config file {}", moduleName, configFile.getPath());
                     T config = gson.fromJson(reader, clazz);
 
-                     // override config version if not match
-                    if (config.CONFIG_VERSION == null || !config.CONFIG_VERSION.equals(T.getDefaultConfigVersion())) {
-                        Makemoney.LOGGER.info("[{}] Config version {} does not match, override to {}", moduleName, config.CONFIG_VERSION, T.getDefaultConfigVersion());
+                    // override config version if not match
+                    if (config.CONFIG_VERSION == null || !config.CONFIG_VERSION.equals(config.getDefaultConfigVersion())) {
+                        Makemoney.LOGGER.info("[{}] Config version {} does not match, override to {}", moduleName, config.CONFIG_VERSION, config.getDefaultConfigVersion());
                         T defaultConfig = clazz.getDeclaredConstructor(String.class).newInstance(moduleName);
                         defaultConfig.save();
                         return defaultConfig;
@@ -105,7 +105,7 @@ public class BaseConfig {
         });
     }
 
-    public static String getDefaultConfigVersion() {
+    public String getDefaultConfigVersion() {
         return "1.0";
     }
 }
