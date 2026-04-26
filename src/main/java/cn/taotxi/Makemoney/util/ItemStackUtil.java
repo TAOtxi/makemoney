@@ -14,11 +14,7 @@ public class ItemStackUtil {
         return item.getItemHolder().getRegisteredName();
     }
 
-    public static String getName(ItemStack item) {
-        if (item.getCustomName() != null) {
-            return item.getCustomName().getString();
-        }
-
+    public static String tryToGetTranslateName(ItemStack item) {
         String translationKey = item.getItemName().toString();
         Matcher matcher = KEY_PATTERN.matcher(translationKey);
         if (matcher.find()) {
@@ -28,6 +24,21 @@ public class ItemStackUtil {
         
         // fallback to id
         return getId(item);
+    }
+
+    public static String getName(ItemStack item) {
+        if (item.getCustomName() != null) {
+            return item.getCustomName().getString();
+        }
+        return tryToGetTranslateName(item);
+    }
+
+    public static boolean equalName(ItemStack item, String name) {
+        if (item.getCustomName() != null) {
+            return StringUtil.regMatch(item.getCustomName().getString(), name) ||
+                   StringUtil.regMatch(tryToGetTranslateName(item), name);
+        }
+        return StringUtil.regMatch(tryToGetTranslateName(item), name);
     }
 
     public static List<String> getTags(ItemStack item) {

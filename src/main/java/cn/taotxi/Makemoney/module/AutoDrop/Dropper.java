@@ -61,10 +61,10 @@ public class Dropper {
 
             // TODO: 适配多颜色文本
             // check name
-            String name = ItemStackUtil.getName(item);
-            if (!check.name.equals("*") && !StringUtil.regMatch(name, ItemStackUtil.withDefaultNamespace(check.name))) {
-                AutoDrop.LOGGER.info("name not match: " + name + " " + ItemStackUtil.withDefaultNamespace(check.name));
-                continue; 
+            if (!check.name.equals("*") && !ItemStackUtil.equalName(item, check.name)) {
+                String name = ItemStackUtil.getName(item);
+                AutoDrop.LOGGER.info("name not match: " + name + " " + check.name);
+                continue;
             }
             // check id
             String id = ItemStackUtil.getId(item);
