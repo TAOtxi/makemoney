@@ -66,7 +66,7 @@
     "makemoney.autodrop.block.minEnchantRequir": "最小匹配魔咒数",
     "makemoney.autodrop.block.minEnchantRequir.desc": "物品需要包含此数量的魔咒才能通过匹配。",
     "makemoney.autodrop.block.enchantment.name": "附魔组",
-    "makemoney.autodrop.block.enchantment.name.desc": "要匹配的魔咒和等级。\n\n有等级的魔咒必须带上等级，没有等级的魔咒可忽略，也可写为1。\n\n比如经验修补：mending。\n\n比如锋利V：sharpness:5。\n\n比如抢夺III：looting:3。\n\n详细魔咒ID请查阅：https://zh.minecraft.wiki/w/Java版数据值#魔咒",
+    "makemoney.autodrop.block.enchantment.name.desc": "要匹配的魔咒和等级。\n\n有等级的魔咒必须带上等级，没有等级的魔咒可忽略，也可写为1。\n\n附魔等级至少要大于等于此等级才可通过匹配。\n\n比如经验修补：mending。\n\n比如锋利V：sharpness:5。\n\n比如抢夺III：looting:3。\n\n详细魔咒ID请查阅：https://zh.minecraft.wiki/w/Java版数据值#魔咒",
 
     "makemoney.autocommand.name": "自动命令执行",
     "makemoney.autocommand.desc": "在指定的世界中，会自动执行指定的命令",

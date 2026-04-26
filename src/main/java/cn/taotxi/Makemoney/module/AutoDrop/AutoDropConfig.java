@@ -91,6 +91,7 @@ public class AutoDropConfig extends BaseConfig {
         Item bowPreset = new Item();
         bowPreset.name = "*";
         bowPreset.id = "bow";
+        bowPreset.minEnchantRequir = 2;
         bowPreset.enchantments.put("infinity", 1);
         bowPreset.enchantments.put("mending", 1);
         items.add(bowPreset);
@@ -109,6 +110,11 @@ public class AutoDropConfig extends BaseConfig {
         netheritePreset.name = "*";
         netheritePreset.id = "/^minecraft:netherite.*$/";
         items.add(netheritePreset);
+
+        Item fishRodPreset = new Item();
+        fishRodPreset.name = "*";
+        fishRodPreset.id = "fishing_rod";
+        items.add(fishRodPreset);
     }
 
     public class Item {
