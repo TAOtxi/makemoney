@@ -60,7 +60,7 @@
     "makemoney.autodrop.block.itemName": "物品名称",
     "makemoney.autodrop.block.itemName.desc": "指定要匹配的物品名称，比如 \"烈焰棒\"。\n置空则忽略此项。\n\n\" * \"表示匹配所有物品名称。\n\n可以用形如/<正则表达式>/来匹配。\n\n例如 /钻石.*/ 匹配钻石剑，钻石头盔等。",
     "makemoney.autodrop.block.itemID": "物品ID",
-    "makemoney.autodrop.block.itemID.desc": "指定要匹配的物品ID，比如 \"stick\"。\n\n置空则忽略此项。\n\" * \"表示匹配所有物品ID。\n\n可以用形如/<正则表达式>/来匹配。\n\n例如 /(?:diamond|netherite)_.*/。\n\n详细物品ID请查阅：https://zh.minecraft.wiki/w/Java版数据值#物品",
+    "makemoney.autodrop.block.itemID.desc": "指定要匹配的物品ID，比如 \"stick\"。\n\n置空则忽略此项。\n\" * \"表示匹配所有物品ID。\n\n可以用形如/<正则表达式>/来匹配，同时需要加上命名空间前缀。\n\n例如 /minecraft:(?:diamond|netherite)_.*/。\n\n详细物品ID请查阅：https://zh.minecraft.wiki/w/Java版数据值#物品",
     "makemoney.autodrop.block.itemTags": "物品标签",
     "makemoney.autodrop.block.itemTags.desc": "指定要匹配的物品标签，比如 \"#head_armor\"。\n\n置空则忽略此项。\n\n\" * \"表示匹配所有物品标签。\n\n当要匹配多个标签时，使用逗号分隔，比如\"#a, #b, #c\"。\n\n详细标签内容请查阅：https://zh.minecraft.wiki/w/Java版标签/物品",
     "makemoney.autodrop.block.minEnchantRequir": "最小匹配魔咒数",

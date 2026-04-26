@@ -35,20 +35,22 @@ public class AutoDrop {
     }
 
     public static void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
-        dispatcher.register(ClientCommandManager.literal(MODULE_NAME).executes(AutoDrop::showHelp)
-            .then(ClientCommandManager.literal("help").executes(AutoDrop::showHelp))
-            .then(ClientCommandManager.literal("reload").executes(AutoDrop::reloadConfig))
-            .then(ClientCommandManager.literal("config").executes(AutoDrop::openConfigGui))
-            .then(ClientCommandManager.literal("true")
-                .executes(context -> toggleAutoDrop(context, true)))
-            .then(ClientCommandManager.literal("false")
-                .executes(context -> toggleAutoDrop(context, false)))
-            .then(ClientCommandManager.literal("debug")
+        for (String name: new String[]{MODULE_NAME, "ad"}) {
+            dispatcher.register(ClientCommandManager.literal(name).executes(AutoDrop::showHelp)
+                .then(ClientCommandManager.literal("help").executes(AutoDrop::showHelp))
+                .then(ClientCommandManager.literal("reload").executes(AutoDrop::reloadConfig))
+                .then(ClientCommandManager.literal("config").executes(AutoDrop::openConfigGui))
                 .then(ClientCommandManager.literal("true")
-                    .executes(context -> setDebug(true)))
+                    .executes(context -> toggleAutoDrop(context, true)))
                 .then(ClientCommandManager.literal("false")
-                    .executes(context -> setDebug(false))))
-        );
+                    .executes(context -> toggleAutoDrop(context, false)))
+                .then(ClientCommandManager.literal("debug")
+                    .then(ClientCommandManager.literal("true")
+                        .executes(context -> setDebug(true)))
+                    .then(ClientCommandManager.literal("false")
+                        .executes(context -> setDebug(false))))
+            );
+        }
     }
 
     private static int setDebug(boolean debug) {
