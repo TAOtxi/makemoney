@@ -16,8 +16,7 @@ public class ItemStackUtil {
 
     public static String getName(ItemStack item) {
         if (item.getCustomName() != null) {
-            String name = item.getCustomName().getString();
-            return name;
+            return item.getCustomName().getString();
         }
 
         String translationKey = item.getItemName().toString();
@@ -33,5 +32,44 @@ public class ItemStackUtil {
 
     public static List<String> getTags(ItemStack item) {
         return item.getTags().map(tagKey -> "#" + tagKey.location().toString()).toList();
+    }
+
+    public static boolean isTag(String tag) {
+        return tag.startsWith("#");
+    }
+
+    public static boolean hasNamespace(String namespace, String id) {
+        return id.startsWith(namespace + ":");
+    }
+
+    public static boolean hasDefaultNamespace(String id) {
+        return hasNamespace("minecraft", id);
+    }
+
+    public static String withNamespace(String namespace, String id) {
+        if (StringUtil.isRegex(id)) {
+            return id;
+        };
+
+        if (isTag(id)) {
+            String rawId = id.substring(1);
+            if (hasNamespace(namespace, rawId)) {
+                return id;
+            }
+            return "#" + namespace + ":" + rawId;
+        }
+
+        if (hasNamespace(namespace, id)) {
+            return id;
+        }
+        return namespace + ":" + id;
+    }
+
+    public static String withDefaultNamespace(String id) {
+        return withNamespace("minecraft", id);
+    }
+
+    public static String withoutDefaultNamespace(String id) {
+        return id.replace("minecraft:", "");
     }
 }

@@ -7,6 +7,11 @@ import cn.taotxi.Makemoney.Makemoney;
 public class MLogger {
     private String moduleName;
     private Logger logger;
+    private boolean isDebug;
+
+    public void setDebug(boolean bool) {
+        isDebug = bool;
+    }
 
     public MLogger(String moduleName) {
         this.moduleName = moduleName;
@@ -14,18 +19,30 @@ public class MLogger {
     }
 
     public void info(String message) {
+        if (!isDebug) {
+            return;
+        }
         logger.info("[{}] " + message, moduleName);
     }
 
     public void info(String message, Object arg1) {
+        if (!isDebug) {
+            return;
+        }
         logger.info("[{}] " + message, moduleName, arg1);
     }
 
     public void info(String message, Object arg1, Object arg2) {
+        if (!isDebug) {
+            return;
+        }
         logger.info("[{}] " + message, moduleName, arg1, arg2);
     }
 
     public void info(String message, Object... args) {
+        if (!isDebug) {
+            return;
+        }
         logger.info("[{}] " + message, moduleName, args);
     }
     

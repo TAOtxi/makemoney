@@ -68,27 +68,47 @@ public class AutoDropConfig extends BaseConfig {
 
     public void addPresetItems() {
         Item swordPreset = new Item();
-        swordPreset.enabled = true;
         swordPreset.name = "*";
-        swordPreset.id = "/minecraft:(?:diamond|netherite)_.*/";
-        swordPreset.tags = List.of("#minecraft:enchantable/sharp_weapon");
+        swordPreset.id = "/^minecraft:(?:diamond|netherite)_.*$/";
+        swordPreset.tags = List.of("#enchantable/sharp_weapon");
         swordPreset.minEnchantRequir = 2;
-        swordPreset.enchantments.put("minecraft:sharpness", 5);
-        swordPreset.enchantments.put("minecraft:smite", 5);
-        swordPreset.enchantments.put("minecraft:bane_of_arthropods", 5);
+        swordPreset.enchantments.put("sharpness", 5);
+        swordPreset.enchantments.put("smite", 5);
+        swordPreset.enchantments.put("bane_of_arthropods", 5);
         items.add(swordPreset);
 
         Item armorPreset = new Item();
-        armorPreset.enabled = true;
         armorPreset.name = "*";
-        armorPreset.id = "/minecraft:(?:diamond|netherite)_.*/";
-        armorPreset.tags.add("#minecraft:enchantable/armor");
+        armorPreset.id = "/^minecraft:(?:diamond|netherite)_.*$/";
+        armorPreset.tags.add("#enchantable/armor");
         armorPreset.minEnchantRequir = 3;
-        armorPreset.enchantments.put("minecraft:protection", 4);
-        armorPreset.enchantments.put("minecraft:fire_protection", 4);
-        armorPreset.enchantments.put("minecraft:projectile_protection", 4);
-        armorPreset.enchantments.put("minecraft:blast_protection", 4);
+        armorPreset.enchantments.put("protection", 4);
+        armorPreset.enchantments.put("fire_protection", 4);
+        armorPreset.enchantments.put("projectile_protection", 4);
+        armorPreset.enchantments.put("blast_protection", 4);
         items.add(armorPreset);
+
+        Item bowPreset = new Item();
+        bowPreset.name = "*";
+        bowPreset.id = "bow";
+        bowPreset.enchantments.put("infinity", 1);
+        bowPreset.enchantments.put("mending", 1);
+        items.add(bowPreset);
+
+        Item paperPreset = new Item();
+        paperPreset.name = "*";
+        paperPreset.id = "paper";
+        items.add(paperPreset);
+
+        Item diamondPreset = new Item();
+        diamondPreset.name = "*";
+        diamondPreset.id = "/^minecraft:diamond(?:_block)?$/";
+        items.add(diamondPreset);
+
+        Item netheritePreset = new Item();
+        netheritePreset.name = "*";
+        netheritePreset.id = "/^minecraft:netherite.*$/";
+        items.add(netheritePreset);
     }
 
     public class Item {
@@ -120,7 +140,7 @@ public class AutoDropConfig extends BaseConfig {
         }
 
         public static int getDefaultMinEnchantRequir() {
-            return 1;
+            return 0;
         }
 
         public List<String> getEnchantList() {

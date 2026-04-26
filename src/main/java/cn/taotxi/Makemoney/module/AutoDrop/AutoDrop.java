@@ -21,6 +21,7 @@ public class AutoDrop {
     public static final MLogger LOGGER = new MLogger(MODULE_NAME);
     public static AutoDropConfig config = AutoDropConfig.load(AutoDropConfig.class, MODULE_NAME);
     public static int tickCounter = 0;
+    public static boolean isDebug = false;
 
     public static void registerTickEvents(Minecraft client, int tickCounter) {
         if (!config.enabled || Makemoney.isOpenYaclScreen) return;
@@ -42,7 +43,18 @@ public class AutoDrop {
                 .executes(context -> toggleAutoDrop(context, true)))
             .then(ClientCommandManager.literal("false")
                 .executes(context -> toggleAutoDrop(context, false)))
-            );
+            .then(ClientCommandManager.literal("debug")
+                .then(ClientCommandManager.literal("true")
+                    .executes(context -> setDebug(true)))
+                .then(ClientCommandManager.literal("false")
+                    .executes(context -> setDebug(false))))
+        );
+    }
+
+    private static int setDebug(boolean debug) {
+        isDebug = debug;
+        LOGGER.setDebug(debug);
+        return 1;
     }
 
     private static int showHelp(CommandContext<FabricClientCommandSource> context) {

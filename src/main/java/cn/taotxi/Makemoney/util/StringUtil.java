@@ -64,7 +64,15 @@ public class StringUtil {
 
     public static boolean regMatch(String str, String regex) {
         if (!isRegex(regex)) return str.equals(regex);
-        regex = regex.substring(1, regex.length() - 1);
+        regex = getRawRegex(regex);
         return Pattern.matches(regex, str);
+    }
+
+    public static String getRawRegex(String str) {
+        return str.substring(1, str.length() - 1);
+    }
+
+    public static String toRegex(String str) {
+        return "/" + str + "/";
     }
 }

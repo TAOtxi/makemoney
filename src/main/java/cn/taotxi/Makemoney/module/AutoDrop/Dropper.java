@@ -24,12 +24,16 @@ import net.minecraft.world.inventory.InventoryMenu;
 
 public class Dropper {
     // TODO: 如果命名空间是minecraft，可以省略命名空间
+    // TODO: 在捡到物品的事件中，自动调用该方法
     public static void tryToDropItems() {
         Minecraft client = Minecraft.getInstance();
         LocalPlayer player = client.player;
 
         // when player is open a container or in a config GUI, do not drop items
         if (player.hasContainerOpen() || client.screen instanceof YACLScreen) return;
+
+        // check if player is crouching
+        if (player.isCrouching()) return;
 
         final List<Integer> dropSlots = new ArrayList<>();
         InventoryMenu inventoryMenu = player.inventoryMenu;
@@ -39,7 +43,7 @@ public class Dropper {
             ItemStack item = inventoryMenu.getSlot(i).getItem();
 
             // AutoDrop.LOGGER.info("Check item {} in slot {}", item.getItemName(), i);
-            if (!shouldDrop(item)) continue;
+            if (isEqualItem(item)) continue;
             // AutoDrop.LOGGER.info("Dropping item {} in slot {}", ItemStackUtil.getName(item), i);
             dropSlots.add(i);
         }
@@ -49,8 +53,8 @@ public class Dropper {
 
     }
 
-    public static boolean shouldDrop(ItemStack item) {
-        if (item.isEmpty()) return false;
+    public static boolean isEqualItem(ItemStack item) {
+        if (item.isEmpty()) return true;
 
         for (AutoDropConfig.Item check: AutoDrop.config.items){
             if (!check.enabled) continue;
@@ -58,12 +62,14 @@ public class Dropper {
             // TODO: 适配多颜色文本
             // check name
             String name = ItemStackUtil.getName(item);
-            if (!check.name.equals("*") && !StringUtil.regMatch(name, check.name)) {
+            if (!check.name.equals("*") && !StringUtil.regMatch(name, ItemStackUtil.withDefaultNamespace(check.name))) {
+                AutoDrop.LOGGER.info("name not match: " + name + " " + ItemStackUtil.withDefaultNamespace(check.name));
                 continue; 
             }
             // check id
             String id = ItemStackUtil.getId(item);
-            if (!check.id.equals("*") && !StringUtil.regMatch(id, check.id)) {
+            if (!check.id.equals("*") && !StringUtil.regMatch(id, ItemStackUtil.withDefaultNamespace(check.id))) {
+                AutoDrop.LOGGER.info("id not match: " + id + " " + ItemStackUtil.withDefaultNamespace(check.id));
                 continue;
             }
 
@@ -75,20 +81,27 @@ public class Dropper {
              * 下面第一个if不赘述
              * 第二个if：没有包含`*`，且itemTags和check.tags没有交集，表示匹配不通过
              */
-            List<String> itemTags = ItemStackUtil.getTags(item);
-            // check tag
-            if (check.tags.isEmpty()) continue;
-            if (!check.tags.contains("*") && !CommonUtil.hasIntersection_regMatch(itemTags, check.tags)) continue;
+            if (!check.tags.isEmpty()) {
+                List<String> itemTags = ItemStackUtil.getTags(item);
+                // check tag
+                List<String> withNamespaceCheckTags = check.tags.stream().map(tag -> ItemStackUtil.withDefaultNamespace(tag)).toList();
+                if (!check.tags.contains("*") && !CommonUtil.hasIntersection_regMatch(itemTags, withNamespaceCheckTags)) {
+                    AutoDrop.LOGGER.info("tags not match: " + itemTags + " " + withNamespaceCheckTags);
+                    continue;
+                };
+            }
 
-            if (check.enchantments.size() == 0) {    // 匹配通过
-                return false;
+            if (check.enchantments.size() == 0 ||
+                check.minEnchantRequir <= 0) {    // 匹配通过
+                return true;
             }
 
             if (calEnchantCounts(item, check.enchantments) >= check.minEnchantRequir) {
-                return false;   // ✔
+                return true;   // ✔
             }
+            AutoDrop.LOGGER.info("enchantments not match.");
         }
-        return true;
+        return false;
     }
 
     // TODO: 验证附魔书是否适用此函数
@@ -101,7 +114,7 @@ public class Dropper {
         for (Holder<Enchantment> enchant: it.keySet()) {
             String ID = enchant.getRegisteredName();
             int level = it.getLevel(enchant);
-            if (enchantments.containsKey(ID) && enchantments.getOrDefault(ID, -666) == level) {
+            if (enchantments.getOrDefault(ID, -666) >= level || enchantments.getOrDefault(ItemStackUtil.withoutDefaultNamespace(ID), -666) >= level) {
                 counter++;
             }
         }
