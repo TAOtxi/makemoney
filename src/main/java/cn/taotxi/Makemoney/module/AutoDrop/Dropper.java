@@ -114,8 +114,8 @@ public class Dropper {
         for (Holder<Enchantment> enchant: it.keySet()) {
             String ID = enchant.getRegisteredName();
             int level = it.getLevel(enchant);
-            if (enchantments.getOrDefault(ID, -666) <= level || 
-                enchantments.getOrDefault(ItemStackUtil.withoutDefaultNamespace(ID), -666) <= level) {
+            if (level >= enchantments.getOrDefault(ID, 666) || 
+                level >= enchantments.getOrDefault(ItemStackUtil.withoutDefaultNamespace(ID), 666)) {
                 counter++;
             }
         }
