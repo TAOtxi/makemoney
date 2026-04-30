@@ -136,7 +136,8 @@ public class Dropper {
         LocalPlayer player = client.player;
         InventoryMenu inventoryMenu = player.inventoryMenu;
 
-        if (direction.equals(AutoDropConfig.Direction.LOOKING)) {
+        AutoDropConfig.Direction dir = AutoDropConfig.Direction.valueOf(direction.toUpperCase());
+        if (dir == AutoDropConfig.Direction.LOOKING) {
           for (int slot: slots) {
             client.gameMode.handleInventoryMouseClick(inventoryMenu.containerId, slot, 1, ClickType.THROW, player);
           }
@@ -145,15 +146,14 @@ public class Dropper {
 
         float xRot = player.getXRot();
         float yRot = player.getYRot();
-        setPlayerRotation(direction);
+        setPlayerRotation(dir);
         for (int slot: slots) {
             client.gameMode.handleInventoryMouseClick(inventoryMenu.containerId, slot, 1, ClickType.THROW, player);
         }
         setPlayerRotation(yRot, xRot);
     }
 
-    public static void setPlayerRotation(String direction) {
-        AutoDropConfig.Direction dir = AutoDropConfig.Direction.valueOf(direction);
+    public static void setPlayerRotation(AutoDropConfig.Direction dir) {
         switch (dir) {
             case UP:
                 setPlayerRotation(0, -90);
@@ -176,7 +176,7 @@ public class Dropper {
             case LOOKING:
                 break;
             default:
-                AutoDrop.LOGGER.error("Error direction: {} !!!", direction);
+                // never happen
                 break;
         }
     }

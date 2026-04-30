@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import cn.taotxi.Makemoney.config.BaseConfig;
+import cn.taotxi.Makemoney.util.ItemStackUtil;
 import cn.taotxi.Makemoney.util.StringUtil;
 
 public class AutoDropConfig extends BaseConfig {
@@ -165,34 +168,24 @@ public class AutoDropConfig extends BaseConfig {
 
         public void saveEnchantList(List<String> enchantments) {
             this.enchantments.clear();
-            for (String ent: enchantments) {
-                ent = ent.replace(" ", "")
-                         .replace("：", ":");  // 唉，为什么会有这东西呢
-                if (ent.isEmpty() || ent.charAt(ent.length()-1) == ':') {
-                    AutoDrop.LOGGER.warn("invalidFormat: `{}`", ent);
-                    continue;
-                }
 
-                List<Integer> idx = new ArrayList<>();
-                for (int i = 0; i < ent.length(); i++) {
-                    if (ent.charAt(i) == ':') {
-                        idx.add(i);
-                    }
-                }
-                if (idx.size() != 1 && idx.size() != 2) {   // case => minecraft:mending:
+            // minecraft:mending:1
+            // minecraft:mending
+            // mending:1
+            // mending
+            Pattern pattern = Pattern.compile("^(?:minecraft:)?([^:]+)(?::(\\d+))?$");
+
+            for (String ent: enchantments) {
+                Matcher matcher = pattern.matcher(ent);
+                if (!matcher.find()) {
                     AutoDrop.LOGGER.warn("invalidFormat: `{}`", ent);
                     continue;
                 }
-                // case => minecraft:mending
-                if (idx.size() == 1) {
-                    // level default to 1
-                    this.enchantments.put(ent, 1);
-                } else {
-                    // case => minecraft:sharpness:5
-                    String ID = ent.substring(0, idx.get(1));
-                    int level = Integer.valueOf(ent.substring(idx.get(1) + 1));
-                    this.enchantments.put(ID, level);
-                }
+                String name = matcher.group(1);
+                String levelStr = matcher.group(2);
+                int level = levelStr != null ? Integer.valueOf(levelStr) : 1;
+
+                this.enchantments.put(name, level);
             }
         }
     }
