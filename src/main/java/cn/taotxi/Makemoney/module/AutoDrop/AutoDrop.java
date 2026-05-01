@@ -34,8 +34,7 @@ public class AutoDrop {
     }
 
     public static void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
-        for (String name: new String[]{MODULE_NAME, "ad"}) {
-            dispatcher.register(ClientCommandManager.literal(name).executes(AutoDrop::showHelp)
+        var command = dispatcher.register(ClientCommandManager.literal(MODULE_NAME).executes(AutoDrop::showHelp)
                 .then(ClientCommandManager.literal("help").executes(AutoDrop::showHelp))
                 .then(ClientCommandManager.literal("reload").executes(AutoDrop::reloadConfig))
                 .then(ClientCommandManager.literal("config").executes(AutoDrop::openConfigGui))
@@ -49,7 +48,9 @@ public class AutoDrop {
                     .then(ClientCommandManager.literal("false")
                         .executes(context -> setDebug(false))))
             );
-        }
+        dispatcher.register(ClientCommandManager.literal("ad")
+                .executes(AutoDrop::showHelp)
+                .redirect(command));
     }
 
     private static int setDebug(boolean debug) {
