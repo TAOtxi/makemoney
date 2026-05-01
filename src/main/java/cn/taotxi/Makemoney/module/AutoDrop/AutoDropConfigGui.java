@@ -15,23 +15,46 @@ import dev.isxander.yacl3.api.ListOption;
 import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.OptionDescription;
 import dev.isxander.yacl3.api.OptionGroup;
+import dev.isxander.yacl3.api.YetAnotherConfigLib;
 import dev.isxander.yacl3.api.controller.DropdownStringControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.StringControllerBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
 
 public class AutoDropConfigGui {
-    public static ConfigCategory.Builder createAutoDropCategoryBuilder(Screen parent) {
+
+    public static Screen createScreen(Screen parent) {
+        YetAnotherConfigLib.Builder builder = 
+            YetAnotherConfigLib.createBuilder()
+                .title(T.tl("autodrop.name"))
+                .save(() -> {
+                    AutoDrop.config.save();
+                    AutoDrop.LOGGER.info("Config saved...");
+                });
+
+        ConfigCategory.Builder baseSettingCategory = createbaseSetting(parent);
+        ConfigCategory.Builder controlCategory = createControlCategory(parent);
+        ConfigCategory.Builder conditionCategory = createConditionCategory(parent);
+
+        builder.category(baseSettingCategory.build());
+        builder.category(controlCategory.build());
+        builder.category(conditionCategory.build());
+
+        YetAnotherConfigLib yacl = builder.build();
+        return yacl.generateScreen(parent);
+    }
+
+    public static ConfigCategory.Builder createbaseSetting(Screen parent) {
         ConfigCategory.Builder category = 
             ConfigCategory.createBuilder()
-                .name(T.tl("autodrop.name"))
-                .tooltip(T.tl("autodrop.desc"));
+                .name(T.tl("autodrop.baseTab"));
 
 
-        // TODO: 重新打开后，延迟计时器重新计时
         category.option(Factory.addToggleOption(
             T.tl("module.enabled"),
             T.tl("module.enabled.desc"),
@@ -72,7 +95,7 @@ public class AutoDropConfigGui {
                            .collect(Collectors.toList());
 
                     AutoDrop.config.save();
-                    ConfigScreen.reload(yaclScreen, parent);
+                    ConfigScreen.reload(yaclScreen, parent, AutoDropConfigGui::createScreen);
                 })
                 .build()
         );
@@ -93,20 +116,6 @@ public class AutoDropConfigGui {
                 .build()
         );
 
-        // TODO: 玩家自定义更精确的丢弃朝向
-        category.option(Option.<String>createBuilder()
-                .name(T.tl("autodrop.throwDirection"))
-                .description(OptionDescription.of(T.tl("autodrop.throwDirection.desc")))
-                .binding(
-                    AutoDropConfig.getDefaultThrowDirection(),
-                    () -> AutoDrop.config.throwDirection,
-                    val -> AutoDrop.config.throwDirection = val
-                )
-                .controller(opt -> DropdownStringControllerBuilder.create(opt)
-                        .values(AutoDropConfig.getAllThrowDirections().stream().map(Enum::name).collect(Collectors.toList())))
-                .build()
-        );
-
         category.option(Option.<Integer>createBuilder()
                 .name(T.tl("autodrop.checkInterval"))
                 .description(OptionDescription.of(T.tl("autodrop.checkInterval.desc")))
@@ -119,13 +128,168 @@ public class AutoDropConfigGui {
                 .build()
         );
 
+        OptionGroup.Builder group = OptionGroup.createBuilder()
+                    .name(T.tl("autodrop.throw.name"))
+                    .description(OptionDescription.of(T.tl("autodrop.throw.desc")));
+
+        group.option(ButtonOption.createBuilder()
+                .name(T.tl("autodrop.throw.setCurrentRotation"))
+                .description(OptionDescription.of(T.tl("autodrop.throw.setCurrentRotation.desc")))
+                .action((yaclScreen, button) -> {
+                    LocalPlayer player = Minecraft.getInstance().player;
+                    if (player == null) return;
+                    AutoDrop.config.throwYaw = player.getYRot();
+                    AutoDrop.config.throwPitch = player.getXRot();
+                    AutoDrop.config.isDirectionThrow = false;
+                    AutoDrop.config.save();
+                    ConfigScreen.reload(yaclScreen, parent, AutoDropConfigGui::createScreen);
+                })
+                .build()
+        );
+
+        var throwConfigText = AutoDrop.config.isDirectionThrow ? 
+            T.tl("autodrop.throwDirection") : 
+            T.tl("autodrop.throwRotation");
+        group.option(ButtonOption.createBuilder()
+                .name(T.tl("autodrop.throwType"))
+                .text(throwConfigText)
+                .description(OptionDescription.of(T.tl("autodrop.throwType.desc")))
+                .action((yaclScreen, button) -> {
+                    AutoDrop.config.isDirectionThrow = !AutoDrop.config.isDirectionThrow;
+                    AutoDrop.config.save();
+                    ConfigScreen.reload(yaclScreen, parent, AutoDropConfigGui::createScreen);
+                })
+                .build()
+        );
+
+        if (AutoDrop.config.isDirectionThrow) {
+            group.option(Option.<String>createBuilder()
+                    .name(T.tl("autodrop.throwDirection"))
+                    .description(OptionDescription.of(T.tl("autodrop.throwDirection.desc")))
+                    .binding(
+                        AutoDropConfig.getDefaultThrowDirection(),
+                        () -> AutoDrop.config.throwDirection,
+                        val -> AutoDrop.config.throwDirection = val
+                    )
+                    .controller(opt -> DropdownStringControllerBuilder.create(opt)
+                            .values(AutoDropConfig.getAllThrowDirections().stream().map(Enum::name).collect(Collectors.toList())))
+                    .build()
+            );
+        } else {
+            group.option(Option.<String>createBuilder()
+                    .name(T.tl("autodrop.throwRotation"))
+                    .description(OptionDescription.of(T.tl("autodrop.throwRotation.desc")))
+                    .binding(
+                        "<0.0, 0.0>",
+                        () -> StringUtil.posToString(
+                            List.of(AutoDrop.config.throwYaw, AutoDrop.config.throwPitch)),
+                        val -> {
+                            List<Float> rotation = StringUtil.parsePos(val);
+                            if (rotation.size() != 2) return;
+                            AutoDrop.config.throwYaw = rotation.get(0);
+                            AutoDrop.config.throwPitch = rotation.get(1);
+                        }
+                    )
+                    .controller(StringControllerBuilder::create)
+                    .build()
+            );
+        }
+        category.group(group.build());
+
+        return category;
+    }
+
+    public static ConfigCategory.Builder createControlCategory(Screen parent) {
+        ConfigCategory.Builder category = 
+            ConfigCategory.createBuilder()
+                .name(T.tl("autodrop.controlTab"));
+
+        // TODO: 待实现
+        // category.option(Factory.addToggleOption(
+        //     T.tl("autodrop.triggerWhenPickUpItem"),
+        //     T.tl("autodrop.triggerWhenPickUpItem.desc"),
+        //     AutoDropConfig.getDefaultTriggerWhenPickup(),
+        //     () -> AutoDrop.config.triggerWhenPickup,
+        //     val -> AutoDrop.config.triggerWhenPickup = val
+        // ));
+
+        category.option(Factory.addToggleOption(
+            T.tl("autodrop.stopWhenOpenContainer"),
+            T.tl("autodrop.stopWhenOpenContainer.desc"),
+            AutoDropConfig.getDefaultStopWhenOpenContainer(),
+            () -> AutoDrop.config.stopWhenOpenContainer,
+            val -> AutoDrop.config.stopWhenOpenContainer = val
+        ));
+
+        category.option(Factory.addToggleOption(
+            T.tl("autodrop.stopWhenOpenConfigGui"),
+            T.tl("autodrop.stopWhenOpenConfigGui.desc"),
+            AutoDropConfig.getDefaultStopWhenOpenConfig(),
+            () -> AutoDrop.config.stopWhenOpenConfig,
+            val -> AutoDrop.config.stopWhenOpenConfig = val
+        ));
+
+        category.option(Factory.addToggleOption(
+            T.tl("autodrop.stopWhenCrouch"),
+            T.tl("autodrop.stopWhenCrouch.desc"),
+            AutoDropConfig.getDefaultStopWhenCrouch(),
+            () -> AutoDrop.config.stopWhenCrouch,
+            val -> AutoDrop.config.stopWhenCrouch = val
+        ));
+
+        category.option(Factory.addToggleOption(
+            T.tl("autodrop.triggerWithItem"),
+            T.tl("autodrop.triggerWithItem.desc"),
+            AutoDropConfig.getDefaultTriggerWithItem(),
+            () -> AutoDrop.config.triggerWithItem,
+            val -> AutoDrop.config.triggerWithItem = val
+        ));
+
+        OptionGroup.Builder group = OptionGroup.createBuilder()
+                    .name(T.tl("autodrop.triggerItemGroup"));
+        
+        group.option(Option.<String>createBuilder()
+                    .name(T.tl("autodrop.triggerItemName"))
+                    .description(OptionDescription.of(
+                            T.tl("autodrop.triggerItemName.desc")))
+                    .binding(
+                        "",
+                        () -> AutoDrop.config.triggerItemName,
+                        val -> AutoDrop.config.triggerItemName = val
+                    )
+                    .controller(StringControllerBuilder::create)
+                    .build()
+        );
+
+        group.option(Option.<String>createBuilder()
+                    .name(T.tl("autodrop.triggerItemId"))
+                    .description(OptionDescription.of(
+                            T.tl("autodrop.triggerItemId.desc")))
+                    .binding(
+                        "",
+                        () -> AutoDrop.config.triggerItemId,
+                        val -> AutoDrop.config.triggerItemId = val
+                    )
+                    .controller(StringControllerBuilder::create)
+                    .build()
+        );
+        category.group(group.build());
+
+        return category;
+    }
+
+    public static ConfigCategory.Builder createConditionCategory(Screen parent) {
+        ConfigCategory.Builder category = 
+            ConfigCategory.createBuilder()
+                .name(T.tl("autodrop.conditionTab"));
+
         category.option(ButtonOption.createBuilder()
                 .name(T.tl("autodrop.addBlock").withStyle(ChatFormatting.GREEN))
                 .description(OptionDescription.of(T.tl("autodrop.addBlock.desc")))
                 .action((yaclScreen, button) -> {
                     AutoDrop.config.addItems();
                     AutoDrop.config.save();
-                    ConfigScreen.reload(yaclScreen, parent);
+                    ConfigScreen.reload(yaclScreen, parent, AutoDropConfigGui::createScreen);
                 })
                 .build()
         );
@@ -136,16 +300,27 @@ public class AutoDropConfigGui {
                 .action((yaclScreen, button) -> {
                     AutoDrop.config.addPresetItems();
                     AutoDrop.config.save();
-                    ConfigScreen.reload(yaclScreen, parent);
+                    ConfigScreen.reload(yaclScreen, parent, AutoDropConfigGui::createScreen);
                 })
                 .build()
         );
 
-        for (int i = 0; i < AutoDrop.config.items.size(); i++) {
-            AutoDropConfig.Item item = AutoDrop.config.items.get(i);
+        category.option(ButtonOption.createBuilder()
+                .name(T.tl("autodrop.removeAll").withStyle(ChatFormatting.RED))
+                .description(OptionDescription.of(T.tl("autodrop.removeAll.desc")))
+                .action((yaclScreen, button) -> {
+                    AutoDrop.config.items.clear();
+                    AutoDrop.config.save();
+                    ConfigScreen.reload(yaclScreen, parent, AutoDropConfigGui::createScreen);
+                })
+                .build()
+        );
+
+        for (AutoDropConfig.Item item : AutoDrop.config.items) {
+            MutableComponent matchName = item.comment.isEmpty() ? T.tl("autodrop.block.name") : T.l(item.comment);
             OptionGroup.Builder whiteListGroup = OptionGroup.createBuilder()
-                    .name(T.tl("autodrop.block.name", i+1))
-                    .description(OptionDescription.of(T.tl("autodrop.block.name.desc", i+1)));
+                    .name(matchName)
+                    .description(OptionDescription.of(T.tl("autodrop.block.name.desc")));
             
 
             whiteListGroup.option(ButtonOption.createBuilder()
@@ -154,7 +329,7 @@ public class AutoDropConfigGui {
                 .action((yaclScreen, button) -> {
                     AutoDrop.config.removeItem(item);
                     AutoDrop.config.save();
-                    ConfigScreen.reload(yaclScreen, parent);
+                    ConfigScreen.reload(yaclScreen, parent, AutoDropConfigGui::createScreen);
                 })
                 .build()
             );
@@ -212,7 +387,7 @@ public class AutoDropConfigGui {
                         val -> item.minEnchantRequir = val
                     )
                     .controller(opt -> IntegerFieldControllerBuilder.create(opt)
-                        .min(0)
+                        .min(-1)
                         .max(100))
                     .build()
             );
@@ -233,5 +408,4 @@ public class AutoDropConfigGui {
         }
         return category;
     }
-
 }

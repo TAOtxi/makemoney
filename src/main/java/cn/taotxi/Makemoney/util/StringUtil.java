@@ -75,4 +75,18 @@ public class StringUtil {
     public static String toRegex(String str) {
         return "/" + str + "/";
     }
+
+    public static List<Float> parsePos(String str) {
+        Pattern pattern = Pattern.compile("\\d+(?:\\.\\d+)?");
+        Matcher matcher = pattern.matcher(str);
+        List<Float> posList = new ArrayList<>();
+        while (matcher.find()) {
+            posList.add(Float.parseFloat(matcher.group()));
+        }
+        return posList;
+    }
+
+    public static <Type> String posToString(List<Type> pos) {
+        return "<" + listToStr(pos, ", ") + ">";
+    }
 }

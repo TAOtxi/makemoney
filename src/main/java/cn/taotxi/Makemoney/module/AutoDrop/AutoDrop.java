@@ -5,7 +5,6 @@ import java.util.Map;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 
-import cn.taotxi.Makemoney.Makemoney;
 import cn.taotxi.Makemoney.util.EventBus;
 import cn.taotxi.Makemoney.util.MLogger;
 import cn.taotxi.Makemoney.util.Message;
@@ -16,20 +15,22 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.network.chat.MutableComponent;
 
+// TODO: 添加在容器中也可以应用此功能的选项
 public class AutoDrop {
     public static final String MODULE_NAME = "autodrop";
     public static final MLogger LOGGER = new MLogger(MODULE_NAME);
     public static AutoDropConfig config = AutoDropConfig.load(AutoDropConfig.class, MODULE_NAME);
     public static int tickCounter = 0;
-    public static boolean isDebug = false;
 
     public static void registerTickEvents(Minecraft client, int tickCounter) {
-        if (!config.enabled || Makemoney.isOpenYaclScreen) return;
+        if (!config.enabled) return;
         if (config.showAttentionMsg) {
             Message.actionBarMsg(T.tl("autodrop.message.attention"));
         }
 
         if (tickCounter % config.checkInterval != 0) return;
+        // if (config.triggerWhenPickup) return;
+
         Dropper.tryToDropItems();
     }
 
@@ -42,21 +43,10 @@ public class AutoDrop {
                     .executes(context -> toggleAutoDrop(context, true)))
                 .then(ClientCommandManager.literal("false")
                     .executes(context -> toggleAutoDrop(context, false)))
-                .then(ClientCommandManager.literal("debug")
-                    .then(ClientCommandManager.literal("true")
-                        .executes(context -> setDebug(true)))
-                    .then(ClientCommandManager.literal("false")
-                        .executes(context -> setDebug(false))))
             );
         dispatcher.register(ClientCommandManager.literal("ad")
                 .executes(AutoDrop::showHelp)
                 .redirect(command));
-    }
-
-    private static int setDebug(boolean debug) {
-        isDebug = debug;
-        LOGGER.setDebug(debug);
-        return 1;
     }
 
     private static int showHelp(CommandContext<FabricClientCommandSource> context) {
@@ -81,7 +71,7 @@ public class AutoDrop {
     }
 
     private static int openConfigGui(CommandContext<FabricClientCommandSource> context) {
-        EventBus.post("openConfigGui", Map.of("title", T.t(MODULE_NAME + ".name")));
+        EventBus.post("openConfigGui", Map.of("module", MODULE_NAME));
         return 1;
     }
 }

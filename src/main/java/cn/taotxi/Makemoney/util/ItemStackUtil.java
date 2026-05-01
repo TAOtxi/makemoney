@@ -34,11 +34,11 @@ public class ItemStackUtil {
     }
 
     public static boolean equalName(ItemStack item, String name) {
-        if (item.getCustomName() != null) {
-            return StringUtil.regMatch(item.getCustomName().getString(), name) ||
-                   StringUtil.regMatch(tryToGetTranslateName(item), name);
-        }
-        return StringUtil.regMatch(tryToGetTranslateName(item), name);
+        return StringUtil.regMatch(getName(item), name);
+    }
+
+    public static boolean equalId(ItemStack item, String id) {
+        return StringUtil.regMatch(getId(item), withDefaultNamespace(id));
     }
 
     public static List<String> getTags(ItemStack item) {

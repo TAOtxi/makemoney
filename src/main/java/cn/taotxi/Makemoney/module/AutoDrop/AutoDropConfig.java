@@ -8,7 +8,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import cn.taotxi.Makemoney.config.BaseConfig;
-import cn.taotxi.Makemoney.util.ItemStackUtil;
 import cn.taotxi.Makemoney.util.StringUtil;
 
 public class AutoDropConfig extends BaseConfig {
@@ -20,13 +19,56 @@ public class AutoDropConfig extends BaseConfig {
     public transient boolean enabled = getDefaultEnabled();
     public boolean showAttentionMsg = getDefaultShowAttentionMsg();
     public List<Integer> ingnoreSlots = new ArrayList<>();
+    public Boolean isDirectionThrow = getDefaultDirectionThrow();
     public String throwDirection = getDefaultThrowDirection();
+    public Float throwYaw = getDefaultThrowYaw();
+    public Float throwPitch = getDefaultThrowPitch();
     public int checkInterval = getDefaultCheckInterval();
     public List<Item> items = new ArrayList<>();
 
+    public boolean stopWhenCrouch = getDefaultStopWhenCrouch();
+    public boolean stopWhenOpenContainer = getDefaultStopWhenOpenContainer();
+    public boolean stopWhenOpenConfig = getDefaultStopWhenOpenConfig();
+    public boolean triggerWhenPickup = getDefaultTriggerWhenPickup();
+    public boolean triggerWithItem = getDefaultTriggerWithItem();
+    public String triggerItemName = "";
+    public String triggerItemId = "";
+
     @Override
     public String getDefaultConfigVersion() {
-        return "0.0.3";
+        return "1.0.0";
+    }
+
+    public static Boolean getDefaultDirectionThrow() {
+        return true;
+    }
+
+    public static boolean getDefaultTriggerWhenPickup() {
+        return false;
+    }
+
+    public static Float getDefaultThrowYaw() {
+        return 0.0f;
+    }
+
+    public static Float getDefaultThrowPitch() {
+        return 0.0f;
+    }
+
+    public static boolean getDefaultStopWhenCrouch() {
+        return false;
+    }
+
+    public static boolean getDefaultStopWhenOpenContainer() {
+        return true;
+    }
+
+    public static boolean getDefaultStopWhenOpenConfig() {
+        return true;
+    }
+
+    public static boolean getDefaultTriggerWithItem() {
+        return false;
     }
     
     public static boolean getDefaultEnabled() {
@@ -66,6 +108,7 @@ public class AutoDropConfig extends BaseConfig {
 
     public void addPresetItems() {
         Item swordPreset = new Item();
+        swordPreset.comment = "包含2个或以上冲突附魔的钻石、合金武器";
         swordPreset.name = "*";
         swordPreset.id = "/^minecraft:(?:diamond|netherite)_.*$/";
         swordPreset.tags = List.of("#enchantable/sharp_weapon");
@@ -76,6 +119,7 @@ public class AutoDropConfig extends BaseConfig {
         items.add(swordPreset);
 
         Item armorPreset = new Item();
+        armorPreset.comment = "包含3个或以上冲突附魔的钻石、合金盔甲";
         armorPreset.name = "*";
         armorPreset.id = "/^minecraft:(?:diamond|netherite)_.*$/";
         armorPreset.tags.add("#enchantable/armor");
@@ -86,7 +130,31 @@ public class AutoDropConfig extends BaseConfig {
         armorPreset.enchantments.put("blast_protection", 4);
         items.add(armorPreset);
 
+        Item swordFullPreset = new Item();
+        swordFullPreset.comment = "三冲突附魔武器";
+        swordFullPreset.name = "*";
+        swordFullPreset.id = "*";
+        swordFullPreset.tags = List.of("#enchantable/sharp_weapon");
+        swordFullPreset.minEnchantRequir = -1;
+        swordFullPreset.enchantments.put("sharpness", 5);
+        swordFullPreset.enchantments.put("smite", 5);
+        swordFullPreset.enchantments.put("bane_of_arthropods", 5);
+        items.add(swordFullPreset);
+
+        Item armorFullPreset = new Item();
+        armorFullPreset.comment = "四冲突附魔盔甲";
+        armorFullPreset.name = "*";
+        armorFullPreset.id = "*";
+        armorFullPreset.tags.add("#enchantable/armor");
+        armorFullPreset.minEnchantRequir = -1;
+        armorFullPreset.enchantments.put("protection", 4);
+        armorFullPreset.enchantments.put("fire_protection", 4);
+        armorFullPreset.enchantments.put("projectile_protection", 4);
+        armorFullPreset.enchantments.put("blast_protection", 4);
+        items.add(armorFullPreset);
+
         Item bowPreset = new Item();
+        bowPreset.comment = "冲突弓";
         bowPreset.name = "*";
         bowPreset.id = "bow";
         bowPreset.minEnchantRequir = 2;
@@ -95,27 +163,32 @@ public class AutoDropConfig extends BaseConfig {
         items.add(bowPreset);
 
         Item paperPreset = new Item();
+        paperPreset.comment = "匹配点卷、拾玖币、装备兑换卷（无法排除普通纸）";
         paperPreset.name = "*";
         paperPreset.id = "paper";
         items.add(paperPreset);
 
         Item diamondPreset = new Item();
+        diamondPreset.comment = "钻石和钻石块";
         diamondPreset.name = "*";
         diamondPreset.id = "/^minecraft:diamond(?:_block)?$/";
         items.add(diamondPreset);
 
         Item netheritePreset = new Item();
+        netheritePreset.comment = "所有的合金物品";
         netheritePreset.name = "*";
         netheritePreset.id = "/^minecraft:netherite.*$/";
         items.add(netheritePreset);
 
         Item fishRodPreset = new Item();
+        fishRodPreset.comment = "鱼竿";
         fishRodPreset.name = "*";
         fishRodPreset.id = "fishing_rod";
         items.add(fishRodPreset);
     }
 
     public class Item {
+        public String comment = "";
         public boolean enabled = getDefaultItemEnabled();
         public String name = getDefaultName();
         public String id = getDefaultID();

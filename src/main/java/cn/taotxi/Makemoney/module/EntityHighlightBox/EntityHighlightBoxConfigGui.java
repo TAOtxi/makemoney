@@ -2,7 +2,6 @@ package cn.taotxi.Makemoney.module.EntityHighlightBox;
 
 import java.awt.Color;
 
-import cn.taotxi.Makemoney.gui.ConfigScreen;
 import cn.taotxi.Makemoney.gui.Factory;
 import cn.taotxi.Makemoney.util.StringUtil;
 import cn.taotxi.Makemoney.util.T;
@@ -50,7 +49,7 @@ public class EntityHighlightBoxConfigGui {
                 .action((yaclScreen, button) -> {
                     EntityHighlightBox.config.colorful = !EntityHighlightBox.config.colorful;
                     EntityHighlightBox.config.save();
-                    ConfigScreen.reload(yaclScreen, parent);
+                    // ConfigScreen.reload(yaclScreen, parent);
                 })
                 .build()
         );

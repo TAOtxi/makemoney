@@ -33,4 +33,27 @@ public class Factory {
                     )
                 .build();
     }
+
+    public static Option<Boolean> addToggleOption(
+        Component name, 
+        Component desc, 
+        Boolean defaultValue,
+        Supplier<Boolean> getter,
+        Consumer<Boolean> setter,
+        Component onTrue,
+        Component onFalse
+    ) {
+        return Option.<Boolean>createBuilder()
+                .name(name)
+                .description(OptionDescription.of(desc))
+                .binding(
+                    defaultValue,
+                    getter,
+                    setter
+                )
+                .controller(opt -> BooleanControllerBuilder.create(opt)
+                    .formatValue( val -> val? onTrue : onFalse)
+                    )
+                .build();
+    }
 }

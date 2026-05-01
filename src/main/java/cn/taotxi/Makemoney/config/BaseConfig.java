@@ -12,6 +12,7 @@ import cn.taotxi.Makemoney.Makemoney;
 import cn.taotxi.Makemoney.util.Debouncer;
 import net.fabricmc.loader.api.FabricLoader;
 
+// TODO: 修改为 Map 数据结构
 public class BaseConfig {
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private static final File configDir = new File(FabricLoader.getInstance().getConfigDir().toFile(), Makemoney.MOD_ID);
