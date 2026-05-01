@@ -40,18 +40,6 @@ public class AutoDropConfigGui {
             val -> AutoDrop.config.enabled = val
         ));
 
-        category.option(Option.<Integer>createBuilder()
-                .name(T.tl("autodrop.launchDelay"))
-                .description(OptionDescription.of(T.tl("autodrop.launchDelay.desc")))
-                .binding(
-                    AutoDropConfig.getDefaultLaunchDelay(),
-                    () -> AutoDrop.config.launchDelay,
-                    val -> AutoDrop.config.launchDelay = Math.clamp(val, 0, 100000)
-                )
-                .controller(IntegerFieldControllerBuilder::create)
-                .build()
-        );
-
         category.option(Factory.addToggleOption(
             T.tl("autodrop.showAttentionMsg"),
             T.tl("autodrop.showAttentionMsg.desc"),

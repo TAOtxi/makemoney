@@ -18,7 +18,6 @@ public class AutoDropConfig extends BaseConfig {
     }
 
     public transient boolean enabled = getDefaultEnabled();
-    public int launchDelay = getDefaultLaunchDelay();
     public boolean showAttentionMsg = getDefaultShowAttentionMsg();
     public List<Integer> ingnoreSlots = new ArrayList<>();
     public String throwDirection = getDefaultThrowDirection();
@@ -32,10 +31,6 @@ public class AutoDropConfig extends BaseConfig {
     
     public static boolean getDefaultEnabled() {
         return false;
-    }
-
-    public static int getDefaultLaunchDelay() {
-        return 20 * 30; // 30s
     }
 
     public static boolean getDefaultShowAttentionMsg() {

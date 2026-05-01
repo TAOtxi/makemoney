@@ -25,7 +25,6 @@ public class AutoDrop {
 
     public static void registerTickEvents(Minecraft client, int tickCounter) {
         if (!config.enabled || Makemoney.isOpenYaclScreen) return;
-        if (tickCounter < config.launchDelay) return;
         if (config.showAttentionMsg) {
             Message.actionBarMsg(T.tl("autodrop.message.attention"));
         }
