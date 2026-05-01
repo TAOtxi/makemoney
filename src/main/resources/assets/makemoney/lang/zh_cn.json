@@ -9,6 +9,11 @@
     "makemoney.gui.config.title": "拾玖世界的钱都是我的嘎嘎嘎嘎嘎",
     "makemoney.gui.config.category.fishing.name": "钓鱼模块",
     "makemoney.gui.config.category.fishing.tooltip": "专属于钓鱼佬的辅助功能",
+    "makemoney.gui.config.open": "打开",
+    "makemoney.gui.config.open.autodrop": "自动丢弃子模块配置界面",
+    "makemoney.gui.config.open.autorepair": "自动修补子模块配置界面",
+    "makemoney.gui.config.open.entityhighlightbox": "实体透视子模块配置界面",
+    "makemoney.gui.config.module": "模块配置索引界面",
 
     "makemoney.module.enabled": "模块总开关",
     "makemoney.module.enabled.desc": "关闭后，将禁用此模块",

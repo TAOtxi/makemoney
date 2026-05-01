@@ -218,7 +218,6 @@ public class Dropper {
         }
     }
 
-    // TODO: 测试在服务端的表现
     public static void setPlayerRotation(float yaw, float pitch) {
         LocalPlayer player = Minecraft.getInstance().player;
         player.setYRot(yaw);

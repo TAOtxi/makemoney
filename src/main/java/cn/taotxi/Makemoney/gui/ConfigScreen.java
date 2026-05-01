@@ -6,20 +6,23 @@ import net.minecraft.client.gui.screens.Screen;
 
 import org.lwjgl.glfw.GLFW;
 import com.google.common.base.Function;
+import com.mojang.blaze3d.platform.Window;
 
 import cn.taotxi.Makemoney.Makemoney;
+import cn.taotxi.Makemoney.module.AutoDrop.AutoDropConfigGui;
 import cn.taotxi.Makemoney.module.AutoRepair.AutoRepair;
 import cn.taotxi.Makemoney.module.AutoRepair.AutoRepairConfigGui;
 import cn.taotxi.Makemoney.module.EntityHighlightBox.EntityHighlightBox;
 import cn.taotxi.Makemoney.module.EntityHighlightBox.EntityHighlightBoxConfigGui;
 import cn.taotxi.Makemoney.util.T;
+import dev.isxander.yacl3.api.ButtonOption;
 import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.YetAnotherConfigLib;
 import dev.isxander.yacl3.gui.YACLScreen;
 
 
 public class ConfigScreen {
-    // TODO: 实现一个主设置页面，通过Mod menu打开。里面可以打开子模块的设置页面
+    // TODO: 待完善
     public static Screen getConfigScreen(Screen parent) {
         YetAnotherConfigLib.Builder builder = 
             YetAnotherConfigLib.createBuilder()
@@ -30,13 +33,46 @@ public class ConfigScreen {
                     Makemoney.LOGGER.info("Config saved...");
                 });
 
-        // 钓鱼相关模块
-        ConfigCategory.Builder fishingCategory = AutoRepairConfigGui.createFishingCategoryBuilder(parent);
-        builder.category(fishingCategory.build());
-        
-        // 实体高亮模块
-        ConfigCategory.Builder entityHighlightBoxCategory = EntityHighlightBoxConfigGui.createEntityHighlightBoxCategoryBuilder(parent);
-        builder.category(entityHighlightBoxCategory.build());
+        ConfigCategory.Builder moduleCategory = ConfigCategory.createBuilder()
+                .name(T.tl("gui.config.module"));
+
+        moduleCategory.option(ButtonOption.createBuilder()
+                .name(T.tl("gui.config.open.autodrop"))
+                .text(T.tl("gui.config.open"))
+                .action((screen, option) -> {
+                    YACLScreen autodropScreem = (YACLScreen) AutoDropConfigGui.createScreen(screen);
+                    Window window = Minecraft.getInstance().getWindow(); 
+                    autodropScreem.init(window.getGuiScaledWidth(), window.getGuiScaledHeight());
+                    Minecraft.getInstance().setScreen(autodropScreem);
+                })
+                .build()
+        );
+
+        moduleCategory.option(ButtonOption.createBuilder()
+                .name(T.tl("gui.config.open.autorepair"))
+                .text(T.tl("gui.config.open"))
+                .action((screen, option) -> {
+                    YACLScreen autorepairScreem = (YACLScreen) AutoRepairConfigGui.createConfigScreen(screen);
+                    Window window = Minecraft.getInstance().getWindow(); 
+                    autorepairScreem.init(window.getGuiScaledWidth(), window.getGuiScaledHeight());
+                    Minecraft.getInstance().setScreen(autorepairScreem);
+                })
+                .build()
+        );
+
+        moduleCategory.option(ButtonOption.createBuilder()
+                .name(T.tl("gui.config.open.entityhighlightbox"))
+                .text(T.tl("gui.config.open"))
+                .action((screen, option) -> {
+                    YACLScreen entityhighlightboxScreen = (YACLScreen) EntityHighlightBoxConfigGui.createConfigScreen(screen);
+                    Window window = Minecraft.getInstance().getWindow(); 
+                    entityhighlightboxScreen.init(window.getGuiScaledWidth(), window.getGuiScaledHeight());
+                    Minecraft.getInstance().setScreen(entityhighlightboxScreen);
+                })
+                .build()
+        );
+
+        builder.category(moduleCategory.build());
 
         YetAnotherConfigLib yacl = builder.build();
         return yacl.generateScreen(parent);

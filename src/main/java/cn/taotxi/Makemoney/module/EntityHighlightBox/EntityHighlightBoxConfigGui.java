@@ -2,6 +2,7 @@ package cn.taotxi.Makemoney.module.EntityHighlightBox;
 
 import java.awt.Color;
 
+import cn.taotxi.Makemoney.Makemoney;
 import cn.taotxi.Makemoney.gui.Factory;
 import cn.taotxi.Makemoney.util.StringUtil;
 import cn.taotxi.Makemoney.util.T;
@@ -11,6 +12,7 @@ import dev.isxander.yacl3.api.ListOption;
 import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.OptionDescription;
 import dev.isxander.yacl3.api.OptionGroup;
+import dev.isxander.yacl3.api.YetAnotherConfigLib;
 import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
 import dev.isxander.yacl3.api.controller.ColorControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
@@ -19,6 +21,22 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 
 public class EntityHighlightBoxConfigGui {
+    public static Screen createConfigScreen(Screen parent) {
+        YetAnotherConfigLib.Builder builder = 
+            YetAnotherConfigLib.createBuilder()
+                .title(T.tl("gui.config.title"))
+                .save(() -> {
+                    EntityHighlightBox.config.save();
+                    Makemoney.LOGGER.info("Config saved...");
+                });
+
+        ConfigCategory.Builder category = createEntityHighlightBoxCategoryBuilder(parent);
+        
+        builder.category(category.build());
+        YetAnotherConfigLib yacl = builder.build();
+        return yacl.generateScreen(parent);
+    }
+
     public static ConfigCategory.Builder createEntityHighlightBoxCategoryBuilder(Screen parent) {
         ConfigCategory.Builder category = ConfigCategory.createBuilder()
                 .name(T.tl("entityhighlightBox.name"))

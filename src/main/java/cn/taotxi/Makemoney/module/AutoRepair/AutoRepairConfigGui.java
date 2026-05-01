@@ -1,15 +1,33 @@
 package cn.taotxi.Makemoney.module.AutoRepair;
 
+import cn.taotxi.Makemoney.Makemoney;
 import cn.taotxi.Makemoney.gui.Factory;
 import cn.taotxi.Makemoney.util.T;
 import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.OptionDescription;
 import dev.isxander.yacl3.api.OptionGroup;
+import dev.isxander.yacl3.api.YetAnotherConfigLib;
 import dev.isxander.yacl3.api.controller.IntegerFieldControllerBuilder;
 import net.minecraft.client.gui.screens.Screen;
 
 public class AutoRepairConfigGui {
+    public static Screen createConfigScreen(Screen parent) {
+        YetAnotherConfigLib.Builder builder = 
+            YetAnotherConfigLib.createBuilder()
+                .title(T.tl("gui.config.title"))
+                .save(() -> {
+                    AutoRepair.config.save();
+                    Makemoney.LOGGER.info("Config saved...");
+                });
+
+        ConfigCategory.Builder category = createFishingCategoryBuilder(parent);
+        
+        builder.category(category.build());
+        YetAnotherConfigLib yacl = builder.build();
+        return yacl.generateScreen(parent);
+    }
+
     public static ConfigCategory.Builder createFishingCategoryBuilder(Screen parent) {
         ConfigCategory.Builder category = 
             ConfigCategory.createBuilder()
