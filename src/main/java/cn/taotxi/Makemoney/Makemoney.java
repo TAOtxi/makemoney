@@ -32,6 +32,7 @@ public class Makemoney implements ModInitializer {
         registerTickEvents();
         registerSomeEvents();
         registerCommand();
+        AutoDrop.init();
 	}
 
     private void registerCommand() {

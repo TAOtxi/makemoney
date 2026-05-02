@@ -26,6 +26,7 @@ public class AutoDropConfig extends BaseConfig {
     public int checkInterval = getDefaultCheckInterval();
     public List<Item> items = new ArrayList<>();
 
+    public boolean turnOffWhenChangeWorld = getDefaultTurnOffWhenChangeWorld();
     public boolean stopWhenCrouch = getDefaultStopWhenCrouch();
     public boolean stopWhenOpenContainer = getDefaultStopWhenOpenContainer();
     public boolean stopWhenOpenConfig = getDefaultStopWhenOpenConfig();
@@ -36,7 +37,11 @@ public class AutoDropConfig extends BaseConfig {
 
     @Override
     public String getDefaultConfigVersion() {
-        return "1.0.0";
+        return "1.0.2";
+    }
+    
+    public static boolean getDefaultTurnOffWhenChangeWorld() {
+        return true;
     }
 
     public static Boolean getDefaultDirectionThrow() {
@@ -157,7 +162,7 @@ public class AutoDropConfig extends BaseConfig {
         bowPreset.comment = "冲突弓";
         bowPreset.name = "*";
         bowPreset.id = "bow";
-        bowPreset.minEnchantRequir = 2;
+        bowPreset.minEnchantRequir = -1;
         bowPreset.enchantments.put("infinity", 1);
         bowPreset.enchantments.put("mending", 1);
         items.add(bowPreset);

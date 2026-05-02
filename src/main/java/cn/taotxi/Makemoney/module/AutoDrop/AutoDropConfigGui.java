@@ -214,6 +214,14 @@ public class AutoDropConfigGui {
         // ));
 
         category.option(Factory.addToggleOption(
+            T.tl("autodrop.turnOffWhenChangeWorld"),
+            T.tl("autodrop.turnOffWhenChangeWorld.desc"),
+            AutoDropConfig.getDefaultTurnOffWhenChangeWorld(),
+            () -> AutoDrop.config.turnOffWhenChangeWorld,
+            val -> AutoDrop.config.turnOffWhenChangeWorld = val
+        ));
+
+        category.option(Factory.addToggleOption(
             T.tl("autodrop.stopWhenOpenContainer"),
             T.tl("autodrop.stopWhenOpenContainer.desc"),
             AutoDropConfig.getDefaultStopWhenOpenContainer(),

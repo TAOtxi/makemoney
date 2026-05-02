@@ -47,6 +47,8 @@
 
     "makemoney.autodrop.triggerWhenPickUpItem": "拾取物品时触发丢弃",
     "makemoney.autodrop.triggerWhenPickUpItem.desc": "开启后，只有在拾取物品时，才会触发丢弃功能。若关闭，则按周期循环触发。",
+    "makemoney.autodrop.turnOffWhenChangeWorld": "切换世界时自动关闭丢弃功能",
+    "makemoney.autodrop.turnOffWhenChangeWorld.desc": "开启后，在每次切换世界时，将丢弃功能关闭",
     "makemoney.autodrop.stopWhenOpenContainer": "打开容器时禁用丢弃",
     "makemoney.autodrop.stopWhenOpenContainer.desc": "打开各种容器时，比如背包、铁砧、箱子等将会禁用丢弃功能",
     "makemoney.autodrop.stopWhenOpenConfigGui": "打开本配置界面时禁用丢弃",
@@ -90,7 +92,7 @@
     "makemoney.autodrop.addPresetBlock": "添加预设匹配条件",
     "makemoney.autodrop.addPresetBlock.desc": "添加预设的匹配条件，比如一些冲突附魔的装备。",
     "makemoney.autodrop.removeAll": "移除所有匹配条件",
-    "makemoney.autodrop.removeAll.desc": "移除所有的匹配条件。\n\n请注意，开弓没有回头监，此行为无法撤回！！",
+    "makemoney.autodrop.removeAll.desc": "移除所有的匹配条件。\n\n请注意，开宫没有回头监，此行为无法撤回！！",
     "makemoney.autodrop.block.name": "匹配条件",
     "makemoney.autodrop.block.name.desc": "匹配物品的条件。",
     "makemoney.autodrop.block.remove": "删除",
@@ -106,7 +108,7 @@
     "makemoney.autodrop.block.minEnchantRequir": "最小匹配魔咒数",
     "makemoney.autodrop.block.minEnchantRequir.desc": "物品需要包含此数量的魔咒才能通过匹配。\n\n-1匹配所有魔咒。",
     "makemoney.autodrop.block.enchantment.name": "附魔组",
-    "makemoney.autodrop.block.enchantment.name.desc": "要匹配的魔咒和等级。\n\n有等级的魔咒必须带上等级，没有等级的魔咒可忽略，也可写为1。\n\n附魔等级至少要大于等于此等级才可通过匹配。\n\n比如经验修补：mending。\n\n比如锋利V：sharpness:5。\n\n比如抢夺III：looting:3。\n\n详细魔咒ID请查阅：https://zh.minecraft.wiki/w/Java版数据值#魔咒",
+    "makemoney.autodrop.block.enchantment.name.desc": "匹配的魔咒和等级。\n\n有等级的魔咒必须带上等级，没有等级的魔咒可忽略，也可写为1。\n\n附魔等级需大于等于此等级才可通过匹配。\n\n比如经验修补：mending。\n\n比如锋利V：sharpness:5。\n\n比如抢夺III：looting:3。\n\n详细魔咒ID请查阅：https://zh.minecraft.wiki/w/Java版数据值#魔咒",
 
     "makemoney.entityhighlightBox.name": "实体透视框",
     "makemoney.entityhighlightBox.desc": "在游戏中透视实体的边框",

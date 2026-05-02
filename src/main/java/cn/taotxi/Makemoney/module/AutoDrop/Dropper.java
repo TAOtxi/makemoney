@@ -29,7 +29,7 @@ public class Dropper {
         LocalPlayer player = client.player;
 
         if (AutoDrop.config.stopWhenCrouch && player.isCrouching()) return;
-        if (AutoDrop.config.stopWhenOpenContainer && player.hasContainerOpen()) return;
+        if (AutoDrop.config.stopWhenOpenContainer && player.hasContainerOpen()) return; // TODO: BUG: 无法检测是否打开背包
         if (AutoDrop.config.stopWhenOpenConfig && ConfigScreen.isOpenYaclScreen()) return;
 
         if (AutoDrop.config.triggerWithItem) {

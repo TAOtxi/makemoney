@@ -11,6 +11,7 @@ import cn.taotxi.Makemoney.util.Message;
 import cn.taotxi.Makemoney.util.T;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.network.chat.MutableComponent;
@@ -34,14 +35,22 @@ public class AutoDrop {
         Dropper.tryToDropItems();
     }
 
+    public static void init() {
+        ClientWorldEvents.AFTER_CLIENT_WORLD_CHANGE.register((mc, level) -> {
+            if (config.turnOffWhenChangeWorld) {
+                config.enabled = false;
+            }
+        });
+    }
+
     public static void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
         var command = dispatcher.register(ClientCommandManager.literal(MODULE_NAME).executes(AutoDrop::showHelp)
                 .then(ClientCommandManager.literal("help").executes(AutoDrop::showHelp))
                 .then(ClientCommandManager.literal("reload").executes(AutoDrop::reloadConfig))
                 .then(ClientCommandManager.literal("config").executes(AutoDrop::openConfigGui))
-                .then(ClientCommandManager.literal("true")
+                .then(ClientCommandManager.literal("on")
                     .executes(context -> toggleAutoDrop(context, true)))
-                .then(ClientCommandManager.literal("false")
+                .then(ClientCommandManager.literal("off")
                     .executes(context -> toggleAutoDrop(context, false)))
             );
         dispatcher.register(ClientCommandManager.literal("ad")
