@@ -31,6 +31,7 @@ public class Dropper {
         if (AutoDrop.config.stopWhenCrouch && player.isCrouching()) return;
         if (AutoDrop.config.stopWhenOpenContainer && player.hasContainerOpen()) return; // TODO: BUG: 无法检测是否打开背包
         if (AutoDrop.config.stopWhenOpenConfig && ConfigScreen.isOpenYaclScreen()) return;
+        if (AutoDrop.config.triggerMinCount != 0 && AutoDrop.config.triggerMinCount > notEmptySlotCount()) return;
 
         if (AutoDrop.config.triggerWithItem) {
             ItemStack heldItem = player.getMainHandItem();
@@ -64,6 +65,18 @@ public class Dropper {
         } else {
             dropItemAnywhere(dropSlots, AutoDrop.config.throwYaw, AutoDrop.config.throwPitch);
         }
+    }
+
+    public static int notEmptySlotCount() {
+        LocalPlayer player = Minecraft.getInstance().player;
+        InventoryMenu inventoryMenu = player.inventoryMenu;
+        int ret = 0;
+        for (int i = InventoryMenu.INV_SLOT_START; i < InventoryMenu.USE_ROW_SLOT_END; i++) {
+            ItemStack item = inventoryMenu.getSlot(i).getItem();
+            if (!item.isEmpty()) ret++;
+        }
+        System.out.println(ret);
+        return ret;
     }
 
     public static boolean isEqualItem(ItemStack item) {

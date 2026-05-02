@@ -18,6 +18,7 @@ import dev.isxander.yacl3.api.OptionGroup;
 import dev.isxander.yacl3.api.YetAnotherConfigLib;
 import dev.isxander.yacl3.api.controller.DropdownStringControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerFieldControllerBuilder;
+import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
 import dev.isxander.yacl3.api.controller.StringControllerBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -220,6 +221,21 @@ public class AutoDropConfigGui {
             () -> AutoDrop.config.turnOffWhenChangeWorld,
             val -> AutoDrop.config.turnOffWhenChangeWorld = val
         ));
+
+        category.option(Option.<Integer>createBuilder()
+                    .name(T.tl("autodrop.triggerMinCount"))
+                    .description(OptionDescription.of(T.tl("autodrop.triggerMinCount.desc")))
+                    .binding(
+                        AutoDropConfig.getDefaultTriggerMinCount(),
+                        () -> AutoDrop.config.triggerMinCount,
+                        val -> AutoDrop.config.triggerMinCount = val
+                    )
+                    .controller(opt -> IntegerSliderControllerBuilder.create(opt)
+                        .range(0, 36)
+                        .step(1))
+
+                    .build()
+        );
 
         category.option(Factory.addToggleOption(
             T.tl("autodrop.stopWhenOpenContainer"),

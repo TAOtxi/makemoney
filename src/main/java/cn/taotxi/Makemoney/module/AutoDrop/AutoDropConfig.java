@@ -27,6 +27,7 @@ public class AutoDropConfig extends BaseConfig {
     public List<Item> items = new ArrayList<>();
 
     public boolean turnOffWhenChangeWorld = getDefaultTurnOffWhenChangeWorld();
+    public int triggerMinCount = getDefaultTriggerMinCount();
     public boolean stopWhenCrouch = getDefaultStopWhenCrouch();
     public boolean stopWhenOpenContainer = getDefaultStopWhenOpenContainer();
     public boolean stopWhenOpenConfig = getDefaultStopWhenOpenConfig();
@@ -37,11 +38,15 @@ public class AutoDropConfig extends BaseConfig {
 
     @Override
     public String getDefaultConfigVersion() {
-        return "1.0.2";
+        return "1.0.3";
     }
     
     public static boolean getDefaultTurnOffWhenChangeWorld() {
         return true;
+    }
+
+    public static int getDefaultTriggerMinCount() {
+        return 0;
     }
 
     public static Boolean getDefaultDirectionThrow() {
