@@ -44,7 +44,7 @@ public class AutoRide {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (client.level == null || client.player == null) return;
 
-            if (!enabled || targetPlayer.isEmpty()) return;
+            if (!enabled) return;
             if (client.player.getVehicle() != null) return;
             tickCounter++;
             if (tickCounter % runInterval != 0) return;
@@ -62,16 +62,14 @@ public class AutoRide {
 
     private static Player getTargetPlayer() {
         Minecraft client = Minecraft.getInstance();
-        AABB aabb = client.player.getBoundingBox().inflate(minDistance);
-        List<Entity> entities = client.level.getEntities(client.player, aabb, (Entity entity) -> {
-            if (entity instanceof Player playerCow) {
-                return playerCow.getName().getString().equals(targetPlayer) &&
-                    playerCow.distanceToSqr(client.player) <= minDistance * minDistance;
-            }
-            return false;
+        Player player = client.player;
+        
+        if (targetPlayer.isEmpty()) {
+            return client.level.getNearestPlayer(player, minDistance);
+        }
+        return client.level.getNearestPlayer(player.getX(), player.getY(), player.getZ(), minDistance, cow -> {
+            return cow.getName().getString().equals(targetPlayer);
         });
-        if (entities.isEmpty()) return null;
-        return (Player) entities.get(0);
     }
 
     private static void rideTargetPlayer(Player playerCow) {
