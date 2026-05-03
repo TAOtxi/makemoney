@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import cn.taotxi.Makemoney.gui.ConfigScreen;
 import cn.taotxi.Makemoney.util.CommonUtil;
+import cn.taotxi.Makemoney.util.InventoryUtil;
 import cn.taotxi.Makemoney.util.ItemStackUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -68,15 +69,7 @@ public class Dropper {
     }
 
     public static int notEmptySlotCount() {
-        LocalPlayer player = Minecraft.getInstance().player;
-        InventoryMenu inventoryMenu = player.inventoryMenu;
-        int ret = 0;
-        for (int i = InventoryMenu.INV_SLOT_START; i < InventoryMenu.USE_ROW_SLOT_END; i++) {
-            ItemStack item = inventoryMenu.getSlot(i).getItem();
-            if (!item.isEmpty()) ret++;
-        }
-        System.out.println(ret);
-        return ret;
+        return InventoryUtil.getInventoryNotEmptySlots().size();
     }
 
     public static boolean isEqualItem(ItemStack item) {

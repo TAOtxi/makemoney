@@ -26,7 +26,8 @@ import cn.taotxi.Makemoney.util.EventBus;
 import cn.taotxi.Makemoney.util.T;
 import dev.isxander.yacl3.gui.YACLScreen;
 
-
+// TODO: 屏蔽扫地机信息
+// TODO: 屏蔽地震消息
 public class Makemoney implements ModInitializer {
 	public static final String MOD_ID = "makemoney";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
@@ -45,7 +46,7 @@ public class Makemoney implements ModInitializer {
 
     private void registerCommand() {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-            AutoRepair.registerCommand(dispatcher, registryAccess);
+            // AutoRepair.registerCommand(dispatcher, registryAccess);
             AutoDrop.registerCommand(dispatcher, registryAccess);
             // AutoAction.registerCommand(dispatcher, registryAccess);
 
@@ -64,6 +65,10 @@ public class Makemoney implements ModInitializer {
                     .executes(Makemoney::showHelp)
                     .redirect(command));
 
+            dispatcher.register(ClientCommandManager.literal("mk")
+                    .executes(Makemoney::showHelp)
+                    .redirect(command));
+
             dispatcher.register(ClientCommandManager.literal("mkm")
                     .executes(Makemoney::showHelp)
                     .redirect(command));
@@ -79,7 +84,7 @@ public class Makemoney implements ModInitializer {
             // AutoRepair.registerTickEvents(client, tickCounter);
             AutoDrop.registerTickEvents(client, tickCounter);
             // AutoAction.registerTickEvents(client, tickCounter);
-            EntityHighlightBox.registerTickEvents(client, tickCounter);
+            // EntityHighlightBox.registerTickEvents(client, tickCounter);
         });
     }
 
@@ -87,7 +92,7 @@ public class Makemoney implements ModInitializer {
         // ScreenEvents.AFTER_INIT.register((client, screen, width, height) -> {
         //     Message.sendMessage("Screen: " + screen.getClass().getSimpleName());
         // });
-        EntityHighlightBox.registerRenderEvents();
+        // EntityHighlightBox.registerRenderEvents();
         EventBus.register("openConfigGui", (args) -> {
             Minecraft client = Minecraft.getInstance();
             if (client.screen != null) {

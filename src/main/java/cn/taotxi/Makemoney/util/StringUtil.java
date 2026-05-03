@@ -76,12 +76,22 @@ public class StringUtil {
         return "/" + str + "/";
     }
 
-    public static List<Float> parsePos(String str) {
+    public static List<Float> parseFloatPos(String str) {
         Pattern pattern = Pattern.compile("\\d+(?:\\.\\d+)?");
         Matcher matcher = pattern.matcher(str);
         List<Float> posList = new ArrayList<>();
         while (matcher.find()) {
             posList.add(Float.parseFloat(matcher.group()));
+        }
+        return posList;
+    }
+
+    public static List<Integer> parseIntPos(String str) {
+        Pattern pattern = Pattern.compile("\\d+");
+        Matcher matcher = pattern.matcher(str);
+        List<Integer> posList = new ArrayList<>();
+        while (matcher.find()) {
+            posList.add(Integer.parseInt(matcher.group()));
         }
         return posList;
     }

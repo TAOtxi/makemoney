@@ -15,7 +15,6 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
 import cn.taotxi.Makemoney.util.EventBus;
-import cn.taotxi.Makemoney.util.Message;
 import cn.taotxi.Makemoney.util.T;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -46,12 +45,12 @@ public class AutoRide {
             if (client.level == null || client.player == null) return;
 
             if (!enabled || targetPlayer.isEmpty()) return;
+            if (client.player.getVehicle() != null) return;
             tickCounter++;
             if (tickCounter % runInterval != 0) return;
 
             if (!client.player.getMainHandItem().isEmpty()) return;
             if (client.player.isCrouching()) return;
-            if (client.player.getVehicle() != null) return;
 
             Player target = getTargetPlayer();
             if (target == null) return;
@@ -77,27 +76,6 @@ public class AutoRide {
 
     private static void rideTargetPlayer(Player playerCow) {
         Minecraft client = Minecraft.getInstance();
-        
-        Message.actionBarMsg("ride to " + playerCow.getName().getString());
-        // client.player.startRiding(playerCow);
-
-        // Vec3 targetPos = playerCow.getEyePosition();
-        // Vec3 playerPos = client.player.getEyePosition();
-
-        // float yaw = client.player.getYRot();
-        // float pitch = client.player.getXRot();
-
-        // float targetYaw = -(float) Math.atan2(targetPos.x - playerPos.x, targetPos.z - playerPos.z) * (float) (180.0 / Math.PI);
-        // float targetPitch = -(float) Math.atan2(targetPos.y - playerPos.y, Math.sqrt(Math.pow(targetPos.x - playerPos.x, 2) + Math.pow(targetPos.z - playerPos.z, 2))) * (float) (180.0 / Math.PI);
-
-        // client.player.connection.send(
-        //     new ServerboundMovePlayerPacket.Rot(
-        //         targetYaw, targetPitch,
-        //         client.player.onGround(),
-        //         false
-        //     )
-        // );
-        // client.gameMode.interact(client.player, playerCow, InteractionHand.MAIN_HAND);
         client.gameMode.interactAt(client.player, playerCow, new EntityHitResult(playerCow), InteractionHand.MAIN_HAND);
     }
 

@@ -1,5 +1,6 @@
 package cn.taotxi.Makemoney.module.AutoDrop;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,6 +27,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.inventory.InventoryMenu;
 
 public class AutoDropConfigGui {
 
@@ -77,15 +79,7 @@ public class AutoDropConfigGui {
                 .description(OptionDescription.of(T.tl("autodrop.ignoreCurrentSlot.desc")))
                 .action((yaclScreen, button) -> {
                     if (Minecraft.getInstance().player == null) return;
-                    
-                    List<Integer> slots = InventoryUtil.getInventoryNotEmptySlots();
-                    AutoDrop.config.ingnoreSlots.addAll(slots);
-
-                    // 去重
-                    AutoDrop.config.ingnoreSlots = 
-                        AutoDrop.config.ingnoreSlots.stream()
-                           .distinct()
-                           .collect(Collectors.toList());
+                    AutoDrop.config.ingnoreSlots = InventoryUtil.getInventoryNotEmptySlots();
 
                     AutoDrop.config.save();
                     ConfigScreen.reload(yaclScreen, parent, false, AutoDropConfigGui::createScreen);
@@ -103,7 +97,18 @@ public class AutoDropConfigGui {
                 .binding(
                     AutoDropConfig.getDefaultIngnoreSlot(),
                     () -> StringUtil.listToStr(AutoDrop.config.ingnoreSlots),
-                    val -> AutoDrop.config.ingnoreSlots = StringUtil.strToIntList(val)
+                    val -> {
+                        List<Integer> slots = StringUtil.strToIntList(val);
+                        slots.sort(Comparator.naturalOrder());
+                        for (int i=slots.size()-1; i>=0; i--) {
+                            if (slots.get(i) < InventoryMenu.INV_SLOT_START ||
+                                slots.get(i) >= InventoryMenu.USE_ROW_SLOT_END ||
+                                (i > 0 && slots.get(i) == slots.get(i-1))) {
+                                slots.remove(i);
+                            }
+                        }
+                        AutoDrop.config.ingnoreSlots = slots;
+                    }
                 )
                 .controller(StringControllerBuilder::create)
                 .build()
@@ -177,7 +182,7 @@ public class AutoDropConfigGui {
                         () -> StringUtil.posToString(
                             List.of(AutoDrop.config.throwYaw, AutoDrop.config.throwPitch)),
                         val -> {
-                            List<Float> rotation = StringUtil.parsePos(val);
+                            List<Float> rotation = StringUtil.parseFloatPos(val);
                             if (rotation.size() != 2) return;
                             AutoDrop.config.throwYaw = rotation.get(0);
                             AutoDrop.config.throwPitch = rotation.get(1);
