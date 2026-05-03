@@ -10,14 +10,19 @@ import com.mojang.blaze3d.platform.Window;
 
 import cn.taotxi.Makemoney.Makemoney;
 import cn.taotxi.Makemoney.module.AutoDrop.AutoDropConfigGui;
-import cn.taotxi.Makemoney.module.AutoRepair.AutoRepair;
 import cn.taotxi.Makemoney.module.AutoRepair.AutoRepairConfigGui;
-import cn.taotxi.Makemoney.module.EntityHighlightBox.EntityHighlightBox;
+import cn.taotxi.Makemoney.module.AutoRide.AutoRide;
 import cn.taotxi.Makemoney.module.EntityHighlightBox.EntityHighlightBoxConfigGui;
 import cn.taotxi.Makemoney.util.T;
 import dev.isxander.yacl3.api.ButtonOption;
 import dev.isxander.yacl3.api.ConfigCategory;
+import dev.isxander.yacl3.api.Option;
+import dev.isxander.yacl3.api.OptionDescription;
+import dev.isxander.yacl3.api.OptionGroup;
 import dev.isxander.yacl3.api.YetAnotherConfigLib;
+import dev.isxander.yacl3.api.controller.DoubleSliderControllerBuilder;
+import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
+import dev.isxander.yacl3.api.controller.StringControllerBuilder;
 import dev.isxander.yacl3.gui.YACLScreen;
 
 
@@ -28,11 +33,21 @@ public class ConfigScreen {
             YetAnotherConfigLib.createBuilder()
                 .title(T.tl("gui.config.title"))
                 .save(() -> {
-                    AutoRepair.config.save();
-                    EntityHighlightBox.config.save();
-                    Makemoney.LOGGER.info("Config saved...");
+
                 });
 
+        
+        ConfigCategory.Builder moduleCategory = createConfigCategory(parent);
+        builder.category(moduleCategory.build());
+
+        ConfigCategory.Builder strangeCategory = createStrangeCategory(parent);
+        builder.category(strangeCategory.build());
+
+        YetAnotherConfigLib yacl = builder.build();
+        return yacl.generateScreen(parent);
+    }
+
+    private static ConfigCategory.Builder createConfigCategory(Screen parent) {
         ConfigCategory.Builder moduleCategory = ConfigCategory.createBuilder()
                 .name(T.tl("gui.config.module"));
 
@@ -72,13 +87,87 @@ public class ConfigScreen {
                 .build()
         );
 
-        builder.category(moduleCategory.build());
-
-        YetAnotherConfigLib yacl = builder.build();
-        return yacl.generateScreen(parent);
+        return moduleCategory;
     }
     
-    public static void reload(YACLScreen screen, Screen parent, Function<Screen, Screen> createConfigScreen) {
+
+    private static ConfigCategory.Builder createStrangeCategory(Screen parent) {
+        ConfigCategory.Builder strangeCategory = ConfigCategory.createBuilder()
+                .name(T.tl("strange.name"))
+                .tooltip(T.tl("strange.desc"));
+
+        OptionGroup.Builder autoRideGroup = OptionGroup.createBuilder()
+                .name(T.tl("autoride"))
+                .description(OptionDescription.of(T.tl("autoride.desc")));
+
+        autoRideGroup.option(Factory.addToggleOption(
+                T.tl("autoride.enabled"),
+                T.tl("autoride.enabled.desc"),
+                false,
+                () -> AutoRide.enabled,
+                value -> AutoRide.enabled = value
+        ));
+
+        autoRideGroup.option(Option.<Integer>createBuilder()
+                .name(T.tl("autoride.interval"))
+                .description(OptionDescription.of(T.tl("autoride.interval.desc")))
+                .binding(
+                    5,
+                    () -> AutoRide.runInterval,
+                    value -> AutoRide.runInterval = value
+                )
+                .controller(opt -> IntegerSliderControllerBuilder.create(opt)
+                    .range(1, 20)
+                    .step(1)
+                    .formatValue(val -> T.l(val + " tick"))
+                )
+                .build()
+        );
+
+        autoRideGroup.option(Option.<Double>createBuilder()
+                .name(T.tl("autoride.distance"))
+                .description(OptionDescription.of(T.tl("autoride.distance.desc")))
+                .binding(
+                    6.0,
+                    () -> AutoRide.minDistance,
+                    value -> AutoRide.minDistance = value
+                )
+                .controller(opt -> DoubleSliderControllerBuilder.create(opt)
+                    .range(1.0, 10.0)
+                    .step(1.0)
+                )
+                .build()
+        );
+
+        autoRideGroup.option(Option.<String>createBuilder()
+                .name(T.tl("autoride.target"))
+                .description(OptionDescription.of(T.tl("autoride.target.desc")))
+                .binding(
+                    "Gzn12138",
+                    () -> AutoRide.targetPlayer,
+                    value -> AutoRide.targetPlayer = value
+                )
+                .controller(StringControllerBuilder::create)
+                .build()
+        );
+
+        autoRideGroup.option(ButtonOption.createBuilder()
+                .name(T.tl("autoride.reset"))
+                .description(OptionDescription.of(T.tl("autoride.reset.desc")))
+                .action((screen, option) -> {
+                    AutoRide.resetConfig();
+                    reload(screen, parent, false, ConfigScreen::getConfigScreen);
+                })
+                .build()
+        );
+
+
+        strangeCategory.group(autoRideGroup.build());
+        return strangeCategory;
+    }
+
+
+    public static void reload(YACLScreen screen, Screen parent, boolean saveConfig, Function<Screen, Screen> createConfigScreen) {
         Minecraft client = Minecraft.getInstance();
         double x = client.mouseHandler.xpos();
         double y = client.mouseHandler.ypos();
@@ -88,7 +177,9 @@ public class ConfigScreen {
                     : screen.tabNavigationBar.getTabs().indexOf(screen.tabManager.getCurrentTab());
             if (tab == -1)
                 tab = 0;
-            screen.finishOrSave();
+            if (saveConfig) {
+                screen.finishOrSave();
+            }
             screen.onClose(); // In case finishOrSave doesn't close it.
             YACLScreen newScreen = (YACLScreen) createConfigScreen.apply(parent);
             newScreen.init(screen.width, screen.height);

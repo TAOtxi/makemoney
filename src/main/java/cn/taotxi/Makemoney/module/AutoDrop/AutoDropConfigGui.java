@@ -75,15 +75,7 @@ public class AutoDropConfigGui {
         category.option(ButtonOption.createBuilder()
                 .name(T.tl("autodrop.ignoreCurrentSlot"))
                 .description(OptionDescription.of(T.tl("autodrop.ignoreCurrentSlot.desc")))
-                .action((yaclScreen, button) -> {   
-                    /**
-                     * TODO: 待修Bug：重置ignoreSlots之后，需要点两次此按钮才能生效。
-                     * 原因：
-                     *  重置ignoreSlots时，ignoreSlots被置空的任务添加到待做任务队列中，当
-                     *  点击该按钮时，首先会将一些槽位添加进配置对象中，随后reload时，会调用保存函数，
-                     *  也就是将执行待做任务队列中的任务，但此时的待做任务是将ignoreSlots置空的任务，
-                     *  因此ignoreSlots被覆盖掉了，也就是置空，唉。没想到有啥优雅的解决办法。
-                     **/
+                .action((yaclScreen, button) -> {
                     if (Minecraft.getInstance().player == null) return;
                     
                     List<Integer> slots = InventoryUtil.getInventoryNotEmptySlots();
@@ -96,7 +88,7 @@ public class AutoDropConfigGui {
                            .collect(Collectors.toList());
 
                     AutoDrop.config.save();
-                    ConfigScreen.reload(yaclScreen, parent, AutoDropConfigGui::createScreen);
+                    ConfigScreen.reload(yaclScreen, parent, false, AutoDropConfigGui::createScreen);
                 })
                 .build()
         );
@@ -143,7 +135,7 @@ public class AutoDropConfigGui {
                     AutoDrop.config.throwPitch = player.getXRot();
                     AutoDrop.config.isDirectionThrow = false;
                     AutoDrop.config.save();
-                    ConfigScreen.reload(yaclScreen, parent, AutoDropConfigGui::createScreen);
+                    ConfigScreen.reload(yaclScreen, parent, true, AutoDropConfigGui::createScreen);
                 })
                 .build()
         );
@@ -158,7 +150,7 @@ public class AutoDropConfigGui {
                 .action((yaclScreen, button) -> {
                     AutoDrop.config.isDirectionThrow = !AutoDrop.config.isDirectionThrow;
                     AutoDrop.config.save();
-                    ConfigScreen.reload(yaclScreen, parent, AutoDropConfigGui::createScreen);
+                    ConfigScreen.reload(yaclScreen, parent, true, AutoDropConfigGui::createScreen);
                 })
                 .build()
         );
@@ -313,7 +305,7 @@ public class AutoDropConfigGui {
                 .action((yaclScreen, button) -> {
                     AutoDrop.config.addItems();
                     AutoDrop.config.save();
-                    ConfigScreen.reload(yaclScreen, parent, AutoDropConfigGui::createScreen);
+                    ConfigScreen.reload(yaclScreen, parent, true, AutoDropConfigGui::createScreen);
                 })
                 .build()
         );
@@ -324,7 +316,7 @@ public class AutoDropConfigGui {
                 .action((yaclScreen, button) -> {
                     AutoDrop.config.addPresetItems();
                     AutoDrop.config.save();
-                    ConfigScreen.reload(yaclScreen, parent, AutoDropConfigGui::createScreen);
+                    ConfigScreen.reload(yaclScreen, parent, true, AutoDropConfigGui::createScreen);
                 })
                 .build()
         );
@@ -335,7 +327,7 @@ public class AutoDropConfigGui {
                 .action((yaclScreen, button) -> {
                     AutoDrop.config.items.clear();
                     AutoDrop.config.save();
-                    ConfigScreen.reload(yaclScreen, parent, AutoDropConfigGui::createScreen);
+                    ConfigScreen.reload(yaclScreen, parent, true, AutoDropConfigGui::createScreen);
                 })
                 .build()
         );
@@ -353,7 +345,7 @@ public class AutoDropConfigGui {
                 .action((yaclScreen, button) -> {
                     AutoDrop.config.removeItem(item);
                     AutoDrop.config.save();
-                    ConfigScreen.reload(yaclScreen, parent, AutoDropConfigGui::createScreen);
+                    ConfigScreen.reload(yaclScreen, parent, true, AutoDropConfigGui::createScreen);
                 })
                 .build()
             );

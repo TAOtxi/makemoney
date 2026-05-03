@@ -5,6 +5,8 @@
     "makemoney.message.reload": "已从文件中重新加载 §d%s §a模组配置...",
     "makemoney.message.enable": "§a%s模式已开启",
     "makemoney.message.disable": "§c%s模式已关闭",
+    "makemoney.message.option.on": "%s §a开启",
+    "makemoney.message.option.off": "%s §c关闭",
 
     "makemoney.gui.config.title": "拾玖世界的钱都是我的嘎嘎嘎嘎嘎",
     "makemoney.gui.config.category.fishing.name": "钓鱼模块",
@@ -139,5 +141,28 @@
     "makemoney.entityhighlightBox.updateInterval": "更新间隔 (tick)",
     "makemoney.entityhighlightBox.updateInterval.desc": "实体列表的更新时间间隔，单位为GameTick",
     "makemoney.entityhighlightBox.entityTypes": "实体名单列表",
-    "makemoney.entityhighlightBox.entityTypes.desc": "指定要渲染的实体名单列表，格式为\"命名空间\" + \":\" + \"ID\"，比如 \"minecraft:sheep\"。\n\n\" * \"表示匹配所有实体ID。\n\n详细实体ID请查阅：https://zh.minecraft.wiki/w/Java版数据值#实体"
+    "makemoney.entityhighlightBox.entityTypes.desc": "指定要渲染的实体名单列表，格式为\"命名空间\" + \":\" + \"ID\"，比如 \"minecraft:sheep\"。\n\n\" * \"表示匹配所有实体ID。\n\n详细实体ID请查阅：https://zh.minecraft.wiki/w/Java版数据值#实体",
+
+    "makemoney.strange.name": "奇奇怪怪的功能",
+    "makemoney.strange.desc": "在这里，你将能看到一些实用的设置，嘻嘻",
+
+    "makemoney.autoride": "自动骑乘",
+    "makemoney.autoride.desc": "超级粘人的功能",
+    "makemoney.autoride.enabled": "开关",
+    "makemoney.autoride.enabled.desc": "开启后，可以自动骑乘所指定的玩家，即使玩家潜行后，也可以再次自动骑乘。",
+    "makemoney.autoride.enabled.message": "§7[§d自动骑乘§7] §a已开启",
+    "makemoney.autoride.disabled.message": "§7[§d自动骑乘§7] §c已关闭",
+    "makemoney.autoride.interval": "检查周期的时间间隔",
+    "makemoney.autoride.interval.desc": "每一个运行周期都会检查玩家是否处于骑乘状态。若否，则会尝试骑乘指定的玩家。\n\n单位为GameTick",
+    "makemoney.autoride.interval.message": "§7[§d自动骑乘§7] §7运行周期设置为 §e%s §7tick",
+    "makemoney.autoride.distance": "指定玩家离自己的最大距离",
+    "makemoney.autoride.distance.desc": "若大于这个距离，将不会自动骑乘（防触发反作弊）。\n\n其实调大了也没啥用。",
+    "makemoney.autoride.distance.message": "§7[§d自动骑乘§7] §7最大距离设置为 §e%s §7",
+    "makemoney.autoride.target": "目标玩家的名字",
+    "makemoney.autoride.target.desc": "目标玩家的名字",
+    "makemoney.autoride.target.message": "§7[§d自动骑乘§7] §7目标玩家设置为 §e%s §7",
+    "makemoney.autoride.reset": "重置所有配置",
+    "makemoney.autoride.reset.desc": "按下后将重置所有配置为默认值",
+    "makemoney.autoride.reset.message": "§7[§d自动骑乘§7] §7已重置所有配置",
+    "makemoney.autoride.help.message": "§7[§d自动骑乘§7] §7用法: §e/autoride 阿巴阿巴"
 }
