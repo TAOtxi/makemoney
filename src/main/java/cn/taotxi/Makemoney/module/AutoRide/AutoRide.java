@@ -2,6 +2,7 @@ package cn.taotxi.Makemoney.module.AutoRide;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 import com.mojang.brigadier.arguments.DoubleArgumentType;
@@ -13,6 +14,7 @@ import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
+import cn.taotxi.Makemoney.util.EventBus;
 import cn.taotxi.Makemoney.util.Message;
 import cn.taotxi.Makemoney.util.T;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
@@ -153,6 +155,10 @@ public class AutoRide {
                 .then(ClientCommandManager.literal("off").executes(context -> {
                     enabled = false;
                     context.getSource().sendFeedback(T.tl("autoride.disabled.message"));
+                    return 1;
+                }))
+                .then(ClientCommandManager.literal("config").executes(context -> {
+                    EventBus.post("openMainConfigGui", Map.of("tab", 1));
                     return 1;
                 }))
             );

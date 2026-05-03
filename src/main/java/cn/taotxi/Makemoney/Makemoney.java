@@ -2,13 +2,18 @@ package cn.taotxi.Makemoney;
 
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.Minecraft;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mojang.blaze3d.platform.Window;
+import com.mojang.brigadier.context.CommandContext;
 
 import cn.taotxi.Makemoney.gui.ConfigScreen;
 import cn.taotxi.Makemoney.module.AutoAction.AutoAction;
@@ -18,6 +23,7 @@ import cn.taotxi.Makemoney.module.AutoRepair.AutoRepair;
 import cn.taotxi.Makemoney.module.AutoRide.AutoRide;
 import cn.taotxi.Makemoney.module.EntityHighlightBox.EntityHighlightBox;
 import cn.taotxi.Makemoney.util.EventBus;
+import cn.taotxi.Makemoney.util.T;
 import dev.isxander.yacl3.gui.YACLScreen;
 
 
@@ -42,6 +48,25 @@ public class Makemoney implements ModInitializer {
             AutoRepair.registerCommand(dispatcher, registryAccess);
             AutoDrop.registerCommand(dispatcher, registryAccess);
             // AutoAction.registerCommand(dispatcher, registryAccess);
+
+            var command = dispatcher.register(ClientCommandManager.literal("makemoney")
+                .executes(Makemoney::showHelp)
+                .then(ClientCommandManager.literal("help")
+                    .executes(Makemoney::showHelp))
+                .then(ClientCommandManager.literal("config")
+                    .executes(context -> {
+                        EventBus.post("openMainConfigGui", Map.of("tab", 0));
+                        return 1;
+                    }))
+            );
+
+            dispatcher.register(ClientCommandManager.literal("mn")
+                    .executes(Makemoney::showHelp)
+                    .redirect(command));
+
+            dispatcher.register(ClientCommandManager.literal("mkm")
+                    .executes(Makemoney::showHelp)
+                    .redirect(command));
         });
     }
 
@@ -85,5 +110,30 @@ public class Makemoney implements ModInitializer {
                     window.getGuiScaledHeight());
             client.setScreen(configScreen);
         });
+
+        EventBus.register("openMainConfigGui", (args) -> {
+            Minecraft client = Minecraft.getInstance();
+            if (client.screen != null) {
+                EventBus.post("openMainConfigGui", args);
+                return;
+            }
+            
+            YACLScreen configScreen = (YACLScreen) ConfigScreen.getConfigScreen(null);
+            int openTab = (int) args.get("tab");
+            configScreen.init(client.getWindow().getGuiScaledWidth(), 
+                    client.getWindow().getGuiScaledHeight());
+            if (openTab < 0 || openTab >= configScreen.tabNavigationBar.getTabs().size()) {
+                LOGGER.error("Invalid tab: " + openTab);
+                return;
+            }
+            configScreen.tabNavigationBar.selectTab(openTab, true);
+
+            client.setScreen(configScreen);
+        });
+    }
+
+    private static int showHelp(CommandContext<FabricClientCommandSource> context) {
+        context.getSource().sendFeedback(T.tl("help.message"));
+        return 1;
     }
 }
