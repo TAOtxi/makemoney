@@ -176,6 +176,7 @@
     "makemoney.ignore.desc": "使用正则表达式匹配需要屏蔽的消息",
     "makemoney.ignore.enabled": "开关",
     "makemoney.ignore.enabled.desc": "开启后，将服务器消息与屏蔽正则项进行匹配，若匹配成功，则将不会显示在聊天框中。",
+    "makemoney.ignore.19lottery": "屏蔽拾玖福彩信息",
     "makemoney.ignore.guessWord": "屏蔽猜单词游戏",
     "makemoney.ignore.guessWord.desc": "由于猜单词游戏有着多行输出，所以正则表达式也有多个匹配，因此可能会有误判。",
     "makemoney.ignore.earthquake": "屏蔽地震警告消息",
