@@ -155,7 +155,7 @@
     "makemoney.autoride": "狗皮膏药",
     "makemoney.autoride.desc": "像一个狗皮膏药一样，黏在玩家头上。\n\n（感谢搞直男贡献的名字）",
     "makemoney.autoride.enabled": "开关",
-    "makemoney.autoride.enabled.desc": "开启后，可以狗皮膏药所指定的玩家，即使玩家潜行后，也可以再次粘上去。",
+    "makemoney.autoride.enabled.desc": "开启后，可以黏上所指定的玩家，即使玩家潜行后，也可以再次粘上去。",
     "makemoney.autoride.enabled.message": "§7[§d狗皮膏药§7] §a已开启",
     "makemoney.autoride.disabled.message": "§7[§d狗皮膏药§7] §c已关闭",
     "makemoney.autoride.interval": "检查周期的时间间隔",
@@ -170,5 +170,22 @@
     "makemoney.autoride.reset": "重置所有配置",
     "makemoney.autoride.reset.desc": "按下后将重置所有配置为默认值",
     "makemoney.autoride.reset.message": "§7[§d狗皮膏药§7] §7已重置所有配置",
-    "makemoney.autoride.help.message": "§7[§d狗皮膏药§7] §7用法: §e/autoride 阿巴阿巴"
+    "makemoney.autoride.help.message": "§7[§d狗皮膏药§7] §7用法: §e/autoride 阿巴阿巴",
+
+    "makemoney.ignore": "消息屏蔽",
+    "makemoney.ignore.desc": "使用正则表达式匹配需要屏蔽的消息",
+    "makemoney.ignore.enabled": "开关",
+    "makemoney.ignore.enabled.desc": "开启后，将服务器消息与屏蔽正则项进行匹配，若匹配成功，则将不会显示在聊天框中。",
+    "makemoney.ignore.guessWord": "屏蔽猜单词游戏",
+    "makemoney.ignore.guessWord.desc": "由于猜单词游戏有着多行输出，所以正则表达式也有多个匹配，因此可能会有误判。",
+    "makemoney.ignore.earthquake": "屏蔽地震警告消息",
+    "makemoney.ignore.earthquake.desc": "这个也是多行输出，可能会有误判。",
+    "makemoney.ignore.19catInfo": "屏蔽拾玖喵小道消息",
+    "makemoney.ignore.19catInfo.desc": "小道消息的前后有两行空行，如果把空行也屏蔽，可能会影响到其它的消息。所以这里不屏蔽空行。",
+    "makemoney.ignore.19clean": "屏蔽拾玖喵扫地姬信息",
+    "makemoney.ignore.changeServer": "屏蔽玩家切换服务器信息",
+    "makemoney.ignore.changeServer.desc": "包括玩家进入、退出服务器、跨服信息",
+    "makemoney.ignore.buyInfo": "屏蔽玩家跨服购买东西输入的数字",
+    "makemoney.ignore.regex": "正则表达式列表",
+    "makemoney.ignore.regex.desc": "指定需要屏蔽的消息正则表达式列表，格式不正确的将忽略。"
 }

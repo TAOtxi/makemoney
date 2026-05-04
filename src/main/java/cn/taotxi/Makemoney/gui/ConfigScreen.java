@@ -2,7 +2,12 @@ package cn.taotxi.Makemoney.gui;
 
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.CommonComponents;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import org.lwjgl.glfw.GLFW;
 import com.google.common.base.Function;
@@ -13,17 +18,24 @@ import cn.taotxi.Makemoney.module.AutoDrop.AutoDropConfigGui;
 import cn.taotxi.Makemoney.module.AutoRepair.AutoRepairConfigGui;
 import cn.taotxi.Makemoney.module.AutoRide.AutoRide;
 import cn.taotxi.Makemoney.module.EntityHighlightBox.EntityHighlightBoxConfigGui;
+import cn.taotxi.Makemoney.module.IgnoreMessage.IgnoreMessage;
 import cn.taotxi.Makemoney.util.T;
 import dev.isxander.yacl3.api.ButtonOption;
 import dev.isxander.yacl3.api.ConfigCategory;
+import dev.isxander.yacl3.api.ListOption;
 import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.OptionDescription;
+import dev.isxander.yacl3.api.OptionFlag;
 import dev.isxander.yacl3.api.OptionGroup;
 import dev.isxander.yacl3.api.YetAnotherConfigLib;
 import dev.isxander.yacl3.api.controller.DoubleSliderControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
 import dev.isxander.yacl3.api.controller.StringControllerBuilder;
+import dev.isxander.yacl3.api.utils.OptionUtils;
 import dev.isxander.yacl3.gui.YACLScreen;
+import dev.isxander.yacl3.gui.YACLScreen.CategoryTab;
+import dev.isxander.yacl3.gui.utils.GuiUtils;
+import dev.isxander.yacl3.impl.utils.YACLConstants;
 
 
 public class ConfigScreen {
@@ -33,7 +45,7 @@ public class ConfigScreen {
             YetAnotherConfigLib.createBuilder()
                 .title(T.tl("gui.config.title"))
                 .save(() -> {
-
+                    IgnoreMessage.saveConfig();
                 });
 
         
@@ -143,7 +155,7 @@ public class ConfigScreen {
                 .name(T.tl("autoride.target"))
                 .description(OptionDescription.of(T.tl("autoride.target.desc")))
                 .binding(
-                    "Gzn12138",
+                    "",
                     () -> AutoRide.targetPlayer,
                     value -> AutoRide.targetPlayer = value
                 )
@@ -161,8 +173,116 @@ public class ConfigScreen {
                 .build()
         );
 
-
         strangeCategory.group(autoRideGroup.build());
+
+
+        OptionGroup.Builder ignoreGroup = OptionGroup.createBuilder()
+                .name(T.tl("ignore"))
+                .description(OptionDescription.of(T.tl("ignore.desc")));
+
+        ignoreGroup.option(Factory.addToggleOption(
+                T.tl("ignore.enabled"),
+                T.tl("ignore.enabled.desc"),
+                IgnoreMessage.isEnabled(true),
+                () -> IgnoreMessage.isEnabled(false),
+                IgnoreMessage::setEnabled
+        ));
+
+        ignoreGroup.option(ButtonOption.createBuilder()
+                .name(T.tl("ignore.guessWord"))
+                .description(OptionDescription.of(T.tl("ignore.guessWord.desc")))
+                .action((screen, option) -> {
+                    savePending(screen);
+                    String pattern = "^【猜单词游戏】$|^拾玖喵不太认识这个单词：|^提示：|^用 /word <你的猜测> 回答本题（每人仅一次）$|^当前词库：\\w+（共 \\d+ 条）$|^----------------------$";
+                    IgnoreMessage.addIgnoreList(pattern);
+                    IgnoreMessage.configChanged = true;
+                    IgnoreMessage.saveConfig();
+                    reload(screen, parent, false, ConfigScreen::getConfigScreen);
+                })
+                .build()
+        );
+
+        ignoreGroup.option(ButtonOption.createBuilder()
+                .name(T.tl("ignore.earthquake"))
+                .description(OptionDescription.of(T.tl("ignore.earthquake.desc")))
+                .action((screen, option) -> {
+                    savePending(screen);
+                    String pattern = "^地震信息$|^ 20\\d{2}年\\d{2}月\\d{2}日 \\d{2}时\\d{2}分\\d{2}秒 发生$|^ 震中: |^ 震级: |^ 深度: |^ 最大震度: |^ 海啸信息: ";
+                    IgnoreMessage.addIgnoreList(pattern);
+                    IgnoreMessage.configChanged = true;
+                    IgnoreMessage.saveConfig();
+                    reload(screen, parent, false, ConfigScreen::getConfigScreen);
+                })
+                .build()
+        );
+
+        ignoreGroup.option(ButtonOption.createBuilder()
+                .name(T.tl("ignore.19catInfo"))
+                .description(OptionDescription.of(T.tl("ignore.19catInfo.desc")))
+                .action((screen, option) -> {
+                    savePending(screen);
+                    String pattern = "^拾玖喵小道消息 ";
+                    IgnoreMessage.addIgnoreList(pattern);
+                    IgnoreMessage.configChanged = true;
+                    IgnoreMessage.saveConfig();
+                    reload(screen, parent, false, ConfigScreen::getConfigScreen);
+                })
+                .build()
+        );
+
+        ignoreGroup.option(ButtonOption.createBuilder()
+                .name(T.tl("ignore.19clean"))
+                .action((screen, option) -> {
+                    savePending(screen);
+                    String pattern = "拾玖型扫地机器人";
+                    IgnoreMessage.addIgnoreList(pattern);
+                    IgnoreMessage.configChanged = true;
+                    IgnoreMessage.saveConfig();
+                    reload(screen, parent, false, ConfigScreen::getConfigScreen);
+                })
+                .build()
+        );
+        
+        ignoreGroup.option(ButtonOption.createBuilder()
+                .name(T.tl("ignore.changeServer"))
+                .description(OptionDescription.of(T.tl("ignore.changeServer.desc")))
+                .action((screen, option) -> {
+                    savePending(screen);
+                    String pattern = "^\\w{1,16} 从 \\w+ 切换到 \\w+|^\\w{1,16} 离开了 \\w+$|^\\w{1,16}(?:退出|加入)了游戏$|^\\w{1,16} joined \\w+$";
+                    IgnoreMessage.addIgnoreList(pattern);
+                    IgnoreMessage.configChanged = true;
+                    IgnoreMessage.saveConfig();
+                    reload(screen, parent, false, ConfigScreen::getConfigScreen);
+                })
+                .build()
+        );
+
+        ignoreGroup.option(ButtonOption.createBuilder()
+                .name(T.tl("ignore.buyInfo"))
+                .action((screen, option) -> {
+                    savePending(screen);
+                    String pattern = "^<\\w{1,16}> \\d+$";
+                    IgnoreMessage.addIgnoreList(pattern);
+                    IgnoreMessage.configChanged = true;
+                    IgnoreMessage.saveConfig();
+                    reload(screen, parent, false, ConfigScreen::getConfigScreen);
+                })
+                .build()
+        );
+        strangeCategory.group(ignoreGroup.build());
+        strangeCategory.group(ListOption.<String>createBuilder()
+                    .name(T.tl("ignore.regex"))
+                    .description(OptionDescription.of(T.tl("ignore.regex.desc")))
+                    .binding(
+                        IgnoreMessage.getIgnoreList(false),
+                        () -> IgnoreMessage.getIgnoreList(false),
+                        IgnoreMessage::setIgnoreList
+                    )
+                    .initial("")
+                    .controller(StringControllerBuilder::create)
+                    .build()
+            );
+        
         return strangeCategory;
     }
 
@@ -198,6 +318,36 @@ public class ConfigScreen {
         } catch (Exception e) {
             client.setScreen(parent);
             Makemoney.LOGGER.error("YACL reload hack failed with exception\n{}", e);
+        }
+    }
+
+    public static void savePending(YACLScreen screen) {
+        if (!screen.pendingChanges()) return;
+        Set<OptionFlag> flags = new HashSet<>();
+        OptionUtils.forEachOptions(screen.config, option -> {
+            if (option.applyValue()) {
+                flags.addAll(option.flags());
+            }
+        });
+        OptionUtils.forEachOptions(screen.config, option -> {
+            if (option.changed()) {
+                // if still changed after applying, reset to the current value from binding
+                // as something has gone wrong.
+                option.forgetPendingValue();
+                YACLConstants.LOGGER.error("Option '{}' value mismatch after applying! Reset to binding's getter.", option.name().getString());
+            }
+        });
+        screen.config.saveFunction().run();
+
+        flags.forEach(flag -> flag.accept(Minecraft.getInstance()));
+
+        // screen.pendingChanges = false;
+        if (screen.tabManager.getCurrentTab() instanceof CategoryTab categoryTab) {
+            categoryTab.undoButton.active = false;
+            categoryTab.saveFinishedButton.setMessage(GuiUtils.translatableFallback("yacl.gui.done", CommonComponents.GUI_DONE));
+            categoryTab.saveFinishedButton.setTooltip(Tooltip.create(T.tl("yacl.gui.finished.tooltip")));
+            categoryTab.cancelResetButton.setMessage(T.tl("controls.reset"));
+            categoryTab.cancelResetButton.setTooltip(Tooltip.create(T.tl("yacl.gui.reset.tooltip")));
         }
     }
 
