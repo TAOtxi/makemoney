@@ -22,15 +22,13 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 
 public class AutoRide {
     // 配置太简单了，就不保存到文件里了。
     public static boolean enabled = false;
-    public static String targetPlayer = "Gzn12138";
+    public static String targetPlayer = "";
     public static int runInterval = 5;
     public static int tickCounter = 0;
     public static double minDistance = 6;
@@ -64,11 +62,11 @@ public class AutoRide {
         Minecraft client = Minecraft.getInstance();
         Player player = client.player;
         
-        if (targetPlayer.isEmpty()) {
-            return client.level.getNearestPlayer(player, minDistance);
-        }
         return client.level.getNearestPlayer(player.getX(), player.getY(), player.getZ(), minDistance, cow -> {
-            return cow.getName().getString().equals(targetPlayer);
+            if (targetPlayer.isEmpty() && cow != player) {
+                return true;
+            }
+            return cow != player && cow.getName().getString().equals(targetPlayer);
         });
     }
 
