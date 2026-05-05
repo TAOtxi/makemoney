@@ -201,7 +201,7 @@ public class ConfigScreen {
                 .name(T.tl("ignore.19lottery"))
                 .action((screen, option) -> {
                     savePending(screen);
-                    String pattern = "^[拾玖福彩] 使用 /lottery 购买彩票，每张100元！每20小时自动开奖，当前倒计时：";
+                    String pattern = "^\\[拾玖福彩\\] 使用 /lottery 购买彩票，每张100元！每20小时自动开奖，当前倒计时：";
                     IgnoreMessage.addIgnoreList(pattern);
                     StrangeConfig.getInstance().saveConfig();
                     reload(screen, parent, false, ConfigScreen::getConfigScreen);
