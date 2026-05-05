@@ -29,7 +29,7 @@ public class StrangeConfig extends ConfigManager {
         config.addProperty("ignore_enabled", false);
         config.add("ignore_list", new JsonArray());
         
-        config.addProperty("rightClickRide_enabled", false);
+        config.addProperty("rightClickRide_enabled", true);
         
         return config;
     }

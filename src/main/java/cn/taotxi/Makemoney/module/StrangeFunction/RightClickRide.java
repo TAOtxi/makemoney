@@ -14,17 +14,18 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.VehicleEntity;
 import net.minecraft.world.phys.EntityHitResult;
 
-// TODO: BUG: 有时自动骑乘会调用 /ride
 public class RightClickRide {
-    // TODO: 右键一次，会调用此函数两次，待修复
     public static void handleInteract(
         Player player, 
-        Entity entity, 
-        EntityHitResult entityHitResult, 
+        Entity entity,
         InteractionHand interactionHand, 
         CallbackInfoReturnable<InteractionResult> cir) 
     {
         if (!isEnabled(false)) return;
+        if (player.isCrouching()) return;
+
+        // 右键一次左右手都会调用interact
+        if (interactionHand != InteractionHand.MAIN_HAND) return;
 
         Minecraft client = Minecraft.getInstance();
         Entity lookEntity = client.crosshairPickEntity;

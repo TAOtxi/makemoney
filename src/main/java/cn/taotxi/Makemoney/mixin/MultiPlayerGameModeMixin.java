@@ -16,8 +16,8 @@ import net.minecraft.world.phys.EntityHitResult;
 @Mixin(MultiPlayerGameMode.class)
 public class MultiPlayerGameModeMixin {
 
-    @Inject(method = "interactAt", at = @At("HEAD"), cancellable = true)
-    public void interactAtBefore(Player player, Entity entity, EntityHitResult entityHitResult, InteractionHand interactionHand, CallbackInfoReturnable<InteractionResult> cir) {
-        RightClickRide.handleInteract(player, entity, entityHitResult, interactionHand, cir);
+    @Inject(method = "interact", at = @At("HEAD"))
+    public void interactBefore(Player player, Entity entity, InteractionHand interactionHand, CallbackInfoReturnable<InteractionResult> cir) {
+        RightClickRide.handleInteract(player, entity, interactionHand, cir);
     }
 }
