@@ -149,7 +149,7 @@ public abstract class ConfigManager {
         if (!defaultConfig.has(key)) return;
 
         JsonElement element = defaultConfig.get(key);
-        put(key, element);
+        put(key, element.deepCopy());
     }
 
     public static List<String> jsonStrToList(JsonArray jsonArray) {

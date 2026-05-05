@@ -10,7 +10,7 @@ public class StrangeConfig extends ConfigManager {
 
     public static StrangeConfig getInstance() {
         if (instance == null) {
-            instance = new StrangeConfig("StrangeFunction");
+            instance = new StrangeConfig("strangefunction");
         }
         return instance;
     }

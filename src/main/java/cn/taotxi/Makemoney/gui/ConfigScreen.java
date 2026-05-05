@@ -110,6 +110,13 @@ public class ConfigScreen {
                 .name(T.tl("strange.name"))
                 .tooltip(T.tl("strange.desc"));
 
+        strangeCategory.option(Factory.addToggleOption(
+            T.tl("ignore.rightClickRide"), 
+            T.tl("ignore.rightClickRide.desc"), 
+            RightClickRide.isEnabled(true), 
+            () -> RightClickRide.isEnabled(false),
+            RightClickRide::setEnabled));
+
         OptionGroup.Builder autoRideGroup = OptionGroup.createBuilder()
                 .name(T.tl("autoride"))
                 .description(OptionDescription.of(T.tl("autoride.desc")));
@@ -258,7 +265,7 @@ public class ConfigScreen {
                 .description(OptionDescription.of(T.tl("ignore.changeServer.desc")))
                 .action((screen, option) -> {
                     savePending(screen);
-                    String pattern = "^\\w{1,16} 从 \\w+ 切换到 \\w+|^\\w{1,16} 离开了 \\w+$|^\\w{1,16}(?:退出|加入)了游戏$|^\\w{1,16} joined \\w+$";
+                    String pattern = "^\\w{1,16} 从 \\w+ 切换到 \\w+|^\\w{1,16} 离开了 \\w+$|^\\w{1,16}(?:退出|加入)了游戏$|^\\w{1,16} joined \\w+$|^\\w{1,16} was disconnected$";
                     IgnoreMessage.addIgnoreList(pattern);
                     StrangeConfig.getInstance().saveConfig();
                     reload(screen, parent, false, ConfigScreen::getConfigScreen);
@@ -290,13 +297,6 @@ public class ConfigScreen {
                     .controller(StringControllerBuilder::create)
                     .build()
             );
-
-        strangeCategory.option(Factory.addToggleOption(
-            T.tl("ignore.rightClickRide"), 
-            T.tl("ignore.rightClickRide.desc"), 
-            RightClickRide.isEnabled(true), 
-            () -> RightClickRide.isEnabled(false),
-            RightClickRide::setEnabled));
         
         return strangeCategory;
     }
