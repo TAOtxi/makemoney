@@ -1,4 +1,4 @@
-package cn.taotxi.Makemoney.util;
+package cn.taotxi.Makemoney.config;
 
 import cn.taotxi.Makemoney.Makemoney;
 import net.fabricmc.loader.api.FabricLoader;

@@ -19,10 +19,7 @@ import cn.taotxi.Makemoney.gui.ConfigScreen;
 import cn.taotxi.Makemoney.module.AutoAction.AutoAction;
 import cn.taotxi.Makemoney.module.AutoDrop.AutoDrop;
 import cn.taotxi.Makemoney.module.AutoDrop.AutoDropConfigGui;
-// import cn.taotxi.Makemoney.module.AutoRepair.AutoRepair;
-import cn.taotxi.Makemoney.module.AutoRide.AutoRide;
-// import cn.taotxi.Makemoney.module.EntityHighlightBox.EntityHighlightBox;
-import cn.taotxi.Makemoney.module.IgnoreMessage.IgnoreMessage;
+import cn.taotxi.Makemoney.module.StrangeFunction.StrangeFunctionInit;
 import cn.taotxi.Makemoney.util.EventBus;
 import cn.taotxi.Makemoney.util.T;
 import dev.isxander.yacl3.gui.YACLScreen;
@@ -42,8 +39,7 @@ public class Makemoney implements ModInitializer {
         registerSomeEvents();
         registerCommand();
         AutoDrop.init();
-        AutoRide.init();
-        IgnoreMessage.init();
+        StrangeFunctionInit.init();
 	}
 
     private void registerCommand() {

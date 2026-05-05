@@ -1,4 +1,4 @@
-package cn.taotxi.Makemoney.module.AutoRide;
+package cn.taotxi.Makemoney.module.StrangeFunction;
 
 import java.util.Collection;
 import java.util.Map;
@@ -25,12 +25,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.EntityHitResult;
 
 public class AutoRide {
-    // 配置太简单了，就不保存到文件里了。
-    public static boolean enabled = false;
-    public static String targetPlayer = "";
-    public static int runInterval = 5;
-    public static int tickCounter = 0;
-    public static double minDistance = 6;
+    private static boolean enabled = false;
+    private static int tickCounter = 0;
 
     public static void init() {
         registerTickEvents();
@@ -44,12 +40,12 @@ public class AutoRide {
             if (!enabled) return;
             if (client.player.getVehicle() != null) return;
             tickCounter++;
-            if (tickCounter % runInterval != 0) return;
+            if (tickCounter % getRunInterval(false) != 0) return;
 
             if (!client.player.getMainHandItem().isEmpty()) return;
             if (client.player.isCrouching()) return;
 
-            Player target = getTargetPlayer();
+            Player target = findTargetPlayer();
             if (target == null) return;
             client.player.stopRiding();
 
@@ -57,13 +53,47 @@ public class AutoRide {
         });
     }
 
-    private static Player getTargetPlayer() {
+    public static boolean isEnabled() {
+        return enabled;
+    }
+
+    public static void setEnabled(boolean enabled) {
+        AutoRide.enabled = enabled;
+    }
+
+    public static int getRunInterval(boolean isDefault) {
+        return StrangeConfig.getInstance().getInt("autoride_runInterval", isDefault);
+    }
+
+    public static void setRunInterval(int interval) {
+        StrangeConfig.getInstance().putInt("autoride_runInterval", interval);
+    }
+
+    public static double getMinDistance(boolean isDefault) {
+        return StrangeConfig.getInstance().getDouble("autoride_minDistance", isDefault);
+    }
+
+    public static void setMinDistance(double distance) {
+        StrangeConfig.getInstance().putDouble("autoride_minDistance", distance);
+    }
+
+    public static String getTargetPlayer(boolean isDefault) {
+        return StrangeConfig.getInstance().getString("autoride_targetPlayer", isDefault);
+    }
+
+    public static void setTargetPlayer(String player) {
+        StrangeConfig.getInstance().putString("autoride_targetPlayer", player);
+    }
+
+    private static Player findTargetPlayer() {
         Minecraft client = Minecraft.getInstance();
         Player player = client.player;
-        
-        return client.level.getNearestPlayer(player.getX(), player.getY(), player.getZ(), minDistance, cow -> {
-            if (targetPlayer.isEmpty() && cow != player) {
-                return true;
+        String targetPlayer = getTargetPlayer(false);
+        return client.level.getNearestPlayer(
+            player.getX(), player.getY(), player.getZ(), 
+            getMinDistance(false), cow -> {
+                if (targetPlayer.isEmpty() && cow != player) {
+                    return true;
             }
             return cow != player && cow.getName().getString().equals(targetPlayer);
         });
@@ -71,14 +101,14 @@ public class AutoRide {
 
     private static void rideTargetPlayer(Player playerCow) {
         Minecraft client = Minecraft.getInstance();
-        client.gameMode.interactAt(client.player, playerCow, new EntityHitResult(playerCow), InteractionHand.MAIN_HAND);
+        client.gameMode.interactAt(client.player, playerCow, 
+                new EntityHitResult(playerCow), InteractionHand.MAIN_HAND);
     }
 
     public static void resetConfig() {
-        targetPlayer = "Gzn12138";
-        enabled = false;
-        minDistance = 6;
-        runInterval = 5;
+        StrangeConfig.getInstance().reset("autoride_targetPlayer");
+        StrangeConfig.getInstance().reset("autoride_minDistance");
+        StrangeConfig.getInstance().reset("autoride_runInterval");
     }
 
     private static int showHelp(CommandContext<FabricClientCommandSource> context) {
@@ -97,22 +127,25 @@ public class AutoRide {
                     .then(ClientCommandManager.argument("player", StringArgumentType.string())
                         .suggests(new PlayerSuggestionProvider())
                         .executes(context -> {
-                            targetPlayer = context.getArgument("player", String.class);
-                            context.getSource().sendFeedback(T.tl("autoride.target.message", targetPlayer));
+                            String target = context.getArgument("player", String.class);
+                            setTargetPlayer(target);
+                            context.getSource().sendFeedback(T.tl("autoride.target.message", target));
                             return 1;
                         })))
                 .then(ClientCommandManager.literal("interval")
                     .then(ClientCommandManager.argument("interval", IntegerArgumentType.integer())
                         .executes(context -> {
-                            runInterval = context.getArgument("interval", Integer.class);
-                            context.getSource().sendFeedback(T.tl("autoride.interval.message", runInterval));
+                            int interval = context.getArgument("interval", Integer.class);
+                            setRunInterval(interval);
+                            context.getSource().sendFeedback(T.tl("autoride.interval.message", interval));
                             return 1;
                         })))
                 .then(ClientCommandManager.literal("distance")
                     .then(ClientCommandManager.argument("distance", DoubleArgumentType.doubleArg())
                         .executes(context -> {
-                            minDistance = context.getArgument("distance", Double.class);
-                            context.getSource().sendFeedback(T.tl("autoride.distance.message", minDistance));
+                            double distance = context.getArgument("distance", Double.class);
+                            setMinDistance(distance);
+                            context.getSource().sendFeedback(T.tl("autoride.distance.message", distance));
                             return 1;
                         })))
                 .then(ClientCommandManager.literal("reset").executes(context -> {

@@ -188,5 +188,9 @@
     "makemoney.ignore.changeServer.desc": "包括玩家进入、退出服务器、跨服信息",
     "makemoney.ignore.buyInfo": "屏蔽玩家跨服购买东西输入的数字",
     "makemoney.ignore.regex": "正则表达式列表",
-    "makemoney.ignore.regex.desc": "指定需要屏蔽的消息正则表达式列表，格式不正确的将忽略。"
+    "makemoney.ignore.regex.desc": "指定需要屏蔽的消息正则表达式列表，格式不正确的将忽略。",
+
+    "makemoney.ignore.rightClickRide": "右键生物骑乘",
+    "makemoney.ignore.rightClickRide.desc": "开启后，右键生物即可骑乘。\n\n原理为使用 /ride 命令。"
+
 }

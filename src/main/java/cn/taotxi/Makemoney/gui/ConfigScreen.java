@@ -16,9 +16,11 @@ import com.mojang.blaze3d.platform.Window;
 import cn.taotxi.Makemoney.Makemoney;
 import cn.taotxi.Makemoney.module.AutoDrop.AutoDropConfigGui;
 import cn.taotxi.Makemoney.module.AutoRepair.AutoRepairConfigGui;
-import cn.taotxi.Makemoney.module.AutoRide.AutoRide;
 import cn.taotxi.Makemoney.module.EntityHighlightBox.EntityHighlightBoxConfigGui;
-import cn.taotxi.Makemoney.module.IgnoreMessage.IgnoreMessage;
+import cn.taotxi.Makemoney.module.StrangeFunction.AutoRide;
+import cn.taotxi.Makemoney.module.StrangeFunction.IgnoreMessage;
+import cn.taotxi.Makemoney.module.StrangeFunction.RightClickRide;
+import cn.taotxi.Makemoney.module.StrangeFunction.StrangeConfig;
 import cn.taotxi.Makemoney.util.T;
 import dev.isxander.yacl3.api.ButtonOption;
 import dev.isxander.yacl3.api.ConfigCategory;
@@ -45,7 +47,7 @@ public class ConfigScreen {
             YetAnotherConfigLib.createBuilder()
                 .title(T.tl("gui.config.title"))
                 .save(() -> {
-                    IgnoreMessage.saveConfig();
+                    StrangeConfig.getInstance().saveConfig();
                 });
 
         
@@ -116,17 +118,17 @@ public class ConfigScreen {
                 T.tl("autoride.enabled"),
                 T.tl("autoride.enabled.desc"),
                 false,
-                () -> AutoRide.enabled,
-                value -> AutoRide.enabled = value
+                AutoRide::isEnabled,
+                AutoRide::setEnabled
         ));
 
         autoRideGroup.option(Option.<Integer>createBuilder()
                 .name(T.tl("autoride.interval"))
                 .description(OptionDescription.of(T.tl("autoride.interval.desc")))
                 .binding(
-                    5,
-                    () -> AutoRide.runInterval,
-                    value -> AutoRide.runInterval = value
+                    AutoRide.getRunInterval(true),
+                    () -> AutoRide.getRunInterval(false),
+                    AutoRide::setRunInterval
                 )
                 .controller(opt -> IntegerSliderControllerBuilder.create(opt)
                     .range(1, 20)
@@ -140,9 +142,9 @@ public class ConfigScreen {
                 .name(T.tl("autoride.distance"))
                 .description(OptionDescription.of(T.tl("autoride.distance.desc")))
                 .binding(
-                    6.0,
-                    () -> AutoRide.minDistance,
-                    value -> AutoRide.minDistance = value
+                    AutoRide.getMinDistance(true),
+                    () -> AutoRide.getMinDistance(false),
+                    AutoRide::setMinDistance
                 )
                 .controller(opt -> DoubleSliderControllerBuilder.create(opt)
                     .range(1.0, 10.0)
@@ -155,9 +157,9 @@ public class ConfigScreen {
                 .name(T.tl("autoride.target"))
                 .description(OptionDescription.of(T.tl("autoride.target.desc")))
                 .binding(
-                    "",
-                    () -> AutoRide.targetPlayer,
-                    value -> AutoRide.targetPlayer = value
+                    AutoRide.getTargetPlayer(true),
+                    () -> AutoRide.getTargetPlayer(false),
+                    AutoRide::setTargetPlayer
                 )
                 .controller(StringControllerBuilder::create)
                 .build()
@@ -194,8 +196,7 @@ public class ConfigScreen {
                     savePending(screen);
                     String pattern = "^[拾玖福彩] 使用 /lottery 购买彩票，每张100元！每20小时自动开奖，当前倒计时：";
                     IgnoreMessage.addIgnoreList(pattern);
-                    IgnoreMessage.configChanged = true;
-                    IgnoreMessage.saveConfig();
+                    StrangeConfig.getInstance().saveConfig();
                     reload(screen, parent, false, ConfigScreen::getConfigScreen);
                 })
                 .build()
@@ -208,8 +209,7 @@ public class ConfigScreen {
                     savePending(screen);
                     String pattern = "^【猜单词游戏】$|^拾玖喵不太认识这个单词：|^提示：|^用 /word <你的猜测> 回答本题（每人仅一次）$|^当前词库：\\w+（共 \\d+ 条）$|^----------------------$";
                     IgnoreMessage.addIgnoreList(pattern);
-                    IgnoreMessage.configChanged = true;
-                    IgnoreMessage.saveConfig();
+                    StrangeConfig.getInstance().saveConfig();
                     reload(screen, parent, false, ConfigScreen::getConfigScreen);
                 })
                 .build()
@@ -222,8 +222,7 @@ public class ConfigScreen {
                     savePending(screen);
                     String pattern = "^地震信息$|^ 20\\d{2}年\\d{2}月\\d{2}日 \\d{2}时\\d{2}分\\d{2}秒 发生$|^ 震中: |^ 震级: \\d+(?:\\.\\d+)?$|^ 深度: \\d+(?:\\.\\d+)?km$|^ 最大震度: \\d+$|^ 海啸信息: |^ 最大烈度: \\d+$|^ 更新时间: \\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$|地震预警 \\| 第\\d{1,2}报$|^中国地震台网 \\((?:正式|自动)测定\\)$";
                     IgnoreMessage.addIgnoreList(pattern);
-                    IgnoreMessage.configChanged = true;
-                    IgnoreMessage.saveConfig();
+                    StrangeConfig.getInstance().saveConfig();
                     reload(screen, parent, false, ConfigScreen::getConfigScreen);
                 })
                 .build()
@@ -236,8 +235,7 @@ public class ConfigScreen {
                     savePending(screen);
                     String pattern = "^拾玖喵小道消息 ";
                     IgnoreMessage.addIgnoreList(pattern);
-                    IgnoreMessage.configChanged = true;
-                    IgnoreMessage.saveConfig();
+                    StrangeConfig.getInstance().saveConfig();
                     reload(screen, parent, false, ConfigScreen::getConfigScreen);
                 })
                 .build()
@@ -249,8 +247,7 @@ public class ConfigScreen {
                     savePending(screen);
                     String pattern = "拾玖型扫地机器人";
                     IgnoreMessage.addIgnoreList(pattern);
-                    IgnoreMessage.configChanged = true;
-                    IgnoreMessage.saveConfig();
+                    StrangeConfig.getInstance().saveConfig();
                     reload(screen, parent, false, ConfigScreen::getConfigScreen);
                 })
                 .build()
@@ -263,8 +260,7 @@ public class ConfigScreen {
                     savePending(screen);
                     String pattern = "^\\w{1,16} 从 \\w+ 切换到 \\w+|^\\w{1,16} 离开了 \\w+$|^\\w{1,16}(?:退出|加入)了游戏$|^\\w{1,16} joined \\w+$";
                     IgnoreMessage.addIgnoreList(pattern);
-                    IgnoreMessage.configChanged = true;
-                    IgnoreMessage.saveConfig();
+                    StrangeConfig.getInstance().saveConfig();
                     reload(screen, parent, false, ConfigScreen::getConfigScreen);
                 })
                 .build()
@@ -276,8 +272,7 @@ public class ConfigScreen {
                     savePending(screen);
                     String pattern = "^<\\w{1,16}> \\d+$";
                     IgnoreMessage.addIgnoreList(pattern);
-                    IgnoreMessage.configChanged = true;
-                    IgnoreMessage.saveConfig();
+                    StrangeConfig.getInstance().saveConfig();
                     reload(screen, parent, false, ConfigScreen::getConfigScreen);
                 })
                 .build()
@@ -295,6 +290,13 @@ public class ConfigScreen {
                     .controller(StringControllerBuilder::create)
                     .build()
             );
+
+        strangeCategory.option(Factory.addToggleOption(
+            T.tl("ignore.rightClickRide"), 
+            T.tl("ignore.rightClickRide.desc"), 
+            RightClickRide.isEnabled(true), 
+            () -> RightClickRide.isEnabled(false),
+            RightClickRide::setEnabled));
         
         return strangeCategory;
     }

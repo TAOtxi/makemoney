@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import cn.taotxi.Makemoney.module.IgnoreMessage.IgnoreMessage;
+import cn.taotxi.Makemoney.module.StrangeFunction.IgnoreMessage;
 
 @Mixin(ClientPacketListener.class)
 public abstract class ClientPacketListenerMixin extends ClientCommonPacketListenerImpl implements TickablePacketListener, ClientGamePacketListener {
