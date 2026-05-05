@@ -40,6 +40,8 @@ public class RightClickRide {
             return;
         }
 
+        if (!player.getItemInHand(interactionHand).isEmpty()) return;
+
         Message.sendMessage("/ride");
     }
 
