@@ -220,7 +220,7 @@ public class ConfigScreen {
                 .description(OptionDescription.of(T.tl("ignore.earthquake.desc")))
                 .action((screen, option) -> {
                     savePending(screen);
-                    String pattern = "^地震信息$|^ 20\\d{2}年\\d{2}月\\d{2}日 \\d{2}时\\d{2}分\\d{2}秒 发生$|^ 震中: |^ 震级: \\d+(?:\\.\\d+)?$|^ 深度: \\d+(?:\\.\\d+)?km$|^ 最大震度: \\d+$|^ 海啸信息: |^ 最大烈度: \\d+$|^ 更新时间: \\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$|地震预警 \\| 第\\d{1,2}报$|^中国地震台网 \\((?:正式|自动)测定\\)$";
+                    String pattern = "^地震信息$|^ 20\\d{2}年\\d{2}月\\d{2}日 \\d{2}时\\d{2}分\\d{2}秒 发生$|^ 震中: |^ 震级: \\d+(?:\\.\\d+)?$|^ 深度: \\d+(?:\\.\\d+)?km$|^ 最大震度: \\d+$|^ 海啸信息: |^ 最大烈度: \\d+$|^ 更新时间: \\d{4}[-/]\\d{2}[-/]\\d{2} \\d{2}:\\d{2}:\\d{2}$|地震.*? \\| 第\\d{1,2}报|^中国地震台网 \\((?:正式|自动)测定\\)$";
                     IgnoreMessage.addIgnoreList(pattern);
                     StrangeConfig.getInstance().saveConfig();
                     reload(screen, parent, false, ConfigScreen::getConfigScreen);
