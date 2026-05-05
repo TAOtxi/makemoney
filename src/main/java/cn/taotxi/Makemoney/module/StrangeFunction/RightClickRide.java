@@ -1,12 +1,10 @@
 package cn.taotxi.Makemoney.module.StrangeFunction;
 
-import java.util.List;
 
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import cn.taotxi.Makemoney.util.Message;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -16,6 +14,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.VehicleEntity;
 import net.minecraft.world.phys.EntityHitResult;
 
+// TODO: BUG: 有时自动骑乘会调用 /ride
 public class RightClickRide {
     // TODO: 右键一次，会调用此函数两次，待修复
     public static void handleInteract(

@@ -92,10 +92,14 @@ public class AutoRide {
         return client.level.getNearestPlayer(
             player.getX(), player.getY(), player.getZ(), 
             getMinDistance(false), cow -> {
-                if (targetPlayer.isEmpty() && cow != player) {
+                // TODO: 使用在线玩家列表过滤NPC生物
+                if (targetPlayer.isEmpty() && 
+                    cow != player && 
+                    !cow.getName().getString().startsWith("CIT-")) 
+                {
                     return true;
-            }
-            return cow != player && cow.getName().getString().equals(targetPlayer);
+                }
+                return cow != player && cow.getName().getString().equals(targetPlayer);
         });
     }
 
