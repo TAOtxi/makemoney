@@ -110,6 +110,7 @@ public class AutoRide {
     }
 
     public static void resetConfig() {
+        setEnabled(false);
         StrangeConfig.getInstance().reset("autoride_targetPlayer");
         StrangeConfig.getInstance().reset("autoride_minDistance");
         StrangeConfig.getInstance().reset("autoride_runInterval");

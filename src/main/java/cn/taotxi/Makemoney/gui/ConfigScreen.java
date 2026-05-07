@@ -1,12 +1,14 @@
 package cn.taotxi.Makemoney.gui;
 
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.lwjgl.glfw.GLFW;
@@ -198,11 +200,11 @@ public class ConfigScreen {
         ));
 
         ignoreGroup.option(ButtonOption.createBuilder()
-                .name(T.tl("ignore.19lottery"))
+                .name(T.tl("ignore.preset"))
+                .description(OptionDescription.of(T.tl("ignore.preset.desc")))
                 .action((screen, option) -> {
                     savePending(screen);
-                    String pattern = "^\\[拾玖福彩\\] 使用 /lottery 购买彩票，每张100元！每20小时自动开奖，当前倒计时：";
-                    IgnoreMessage.addIgnoreList(pattern);
+                    IgnoreMessage.addPresetIgnoreList();
                     StrangeConfig.getInstance().saveConfig();
                     reload(screen, parent, false, ConfigScreen::getConfigScreen);
                 })
@@ -210,80 +212,18 @@ public class ConfigScreen {
         );
 
         ignoreGroup.option(ButtonOption.createBuilder()
-                .name(T.tl("ignore.guessWord"))
-                .description(OptionDescription.of(T.tl("ignore.guessWord.desc")))
+                .name(T.tl("ignore.deleteAll").withStyle(ChatFormatting.RED))
+                .description(OptionDescription.of(T.tl("ignore.deleteAll.desc")))
                 .action((screen, option) -> {
                     savePending(screen);
-                    String pattern = "^【猜单词游戏】$|^拾玖喵不太认识这个单词：|^提示：|^用 /word <你的猜测> 回答本题（每人仅一次）$|^当前词库：\\w+（共 \\d+ 条）$|^----------------------$";
-                    IgnoreMessage.addIgnoreList(pattern);
+                    IgnoreMessage.setIgnoreList(List.of());
                     StrangeConfig.getInstance().saveConfig();
                     reload(screen, parent, false, ConfigScreen::getConfigScreen);
                 })
                 .build()
         );
 
-        ignoreGroup.option(ButtonOption.createBuilder()
-                .name(T.tl("ignore.earthquake"))
-                .description(OptionDescription.of(T.tl("ignore.earthquake.desc")))
-                .action((screen, option) -> {
-                    savePending(screen);
-                    String pattern = "^地震信息$|^ 20\\d{2}年\\d{2}月\\d{2}日 \\d{2}时\\d{2}分\\d{2}秒 发生$|^ 震中: |^ 震级: \\d+(?:\\.\\d+)?$|^ 深度: \\d+(?:\\.\\d+)?km$|^ 最大震度: \\d+$|^ 海啸信息: |^ 最大烈度: \\d+$|^ 更新时间: \\d{4}[-/]\\d{2}[-/]\\d{2} \\d{2}:\\d{2}:\\d{2}$|地震.*? \\| 第\\d{1,2}报|^中国地震台网 \\((?:正式|自动)测定\\)$";
-                    IgnoreMessage.addIgnoreList(pattern);
-                    StrangeConfig.getInstance().saveConfig();
-                    reload(screen, parent, false, ConfigScreen::getConfigScreen);
-                })
-                .build()
-        );
 
-        ignoreGroup.option(ButtonOption.createBuilder()
-                .name(T.tl("ignore.19catInfo"))
-                .description(OptionDescription.of(T.tl("ignore.19catInfo.desc")))
-                .action((screen, option) -> {
-                    savePending(screen);
-                    String pattern = "^拾玖喵小道消息 ";
-                    IgnoreMessage.addIgnoreList(pattern);
-                    StrangeConfig.getInstance().saveConfig();
-                    reload(screen, parent, false, ConfigScreen::getConfigScreen);
-                })
-                .build()
-        );
-
-        ignoreGroup.option(ButtonOption.createBuilder()
-                .name(T.tl("ignore.19clean"))
-                .action((screen, option) -> {
-                    savePending(screen);
-                    String pattern = "拾玖型扫地机器人";
-                    IgnoreMessage.addIgnoreList(pattern);
-                    StrangeConfig.getInstance().saveConfig();
-                    reload(screen, parent, false, ConfigScreen::getConfigScreen);
-                })
-                .build()
-        );
-        
-        ignoreGroup.option(ButtonOption.createBuilder()
-                .name(T.tl("ignore.changeServer"))
-                .description(OptionDescription.of(T.tl("ignore.changeServer.desc")))
-                .action((screen, option) -> {
-                    savePending(screen);
-                    String pattern = "^\\w{1,16} 从 \\w+ 切换到 \\w+|^\\w{1,16} 离开了 \\w+$|^\\w{1,16}(?:退出|加入)了游戏$|^\\w{1,16} joined \\w+$|^\\w{1,16} was disconnected$";
-                    IgnoreMessage.addIgnoreList(pattern);
-                    StrangeConfig.getInstance().saveConfig();
-                    reload(screen, parent, false, ConfigScreen::getConfigScreen);
-                })
-                .build()
-        );
-
-        ignoreGroup.option(ButtonOption.createBuilder()
-                .name(T.tl("ignore.buyInfo"))
-                .action((screen, option) -> {
-                    savePending(screen);
-                    String pattern = "^<\\w{1,16}> \\d+$";
-                    IgnoreMessage.addIgnoreList(pattern);
-                    StrangeConfig.getInstance().saveConfig();
-                    reload(screen, parent, false, ConfigScreen::getConfigScreen);
-                })
-                .build()
-        );
         strangeCategory.group(ignoreGroup.build());
         strangeCategory.group(ListOption.<String>createBuilder()
                     .name(T.tl("ignore.regex"))
