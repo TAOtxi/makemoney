@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PlayerRideable;
 import net.minecraft.world.entity.animal.happyghast.HappyGhast;
 import net.minecraft.world.entity.player.Player;
@@ -31,10 +32,10 @@ public class RightClickRide {
         Entity lookEntity = client.crosshairPickEntity;
 
         if (lookEntity == null) return;
+        if (!(lookEntity instanceof LivingEntity)) return;
 
         if (lookEntity instanceof HappyGhast ||
             lookEntity instanceof PlayerRideable ||
-            lookEntity instanceof VehicleEntity ||
             lookEntity instanceof Player
         ) {
             return;

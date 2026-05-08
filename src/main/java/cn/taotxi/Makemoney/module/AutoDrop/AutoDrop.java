@@ -1,8 +1,6 @@
 package cn.taotxi.Makemoney.module.AutoDrop;
 
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +20,6 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandBuildContext;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.inventory.InventoryMenu;
 
 // TODO: 添加在容器中也可以应用此功能的选项
