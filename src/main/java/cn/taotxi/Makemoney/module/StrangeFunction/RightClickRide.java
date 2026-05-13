@@ -11,9 +11,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PlayerRideable;
 import net.minecraft.world.entity.animal.happyghast.HappyGhast;
+import net.minecraft.world.entity.npc.villager.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.vehicle.VehicleEntity;
-import net.minecraft.world.phys.EntityHitResult;
 
 public class RightClickRide {
     public static void handleInteract(
@@ -36,7 +35,8 @@ public class RightClickRide {
 
         if (lookEntity instanceof HappyGhast ||
             lookEntity instanceof PlayerRideable ||
-            lookEntity instanceof Player
+            lookEntity instanceof Player ||
+            lookEntity instanceof AbstractVillager
         ) {
             return;
         }
