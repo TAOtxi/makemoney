@@ -7,8 +7,8 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 
-import cn.taotxi.Makemoney.util.ItemStackUtil;
 import cn.taotxi.Makemoney.util.T;
+import cn.taotxi.Makemoney.util.game.ItemStackUtil;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;

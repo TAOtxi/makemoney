@@ -109,39 +109,39 @@ public abstract class ConfigManager {
         return getJsonObject(key, false);
     }
 
-    public void put(String key, JsonElement element) {
+    public void set(String key, JsonElement element) {
         if (config.has(key)) {
             config.remove(key);
         }
         config.add(key, element);
     }
 
-    public void putBoolean(String key, boolean value) {
-        put(key, new JsonPrimitive(value));
+    public void setBoolean(String key, boolean value) {
+        set(key, new JsonPrimitive(value));
     }
 
-    public void putInt(String key, int value) {
-        put(key, new JsonPrimitive(value));
+    public void setInt(String key, int value) {
+        set(key, new JsonPrimitive(value));
     }
 
-    public void putString(String key, String value) {
-        put(key, new JsonPrimitive(value));
+    public void setString(String key, String value) {
+        set(key, new JsonPrimitive(value));
     }
 
-    public void putDouble(String key, double value) {
-        put(key, new JsonPrimitive(value));
+    public void setDouble(String key, double value) {
+        set(key, new JsonPrimitive(value));
     }
 
-    public void putFloat(String key, float value) {
-        put(key, new JsonPrimitive(value));
+    public void setFloat(String key, float value) {
+        set(key, new JsonPrimitive(value));
     }
 
-    public void putJsonArray(String key, JsonArray value) {
-        put(key, value);
+    public void setJsonArray(String key, JsonArray value) {
+        set(key, value);
     }
 
-    public void putJsonObject(String key, JsonObject value) {
-        put(key, value);
+    public void setJsonObject(String key, JsonObject value) {
+        set(key, value);
     }
 
     public void reset(String key) {
@@ -149,7 +149,7 @@ public abstract class ConfigManager {
         if (!defaultConfig.has(key)) return;
 
         JsonElement element = defaultConfig.get(key);
-        put(key, element.deepCopy());
+        set(key, element.deepCopy());
     }
 
     public static List<String> jsonStrToList(JsonArray jsonArray) {

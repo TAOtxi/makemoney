@@ -17,6 +17,8 @@ import com.mojang.blaze3d.platform.Window;
 
 import cn.taotxi.Makemoney.Makemoney;
 import cn.taotxi.Makemoney.module.AutoDrop.AutoDropConfigGui;
+import cn.taotxi.Makemoney.module.AutoFish.AutoFish;
+import cn.taotxi.Makemoney.module.AutoFish.AutoFishConfig;
 import cn.taotxi.Makemoney.module.AutoRepair.AutoRepairConfigGui;
 import cn.taotxi.Makemoney.module.EntityHighlightBox.EntityHighlightBoxConfigGui;
 import cn.taotxi.Makemoney.module.StrangeFunction.AutoRide;
@@ -50,14 +52,15 @@ public class ConfigScreen {
                 .title(T.tl("gui.config.title"))
                 .save(() -> {
                     StrangeConfig.getInstance().saveConfig();
+                    AutoFishConfig.getInstance().saveConfig();
                 });
 
+        ConfigCategory.Builder strangeCategory = createStrangeCategory(parent);
+        builder.category(strangeCategory.build());
         
         ConfigCategory.Builder moduleCategory = createConfigCategory(parent);
         builder.category(moduleCategory.build());
 
-        ConfigCategory.Builder strangeCategory = createStrangeCategory(parent);
-        builder.category(strangeCategory.build());
 
         YetAnotherConfigLib yacl = builder.build();
         return yacl.generateScreen(parent);
@@ -111,6 +114,29 @@ public class ConfigScreen {
         ConfigCategory.Builder strangeCategory = ConfigCategory.createBuilder()
                 .name(T.tl("strange.name"))
                 .tooltip(T.tl("strange.desc"));
+
+        OptionGroup.Builder autoFishGroup = OptionGroup.createBuilder()
+                .name(T.tl("autofish.name"))
+                .description(OptionDescription.of(T.tl("autofish.desc")));
+
+        autoFishGroup.option(Factory.addToggleOption(
+            T.tl("autofish.enabled"), 
+            T.tl("autofish.enabled.desc"), 
+            AutoFish.isAutoFishing(true), 
+            () -> AutoFish.isAutoFishing(false),
+            (val) -> {
+                if (val) AutoFish.enableFishing();
+                else AutoFish.disableFishing();
+            }));
+
+        autoFishGroup.option(Factory.addToggleOption(
+            T.tl("autofish.rotation"), 
+            T.tl("autofish.rotation.desc"), 
+            AutoFish.isRotationEnabled(true), 
+            () -> AutoFish.isRotationEnabled(false),
+            AutoFish::setRotationEnabled));
+
+        strangeCategory.group(autoFishGroup.build());
 
         strangeCategory.option(Factory.addToggleOption(
             T.tl("ignore.rightClickRide"), 

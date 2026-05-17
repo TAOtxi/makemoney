@@ -8,8 +8,8 @@ import java.util.stream.Collectors;
 
 import cn.taotxi.Makemoney.gui.ConfigScreen;
 import cn.taotxi.Makemoney.util.CommonUtil;
-import cn.taotxi.Makemoney.util.InventoryUtil;
-import cn.taotxi.Makemoney.util.ItemStackUtil;
+import cn.taotxi.Makemoney.util.game.InventoryUtil;
+import cn.taotxi.Makemoney.util.game.ItemStackUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.Holder;

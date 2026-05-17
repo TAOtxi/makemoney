@@ -1,4 +1,4 @@
-package cn.taotxi.Makemoney.util;
+package cn.taotxi.Makemoney.util.game;
 
 import java.util.List;
 import java.util.ArrayList;

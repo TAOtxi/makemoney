@@ -184,6 +184,12 @@
     "makemoney.ignore.regex.desc": "指定需要屏蔽的消息正则表达式列表，格式不正确的将忽略。",
 
     "makemoney.ignore.rightClickRide": "空手右键生物骑乘",
-    "makemoney.ignore.rightClickRide.desc": "开启后，空手右键生物即可骑乘。\n\n原理为使用 /ride 命令。"
+    "makemoney.ignore.rightClickRide.desc": "开启后，空手右键生物即可骑乘。\n\n原理为使用 /ride 命令。",
 
+    "makemoney.autofish.name": "自动钓鱼",
+    "makemoney.autofish.desc": "xplus的autofish不太好用，我自己写了个。\n\n原理为通过监听网络数据包的方式，判断鱼是否上钩。\n\n同时，鱼钩长时间不在水中或勾到了其它实体，将会重新抛竿。",
+    "makemoney.autofish.enabled": "开关",
+    "makemoney.autofish.enabled.desc": "开启，并手持鱼竿将会自动钓鱼",
+    "makemoney.autofish.rotation": "自动转向",
+    "makemoney.autofish.rotation.desc": "开启后，玩家的视角会在两个抛竿时候的视角来回转换。\n\n比如，第一次抛竿，保存此时视角为 a；之后手动将视角转到 b 视角，鱼上钩后，将自动转到视角 a，并保存视角 b。\n\n之后就开始做往返转向。"
 }

@@ -23,7 +23,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import cn.taotxi.Makemoney.module.EntityHighlightBox.EntityHighlightBox;
 import cn.taotxi.Makemoney.module.EntityHighlightBox.HighlightConfig;
-import cn.taotxi.Makemoney.util.EntityUtil;
+import cn.taotxi.Makemoney.util.game.EntityUtil;
 
 public class Highlighter {
     private static List<Entity> entities = new ArrayList<>();

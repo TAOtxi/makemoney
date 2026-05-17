@@ -66,7 +66,7 @@ public class AutoRide {
     }
 
     public static void setRunInterval(int interval) {
-        StrangeConfig.getInstance().putInt("autoride_runInterval", interval);
+        StrangeConfig.getInstance().setInt("autoride_runInterval", interval);
     }
 
     public static double getMinDistance(boolean isDefault) {
@@ -74,7 +74,7 @@ public class AutoRide {
     }
 
     public static void setMinDistance(double distance) {
-        StrangeConfig.getInstance().putDouble("autoride_minDistance", distance);
+        StrangeConfig.getInstance().setDouble("autoride_minDistance", distance);
     }
 
     public static String getTargetPlayer(boolean isDefault) {
@@ -82,7 +82,7 @@ public class AutoRide {
     }
 
     public static void setTargetPlayer(String player) {
-        StrangeConfig.getInstance().putString("autoride_targetPlayer", player);
+        StrangeConfig.getInstance().setString("autoride_targetPlayer", player);
     }
 
     private static Player findTargetPlayer() {
@@ -169,7 +169,7 @@ public class AutoRide {
                     return 1;
                 }))
                 .then(ClientCommandManager.literal("config").executes(context -> {
-                    EventBus.post("openMainConfigGui", Map.of("tab", 1));
+                    EventBus.post("openMainConfigGui", Map.of("tab", 0));
                     return 1;
                 }))
             );

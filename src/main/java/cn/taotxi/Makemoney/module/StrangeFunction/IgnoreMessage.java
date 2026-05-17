@@ -31,7 +31,7 @@ public class IgnoreMessage {
     }
 
     public static void setEnabled(boolean enabled) {
-        StrangeConfig.getInstance().putBoolean("ignore_enabled", enabled);
+        StrangeConfig.getInstance().setBoolean("ignore_enabled", enabled);
     }
 
     public static boolean addIgnoreList(String pattern) {

@@ -1,4 +1,4 @@
-package cn.taotxi.Makemoney.util;
+package cn.taotxi.Makemoney.util.game;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;

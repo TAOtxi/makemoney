@@ -19,9 +19,11 @@ import cn.taotxi.Makemoney.gui.ConfigScreen;
 import cn.taotxi.Makemoney.module.AutoAction.AutoAction;
 import cn.taotxi.Makemoney.module.AutoDrop.AutoDrop;
 import cn.taotxi.Makemoney.module.AutoDrop.AutoDropConfigGui;
+import cn.taotxi.Makemoney.module.AutoFish.AutoFish;
 import cn.taotxi.Makemoney.module.StrangeFunction.StrangeFunctionInit;
 import cn.taotxi.Makemoney.util.EventBus;
 import cn.taotxi.Makemoney.util.T;
+import cn.taotxi.Makemoney.util.TaskUtil;
 import dev.isxander.yacl3.gui.YACLScreen;
 
 // TODO: 屏蔽扫地机信息
@@ -39,7 +41,9 @@ public class Makemoney implements ModInitializer {
         registerSomeEvents();
         registerCommand();
         AutoDrop.init();
+        AutoFish.initialize();
         StrangeFunctionInit.init();
+        TaskUtil.initialize();
 	}
 
     private void registerCommand() {

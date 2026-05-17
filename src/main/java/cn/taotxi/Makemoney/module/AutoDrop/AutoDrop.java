@@ -10,11 +10,11 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 
 import cn.taotxi.Makemoney.util.EventBus;
-import cn.taotxi.Makemoney.util.InventoryUtil;
 import cn.taotxi.Makemoney.util.MLogger;
 import cn.taotxi.Makemoney.util.Message;
 import cn.taotxi.Makemoney.util.StringUtil;
 import cn.taotxi.Makemoney.util.T;
+import cn.taotxi.Makemoney.util.game.InventoryUtil;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents;

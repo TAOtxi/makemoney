@@ -51,6 +51,6 @@ public class RightClickRide {
     }
 
     public static void setEnabled(boolean enabled) {
-        StrangeConfig.getInstance().putBoolean("rightClickRide_enabled", enabled);
+        StrangeConfig.getInstance().setBoolean("rightClickRide_enabled", enabled);
     }
 }

@@ -1,10 +1,12 @@
-package cn.taotxi.Makemoney.util;
+package cn.taotxi.Makemoney.util.game;
 
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import cn.taotxi.Makemoney.Makemoney;
+import cn.taotxi.Makemoney.util.StringUtil;
+import cn.taotxi.Makemoney.util.T;
 import net.minecraft.world.item.ItemStack;
 
 public class ItemStackUtil {
