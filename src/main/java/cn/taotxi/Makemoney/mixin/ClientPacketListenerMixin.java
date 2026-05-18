@@ -6,6 +6,7 @@ import net.minecraft.client.multiplayer.CommonListenerCookie;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.network.TickablePacketListener;
 import net.minecraft.network.protocol.game.ClientboundSystemChatPacket;
@@ -36,6 +37,13 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
     public void onSetEntityData(ClientboundSetEntityDataPacket clientboundSetEntityDataPacket, CallbackInfo ci) {
         if (minecraft.isSameThread()) {
             AutoFish.onEntitySetData(clientboundSetEntityDataPacket, ci);
+        };
+    }
+
+    @Inject(method = "handleAddEntity", at = @At("TAIL"))
+    public void onAddEntity(ClientboundAddEntityPacket clientboundAddEntityPacket, CallbackInfo ci) {
+        if (minecraft.isSameThread()) {
+            AutoFish.onEntityAdd(clientboundAddEntityPacket);
         };
     }
 }

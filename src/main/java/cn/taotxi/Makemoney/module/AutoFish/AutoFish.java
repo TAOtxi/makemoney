@@ -19,9 +19,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.network.syncher.SynchedEntityData.DataValue;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.FishingHook;
 import net.minecraft.world.item.Item;
@@ -36,6 +39,7 @@ public class AutoFish {
     private static float lastYaw = -1.0F;
     private static float lastPitch = -1.0F;
     private static final int checkInterval = 40;
+    private static int bobberId = -1;
 
     public static void initialize() {
         if (isAutoFishing(false)) {
@@ -82,8 +86,7 @@ public class AutoFish {
     }
 
     public static int getThrowDelay(boolean isDefault) {
-        // TODO: 实现手动添加鱼钩实体到 player.fishing
-        return Math.max(5, AutoFishConfig.getInstance().getInt("throwDelay", isDefault));
+        return AutoFishConfig.getInstance().getInt("throwDelay", isDefault);
     }
 
     public static int setThrowDelay(int delay) {
@@ -155,7 +158,7 @@ public class AutoFish {
                             return 1;
                         })))
                 .then(ClientCommandManager.literal("throwDelay")
-                    .then(ClientCommandManager.argument("delay", IntegerArgumentType.integer(5))
+                    .then(ClientCommandManager.argument("delay", IntegerArgumentType.integer(0))
                     .executes(context -> {
                         int delay = context.getArgument("delay", Integer.class);
                         setThrowDelay(delay);
@@ -209,10 +212,17 @@ public class AutoFish {
 
         if (TaskUtil.hasTimeTask("throwFishingRod")) return;
         FishingHook bobber = client.player.fishing;
+
         if (bobber == null) {
-            logger.info("Fishing bobber is null, throw rod");
-            throwRod(hand);
-            return;
+            Entity entity = client.level.getEntity(bobberId);
+            if (entity != null && entity instanceof FishingHook) {
+                bobber = (FishingHook) entity;
+                client.player.fishing = bobber;
+            } else {
+                logger.info("Fishing bobber is null, throw rod");
+                throwRod(hand);
+                return;
+            }
         }
 
         // 计算鱼钩不在水中的时间，超过 2*检查周期 tick则重新抛竿，这里是 2 * 40 tick，也就是4秒
@@ -249,6 +259,11 @@ public class AutoFish {
             lastYaw = player.getYRot();
             lastPitch = player.getXRot();
         }
+    }
+
+    public static void onEntityAdd(ClientboundAddEntityPacket clientboundAddEntityPacket) {
+        if (clientboundAddEntityPacket.getType() != EntityType.FISHING_BOBBER) return;
+        bobberId = clientboundAddEntityPacket.getId();
     }
 
     public static void onEntitySetData(ClientboundSetEntityDataPacket clientboundSetEntityDataPacket, CallbackInfo ci) {
