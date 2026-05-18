@@ -152,7 +152,7 @@ public class ConfigScreen {
                     AutoFish::setThrowDelay
                 )
                 .controller(opt -> IntegerSliderControllerBuilder.create(opt)
-                    .range(0, 100)
+                    .range(5, 100)
                     .step(1)
                     .formatValue(val -> T.l(val + " tick"))
                 )

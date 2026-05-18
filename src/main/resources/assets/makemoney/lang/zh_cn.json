@@ -197,7 +197,7 @@
     "makemoney.autofish.randomDelay": "随机抛竿延迟",
     "makemoney.autofish.randomDelay.desc": "在抛竿延迟基础上，随机添加 1~20 tick的延迟",
     "makemoney.autofish.throwDelay": "抛竿延迟",
-    "makemoney.autofish.throwDelay.desc": "鱼上钩后，再次抛竿的时间延迟，单位为GameTick。\n\n如果不开自动转向的话，延迟不建议过低，否则可能会勾到钓上来的物品。",
+    "makemoney.autofish.throwDelay.desc": "鱼上钩后，再次抛竿的时间延迟，单位为GameTick。\n\n如果不开自动转向的话，延迟不建议过低，否则可能会勾到钓上来的物品。\n\n唉，在服务器里，这玩意似乎设置到5以下，会有概率检测不到鱼钩...",
     "makemoney.autofish.enabled.message": "§7[§d自动钓鱼§7] §a已开启",
     "makemoney.autofish.disabled.message": "§7[§d自动钓鱼§7] §c已关闭",
     "makemoney.autofish.rotation.enabled.message": "§7[§d自动钓鱼§7] §f自动转向 §a已开启",

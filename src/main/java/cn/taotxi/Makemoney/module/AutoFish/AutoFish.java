@@ -35,10 +35,11 @@ public class AutoFish {
     private static int outOfWaterTime = 0;
     private static float lastYaw = -1.0F;
     private static float lastPitch = -1.0F;
+    private static final int checkInterval = 40;
 
     public static void initialize() {
         if (isAutoFishing(false)) {
-            TaskUtil.createTimeTask("fishingStatusCheck", AutoFish::fishingStatusCheck, 40);
+            TaskUtil.createTimeTask("fishingStatusCheck", AutoFish::fishingStatusCheck, checkInterval);
         }
         registerCommand();
     }
@@ -53,7 +54,7 @@ public class AutoFish {
 
     public static int enableFishing() {
         if (!isAutoFishing(false)) {
-            TaskUtil.createTimeTask("fishingStatusCheck", AutoFish::fishingStatusCheck, 40);
+            TaskUtil.createTimeTask("fishingStatusCheck", AutoFish::fishingStatusCheck, checkInterval);
             AutoFishConfig.getInstance().setBoolean("enabled", true);
         }
         return 1;
@@ -81,7 +82,8 @@ public class AutoFish {
     }
 
     public static int getThrowDelay(boolean isDefault) {
-        return AutoFishConfig.getInstance().getInt("throwDelay", isDefault);
+        // TODO: 实现手动添加鱼钩实体到 player.fishing
+        return Math.max(5, AutoFishConfig.getInstance().getInt("throwDelay", isDefault));
     }
 
     public static int setThrowDelay(int delay) {
@@ -139,13 +141,30 @@ public class AutoFish {
                             context.getSource().sendFeedback(T.tl("autofish.randomDelay.disabled.message"));
                             return 1;
                         })))
+                .then(ClientCommandManager.literal("debug")
+                    .then(ClientCommandManager.literal("on")
+                        .executes(context -> {
+                            logger.setDebug(true);
+                            context.getSource().sendFeedback(T.l("[AutoFish] Debug mode enabled"));
+                            return 1;
+                        }))
+                    .then(ClientCommandManager.literal("off")
+                        .executes(context -> {
+                            logger.setDebug(false);
+                            context.getSource().sendFeedback(T.l("[AutoFish] Debug mode disabled"));
+                            return 1;
+                        })))
                 .then(ClientCommandManager.literal("throwDelay")
-                    .then(ClientCommandManager.argument("delay", IntegerArgumentType.integer(0))
+                    .then(ClientCommandManager.argument("delay", IntegerArgumentType.integer(5))
                     .executes(context -> {
                         int delay = context.getArgument("delay", Integer.class);
                         setThrowDelay(delay);
                         AutoFishConfig.getInstance().saveConfig();
                         context.getSource().sendFeedback(T.tl("autofish.throwDelay.message", delay));
+
+                        if (TaskUtil.hasTimeTask("throwFishingRod")) {
+                            throwRodAfterDelay(true);
+                        }
                         return 1;
                     })))
                 .then(ClientCommandManager.literal("config")
@@ -188,9 +207,10 @@ public class AutoFish {
             return;
         }
 
+        if (TaskUtil.hasTimeTask("throwFishingRod")) return;
         FishingHook bobber = client.player.fishing;
         if (bobber == null) {
-            TaskUtil.removeTimeTask("throwFishingRod");
+            logger.info("Fishing bobber is null, throw rod");
             throwRod(hand);
             return;
         }
@@ -205,17 +225,20 @@ public class AutoFish {
         }
 
         if (outOfWaterTime >= 2) {
-            TaskUtil.removeTimeTask("throwFishingRod");
+            logger.info("Out of water for 2 ticks, throw rod");
             client.gameMode.useItem(client.player, hand);
             throwRod(hand);
         }
     }
 
     public static boolean throwRod(InteractionHand hand) {
-        ItemStack fishingRod = client.player.getItemInHand(hand);
-        if (fishingRod.nextDamageWillBreak()) return false;
-
         outOfWaterTime = 0;
+        ItemStack fishingRod = client.player.getItemInHand(hand);
+        if (fishingRod.nextDamageWillBreak()) {
+            logger.info("Fishing rod is broken, stop fishing");
+            return false;
+        };
+
         client.gameMode.useItem(client.player, hand);
         client.player.swing(hand);
         return true;
@@ -241,6 +264,7 @@ public class AutoFish {
                 ) {
                     InteractionHand hand = getFishingHand();
                     if (hand != null) {
+                        logger.info("Catch a fish or hook in entity");
                         client.gameMode.useItem(client.player, hand);
                         throwRodAfterDelay(dataValue.id() == 9);
                     }
@@ -273,8 +297,12 @@ public class AutoFish {
             InteractionHand hand = getFishingHand();
             if (hand == null) return;
 
+            logger.info("Throw rod after delay");
+
             boolean success = throwRod(hand);
             if (!success) return;
+
+            TaskUtil.resetNextRunTick("fishingStatusCheck");
 
             // TODO: Bug: 转向有点问题
             if (!isRotationEnabled(false) || !rotation) {
@@ -282,6 +310,7 @@ public class AutoFish {
             }
 
             if (lastYaw == -1.0F) {
+                logger.info("Last yaw is -1.0F, use current yaw");
                 lastYaw = client.player.getYRot();
                 lastPitch = client.player.getXRot();
                 return;

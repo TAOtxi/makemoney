@@ -25,27 +25,45 @@ public class TaskUtil {
     }
 
     public static void createTimeTask(String id, Runnable callback, int interval) {
-        timeTasks.add(new TimeTask(id, callback, interval, ticker + interval, false));
+        createTimeTask(id, callback, interval, false);
     }
 
     public static void createTimeTask(String id, Runnable callback, int interval, boolean runImmediately) {
         if (hasTimeTask(id)) {
             throw new IllegalArgumentException("Time task with id " + id + " already exists");
         }
-        TimeTask task = new TimeTask(id, callback, interval, ticker + interval, runImmediately);
+        TimeTask task = new TimeTask(id, callback, interval, ticker + interval);
         timeTasks.add(task);
+
+        if (runImmediately) {
+            callback.run();
+        }
     }
 
-    public static void createOnceTimeTask(String id, Runnable callback, int interval) {
+    public static void createOnceTimeTask(String id, Runnable callback, int delay) {
+        if (delay <= 0) {
+            callback.run();
+            return;
+        }
         Runnable callback2 = () -> {
             callback.run();
             removeTimeTask(id);
         };
-        createTimeTask(id, callback2, interval);
+        createTimeTask(id, callback2, delay);
     }
 
     public static boolean hasTimeTask(String id) {
         return timeTasks.stream().anyMatch(task -> task.getId().equals(id));
+    }
+
+    public static void resetNextRunTick(String id) {
+        for (TimeTask task: timeTasks) {
+            if (task.getId().equals(id)) {
+                task.resetNextRunTick(ticker);
+                return;
+            }
+        }
+        throw new IllegalArgumentException("Time task with id " + id + " not found");
     }
 
     public static void updateTimeTask(String id, int interval) {
@@ -105,18 +123,14 @@ class TimeTask {
     private int nextRunTick;
 
     public TimeTask(String id, Runnable callback, int interval, int nextRunTick) {
-        this(id, callback, interval, nextRunTick, false);
-    }
-
-    public TimeTask(String id, Runnable callback, int interval, int nextRunTick, boolean runImmediately) {
         this.id = id;
         this.callback = callback;
         this.interval = interval;
         this.nextRunTick = nextRunTick;
+    }
 
-        if (runImmediately) {
-            callback.run();
-        }
+    public void resetNextRunTick(int ticker) {
+        nextRunTick = ticker + interval;
     }
 
     public boolean tick(int currentTick) {

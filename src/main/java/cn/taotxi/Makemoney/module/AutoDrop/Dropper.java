@@ -47,8 +47,12 @@ public class Dropper {
                 return;
         };
 
+        drop();
+    }
+
+    public static void drop() {
         final List<Integer> dropSlots = new ArrayList<>();
-        InventoryMenu inventoryMenu = player.inventoryMenu;
+        InventoryMenu inventoryMenu = Minecraft.getInstance().player.inventoryMenu;
         for (int i = InventoryMenu.INV_SLOT_START; i < InventoryMenu.USE_ROW_SLOT_END; i++) {
             if (AutoDrop.config.ingnoreSlots.contains(i)) continue;
 

@@ -54,6 +54,7 @@ public class AutoDrop {
                 .then(ClientCommandManager.literal("help").executes(AutoDrop::showHelp))
                 .then(ClientCommandManager.literal("reload").executes(AutoDrop::reloadConfig))
                 .then(ClientCommandManager.literal("config").executes(AutoDrop::openConfigGui))
+                .then(ClientCommandManager.literal("test").executes(AutoDrop::test))
                 .then(ClientCommandManager.literal("on")
                     .executes(context -> toggleAutoDrop(context, true)))
                 .then(ClientCommandManager.literal("off")
@@ -78,6 +79,11 @@ public class AutoDrop {
         dispatcher.register(ClientCommandManager.literal("ad")
                 .executes(AutoDrop::showHelp)
                 .redirect(command));
+    }
+
+    private static int test(CommandContext<FabricClientCommandSource> context) {
+        Dropper.drop();
+        return 1;
     }
 
     private static int showHelp(CommandContext<FabricClientCommandSource> context) {

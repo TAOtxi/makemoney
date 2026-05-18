@@ -1,5 +1,7 @@
 package cn.taotxi.Makemoney.util;
 
+import java.util.Arrays;
+
 import org.slf4j.Logger;
 
 import cn.taotxi.Makemoney.Makemoney;
@@ -22,6 +24,7 @@ public class MLogger {
         if (!isDebug) {
             return;
         }
+        Message.chatMsg("[" + moduleName + "] " + message);
         logger.info("[{}] " + message, moduleName);
     }
 
@@ -29,6 +32,7 @@ public class MLogger {
         if (!isDebug) {
             return;
         }
+        Message.chatMsg("[" + moduleName + "] " + message + " " + arg1);
         logger.info("[{}] " + message, moduleName, arg1);
     }
 
@@ -36,6 +40,7 @@ public class MLogger {
         if (!isDebug) {
             return;
         }
+        Message.chatMsg("[" + moduleName + "] " + message + " " + arg1);
         logger.info("[{}] " + message, moduleName, arg1, arg2);
     }
 
@@ -43,6 +48,7 @@ public class MLogger {
         if (!isDebug) {
             return;
         }
+        Message.chatMsg("[" + moduleName + "] " + message + " " + Arrays.toString(args));
         logger.info("[{}] " + message, moduleName, args);
     }
     
