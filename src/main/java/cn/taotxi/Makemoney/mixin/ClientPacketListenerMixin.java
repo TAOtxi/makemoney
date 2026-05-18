@@ -36,7 +36,7 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
     @Inject(method = "handleSetEntityData", at = @At("HEAD"))
     public void onSetEntityData(ClientboundSetEntityDataPacket clientboundSetEntityDataPacket, CallbackInfo ci) {
         if (minecraft.isSameThread()) {
-            AutoFish.onEntitySetData(clientboundSetEntityDataPacket, ci);
+            AutoFish.onEntitySetData(clientboundSetEntityDataPacket);
         };
     }
 

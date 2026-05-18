@@ -215,10 +215,11 @@ public class AutoFish {
 
         if (bobber == null) {
             Entity entity = client.level.getEntity(bobberId);
-            if (entity != null && entity instanceof FishingHook) {
+            if (entity != null && !entity.isRemoved()) {
                 bobber = (FishingHook) entity;
                 client.player.fishing = bobber;
             } else {
+                client.player.fishing = null;
                 logger.info("Fishing bobber is null, throw rod");
                 throwRod(hand);
                 return;
@@ -263,10 +264,33 @@ public class AutoFish {
 
     public static void onEntityAdd(ClientboundAddEntityPacket clientboundAddEntityPacket) {
         if (clientboundAddEntityPacket.getType() != EntityType.FISHING_BOBBER) return;
-        bobberId = clientboundAddEntityPacket.getId();
+        FishingHook bobber = (FishingHook) client.level.getEntity(clientboundAddEntityPacket.getId());
+        if (bobber.getPlayerOwner() == client.player) {
+            bobberId = bobber.getId();
+        }
     }
 
-    public static void onEntitySetData(ClientboundSetEntityDataPacket clientboundSetEntityDataPacket, CallbackInfo ci) {
+    public static void onEntitySetData(ClientboundSetEntityDataPacket clientboundSetEntityDataPacket) {
+        // if (!isAutoFishing(false) || client.player == null) return;
+
+        // Entity entity = client.level.getEntity(clientboundSetEntityDataPacket.id());
+        // if (entity == null || entity.getType() != EntityType.FISHING_BOBBER) return;
+        // FishingHook bobber = (FishingHook) entity;
+        // if (bobber.getPlayerOwner() != client.player) return;
+        
+        // for (DataValue<?> dataValue : clientboundSetEntityDataPacket.packedItems()) {
+        //     // See https://minecraft.wiki/w/Java_Edition_protocol/Entity_metadata#Fishing_Bobber
+        //     if ((dataValue.id() == 9 && (Boolean) dataValue.value()) ||
+        //         (dataValue.id() == 8 && (Integer) dataValue.value() != 0)
+        //     ) {
+        //         InteractionHand hand = getFishingHand();
+        //         if (hand != null) {
+        //             logger.info("Catch a fish or hook in entity");
+        //             client.gameMode.useItem(client.player, hand);
+        //             throwRodAfterDelay(dataValue.id() == 9);
+        //         }
+        //     }
+        // }
         if (isAutoFishing(false) &&
             client.player != null &&
             client.player.fishing != null &&
