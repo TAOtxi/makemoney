@@ -136,6 +136,29 @@ public class ConfigScreen {
             () -> AutoFish.isRotationEnabled(false),
             AutoFish::setRotationEnabled));
 
+        autoFishGroup.option(Factory.addToggleOption(
+            T.tl("autofish.randomDelay"), 
+            T.tl("autofish.randomDelay.desc"), 
+            AutoFish.isRandomDelayEnabled(true), 
+            () -> AutoFish.isRandomDelayEnabled(false),
+            AutoFish::setRandomDelayEnabled));
+
+        autoFishGroup.option(Option.<Integer>createBuilder()
+                .name(T.tl("autofish.throwDelay"))
+                .description(OptionDescription.of(T.tl("autofish.throwDelay.desc")))
+                .binding(
+                    AutoFish.getThrowDelay(true),
+                    () -> AutoFish.getThrowDelay(false),
+                    AutoFish::setThrowDelay
+                )
+                .controller(opt -> IntegerSliderControllerBuilder.create(opt)
+                    .range(0, 100)
+                    .step(1)
+                    .formatValue(val -> T.l(val + " tick"))
+                )
+                .build()
+        );
+
         strangeCategory.group(autoFishGroup.build());
 
         strangeCategory.option(Factory.addToggleOption(

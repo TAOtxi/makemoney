@@ -40,6 +40,7 @@
     "makemoney.autorepair.message.repair": "已将 §a%s §r放入副手修复",
 
     "makemoney.autodrop.message.attention": "§c注意：自动丢弃模式开启中",
+    "makemoney.autodrop.help.message": "§7[§d自动丢弃§7] §7待完善...",
     "makemoney.autodrop.enabled.message": "§7[§d自动丢弃§7] §a已开启",
     "makemoney.autodrop.disabled.message": "§7[§d自动丢弃§7] §c已关闭",
     "makemoney.autodrop.reload.message": "§7[§d自动丢弃§7] §a已重新加载配置文件",
@@ -177,7 +178,7 @@
     "makemoney.ignore.enabled": "开关",
     "makemoney.ignore.enabled.desc": "开启后，将服务器消息与屏蔽正则项进行匹配，若匹配成功，则将不会显示在聊天框中。",
     "makemoney.ignore.preset": "预设屏蔽列表",
-    "makemoney.ignore.preset.desc": "如果想让拾玖世界的聊天框变得整洁，要屏蔽的信息可多了哟。\n\n预设的屏蔽规则有以下列表：\n\n拾玖福彩\n猜单词游戏\n地震警告\n拾玖喵小道消息\n空白行（小道消息搞出来的）\n拾玖喵扫地机\n玩家切服信息\n玩家进服、退服信息\n玩家纯数字聊天信息（一般是买东西搞出来的）\\n\n欢迎补充~",
+    "makemoney.ignore.preset.desc": "如果想让拾玖世界的聊天框变得整洁，要屏蔽的信息可多了哟。\n\n预设的屏蔽规则有以下列表：\n\n拾玖福彩\n猜单词游戏\n地震警告\n拾玖喵小道消息\n空白行（小道消息搞出来的）\n拾玖喵扫地机\n玩家切服信息\n玩家进服、退服信息\n玩家纯数字聊天信息（一般是买东西搞出来的）\n\n欢迎补充~",
     "makemoney.ignore.deleteAll": "删除所有规则",
     "makemoney.ignore.deleteAll.desc": "开宫没有回头监~",
     "makemoney.ignore.regex": "正则表达式列表",
@@ -186,10 +187,23 @@
     "makemoney.ignore.rightClickRide": "空手右键生物骑乘",
     "makemoney.ignore.rightClickRide.desc": "开启后，空手右键生物即可骑乘。\n\n原理为使用 /ride 命令。",
 
+    "makemoney.autofish.help.message": "§7[§d自动钓鱼§7] §7待完善...",
     "makemoney.autofish.name": "自动钓鱼",
     "makemoney.autofish.desc": "xplus的autofish不太好用，我自己写了个。\n\n原理为通过监听网络数据包的方式，判断鱼是否上钩。\n\n同时，鱼钩长时间不在水中或勾到了其它实体，将会重新抛竿。",
     "makemoney.autofish.enabled": "开关",
     "makemoney.autofish.enabled.desc": "开启，并手持鱼竿将会自动钓鱼",
     "makemoney.autofish.rotation": "自动转向",
-    "makemoney.autofish.rotation.desc": "开启后，玩家的视角会在两个抛竿时候的视角来回转换。\n\n比如，第一次抛竿，保存此时视角为 a；之后手动将视角转到 b 视角，鱼上钩后，将自动转到视角 a，并保存视角 b。\n\n之后就开始做往返转向。"
+    "makemoney.autofish.rotation.desc": "开启后，玩家的视角会在两个抛竿时候的视角来回转换。\n\n比如，第一次抛竿，保存此时视角为 a；之后手动将视角转到 b 视角，鱼上钩后，将自动转到视角 a，并保存视角 b。\n\n之后就开始做往返转向。",
+    "makemoney.autofish.randomDelay": "随机抛竿延迟",
+    "makemoney.autofish.randomDelay.desc": "在抛竿延迟基础上，随机添加 1~20 tick的延迟",
+    "makemoney.autofish.throwDelay": "抛竿延迟",
+    "makemoney.autofish.throwDelay.desc": "鱼上钩后，再次抛竿的时间延迟，单位为GameTick。\n\n如果不开自动转向的话，延迟不建议过低，否则可能会勾到钓上来的物品。",
+    "makemoney.autofish.enabled.message": "§7[§d自动钓鱼§7] §a已开启",
+    "makemoney.autofish.disabled.message": "§7[§d自动钓鱼§7] §c已关闭",
+    "makemoney.autofish.rotation.enabled.message": "§7[§d自动钓鱼§7] §f自动转向 §a已开启",
+    "makemoney.autofish.rotation.disabled.message": "§7[§d自动钓鱼§7] §f自动转向 §c已关闭",
+    "makemoney.autofish.randomDelay.enabled.message": "§7[§d自动钓鱼§7] §f随机抛竿延迟 §a已开启",
+    "makemoney.autofish.randomDelay.disabled.message": "§7[§d自动钓鱼§7] §f随机抛竿延迟 §c已关闭",
+    "makemoney.autofish.throwDelay.message": "§7[§d自动钓鱼§7] §f抛竿延迟设置为 §e%d §7tick",
+    "makemoney.autofish.config.reload.message": "§7[§d自动钓鱼§7] §7暂不支持重载配置（主要是太懒了）"
 }

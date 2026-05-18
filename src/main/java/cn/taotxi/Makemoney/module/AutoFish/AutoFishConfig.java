@@ -24,6 +24,8 @@ public class AutoFishConfig extends ConfigManager {
         JsonObject config = new JsonObject();
         config.addProperty("enabled", true);
         config.addProperty("rotation", true);
+        config.addProperty("randomDelay", false);
+        config.addProperty("throwDelay", 5);
         
         return config;
     }

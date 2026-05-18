@@ -81,7 +81,7 @@ public class AutoDrop {
     }
 
     private static int showHelp(CommandContext<FabricClientCommandSource> context) {
-        context.getSource().sendFeedback(T.tl(MODULE_NAME + ".message.help"));
+        context.getSource().sendFeedback(T.tl(MODULE_NAME + ".help.message"));
         return 1;
     }
 

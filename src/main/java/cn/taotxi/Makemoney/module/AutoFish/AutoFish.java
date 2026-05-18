@@ -1,12 +1,20 @@
 package cn.taotxi.Makemoney.module.AutoFish;
 
+import java.util.Map;
+
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.context.CommandContext;
+
+import cn.taotxi.Makemoney.util.EventBus;
 import cn.taotxi.Makemoney.util.MLogger;
+import cn.taotxi.Makemoney.util.T;
 import cn.taotxi.Makemoney.util.TaskUtil;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -63,21 +71,112 @@ public class AutoFish {
         return 1;
     }
 
+    public static boolean isRandomDelayEnabled(boolean isDefault) {
+        return AutoFishConfig.getInstance().getBoolean("randomDelay", isDefault);
+    }
+
+    public static int setRandomDelayEnabled(boolean enabled) {
+        AutoFishConfig.getInstance().setBoolean("randomDelay", enabled);
+        return 1;
+    }
+
+    public static int getThrowDelay(boolean isDefault) {
+        return AutoFishConfig.getInstance().getInt("throwDelay", isDefault);
+    }
+
+    public static int setThrowDelay(int delay) {
+        AutoFishConfig.getInstance().setInt("throwDelay", delay);
+        return 1;
+    }
+
     // TODO: 优雅地保存配置文件
     private static void registerCommand() {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-            dispatcher.register(ClientCommandManager.literal("autofish")
+            var cmd = dispatcher.register(ClientCommandManager.literal("autofish")
+                .executes(AutoFish::showHelp)
+                .then(ClientCommandManager.literal("help").executes(AutoFish::showHelp))
                 .then(ClientCommandManager.literal("on")
-                    .executes(context -> AutoFish.enableFishing()))
+                    .executes(context -> {
+                        enableFishing();
+                        AutoFishConfig.getInstance().saveConfig();
+                        context.getSource().sendFeedback(T.tl("autofish.enabled.message"));
+                        return 1;
+                    }))
                 .then(ClientCommandManager.literal("off")
-                    .executes(context -> AutoFish.disableFishing()))
+                    .executes(context -> {
+                        disableFishing();
+                        AutoFishConfig.getInstance().saveConfig();
+                        context.getSource().sendFeedback(T.tl("autofish.disabled.message"));
+                        return 1;
+                    }))
                 .then(ClientCommandManager.literal("rotation")
                     .then(ClientCommandManager.literal("on")
-                        .executes(context -> AutoFish.setRotationEnabled(true)))
+                        .executes(context -> {
+                            setRotationEnabled(true);
+                            AutoFishConfig.getInstance().saveConfig();
+                            context.getSource().sendFeedback(T.tl("autofish.rotation.enabled.message"));
+                            return 1;
+                        }))
                     .then(ClientCommandManager.literal("off")
-                        .executes(context -> AutoFish.setRotationEnabled(false))))
+                        .executes(context -> {
+                            setRotationEnabled(false);
+                            AutoFishConfig.getInstance().saveConfig();
+                            context.getSource().sendFeedback(T.tl("autofish.rotation.disabled.message"));
+                            return 1;
+                        })))
+                .then(ClientCommandManager.literal("randomDelay")
+                    .then(ClientCommandManager.literal("on")
+                        .executes(context -> {
+                            setRandomDelayEnabled(true);
+                            AutoFishConfig.getInstance().saveConfig();
+                            context.getSource().sendFeedback(T.tl("autofish.randomDelay.enabled.message"));
+                            return 1;
+                        }))
+                    .then(ClientCommandManager.literal("off")
+                        .executes(context -> {
+                            setRandomDelayEnabled(false);
+                            AutoFishConfig.getInstance().saveConfig();
+                            context.getSource().sendFeedback(T.tl("autofish.randomDelay.disabled.message"));
+                            return 1;
+                        })))
+                .then(ClientCommandManager.literal("throwDelay")
+                    .then(ClientCommandManager.argument("delay", IntegerArgumentType.integer(0))
+                    .executes(context -> {
+                        int delay = context.getArgument("delay", Integer.class);
+                        setThrowDelay(delay);
+                        AutoFishConfig.getInstance().saveConfig();
+                        context.getSource().sendFeedback(T.tl("autofish.throwDelay.message", delay));
+                        return 1;
+                    })))
+                .then(ClientCommandManager.literal("config")
+                    .then(ClientCommandManager.literal("reload")
+                        .executes(context -> {
+                            // AutoFishConfig.getInstance().reloadConfig();
+                            context.getSource().sendFeedback(T.tl("autofish.config.reload.message"));
+                            return 1;
+                        }))
+                    .then(ClientCommandManager.literal("open")
+                        .executes(context -> {
+                            EventBus.post("openMainConfigGui", Map.of("tab", 0));
+                            return 1;
+                        })))
+            );
+
+            dispatcher.register(ClientCommandManager.literal("af")
+                .executes(AutoFish::showHelp)
+                .redirect(cmd)
+            );
+
+            dispatcher.register(ClientCommandManager.literal("fish")
+                .executes(AutoFish::showHelp)
+                .redirect(cmd)
             );
         });
+    }
+
+    private static int showHelp(CommandContext<FabricClientCommandSource> context) {
+        context.getSource().sendFeedback(T.tl("autofish.help.message"));
+        return 1;
     }
 
     private static void fishingStatusCheck() {
@@ -89,13 +188,16 @@ public class AutoFish {
             return;
         }
 
+        if (TaskUtil.hasTimeTask("throwFishingRod")) return;
+
         FishingHook bobber = client.player.fishing;
         if (bobber == null) {
-            throwRodAfterDelay(false);
+            TaskUtil.removeTimeTask("throwFishingRod");
+            throwRod(hand);
             return;
         }
 
-        // 计算鱼漂不在水中的时间，超过 2*检查周期 tick则重新抛竿，这里是 2 * 40 tick，也就是4秒
+        // 计算鱼钩不在水中的时间，超过 2*检查周期 tick则重新抛竿，这里是 2 * 40 tick，也就是4秒
         BlockPos blockPos = bobber.blockPosition();
         FluidState fluidState = client.level.getFluidState(blockPos);
         if (!fluidState.is(FluidTags.WATER)) {
@@ -105,11 +207,20 @@ public class AutoFish {
         }
 
         if (outOfWaterTime >= 2) {
-            outOfWaterTime = 0;
+            TaskUtil.removeTimeTask("throwFishingRod");
             client.gameMode.useItem(client.player, hand);
-            throwRodAfterDelay(false);
+            throwRod(hand);
         }
+    }
 
+    public static boolean throwRod(InteractionHand hand) {
+        ItemStack fishingRod = client.player.getItemInHand(hand);
+        if (fishingRod.nextDamageWillBreak()) return false;
+
+        outOfWaterTime = 0;
+        client.gameMode.useItem(client.player, hand);
+        client.player.swing(hand);
+        return true;
     }
 
     public static void initRotaion(Player player, InteractionHand interactionHand, CallbackInfoReturnable<InteractionResult> cir) {
@@ -154,14 +265,18 @@ public class AutoFish {
 
     private static void throwRodAfterDelay(boolean rotation) {
         TaskUtil.removeTimeTask("throwFishingRod");
+
+        int throwDelay = getThrowDelay(false);
+        if (isRandomDelayEnabled(false)) {
+            throwDelay += (int) (Math.random() * 20) + 1;
+        }
+
         TaskUtil.createOnceTimeTask("throwFishingRod", () -> {
             InteractionHand hand = getFishingHand();
             if (hand == null) return;
-            ItemStack fishingRod = client.player.getItemInHand(hand);
-            if (fishingRod.nextDamageWillBreak()) return;
 
-            client.player.swing(hand);
-            client.gameMode.useItem(client.player, hand);
+            boolean success = throwRod(hand);
+            if (!success) return;
 
             // TODO: Bug: 转向有点问题
             if (!isRotationEnabled(false) || !rotation) {
@@ -180,6 +295,6 @@ public class AutoFish {
             client.player.setXRot(lastPitch);
             lastYaw = yaw;
             lastPitch = pitch;
-        }, 5);
+        }, throwDelay);
     }
 }
