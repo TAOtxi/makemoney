@@ -188,8 +188,6 @@ public class AutoFish {
             return;
         }
 
-        if (TaskUtil.hasTimeTask("throwFishingRod")) return;
-
         FishingHook bobber = client.player.fishing;
         if (bobber == null) {
             TaskUtil.removeTimeTask("throwFishingRod");
