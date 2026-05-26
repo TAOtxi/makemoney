@@ -1,6 +1,7 @@
 package cn.taotxi.Makemoney.module.StrangeFunction;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -15,11 +16,13 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
 import cn.taotxi.Makemoney.util.EventBus;
 import cn.taotxi.Makemoney.util.T;
+import cn.taotxi.Makemoney.util.game.GameUtil;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.Minecraft;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.EntityHitResult;
@@ -44,10 +47,10 @@ public class AutoRide {
 
             if (!client.player.getMainHandItem().isEmpty()) return;
             if (client.player.isCrouching()) return;
+            if (client.level.players().size() < 2) return;
 
             Player target = findTargetPlayer();
             if (target == null) return;
-            client.player.stopRiding();
 
             rideTargetPlayer(target);
         });
@@ -89,18 +92,19 @@ public class AutoRide {
         Minecraft client = Minecraft.getInstance();
         Player player = client.player;
         String targetPlayer = getTargetPlayer(false);
+        List<String> onlinePlayers = GameUtil.getOnlinePlayerNames();
         return client.level.getNearestPlayer(
-            player.getX(), player.getY(), player.getZ(), 
-            getMinDistance(false), cow -> {
-                // TODO: 使用在线玩家列表过滤NPC生物
-                if (targetPlayer.isEmpty() && 
+            player.getX(), player.getY(), player.getZ(), getMinDistance(false),
+            cow -> {
+                if (
+                    targetPlayer.isEmpty() && 
                     cow != player && 
-                    !cow.getName().getString().startsWith("CIT-")) 
-                {
+                    onlinePlayers.contains(cow.getName().getString())
+                ) {
                     return true;
                 }
                 return cow != player && cow.getName().getString().equals(targetPlayer);
-        });
+            });
     }
 
     private static void rideTargetPlayer(Player playerCow) {

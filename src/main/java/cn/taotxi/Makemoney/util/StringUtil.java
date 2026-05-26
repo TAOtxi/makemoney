@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import net.minecraft.resources.Identifier;
+
 public class StringUtil {
     public static <Type> String listToStr(List<Type> list, String sep) {
         if (list.isEmpty()) return "";
@@ -98,5 +100,22 @@ public class StringUtil {
 
     public static <Type> String posToString(List<Type> pos) {
         return "<" + listToStr(pos, ", ") + ">";
+    }
+
+    public static boolean isValidChar(char c) {
+        return c >= '0' && c <= '9' ||
+               c >= 'a' && c <= 'z' ||
+               c >= 'A' && c <= 'Z' ||
+               c == '_';
+    }
+
+    public static boolean isValidName(String name) {
+        int size = name.length();
+        if (size < 1 || size > 16) return false;
+        for (int i = 0; i < size; i++) {
+            char c = name.charAt(i);
+            if (!isValidChar(c)) return false;
+        }
+        return true;
     }
 }

@@ -74,6 +74,26 @@ public class Makemoney implements ModInitializer {
             dispatcher.register(ClientCommandManager.literal("mkm")
                     .executes(Makemoney::showHelp)
                     .redirect(command));
+
+            // dispatcher.register(ClientCommandManager.literal("tt")
+            //     .then(ClientCommandManager.literal("1")
+            //         .executes(context -> {
+            //             var connection = Minecraft.getInstance().getConnection();
+            //             if (connection == null) {
+            //                 LOGGER.error("Connection is null");
+            //                 return 1;
+            //             }
+            //             for (var player: connection.getOnlinePlayers()) {
+            //                 if (player.getProfile() != null) {
+            //                     System.out.println(player.getProfile().name());
+            //                 } else {
+            //                     System.out.println(player.getTabListDisplayName().getString() + " empty");
+            //                 }
+            //             }
+            //             System.out.println("\n-------------------\n");
+            //             return 1;
+            //         }))
+            //     );
         });
     }
 
