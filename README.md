@@ -1,48 +1,49 @@
-# MakeMoney
-![icon](./icon.png)
+# Makemoney
+<div style="display: flex; justify-content: center;">
+    <img src="./icon.png" alt="icon" width="200" height="200">
+</div>
 
-> 为了更好的在拾玖世界赚钱，我创建了此模组。。。
-> 唉，唉，唉。
+
+> 专用于拾玖世界服务器的模组
+> ohhhhhhh
 >
 > 拾玖世界Q群：`518271249`
 
 ## 前置模组
 [Yacl >=3.8.2+1.21.11-fabric](https://modrinth.com/mod/yacl)
 
-
 ## Feature
 
 ### 配置界面
 通过 `/makemoney config` 指令或 `Mod Menu` 菜单打开配置界面。
 
-### 自动替换经验修补工具（未测试完）
+### 自动替换经验修补工具（待完善）
 将背包内的带有经验修补且耐久为满的物品替换到副手。<br>
 用于钓鱼佬分解钻石或合金工具。
 
 ### 自动丢弃
-> 指令 `/autodrop` / `/ad` <br>
+指令 `/autodrop` | `/ad` <br>
 根据设置的匹配条件，将背包内的不需要的物品丢弃。<br>
 条件可设置名字、id、标签、附魔词条匹配。<br>
 一般用于搞冲突附魔装备，或者钓鱼佬的懒人分类。
 
-### 生物高亮（未测试完）
+### 生物高亮（待完善）
 高亮指定的生物边框。透视墙壁<br>
 
 ### 小功能
-`rightClickRide`
-> 空手右键生物即可乘骑
+#### autofish
+- 指令 `/autofish` | `/af` | `/fish`
+- 自动钓鱼
+- 通过监听网络数据包判断是否上钩
 
-`autoride`
-> 指令 `/autoride` / `/ar` <br>
-> 像个狗皮膏药一样黏在其它玩家头上
+#### rightClickRide
+- 空手右键生物即可骑乘
 
-`ignoreMessage`
-> 使用正则表达式屏蔽服务器消息 <br>
-> 配置界面已预设好一些屏蔽规则，比如猜单词、扫地机、小道消息等。
+#### autoride
+- 指令 `/autoride` | `/ar`
+- 像个狗皮膏药一样黏在其它玩家头上
+- 也可以禁止别的玩家骑你头上
 
-### 已弃用的
-
-#### autocommand
-在指定世界的指定位置可触发命令。<br>
-比如你睡大厅了，可以自动回到生存服或者工业服继续挂机。<br>
-> 替代的模组可以看我的另一个模组 `Superman`
+#### ignoreMessage
+- 可自定义屏蔽服务器消息
+- 配置界面已预设好一些屏蔽规则，比如猜单词、扫地机、小道消息等。
