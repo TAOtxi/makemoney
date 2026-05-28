@@ -223,6 +223,13 @@ public class ConfigScreen {
                 .build()
         );
 
+        autoRideGroup.option(Factory.addToggleOption(
+            T.tl("autoride.enableShakeOffPlayer"), 
+            T.tl("autoride.enableShakeOffPlayer.desc"), 
+            AutoRide.enableShakeOffPlayer(true), 
+            () -> AutoRide.enableShakeOffPlayer(false),
+            AutoRide::setEnableShakeOffPlayer));
+
         autoRideGroup.option(ButtonOption.createBuilder()
                 .name(T.tl("autoride.reset"))
                 .description(OptionDescription.of(T.tl("autoride.reset.desc")))

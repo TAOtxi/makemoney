@@ -168,8 +168,11 @@
     "makemoney.autoride.target": "目标玩家的名字",
     "makemoney.autoride.target.desc": "此值为空时，将尝试粘上最近的玩家。",
     "makemoney.autoride.target.message": "§7[§d狗皮膏药§7] §7目标玩家设置为 §e%s",
-    "makemoney.autoride.reset": "重置所有配置",
-    "makemoney.autoride.reset.desc": "按下后将重置所有配置为默认值",
+    "makemoney.autoride.enableShakeOffPlayer": "绝对光滑的头顶",
+    "makemoney.autoride.enableShakeOffPlayer.desc": "禁止玩家或其它别的生物骑你头上。\n\n但这玩意防不了狗皮膏药，哈哈哈。\n\n该功能仅在拾玖世界测试过，\n\n通过发送潜行的数据包实现，无法保证适用于所有的服务器。",
+    "makemoney.autoride.enableShakeOffPlayer.message": "§7[§d狗皮膏药§7] §7绝对光滑的头顶设置为 §e%s",
+    "makemoney.autoride.reset": "重置 autoride 所有配置",
+    "makemoney.autoride.reset.desc": "按下后将重置 autoride 所有配置为默认值",
     "makemoney.autoride.reset.message": "§7[§d狗皮膏药§7] §7已重置所有配置",
     "makemoney.autoride.help.message": "§7[§d狗皮膏药§7] §7用法: §e/autoride 阿巴阿巴",
 

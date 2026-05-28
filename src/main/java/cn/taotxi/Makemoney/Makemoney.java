@@ -78,22 +78,17 @@ public class Makemoney implements ModInitializer {
             // dispatcher.register(ClientCommandManager.literal("tt")
             //     .then(ClientCommandManager.literal("1")
             //         .executes(context -> {
-            //             var connection = Minecraft.getInstance().getConnection();
-            //             if (connection == null) {
-            //                 LOGGER.error("Connection is null");
-            //                 return 1;
-            //             }
-            //             for (var player: connection.getOnlinePlayers()) {
-            //                 if (player.getProfile() != null) {
-            //                     System.out.println(player.getProfile().name());
-            //                 } else {
-            //                     System.out.println(player.getTabListDisplayName().getString() + " empty");
-            //                 }
-            //             }
-            //             System.out.println("\n-------------------\n");
+            //             System.out.println("Flying: " + Minecraft.getInstance().player.getAbilities().flying);
             //             return 1;
             //         }))
-            //     );
+            //     .then(ClientCommandManager.literal("2")
+            //         .executes(context -> {
+            //             var player = context.getSource().getClient().player;
+            //             System.out.println(player.getPassengers());
+            //             return 1;
+            //         }))
+            // );
+                
         });
     }
 

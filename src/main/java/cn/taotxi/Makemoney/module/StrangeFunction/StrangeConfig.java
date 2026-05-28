@@ -24,6 +24,7 @@ public class StrangeConfig extends ConfigManager {
         JsonObject config = new JsonObject();
         config.addProperty("autoride_targetPlayer", "");
         config.addProperty("autoride_runInterval", 5);
+        config.addProperty("autoride_enableShakeOffPlayer", false);
         config.addProperty("autoride_minDistance", 6);
 
         config.addProperty("ignore_enabled", false);

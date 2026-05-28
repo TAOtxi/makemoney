@@ -2,7 +2,6 @@ package cn.taotxi.Makemoney.module.AutoFish;
 
 import java.util.Map;
 
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.mojang.brigadier.arguments.IntegerArgumentType;

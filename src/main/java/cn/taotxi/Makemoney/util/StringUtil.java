@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import net.minecraft.resources.Identifier;
 
 public class StringUtil {
     public static <Type> String listToStr(List<Type> list, String sep) {
