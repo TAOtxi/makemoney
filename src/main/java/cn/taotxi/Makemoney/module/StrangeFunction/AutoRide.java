@@ -43,14 +43,14 @@ public class AutoRide {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (client.level == null || client.player == null) return;
             
-            if (!enabled) return;
             if (client.player.isCrouching()) return;
             if (client.player.getVehicle() != null) return;
-
+            
             if (enableShakeOffPlayer(false)) {
                 tryToShakeOffPlayer(client.player);
             }
-
+            if (!enabled) return;
+            
             tickCounter++;
             if (tickCounter % getRunInterval(false) != 0) return;
 

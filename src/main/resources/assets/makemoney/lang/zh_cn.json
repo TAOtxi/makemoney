@@ -39,13 +39,15 @@
     "makemoney.autorepair.message.toggled": "自动经验修补功能已 %s",
     "makemoney.autorepair.message.repair": "已将 §a%s §r放入副手修复",
 
+    "makemoney.autodrop.name": "自动丢弃",
+    "makemoney.autodrop.desc": "丢弃背包内不在白名单的物品",
+    "makemoney.autodrop.on": "模块开关",
+    "makemoney.autodrop.on.desc": "为了保证安全性，此选项在每次进入游戏时都会自动关闭，且无法通过配置文件控制。",
     "makemoney.autodrop.message.attention": "§c注意：自动丢弃模式开启中",
     "makemoney.autodrop.help.message": "§7[§d自动丢弃§7] §7帮助信息待完善...",
     "makemoney.autodrop.enabled.message": "§7[§d自动丢弃§7] §a已开启",
     "makemoney.autodrop.disabled.message": "§7[§d自动丢弃§7] §c已关闭",
     "makemoney.autodrop.reload.message": "§7[§d自动丢弃§7] §a已重新加载配置文件",
-    "makemoney.autodrop.name": "自动丢弃",
-    "makemoney.autodrop.desc": "丢弃背包内不在白名单的物品",
 
     "makemoney.autodrop.baseTab": "基础设置",
     "makemoney.autodrop.conditionTab": "匹配条件",

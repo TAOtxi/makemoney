@@ -59,8 +59,8 @@ public class AutoDropConfigGui {
 
 
         category.option(Factory.addToggleOption(
-            T.tl("module.enabled"),
-            T.tl("module.enabled.desc"),
+            T.tl("autodrop.on"),
+            T.tl("autodrop.on.desc"),
             AutoDropConfig.getDefaultEnabled(),
             () -> AutoDrop.config.enabled,
             val -> AutoDrop.config.enabled = val
