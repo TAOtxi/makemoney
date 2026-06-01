@@ -3,8 +3,15 @@ package cn.taotxi.Makemoney.util;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.IntSupplier;
+
+import com.mojang.brigadier.context.CommandContext;
+
 import java.util.List;
 
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
 public class TaskUtil {
@@ -22,21 +29,41 @@ public class TaskUtil {
                 timeTasks.get(i).tick(ticker);
             }
         });
+        registerCommand();
     }
 
     public static void createTimeTask(String id, Runnable callback, int interval) {
         createTimeTask(id, callback, interval, false);
     }
 
+    public static void createTimeTask(String id, Runnable callback, IntSupplier intervalSupplier) {
+        createTimeTask(id, callback, intervalSupplier, false);
+    }
+
     public static void createTimeTask(String id, Runnable callback, int interval, boolean runImmediately) {
+        createTimeTask(id, callback, () -> interval, runImmediately);
+       }
+
+    public static void createTimeTask(String id, Runnable callback, IntSupplier intervalSupplier, boolean runImmediately) {
         if (hasTimeTask(id)) {
             throw new IllegalArgumentException("Time task with id " + id + " already exists");
         }
-        TimeTask task = new TimeTask(id, callback, interval, ticker + interval);
+        TimeTask task = new TimeTask(id, callback, intervalSupplier, ticker + intervalSupplier.getAsInt());
+        createTimeTask(task, runImmediately);
+    }
+
+    public static void createTimeTask(TimeTask task) {
+        createTimeTask(task, false);
+    }
+
+    public static void createTimeTask(TimeTask task, boolean runImmediately) {
+        if (hasTimeTask(task.getId())) {
+            throw new IllegalArgumentException("Time task with id " + task.getId() + " already exists");
+        }
         timeTasks.add(task);
 
         if (runImmediately) {
-            callback.run();
+            task.run();
         }
     }
 
@@ -114,28 +141,65 @@ public class TaskUtil {
         }
         tickTasks.get(id).tick();
     }
+
+    private static int listTimeTasks(CommandContext<FabricClientCommandSource> context) {
+        context.getSource().sendFeedback(T.l(""));
+        for (TimeTask task : timeTasks) {
+            context.getSource().sendFeedback(T.l(task.toString()));
+        }
+        return 1;
+    }
+
+    private static void registerCommand() {
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+            dispatcher.register(ClientCommandManager.literal("taskUtil")
+                .then(ClientCommandManager.literal("list")
+                    .executes(TaskUtil::listTimeTasks)));
+        });
+    }
 }
 
 class TimeTask {
     private String id;
     private Runnable callback;
-    private int interval;
     private int nextRunTick;
+    private IntSupplier intervalSupplier;
 
     public TimeTask(String id, Runnable callback, int interval, int nextRunTick) {
         this.id = id;
         this.callback = callback;
-        this.interval = interval;
+        this.nextRunTick = nextRunTick;
+        this.intervalSupplier = () -> interval;
+    }
+
+    public TimeTask(String id, Runnable callback, IntSupplier intervalSupplier, int nextRunTick) {
+        this.id = id;
+        this.callback = callback;
+        this.intervalSupplier = intervalSupplier;
         this.nextRunTick = nextRunTick;
     }
 
+    public void run() {
+        callback.run();
+    }
+
+    public String toString() {
+        return "§7NextRunTick: §e" + nextRunTick + 
+                "  §7Interval: §e" + intervalSupplier.getAsInt() +
+                "  §7[§a" + id + "§7]";
+    }
+
+    public void setIntervalSupplier(IntSupplier intervalSupplier) {
+        this.intervalSupplier = intervalSupplier;
+    }
+
     public void resetNextRunTick(int ticker) {
-        nextRunTick = ticker + interval;
+        nextRunTick = ticker + intervalSupplier.getAsInt();
     }
 
     public boolean tick(int currentTick) {
         if (currentTick >= nextRunTick) {
-            nextRunTick = currentTick + interval;
+            nextRunTick = currentTick + intervalSupplier.getAsInt();
             callback.run();
             return true;
         }
@@ -143,7 +207,11 @@ class TimeTask {
     }
 
     public void updateTask(int interval) {
-        this.interval = interval;
+        intervalSupplier = () -> interval;
+    }
+
+    public void updateTask(IntSupplier intervalSupplier) {
+        this.intervalSupplier = intervalSupplier;
     }
 
     public int getNextRunTick() {

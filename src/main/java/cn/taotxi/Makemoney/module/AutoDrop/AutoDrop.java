@@ -14,39 +14,81 @@ import cn.taotxi.Makemoney.util.MLogger;
 import cn.taotxi.Makemoney.util.Message;
 import cn.taotxi.Makemoney.util.StringUtil;
 import cn.taotxi.Makemoney.util.T;
+import cn.taotxi.Makemoney.util.TaskUtil;
 import cn.taotxi.Makemoney.util.game.InventoryUtil;
+import cn.taotxi.Makemoney.util.game.ItemStackUtil;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.network.protocol.game.ClientboundTakeItemEntityPacket;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.item.ItemStack;
 
 // TODO: 添加在容器中也可以应用此功能的选项
 public class AutoDrop {
     public static final String MODULE_NAME = "autodrop";
     public static final MLogger LOGGER = new MLogger(MODULE_NAME);
-    public static AutoDropConfig config = AutoDropConfig.load(AutoDropConfig.class, MODULE_NAME);
-    public static int tickCounter = 0;
-
-    public static void registerTickEvents(Minecraft client, int tickCounter) {
-        if (!config.enabled) return;
-        if (config.showAttentionMsg) {
-            Message.actionBarMsg(T.tl("autodrop.message.attention"));
-        }
-
-        if (tickCounter % config.checkInterval != 0) return;
-        // if (config.triggerWhenPickup) return;
-
-        Dropper.tryToDropItems();
-    }
+    public static boolean enabled = false;
 
     public static void init() {
         ClientWorldEvents.AFTER_CLIENT_WORLD_CHANGE.register((mc, level) -> {
-            if (config.turnOffWhenChangeWorld) {
-                config.enabled = false;
+            if (AutoDropConfig.getInstance().isTurnOffWhenChangeWorld()) {
+                enabled = false;
             }
         });
+        TaskUtil.createTimeTask(
+            "autodrop_timeTrigger", 
+            AutoDrop::timeTriggerTask, 
+            () -> AutoDropConfig.getInstance().getTimeTriggerInterval()
+        );
+
+        TaskUtil.createTimeTask(
+            "autodrop_showAttentionMsg", 
+            AutoDrop::showAttentionMsg, 
+            20
+        );
+    }
+
+    private static void timeTriggerTask() {
+        if (!enabled || !AutoDropConfig.getInstance().isTimeTrigger()) return;
+        Dropper.tryToDropItems();
+    }
+
+    private static void showAttentionMsg() {
+        if (!enabled) return;
+        AutoDropConfig config = AutoDropConfig.getInstance();
+        if (!config.isShowAttentionMsg()) return;
+        if (!config.isTimeTrigger() && !config.isPickUpItemTrigger()) return;
+
+        Message.actionBarMsg(T.tl("autodrop.message.attention"));
+    }
+
+    public static void onTakeItemEntity(ClientboundTakeItemEntityPacket clientboundTakeItemEntityPacket) {
+        if (!enabled ||
+            clientboundTakeItemEntityPacket.getPlayerId() != Minecraft.getInstance().player.getId() ||
+            !AutoDropConfig.getInstance().isPickUpItemTrigger()) {
+            return;
+        }
+        if (AutoDropConfig.getInstance().getTriggerItemId().isEmpty()) {
+            Dropper.tryToDropItems();
+            return;
+        }
+        
+        Entity entity = Minecraft.getInstance().level.getEntity(clientboundTakeItemEntityPacket.getItemId());
+        if (entity instanceof ItemEntity itemEntity) {
+            ItemStack itemStack = itemEntity.getItem();
+            if (ItemStackUtil.equalId(itemStack, AutoDropConfig.getInstance().getTriggerItemId())) {
+                Dropper.tryToDropItems();
+
+                if (TaskUtil.hasTimeTask("autodrop_timeTrigger")) {
+                    TaskUtil.resetNextRunTick("autodrop_timeTrigger");
+                }
+            }
+        }
     }
 
     public static void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
@@ -62,18 +104,15 @@ public class AutoDrop {
                 .then(ClientCommandManager.literal("ignore")
                     .then(ClientCommandManager.literal("reset")
                         .executes(AutoDrop::resetIgnoreSlots))
-                    .then(ClientCommandManager.literal("add")
-                        .then(ClientCommandManager.argument("slots", StringArgumentType.string())
-                            .executes(context -> setIgnoreSlots(context, false))))
                     .then(ClientCommandManager.literal("set")
-                        .then(ClientCommandManager.argument("slots", StringArgumentType.string())
-                            .executes(context -> setIgnoreSlots(context, true))))
+                        .then(ClientCommandManager.argument("1,2,3,4,...", StringArgumentType.string())
+                            .executes(AutoDrop::setIgnoreSlots)))
                     .then(ClientCommandManager.literal("current")
                         .executes(AutoDrop::ignoreNotEmptySlots))
                 )
                 .then(ClientCommandManager.literal("interval")
                     .then(ClientCommandManager.argument("interval", IntegerArgumentType.integer(1))
-                        .executes(AutoDrop::setCheckInterval))
+                        .executes(AutoDrop::setTimeTriggerInterval))
                 )
             );
         dispatcher.register(ClientCommandManager.literal("ad")
@@ -92,7 +131,7 @@ public class AutoDrop {
     }
 
     private static int reloadConfig(CommandContext<FabricClientCommandSource> context) {
-        config = AutoDropConfig.load(AutoDropConfig.class, MODULE_NAME);
+        AutoDropConfig.getInstance().reloadConfig();
         context.getSource().sendFeedback(T.tl("autodrop.reload.message"));
         return 1;
     }
@@ -103,10 +142,7 @@ public class AutoDrop {
                 T.tl("autodrop.enabled.message") : 
                 T.tl("autodrop.disabled.message")
         );
-        if (config.enabled == enable) return 1;
-
-        config.enabled = enable;
-        config.save();
+        AutoDrop.enabled = enable;
         return 1;
     }
 
@@ -115,36 +151,33 @@ public class AutoDrop {
         return 1;
     }
 
-    private static int setCheckInterval(CommandContext<FabricClientCommandSource> context) {
+    private static int setTimeTriggerInterval(CommandContext<FabricClientCommandSource> context) {
         int interval = context.getArgument("interval", Integer.class);
-        config.checkInterval = interval;
-        config.save();
-        context.getSource().sendFeedback(T.tl("autodrop.checkInterval.message", interval));
+        AutoDropConfig.getInstance().setTimeTriggerInterval(interval);
+        AutoDropConfig.getInstance().saveConfig();
+        context.getSource().sendFeedback(T.tl("autodrop.timeTriggerInterval.message", interval));
         return 1;
     }
 
     private static int ignoreNotEmptySlots(CommandContext<FabricClientCommandSource> context) {
-        config.ingnoreSlots = InventoryUtil.getInventoryNotEmptySlots();
-        config.save();
-        String slots = config.ingnoreSlots.toString();
-        context.getSource().sendFeedback(T.tl("autodrop.ignore.current.message", slots));
+        List<Integer> slots = InventoryUtil.getInventoryNotEmptySlots();
+        AutoDropConfig.getInstance().setIgnoreSlots(slots);
+        AutoDropConfig.getInstance().saveConfig();
+        String slotsStr = slots.toString();
+        context.getSource().sendFeedback(T.tl("autodrop.ignore.current.message", slotsStr));
         return 1;
     }
 
     private static int resetIgnoreSlots(CommandContext<FabricClientCommandSource> context) {
-        config.ingnoreSlots.clear();
-        config.save();
+        AutoDropConfig.getInstance().setIgnoreSlots(List.of());
+        AutoDropConfig.getInstance().saveConfig();
         context.getSource().sendFeedback(T.tl("autodrop.ignore.reset.message"));
         return 1;
     }
 
-    private static int setIgnoreSlots(CommandContext<FabricClientCommandSource> context, boolean isCover) {
+    private static int setIgnoreSlots(CommandContext<FabricClientCommandSource> context) {
         String value = context.getArgument("slots", String.class);
-        List<Integer> slots = StringUtil.parseIntPos(value);
-        System.out.println(slots);
-        if (!isCover) {
-            slots.addAll(config.ingnoreSlots);
-        }
+        List<Integer> slots = StringUtil.strToIntList(value);
 
         slots.sort(Comparator.naturalOrder());
         for (int i=slots.size()-1; i>=0; i--) {
@@ -154,11 +187,8 @@ public class AutoDrop {
                 slots.remove(i);
             }
         }
-        System.out.println(slots);
-
-        config.ingnoreSlots = slots;
-
-        config.save();
+        AutoDropConfig.getInstance().setIgnoreSlots(slots);
+        AutoDropConfig.getInstance().saveConfig();
         String slotsStr = slots.toString();
         context.getSource().sendFeedback(T.tl("autodrop.ignore.current.message", slotsStr));
         return 1;

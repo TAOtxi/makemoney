@@ -3,6 +3,7 @@ package cn.taotxi.Makemoney.config;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -11,7 +12,7 @@ import com.google.gson.JsonPrimitive;
 
 public abstract class ConfigManager {
     public String MODULE_NAME;
-    private JsonObject defaultConfig;
+    public JsonObject defaultConfig;
     private JsonObject config;
 
     public ConfigManager(String moduleName) {
@@ -27,10 +28,28 @@ public abstract class ConfigManager {
             .loadConfig(MODULE_NAME, defaultConfig)
             .getAsJsonObject();
     }
+
+    public void reloadConfig() {
+        config = loadConfig(defaultConfig);
+    }
     
     public void saveConfig() {
         ConfigMaker.saveConfig(MODULE_NAME, config);
     }
+
+    public void resetConfig() {
+        JsonObject defaultConfig = createDefaultConfig();
+        config = defaultConfig.deepCopy();
+        saveConfig();
+    }
+
+    public static Gson getGson() {
+        return ConfigMaker.gson;
+    }
+
+    // public JsonObject getDefaultConfig() {
+    //     return defaultConfig;
+    // }
 
     public int getInt(String key, boolean forceDefault) {
         if (config.has(key) && !forceDefault) {
@@ -81,6 +100,14 @@ public abstract class ConfigManager {
         return defaultConfig.get(key).getAsJsonObject();
     }
 
+    public List<Integer> getIntList(String key, boolean forceDefault) {
+        return jsonIntToList(getJsonArray(key, forceDefault));
+    }
+    
+    public List<String> getStringList(String key, boolean forceDefault) {
+        return jsonArrayToListStr(getJsonArray(key, forceDefault));
+    }
+
     public int getInt(String key) {
         return getInt(key, false);
     }
@@ -107,6 +134,14 @@ public abstract class ConfigManager {
 
     public JsonObject getJsonObject(String key) {
         return getJsonObject(key, false);
+    }
+
+    public List<Integer> getIntList(String key) {
+        return getIntList(key, false);
+    }
+
+    public List<String> getStringList(String key) {
+        return getStringList(key, false);
     }
 
     public void set(String key, JsonElement element) {
@@ -152,7 +187,15 @@ public abstract class ConfigManager {
         set(key, element.deepCopy());
     }
 
-    public static List<String> jsonStrToList(JsonArray jsonArray) {
+    public static List<String> jsonArrayToListStr(JsonArray jsonArray) {
         return jsonArray.asList().stream().map(JsonElement::getAsString).collect(Collectors.toList());
+    }
+
+    public static List<Integer> jsonIntToList(JsonArray jsonArray) {
+        return jsonArray.asList().stream().map(JsonElement::getAsInt).collect(Collectors.toList());
+    }
+
+    public static <T> List<T> jsonToList(JsonArray jsonArray, Class<T> type) {
+        return jsonArray.asList().stream().map(jsonElement -> getGson().fromJson(jsonElement, type)).collect(Collectors.toList());
     }
 }

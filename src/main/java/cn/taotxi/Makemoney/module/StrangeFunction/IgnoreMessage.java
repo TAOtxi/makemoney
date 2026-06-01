@@ -60,7 +60,7 @@ public class IgnoreMessage {
 
     public static List<String> getIgnoreList(boolean isDefault) {
         JsonArray ignoreListNode = StrangeConfig.getInstance().getJsonArray("ignore_list", isDefault);
-        return StrangeConfig.jsonStrToList(ignoreListNode);
+        return StrangeConfig.jsonArrayToListStr(ignoreListNode);
     }
 
     public static boolean isIgnored(String message) {

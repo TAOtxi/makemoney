@@ -29,20 +29,20 @@ public class Dropper {
         Minecraft client = Minecraft.getInstance();
         LocalPlayer player = client.player;
 
-        if (AutoDrop.config.stopWhenCrouch && player.isCrouching()) return;
-        if (AutoDrop.config.stopWhenOpenContainer && player.hasContainerOpen()) return; // TODO: BUG: 无法检测是否打开背包
-        if (AutoDrop.config.stopWhenOpenConfig && ConfigScreen.isOpenYaclScreen()) return;
-        if (AutoDrop.config.triggerMinCount != 0 && AutoDrop.config.triggerMinCount > notEmptySlotCount()) return;
-
-        if (AutoDrop.config.triggerWithItem) {
+        if (AutoDropConfig.getInstance().isStopWhenCrouch() && player.isCrouching()) return;
+        if (AutoDropConfig.getInstance().isStopWhenOpenContainer() && player.hasContainerOpen()) return; // TODO: BUG: 无法检测是否打开背包
+        if (AutoDropConfig.getInstance().isStopWhenOpenConfigGui() && ConfigScreen.isOpenYaclScreen()) return;
+        if (AutoDropConfig.getInstance().getTriggerMinCount() > 0 && AutoDropConfig.getInstance().getTriggerMinCount() > notEmptySlotCount()) return;
+        
+        if (AutoDropConfig.getInstance().isStopWhenNotHoldingItem()) {
             ItemStack heldItem = player.getMainHandItem();
-            if (!AutoDrop.config.triggerItemName.equals("*") &&
-                !ItemStackUtil.equalName(heldItem, AutoDrop.config.triggerItemName)
+            if (!AutoDropConfig.getInstance().getStopWhenNotHoldingItemName().equals("*") &&
+                !ItemStackUtil.equalName(heldItem, AutoDropConfig.getInstance().getStopWhenNotHoldingItemName())
             )
                 return;
 
-            if (!AutoDrop.config.triggerItemId.equals("*") &&
-                !ItemStackUtil.equalId(heldItem, AutoDrop.config.triggerItemId)
+            if (!AutoDropConfig.getInstance().getStopWhenNotHoldingItemId().equals("*") &&
+                !ItemStackUtil.equalId(heldItem, AutoDropConfig.getInstance().getStopWhenNotHoldingItemId())
             )
                 return;
         };
@@ -53,22 +53,23 @@ public class Dropper {
     public static void drop() {
         final List<Integer> dropSlots = new ArrayList<>();
         InventoryMenu inventoryMenu = Minecraft.getInstance().player.inventoryMenu;
+        List<AutoDropConfig.Item> matchLists = AutoDropConfig.getInstance().getMatchLists();
         for (int i = InventoryMenu.INV_SLOT_START; i < InventoryMenu.USE_ROW_SLOT_END; i++) {
-            if (AutoDrop.config.ingnoreSlots.contains(i)) continue;
+            if (AutoDropConfig.getInstance().getIgnoreSlots().contains(i)) continue;
 
             ItemStack item = inventoryMenu.getSlot(i).getItem();
 
             // AutoDrop.LOGGER.info("Check item {} in slot {}", item.getItemName(), i);
-            if (isEqualItem(item)) continue;
+            if (isEqualItem(item, matchLists)) continue;
             // AutoDrop.LOGGER.info("Dropping item {} in slot {}", ItemStackUtil.getName(item), i);
             dropSlots.add(i);
         }
         if (dropSlots.isEmpty()) return;
 
-        if (AutoDrop.config.isDirectionThrow) {
-            dropItemAnywhere(dropSlots, AutoDrop.config.throwDirection);
+        if (AutoDropConfig.getInstance().getThrowWay().equals(ThrowWay.DIRECTION)) {
+            dropItemAnywhere(dropSlots, AutoDropConfig.getInstance().getThrowDirection());
         } else {
-            dropItemAnywhere(dropSlots, AutoDrop.config.throwYaw, AutoDrop.config.throwPitch);
+            dropItemAnywhere(dropSlots, AutoDropConfig.getInstance().getThrowYaw(), AutoDropConfig.getInstance().getThrowPitch());
         }
     }
 
@@ -77,12 +78,16 @@ public class Dropper {
     }
 
     public static boolean isEqualItem(ItemStack item) {
+        return isEqualItem(item, AutoDropConfig.getInstance().getMatchLists());
+    }
+
+    public static boolean isEqualItem(ItemStack item, List<AutoDropConfig.Item> matchLists) {
         if (item.isEmpty()) return true;
 
-        for (AutoDropConfig.Item check: AutoDrop.config.items){
+        for (AutoDropConfig.Item check: matchLists){
             if (!check.enabled) continue;
 
-            // TODO: 适配多颜色文本
+            // TODO: 兼容其它命名空间
             // check name
             if (!check.name.equals("*") && !ItemStackUtil.equalName(item, check.name)) {
                 // String name = ItemStackUtil.getName(item);
@@ -132,7 +137,7 @@ public class Dropper {
         return false;
     }
 
-    public static int calEnchantCounts(ItemStack item, Map<String, Integer> enchantments) {
+    private static int calEnchantCounts(ItemStack item, Map<String, Integer> enchantments) {
         int counter = 0;
         ItemEnchantments it = 
             item.is(Items.ENCHANTED_BOOK) ?
@@ -149,7 +154,7 @@ public class Dropper {
         return counter;
     }
 
-    public static void dropItems(List<Integer> slots) {
+    private static void dropItems(List<Integer> slots) {
         Minecraft client = Minecraft.getInstance();
         LocalPlayer player = client.player;
         InventoryMenu inventoryMenu = player.inventoryMenu;
@@ -158,36 +163,27 @@ public class Dropper {
         }
     }
 
-    public static void dropItemAnywhere(int slot, String direction) {
+    private static void dropItemAnywhere(int slot, Direction direction) {
         dropItemAnywhere(List.of(slot), direction);
     }
 
-    public static void dropItemAnywhere(List<Integer> slots, float yaw, float pitch) {
+    private static void dropItemAnywhere(List<Integer> slots, float yaw, float pitch) {
         Minecraft client = Minecraft.getInstance();
         float xRot = client.player.getXRot();
         float yRot = client.player.getYRot();
 
+        // 时间间隔太短了，以至于客户端上看不见转向
         setPlayerRotation(yaw, pitch);
         dropItems(slots);
         setPlayerRotation(yRot, xRot);
     }
 
     // TODO: Bug: 创造模式会丢弃两个物品，但背包实际减少的是一个
-    public static void dropItemAnywhere(List<Integer> slots, String direction) {
-        if (!AutoDropConfig.getAllThrowDirections()
-            .stream()
-            .map(Enum::name)
-            .collect(Collectors.toList())
-            .contains(direction.toUpperCase())
-        ) {
-            AutoDrop.LOGGER.error("Error direction !!!");
-            return;
-        }
-
+    private static void dropItemAnywhere(List<Integer> slots, Direction direction) {
         Minecraft client = Minecraft.getInstance();
         LocalPlayer player = client.player;
 
-        if (direction.toUpperCase().equals(AutoDropConfig.Direction.LOOKING.name())) {
+        if (direction == Direction.LOOKING) {
           dropItems(slots);
           return;
         }
@@ -199,9 +195,10 @@ public class Dropper {
         setPlayerRotation(yRot, xRot);
     }
 
-    public static void setPlayerRotation(String direction) {
-        AutoDropConfig.Direction dir = AutoDropConfig.Direction.valueOf(direction.toUpperCase());
-        switch (dir) {
+    private static void setPlayerRotation(Direction direction) {
+        switch (direction) {
+            case LOOKING:
+                break;
             case UP:
                 setPlayerRotation(0, -90);
                 break;
@@ -220,15 +217,13 @@ public class Dropper {
             case SOUTH:
                 setPlayerRotation(0, 0);
                 break;
-            case LOOKING:
-                break;
             default:
-                // never happen
-                break;
+                // should never happen
+                throw new IllegalArgumentException("Unknown direction: " + direction);
         }
     }
 
-    public static void setPlayerRotation(float yaw, float pitch) {
+    private static void setPlayerRotation(float yaw, float pitch) {
         LocalPlayer player = Minecraft.getInstance().player;
         player.setYRot(yaw);
         player.setXRot(pitch);

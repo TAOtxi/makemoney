@@ -79,6 +79,10 @@ public class ItemStackUtil {
     }
 
     public static String withDefaultNamespace(String id) {
+        // TODO: 斟酌是否合适
+        if (id.contains(":")) {
+            return id;
+        }
         return withNamespace("minecraft", id);
     }
 

@@ -14,7 +14,7 @@ import java.io.IOException;
 
 public class ConfigMaker {
     private static final File configDir = new File(FabricLoader.getInstance().getConfigDir().toFile(), Makemoney.MOD_ID);
-    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    public static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     public static JsonElement loadConfig(String fileName, JsonElement defaultConfig) {
         if (!configDir.exists()) {

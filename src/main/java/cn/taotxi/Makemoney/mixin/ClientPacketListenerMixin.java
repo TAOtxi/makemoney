@@ -10,6 +10,7 @@ import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.network.TickablePacketListener;
 import net.minecraft.network.protocol.game.ClientboundSystemChatPacket;
+import net.minecraft.network.protocol.game.ClientboundTakeItemEntityPacket;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -17,6 +18,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import cn.taotxi.Makemoney.module.StrangeFunction.IgnoreMessage;
+import cn.taotxi.Makemoney.module.AutoDrop.AutoDrop;
 import cn.taotxi.Makemoney.module.AutoFish.AutoFish;
 
 
@@ -44,6 +46,13 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
     public void onAddEntity(ClientboundAddEntityPacket clientboundAddEntityPacket, CallbackInfo ci) {
         if (minecraft.isSameThread()) {
             AutoFish.onEntityAdd(clientboundAddEntityPacket);
+        };
+    }
+
+    @Inject(method = "handleTakeItemEntity", at = @At("HEAD"))
+    public void onTakeItemEntity(ClientboundTakeItemEntityPacket clientboundTakeItemEntityPacket, CallbackInfo ci) {
+        if (minecraft.isSameThread()) {
+            AutoDrop.onTakeItemEntity(clientboundTakeItemEntityPacket);
         };
     }
 }

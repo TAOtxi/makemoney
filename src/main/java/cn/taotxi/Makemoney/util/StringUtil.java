@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 
 public class StringUtil {
-    public static <Type> String listToStr(List<Type> list, String sep) {
+    public static <Type> String join(List<Type> list, String sep) {
         if (list.isEmpty()) return "";
         
         StringBuilder sb = new StringBuilder();
@@ -20,18 +20,25 @@ public class StringUtil {
         return sb.toString();
     }
 
-    public static <Type> String listToStr(List<Type> list) {
-        return listToStr(list, ", ");
+    public static <Type> String join(List<Type> list) {
+        return join(list, ", ");
+    }
+
+    public static String joinStr(List<String> list) {
+        return join(list, ", ");
     }
 
     public static List<String> strToList(String str, String sep) {
         return new ArrayList<>(List.of(str.split(sep)));
     }
 
+    public static String strReplace(String str) {
+        return str.replace("，", ",")
+                 .replace(", ", ",");
+    }
+
     public static List<String> strToList(String str) {
-        str = str.replace(" ", "")
-                 .replace("，", ",");
-        return strToList(str, ",");
+        return strToList(strReplace(str), ",");
     }
 
     public static List<Integer> strToIntList(String str, String sep) {
@@ -40,9 +47,7 @@ public class StringUtil {
     }
 
     public static List<Integer> strToIntList(String str) {
-        str = str.replace(" ", "")
-                 .replace("，", ",");
-        return strToIntList(str, ",");
+        return strToIntList(strReplace(str), ",");
     }
 
     public static String colorToStr(Color color) {
@@ -98,7 +103,7 @@ public class StringUtil {
     }
 
     public static <Type> String posToString(List<Type> pos) {
-        return "<" + listToStr(pos, ", ") + ">";
+        return "<" + join(pos, ", ") + ">";
     }
 
     public static boolean isValidChar(char c) {
