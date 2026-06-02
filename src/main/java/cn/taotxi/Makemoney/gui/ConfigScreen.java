@@ -34,7 +34,7 @@ import dev.isxander.yacl3.api.OptionDescription;
 import dev.isxander.yacl3.api.OptionFlag;
 import dev.isxander.yacl3.api.OptionGroup;
 import dev.isxander.yacl3.api.YetAnotherConfigLib;
-import dev.isxander.yacl3.api.controller.DoubleSliderControllerBuilder;
+import dev.isxander.yacl3.api.controller.FloatSliderControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
 import dev.isxander.yacl3.api.controller.StringControllerBuilder;
 import dev.isxander.yacl3.api.utils.OptionUtils;
@@ -45,6 +45,9 @@ import dev.isxander.yacl3.impl.utils.YACLConstants;
 
 
 public class ConfigScreen {
+    private static final StrangeConfig STRANGE_CONFIG = StrangeConfig.getInstance();
+    private static final AutoFishConfig AUTOFISH_CONFIG = AutoFishConfig.getInstance();
+
     // TODO: 待完善
     public static Screen getConfigScreen(Screen parent) {
         YetAnotherConfigLib.Builder builder = 
@@ -70,7 +73,11 @@ public class ConfigScreen {
         ConfigCategory.Builder moduleCategory = ConfigCategory.createBuilder()
                 .name(T.tl("gui.config.module"));
 
-        moduleCategory.option(ButtonOption.createBuilder()
+        OptionGroup.Builder autodropGroup = OptionGroup.createBuilder()
+                .name(T.tl("autodrop.name"))
+                .description(OptionDescription.of(T.tl("autodrop.desc")));
+
+        autodropGroup.option(ButtonOption.createBuilder()
                 .name(T.tl("gui.config.open.autodrop"))
                 .text(T.tl("gui.config.open"))
                 .action((screen, option) -> {
@@ -81,8 +88,13 @@ public class ConfigScreen {
                 })
                 .build()
         );
+        moduleCategory.group(autodropGroup.build());
 
-        moduleCategory.option(ButtonOption.createBuilder()
+        OptionGroup.Builder autorepairGroup = OptionGroup.createBuilder()
+                .name(T.tl("autorepair.name"))
+                .description(OptionDescription.of(T.tl("autorepair.desc")));
+
+        autorepairGroup.option(ButtonOption.createBuilder()
                 .name(T.tl("gui.config.open.autorepair"))
                 .text(T.tl("gui.config.open"))
                 .action((screen, option) -> {
@@ -93,8 +105,13 @@ public class ConfigScreen {
                 })
                 .build()
         );
+        moduleCategory.group(autorepairGroup.build());
 
-        moduleCategory.option(ButtonOption.createBuilder()
+        OptionGroup.Builder entityhighlightboxGroup = OptionGroup.createBuilder()
+                .name(T.tl("entityhighlightbox.name"))
+                .description(OptionDescription.of(T.tl("entityhighlightbox.desc")));
+
+        entityhighlightboxGroup.option(ButtonOption.createBuilder()
                 .name(T.tl("gui.config.open.entityhighlightbox"))
                 .text(T.tl("gui.config.open"))
                 .action((screen, option) -> {
@@ -105,6 +122,7 @@ public class ConfigScreen {
                 })
                 .build()
         );
+        moduleCategory.group(entityhighlightboxGroup.build());
 
         return moduleCategory;
     }
@@ -122,34 +140,40 @@ public class ConfigScreen {
         autoFishGroup.option(Factory.addToggleOption(
             T.tl("autofish.enabled"), 
             T.tl("autofish.enabled.desc"), 
-            AutoFish.isAutoFishing(true), 
-            () -> AutoFish.isAutoFishing(false),
+            AUTOFISH_CONFIG.enabled.getDefaultValue(),
+            AUTOFISH_CONFIG.enabled::getValue,
             (val) -> {
-                if (val) AutoFish.enableFishing();
-                else AutoFish.disableFishing();
-            }));
+                if (val) {
+                    AutoFish.startFishing();
+                } else {
+                    AutoFish.stopFishing();
+                }
+            }
+        ));
 
         autoFishGroup.option(Factory.addToggleOption(
             T.tl("autofish.rotation"), 
             T.tl("autofish.rotation.desc"), 
-            AutoFish.isRotationEnabled(true), 
-            () -> AutoFish.isRotationEnabled(false),
-            AutoFish::setRotationEnabled));
+            AUTOFISH_CONFIG.rotation.getDefaultValue(),
+            AUTOFISH_CONFIG.rotation::getValue,
+            AUTOFISH_CONFIG.rotation::setValue
+        ));
 
         autoFishGroup.option(Factory.addToggleOption(
             T.tl("autofish.randomDelay"), 
             T.tl("autofish.randomDelay.desc"), 
-            AutoFish.isRandomDelayEnabled(true), 
-            () -> AutoFish.isRandomDelayEnabled(false),
-            AutoFish::setRandomDelayEnabled));
+            AUTOFISH_CONFIG.randomDelay.getDefaultValue(),
+            AUTOFISH_CONFIG.randomDelay::getValue,
+            AUTOFISH_CONFIG.randomDelay::setValue
+        ));
 
         autoFishGroup.option(Option.<Integer>createBuilder()
                 .name(T.tl("autofish.throwDelay"))
                 .description(OptionDescription.of(T.tl("autofish.throwDelay.desc")))
                 .binding(
-                    AutoFish.getThrowDelay(true),
-                    () -> AutoFish.getThrowDelay(false),
-                    AutoFish::setThrowDelay
+                    AUTOFISH_CONFIG.throwDelay.getDefaultValue(),
+                    AUTOFISH_CONFIG.throwDelay::getValue,
+                    AUTOFISH_CONFIG.throwDelay::setValue
                 )
                 .controller(opt -> IntegerSliderControllerBuilder.create(opt)
                     .range(0, 100)
@@ -184,9 +208,9 @@ public class ConfigScreen {
                 .name(T.tl("autoride.interval"))
                 .description(OptionDescription.of(T.tl("autoride.interval.desc")))
                 .binding(
-                    AutoRide.getRunInterval(true),
-                    () -> AutoRide.getRunInterval(false),
-                    AutoRide::setRunInterval
+                    STRANGE_CONFIG.autoRideRunInterval.getDefaultValue(),
+                    STRANGE_CONFIG.autoRideRunInterval::getValue,
+                    STRANGE_CONFIG.autoRideRunInterval::setValue
                 )
                 .controller(opt -> IntegerSliderControllerBuilder.create(opt)
                     .range(1, 20)
@@ -196,17 +220,17 @@ public class ConfigScreen {
                 .build()
         );
 
-        autoRideGroup.option(Option.<Double>createBuilder()
+        autoRideGroup.option(Option.<Float>createBuilder()
                 .name(T.tl("autoride.distance"))
                 .description(OptionDescription.of(T.tl("autoride.distance.desc")))
                 .binding(
-                    AutoRide.getMinDistance(true),
-                    () -> AutoRide.getMinDistance(false),
-                    AutoRide::setMinDistance
+                    STRANGE_CONFIG.autoRideMinDistance.getDefaultValue(),
+                    STRANGE_CONFIG.autoRideMinDistance::getValue,
+                    STRANGE_CONFIG.autoRideMinDistance::setValue
                 )
-                .controller(opt -> DoubleSliderControllerBuilder.create(opt)
-                    .range(1.0, 10.0)
-                    .step(1.0)
+                .controller(opt -> FloatSliderControllerBuilder.create(opt)
+                    .range(1.0f, 10.0f)
+                    .step(1.0f)
                 )
                 .build()
         );
@@ -215,9 +239,9 @@ public class ConfigScreen {
                 .name(T.tl("autoride.target"))
                 .description(OptionDescription.of(T.tl("autoride.target.desc")))
                 .binding(
-                    AutoRide.getTargetPlayer(true),
-                    () -> AutoRide.getTargetPlayer(false),
-                    AutoRide::setTargetPlayer
+                    STRANGE_CONFIG.autoRideTargetPlayer.getDefaultValue(),
+                    STRANGE_CONFIG.autoRideTargetPlayer::getValue,
+                    STRANGE_CONFIG.autoRideTargetPlayer::setValue
                 )
                 .controller(StringControllerBuilder::create)
                 .build()
@@ -226,9 +250,10 @@ public class ConfigScreen {
         autoRideGroup.option(Factory.addToggleOption(
             T.tl("autoride.enableShakeOffPlayer"), 
             T.tl("autoride.enableShakeOffPlayer.desc"), 
-            AutoRide.enableShakeOffPlayer(true), 
-            () -> AutoRide.enableShakeOffPlayer(false),
-            AutoRide::setEnableShakeOffPlayer));
+            STRANGE_CONFIG.autoRideEnableShakeOffPlayer.getDefaultValue(),
+            STRANGE_CONFIG.autoRideEnableShakeOffPlayer::getValue,
+            STRANGE_CONFIG.autoRideEnableShakeOffPlayer::setValue
+        ));
 
         autoRideGroup.option(ButtonOption.createBuilder()
                 .name(T.tl("autoride.reset"))
@@ -364,5 +389,9 @@ public class ConfigScreen {
 
     public static boolean isOpenYaclScreen() {
         return Minecraft.getInstance().screen instanceof YACLScreen;
+    }
+
+    public static void openConfigScreen(Screen parent) {
+        Minecraft.getInstance().setScreen(getConfigScreen(parent));
     }
 }

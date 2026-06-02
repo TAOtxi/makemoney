@@ -11,7 +11,6 @@ import java.util.Map;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 
-import cn.taotxi.Makemoney.util.EventBus;
 import cn.taotxi.Makemoney.util.MLogger;
 import cn.taotxi.Makemoney.util.T;
 
@@ -66,7 +65,7 @@ public class AutoRepair {
     }
 
     private static int openConfigGui(CommandContext<FabricClientCommandSource> context) {
-        EventBus.post("openConfigGui", Map.of("title", T.t(MODULE_NAME + ".name")));
+        // EventBus.post("openConfigGui", Map.of("title", T.t(MODULE_NAME + ".name")));
         return 1;
     }
 }

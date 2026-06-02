@@ -2,10 +2,9 @@ package cn.taotxi.Makemoney.module.StrangeFunction;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import com.mojang.brigadier.arguments.DoubleArgumentType;
+import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -14,7 +13,8 @@ import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
-import cn.taotxi.Makemoney.util.EventBus;
+import cn.taotxi.Makemoney.Makemoney;
+import cn.taotxi.Makemoney.gui.GuiUtil;
 import cn.taotxi.Makemoney.util.T;
 import cn.taotxi.Makemoney.util.TaskUtil;
 import cn.taotxi.Makemoney.util.game.GameUtil;
@@ -33,8 +33,9 @@ import net.minecraft.world.phys.EntityHitResult;
 public class AutoRide {
     private static boolean enabled = false;
     private static int tickCounter = 0;
+    private static final StrangeConfig CONFIG = StrangeConfig.getInstance();
 
-    public static void init() {
+    public static void initialize() {
         registerTickEvents();
         registerCommand();
     }
@@ -46,13 +47,13 @@ public class AutoRide {
             if (client.player.isCrouching()) return;
             if (client.player.getVehicle() != null) return;
             
-            if (enableShakeOffPlayer(false)) {
+            if (CONFIG.autoRideEnableShakeOffPlayer.getValue()) {
                 tryToShakeOffPlayer(client.player);
             }
             if (!enabled) return;
             
             tickCounter++;
-            if (tickCounter % getRunInterval(false) != 0) return;
+            if (tickCounter % CONFIG.autoRideRunInterval.getValue() != 0) return;
 
             if (!client.player.getMainHandItem().isEmpty()) return;
             if (client.level.players().size() < 2) return;
@@ -70,38 +71,6 @@ public class AutoRide {
 
     public static void setEnabled(boolean enabled) {
         AutoRide.enabled = enabled;
-    }
-
-    public static int getRunInterval(boolean isDefault) {
-        return StrangeConfig.getInstance().getInt("autoride_runInterval", isDefault);
-    }
-
-    public static boolean enableShakeOffPlayer(boolean isDefault) {
-        return StrangeConfig.getInstance().getBoolean("autoride_enableShakeOffPlayer", isDefault);
-    }
-
-    public static void setEnableShakeOffPlayer(boolean enable) {
-        StrangeConfig.getInstance().setBoolean("autoride_enableShakeOffPlayer", enable);
-    }
-
-    public static void setRunInterval(int interval) {
-        StrangeConfig.getInstance().setInt("autoride_runInterval", interval);
-    }
-
-    public static double getMinDistance(boolean isDefault) {
-        return StrangeConfig.getInstance().getDouble("autoride_minDistance", isDefault);
-    }
-
-    public static void setMinDistance(double distance) {
-        StrangeConfig.getInstance().setDouble("autoride_minDistance", distance);
-    }
-
-    public static String getTargetPlayer(boolean isDefault) {
-        return StrangeConfig.getInstance().getString("autoride_targetPlayer", isDefault);
-    }
-
-    public static void setTargetPlayer(String player) {
-        StrangeConfig.getInstance().setString("autoride_targetPlayer", player);
     }
 
     private static void tryToShakeOffPlayer(LocalPlayer player) {
@@ -138,10 +107,10 @@ public class AutoRide {
     private static Player findTargetPlayer() {
         Minecraft client = Minecraft.getInstance();
         LocalPlayer player = client.player;
-        String targetPlayer = getTargetPlayer(false);
+        String targetPlayer = CONFIG.autoRideTargetPlayer.getValue();
         List<String> onlinePlayers = GameUtil.getOnlinePlayerNames();
         return client.level.getNearestPlayer(
-            player.getX(), player.getY(), player.getZ(), getMinDistance(false),
+            player.getX(), player.getY(), player.getZ(), CONFIG.autoRideMinDistance.getValue(),
             cow -> {
                 if (
                     targetPlayer.isEmpty() && 
@@ -162,11 +131,11 @@ public class AutoRide {
 
     public static void resetConfig() {
         setEnabled(false);
-        StrangeConfig.getInstance().reset("autoride_targetPlayer");
-        StrangeConfig.getInstance().reset("autoride_minDistance");
-        StrangeConfig.getInstance().reset("autoride_runInterval");
-        StrangeConfig.getInstance().reset("autoride_enableShakeOffPlayer");
-        StrangeConfig.getInstance().saveConfig();
+        CONFIG.autoRideTargetPlayer.resetValue();
+        CONFIG.autoRideMinDistance.resetValue();
+        CONFIG.autoRideRunInterval.resetValue();
+        CONFIG.autoRideEnableShakeOffPlayer.resetValue();
+        CONFIG.saveConfig();
     }
 
     private static int showHelp(CommandContext<FabricClientCommandSource> context) {
@@ -175,7 +144,6 @@ public class AutoRide {
     }
 
     // TODO: BUG: 插入的变量颜色是白色，即使设置为§e也无效。
-    // TODO: 优雅地保存配置
     private static void registerCommand() {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
             var command = dispatcher.register(ClientCommandManager.literal("autoride")
@@ -187,7 +155,8 @@ public class AutoRide {
                         .suggests(new PlayerSuggestionProvider())
                         .executes(context -> {
                             String target = context.getArgument("player", String.class);
-                            setTargetPlayer(target);
+                            CONFIG.autoRideTargetPlayer.setValue(target);
+                            CONFIG.saveConfig();
                             context.getSource().sendFeedback(T.tl("autoride.target.message", target));
                             return 1;
                         })))
@@ -195,15 +164,17 @@ public class AutoRide {
                     .then(ClientCommandManager.argument("interval", IntegerArgumentType.integer())
                         .executes(context -> {
                             int interval = context.getArgument("interval", Integer.class);
-                            setRunInterval(interval);
+                            CONFIG.autoRideRunInterval.setValue(interval);
+                            CONFIG.saveConfig();
                             context.getSource().sendFeedback(T.tl("autoride.interval.message", interval));
                             return 1;
                         })))
                 .then(ClientCommandManager.literal("distance")
-                    .then(ClientCommandManager.argument("distance", DoubleArgumentType.doubleArg())
+                    .then(ClientCommandManager.argument("distance", FloatArgumentType.floatArg())
                         .executes(context -> {
-                            double distance = context.getArgument("distance", Double.class);
-                            setMinDistance(distance);
+                            float distance = context.getArgument("distance", Float.class);
+                            CONFIG.autoRideMinDistance.setValue(distance);
+                            CONFIG.saveConfig();
                             context.getSource().sendFeedback(T.tl("autoride.distance.message", distance));
                             return 1;
                         })))
@@ -215,13 +186,15 @@ public class AutoRide {
                 .then(ClientCommandManager.literal("smoothHead")
                     .then(ClientCommandManager.literal("on")
                         .executes(context -> {
-                            setEnableShakeOffPlayer(true);
+                            CONFIG.autoRideEnableShakeOffPlayer.enable();
+                            CONFIG.saveConfig();
                             context.getSource().sendFeedback(T.tl("autoride.enableShakeOffPlayer.message", true));
                             return 1;
                         }))
                     .then(ClientCommandManager.literal("off")
                         .executes(context -> {
-                            setEnableShakeOffPlayer(false);
+                            CONFIG.autoRideEnableShakeOffPlayer.disable();
+                            CONFIG.saveConfig();
                             context.getSource().sendFeedback(T.tl("autoride.enableShakeOffPlayer.message", false));
                             return 1;
                         }))
@@ -237,7 +210,7 @@ public class AutoRide {
                     return 1;
                 }))
                 .then(ClientCommandManager.literal("config").executes(context -> {
-                    EventBus.post("openMainConfigGui", Map.of("tab", 0));
+                    GuiUtil.openYaclScreen(Makemoney.MOD_ID);
                     return 1;
                 }))
             );

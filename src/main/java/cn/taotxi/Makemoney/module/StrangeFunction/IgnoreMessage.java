@@ -16,7 +16,7 @@ public class IgnoreMessage {
     private static final MLogger logger = new MLogger(MODULE_NAME);
     private static List<Pattern> ignorePatterns = new ArrayList<>();
 
-    public static void init() {
+    public static void initialize() {
         for (String pattern : getIgnoreList(false)) {
             try {
                 ignorePatterns.add(Pattern.compile(pattern));
@@ -27,18 +27,18 @@ public class IgnoreMessage {
     }
 
     public static boolean isEnabled(boolean isDefault) {
-        return StrangeConfig.getInstance().getBoolean("ignore_enabled", isDefault);
+        return StrangeConfig.getInstance().ignoreEnabled.getValue();
     }
 
     public static void setEnabled(boolean enabled) {
-        StrangeConfig.getInstance().setBoolean("ignore_enabled", enabled);
+        StrangeConfig.getInstance().ignoreEnabled.setValue(enabled);
     }
 
     public static boolean addIgnoreList(String pattern) {
         if (pattern.isEmpty()) {
             return false;
         }
-        JsonArray ignoreListNode = StrangeConfig.getInstance().getJsonArray("ignore_list", false);
+        JsonArray ignoreListNode = StrangeConfig.getInstance().ignoreList.getValue();
         try {
             Pattern newPattern = Pattern.compile(pattern);
             ignorePatterns.add(newPattern);
@@ -52,14 +52,14 @@ public class IgnoreMessage {
 
     public static void setIgnoreList(List<String> ignoreList) {
         ignorePatterns.clear();
-        StrangeConfig.getInstance().reset("ignore_list");
+        StrangeConfig.getInstance().ignoreList.resetValue();
         for (String pattern : ignoreList) {
             addIgnoreList(pattern);
         }
     }
 
     public static List<String> getIgnoreList(boolean isDefault) {
-        JsonArray ignoreListNode = StrangeConfig.getInstance().getJsonArray("ignore_list", isDefault);
+        JsonArray ignoreListNode = StrangeConfig.getInstance().ignoreList.getValue();
         return StrangeConfig.jsonArrayToListStr(ignoreListNode);
     }
 

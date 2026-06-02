@@ -32,6 +32,10 @@ public class T {
         return Component.literal(key);
     }
 
+    public static Component l() {
+        return Component.empty();
+    }
+
     public static MutableComponent ttl(String key) {
         return Component.translatable(key);
     }

@@ -64,10 +64,10 @@ public class RightClickRide {
     }
 
     public static boolean isEnabled(boolean forceDefault) {
-        return StrangeConfig.getInstance().getBoolean("rightClickRide_enabled", forceDefault);
+        return StrangeConfig.getInstance().rightClickRideEnabled.getValue();
     }
 
     public static void setEnabled(boolean enabled) {
-        StrangeConfig.getInstance().setBoolean("rightClickRide_enabled", enabled);
+        StrangeConfig.getInstance().rightClickRideEnabled.setValue(enabled);
     }
 }

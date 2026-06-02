@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
 import cn.taotxi.Makemoney.gui.ConfigScreen;
 import cn.taotxi.Makemoney.util.CommonUtil;
 import cn.taotxi.Makemoney.util.game.InventoryUtil;
@@ -24,25 +27,33 @@ import net.minecraft.world.inventory.InventoryMenu;
 
 
 public class Dropper {
+    private static final AutoDropConfig CONFIG = AutoDropConfig.getInstance();
+
     // TODO: 在捡到物品的事件中，调用该方法
     public static void tryToDropItems() {
         Minecraft client = Minecraft.getInstance();
         LocalPlayer player = client.player;
 
-        if (AutoDropConfig.getInstance().isStopWhenCrouch() && player.isCrouching()) return;
-        if (AutoDropConfig.getInstance().isStopWhenOpenContainer() && player.hasContainerOpen()) return; // TODO: BUG: 无法检测是否打开背包
-        if (AutoDropConfig.getInstance().isStopWhenOpenConfigGui() && ConfigScreen.isOpenYaclScreen()) return;
-        if (AutoDropConfig.getInstance().getTriggerMinCount() > 0 && AutoDropConfig.getInstance().getTriggerMinCount() > notEmptySlotCount()) return;
+        if (CONFIG.stopWhenCrouch.getValue() && player.isCrouching()) return;
+        if (CONFIG.stopWhenOpenContainer.getValue() && player.hasContainerOpen()) return; // TODO: BUG: 无法检测是否打开背包
+        if (CONFIG.stopWhenOpenConfigGui.getValue() && ConfigScreen.isOpenYaclScreen()) return;
+        if (CONFIG.triggerMinCount.getValue() > 0 && CONFIG.triggerMinCount.getValue() > notEmptySlotCount()) return;
         
-        if (AutoDropConfig.getInstance().isStopWhenNotHoldingItem()) {
+        if (CONFIG.stopWhenNotHoldingItem.getValue()) {
             ItemStack heldItem = player.getMainHandItem();
-            if (!AutoDropConfig.getInstance().getStopWhenNotHoldingItemName().equals("*") &&
-                !ItemStackUtil.equalName(heldItem, AutoDropConfig.getInstance().getStopWhenNotHoldingItemName())
+            String itemName = CONFIG.stopWhenNotHoldingItemName.getValue();
+            String itemId = CONFIG.stopWhenNotHoldingItemId.getValue();
+            if (itemName.isEmpty() || itemId.isEmpty()) return;
+
+            if (
+                !itemName.equals("*") &&
+                !ItemStackUtil.equalName(heldItem, itemName)
             )
                 return;
 
-            if (!AutoDropConfig.getInstance().getStopWhenNotHoldingItemId().equals("*") &&
-                !ItemStackUtil.equalId(heldItem, AutoDropConfig.getInstance().getStopWhenNotHoldingItemId())
+            if (
+                !itemId.equals("*") &&
+                !ItemStackUtil.equalId(heldItem, itemId)
             )
                 return;
         };
@@ -53,9 +64,11 @@ public class Dropper {
     public static void drop() {
         final List<Integer> dropSlots = new ArrayList<>();
         InventoryMenu inventoryMenu = Minecraft.getInstance().player.inventoryMenu;
-        List<AutoDropConfig.Item> matchLists = AutoDropConfig.getInstance().getMatchLists();
+        List<Item> matchLists = CONFIG.getMatchItemLists();
+        List<Integer> ignoreSlots = CONFIG.ignoreSlots.getValueAsList(Integer.class);
+
         for (int i = InventoryMenu.INV_SLOT_START; i < InventoryMenu.USE_ROW_SLOT_END; i++) {
-            if (AutoDropConfig.getInstance().getIgnoreSlots().contains(i)) continue;
+            if (ignoreSlots.contains(i)) continue;
 
             ItemStack item = inventoryMenu.getSlot(i).getItem();
 
@@ -66,25 +79,29 @@ public class Dropper {
         }
         if (dropSlots.isEmpty()) return;
 
-        if (AutoDropConfig.getInstance().getThrowWay().equals(ThrowWay.DIRECTION)) {
-            dropItemAnywhere(dropSlots, AutoDropConfig.getInstance().getThrowDirection());
+        ThrowWay throwWay = ThrowWay.valueOf(CONFIG.throwWay.getValue());
+        if (throwWay.equals(ThrowWay.DIRECTION)) {
+            dropItemAnywhere(dropSlots, Direction.valueOf(CONFIG.throwDirection.getValue()));
+        } else if (throwWay.equals(ThrowWay.ROTATION)) {
+            dropItemAnywhere(dropSlots, CONFIG.throwYaw.getValue(), CONFIG.throwPitch.getValue());
         } else {
-            dropItemAnywhere(dropSlots, AutoDropConfig.getInstance().getThrowYaw(), AutoDropConfig.getInstance().getThrowPitch());
+            throw new IllegalArgumentException("Unknown throwWay: " + throwWay +". Please use DIRECTION or ROTATION."); 
         }
     }
+
 
     public static int notEmptySlotCount() {
         return InventoryUtil.getInventoryNotEmptySlots().size();
     }
 
     public static boolean isEqualItem(ItemStack item) {
-        return isEqualItem(item, AutoDropConfig.getInstance().getMatchLists());
+        return isEqualItem(item, CONFIG.getMatchItemLists());
     }
 
-    public static boolean isEqualItem(ItemStack item, List<AutoDropConfig.Item> matchLists) {
+    public static boolean isEqualItem(ItemStack item, List<Item> matchLists) {
         if (item.isEmpty()) return true;
 
-        for (AutoDropConfig.Item check: matchLists){
+        for (Item check: matchLists){
             if (!check.enabled) continue;
 
             // TODO: 兼容其它命名空间

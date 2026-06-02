@@ -1,13 +1,13 @@
 package cn.taotxi.Makemoney.module.AutoFish;
 
-import java.util.Map;
 
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 
-import cn.taotxi.Makemoney.util.EventBus;
+import cn.taotxi.Makemoney.Makemoney;
+import cn.taotxi.Makemoney.gui.GuiUtil;
 import cn.taotxi.Makemoney.util.MLogger;
 import cn.taotxi.Makemoney.util.T;
 import cn.taotxi.Makemoney.util.TaskUtil;
@@ -32,8 +32,12 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.FluidState;
 
 public class AutoFish {
-    public static final MLogger logger = new MLogger("AutoFish");
+    public static final String MODULE_NAME = "autofish";
+    public static final MLogger logger = new MLogger(MODULE_NAME);
     private static final Minecraft client = Minecraft.getInstance();
+    private static final AutoFishConfig CONFIG = AutoFishConfig.getInstance();
+    public static final String FISHING_STATUS_CHECK_TASK_ID = "fishingStatusCheck";
+    public static final String THROW_FISHING_ROD_TASK_ID = "throwFishingRod";
     private static int outOfWaterTime = 0;
     private static float lastYaw = -1.0F;
     private static float lastPitch = -1.0F;
@@ -41,56 +45,39 @@ public class AutoFish {
     private static int bobberId = -1;
 
     public static void initialize() {
-        if (isAutoFishing(false)) {
-            TaskUtil.createTimeTask("fishingStatusCheck", AutoFish::fishingStatusCheck, checkInterval);
-        }
+        CONFIG.loadConfig();
+        onConfigChange();
         registerCommand();
     }
 
-    public static boolean isAutoFishing(boolean isDefault) {
-        return AutoFishConfig.getInstance().getBoolean("enabled", isDefault);
-    }
-
-    public static boolean isRotationEnabled(boolean isDefault) {
-        return AutoFishConfig.getInstance().getBoolean("rotation", isDefault);
-    }
-
-    public static int enableFishing() {
-        if (!isAutoFishing(false)) {
-            TaskUtil.createTimeTask("fishingStatusCheck", AutoFish::fishingStatusCheck, checkInterval);
-            AutoFishConfig.getInstance().setBoolean("enabled", true);
+    private static void onConfigChange() {
+        if (CONFIG.enabled.getValue() && !TaskUtil.hasTimeTask(FISHING_STATUS_CHECK_TASK_ID)) {
+            TaskUtil.createTimeTask(FISHING_STATUS_CHECK_TASK_ID, AutoFish::fishingStatusCheck, checkInterval);
+        } else if (!CONFIG.enabled.getValue()) {
+            TaskUtil.removeTimeTask(FISHING_STATUS_CHECK_TASK_ID);
+            TaskUtil.removeTimeTask(THROW_FISHING_ROD_TASK_ID);
+            outOfWaterTime = 0;
+            bobberId = -1;
+            lastYaw = -1.0F;
+            lastPitch = -1.0F;
         }
-        return 1;
     }
 
-    public static int disableFishing() {
-        AutoFishConfig.getInstance().setBoolean("enabled", false);
-        TaskUtil.removeTimeTask("fishingStatusCheck");
-        TaskUtil.removeTimeTask("throwFishingRod");
-        return 1;
+    public static void startFishing() {
+        if (CONFIG.enabled.getValue()) {
+            return;
+        }
+        bobberId = -1;
+        CONFIG.enabled.enable();
+        onConfigChange();
     }
 
-    public static int setRotationEnabled(boolean enabled) {
-        AutoFishConfig.getInstance().setBoolean("rotation", enabled);
-        return 1;
-    }
-
-    public static boolean isRandomDelayEnabled(boolean isDefault) {
-        return AutoFishConfig.getInstance().getBoolean("randomDelay", isDefault);
-    }
-
-    public static int setRandomDelayEnabled(boolean enabled) {
-        AutoFishConfig.getInstance().setBoolean("randomDelay", enabled);
-        return 1;
-    }
-
-    public static int getThrowDelay(boolean isDefault) {
-        return AutoFishConfig.getInstance().getInt("throwDelay", isDefault);
-    }
-
-    public static int setThrowDelay(int delay) {
-        AutoFishConfig.getInstance().setInt("throwDelay", delay);
-        return 1;
+    public static void stopFishing() {
+        if (!CONFIG.enabled.getValue()) {
+            return;
+        }
+        CONFIG.enabled.disable();
+        onConfigChange();
     }
 
     // TODO: 优雅地保存配置文件
@@ -101,45 +88,45 @@ public class AutoFish {
                 .then(ClientCommandManager.literal("help").executes(AutoFish::showHelp))
                 .then(ClientCommandManager.literal("on")
                     .executes(context -> {
-                        enableFishing();
-                        AutoFishConfig.getInstance().saveConfig();
+                        startFishing();
+                        CONFIG.saveConfig();
                         context.getSource().sendFeedback(T.tl("autofish.enabled.message"));
                         return 1;
                     }))
                 .then(ClientCommandManager.literal("off")
                     .executes(context -> {
-                        disableFishing();
-                        AutoFishConfig.getInstance().saveConfig();
+                        stopFishing();
+                        CONFIG.saveConfig();
                         context.getSource().sendFeedback(T.tl("autofish.disabled.message"));
                         return 1;
                     }))
                 .then(ClientCommandManager.literal("rotation")
                     .then(ClientCommandManager.literal("on")
                         .executes(context -> {
-                            setRotationEnabled(true);
-                            AutoFishConfig.getInstance().saveConfig();
+                            CONFIG.rotation.enable();
+                            CONFIG.saveConfig();
                             context.getSource().sendFeedback(T.tl("autofish.rotation.enabled.message"));
                             return 1;
                         }))
                     .then(ClientCommandManager.literal("off")
                         .executes(context -> {
-                            setRotationEnabled(false);
-                            AutoFishConfig.getInstance().saveConfig();
+                            CONFIG.rotation.disable();
+                            CONFIG.saveConfig();
                             context.getSource().sendFeedback(T.tl("autofish.rotation.disabled.message"));
                             return 1;
                         })))
                 .then(ClientCommandManager.literal("randomDelay")
                     .then(ClientCommandManager.literal("on")
                         .executes(context -> {
-                            setRandomDelayEnabled(true);
-                            AutoFishConfig.getInstance().saveConfig();
+                            CONFIG.randomDelay.enable();
+                            CONFIG.saveConfig();
                             context.getSource().sendFeedback(T.tl("autofish.randomDelay.enabled.message"));
                             return 1;
                         }))
                     .then(ClientCommandManager.literal("off")
                         .executes(context -> {
-                            setRandomDelayEnabled(false);
-                            AutoFishConfig.getInstance().saveConfig();
+                            CONFIG.randomDelay.disable();
+                            CONFIG.saveConfig();
                             context.getSource().sendFeedback(T.tl("autofish.randomDelay.disabled.message"));
                             return 1;
                         })))
@@ -160,11 +147,11 @@ public class AutoFish {
                     .then(ClientCommandManager.argument("delay", IntegerArgumentType.integer(0))
                     .executes(context -> {
                         int delay = context.getArgument("delay", Integer.class);
-                        setThrowDelay(delay);
-                        AutoFishConfig.getInstance().saveConfig();
+                        CONFIG.throwDelay.setValue(delay);
+                        CONFIG.saveConfig();
                         context.getSource().sendFeedback(T.tl("autofish.throwDelay.message", delay));
 
-                        if (TaskUtil.hasTimeTask("throwFishingRod")) {
+                        if (TaskUtil.hasTimeTask(THROW_FISHING_ROD_TASK_ID)) {
                             throwRodAfterDelay(true);
                         }
                         return 1;
@@ -172,21 +159,22 @@ public class AutoFish {
                 .then(ClientCommandManager.literal("config")
                     .then(ClientCommandManager.literal("reload")
                         .executes(context -> {
-                            // AutoFishConfig.getInstance().reloadConfig();
+                            CONFIG.reloadConfig();
+                            onConfigChange();
                             context.getSource().sendFeedback(T.tl("autofish.config.reload.message"));
                             return 1;
                         }))
                     .then(ClientCommandManager.literal("open")
                         .executes(context -> {
-                            EventBus.post("openMainConfigGui", Map.of("tab", 0));
+                            GuiUtil.openYaclScreen(Makemoney.MOD_ID);
                             return 1;
                         })))
             );
 
-            dispatcher.register(ClientCommandManager.literal("af")
-                .executes(AutoFish::showHelp)
-                .redirect(cmd)
-            );
+            // dispatcher.register(ClientCommandManager.literal("af")
+            //     .executes(AutoFish::showHelp)
+            //     .redirect(cmd)
+            // );
 
             dispatcher.register(ClientCommandManager.literal("fish")
                 .executes(AutoFish::showHelp)
@@ -209,7 +197,7 @@ public class AutoFish {
             return;
         }
 
-        if (TaskUtil.hasTimeTask("throwFishingRod")) return;
+        if (TaskUtil.hasTimeTask(THROW_FISHING_ROD_TASK_ID)) return;
         FishingHook bobber = client.player.fishing;
 
         if (bobber == null) {
@@ -235,7 +223,7 @@ public class AutoFish {
         }
 
         if (outOfWaterTime >= 2) {
-            logger.info("Out of water for 2 ticks, throw rod");
+            logger.info("Out of water for long time, throw rod");
             client.gameMode.useItem(client.player, hand);
             throwRod(hand);
         }
@@ -255,7 +243,7 @@ public class AutoFish {
     }
 
     public static void initRotaion(Player player, InteractionHand interactionHand, CallbackInfoReturnable<InteractionResult> cir) {
-        if (lastYaw == -1.0F && isRotationEnabled(false) && getFishingHand() == interactionHand) {
+        if (lastYaw == -1.0F && CONFIG.rotation.getValue() && getFishingHand() == interactionHand) {
             lastYaw = player.getYRot();
             lastPitch = player.getXRot();
         }
@@ -270,27 +258,7 @@ public class AutoFish {
     }
 
     public static void onEntitySetData(ClientboundSetEntityDataPacket clientboundSetEntityDataPacket) {
-        // if (!isAutoFishing(false) || client.player == null) return;
-
-        // Entity entity = client.level.getEntity(clientboundSetEntityDataPacket.id());
-        // if (entity == null || entity.getType() != EntityType.FISHING_BOBBER) return;
-        // FishingHook bobber = (FishingHook) entity;
-        // if (bobber.getPlayerOwner() != client.player) return;
-        
-        // for (DataValue<?> dataValue : clientboundSetEntityDataPacket.packedItems()) {
-        //     // See https://minecraft.wiki/w/Java_Edition_protocol/Entity_metadata#Fishing_Bobber
-        //     if ((dataValue.id() == 9 && (Boolean) dataValue.value()) ||
-        //         (dataValue.id() == 8 && (Integer) dataValue.value() != 0)
-        //     ) {
-        //         InteractionHand hand = getFishingHand();
-        //         if (hand != null) {
-        //             logger.info("Catch a fish or hook in entity");
-        //             client.gameMode.useItem(client.player, hand);
-        //             throwRodAfterDelay(dataValue.id() == 9);
-        //         }
-        //     }
-        // }
-        if (isAutoFishing(false) &&
+        if (CONFIG.enabled.getValue() &&
             client.player != null &&
             client.player.fishing != null &&
             clientboundSetEntityDataPacket.id() == client.player.fishing.getId()
@@ -324,14 +292,15 @@ public class AutoFish {
     }
 
     private static void throwRodAfterDelay(boolean rotation) {
-        TaskUtil.removeTimeTask("throwFishingRod");
+        TaskUtil.removeTimeTask(THROW_FISHING_ROD_TASK_ID);
 
-        int throwDelay = getThrowDelay(false);
-        if (isRandomDelayEnabled(false)) {
+        int throwDelay = CONFIG.throwDelay.getValue();
+        if (CONFIG.randomDelay.getValue()) {
             throwDelay += (int) (Math.random() * 20) + 1;
         }
 
-        TaskUtil.createOnceTimeTask("throwFishingRod", () -> {
+        TaskUtil.createOnceTimeTask(THROW_FISHING_ROD_TASK_ID, () -> {
+            if (client.player == null) return;
             InteractionHand hand = getFishingHand();
             if (hand == null) return;
 
@@ -340,10 +309,10 @@ public class AutoFish {
             boolean success = throwRod(hand);
             if (!success) return;
 
-            TaskUtil.resetNextRunTick("fishingStatusCheck");
+            TaskUtil.resetNextRunTick(FISHING_STATUS_CHECK_TASK_ID);
 
             // TODO: Bug: 转向有点问题
-            if (!isRotationEnabled(false) || !rotation) {
+            if (!CONFIG.rotation.getValue() || !rotation) {
                 return;
             }
 

@@ -39,8 +39,8 @@ public class EntityHighlightBoxConfigGui {
 
     public static ConfigCategory.Builder createEntityHighlightBoxCategoryBuilder(Screen parent) {
         ConfigCategory.Builder category = ConfigCategory.createBuilder()
-                .name(T.tl("entityhighlightBox.name"))
-                .tooltip(T.tl("entityhighlightBox.desc"));
+                .name(T.tl("entityhighlightbox.name"))
+                .tooltip(T.tl("entityhighlightbox.desc"));
 
         category.option(Factory.addToggleOption(
             T.tl("module.enabled"),
@@ -51,19 +51,19 @@ public class EntityHighlightBoxConfigGui {
         ));
 
         // category.option(Factory.addToggleOption(
-        //     T.tl("entityhighlightBox.colorful"),
-        //     T.tl("entityhighlightBox.colorful.desc", HighlightConfig.getDefaultUnknownColor()),
+        //     T.tl("entityhighlightbox.colorful"),
+        //     T.tl("entityhighlightbox.colorful.desc", HighlightConfig.getDefaultUnknownColor()),
         //     HighlightConfig.getDefaultColorful(),
         //     () -> EntityHighlightBox.config.colorful,
         //     val -> EntityHighlightBox.config.colorful = val
         // ));
 
         category.option(ButtonOption.createBuilder()
-                .name(T.tl("entityhighlightBox.colorful"))
+                .name(T.tl("entityhighlightbox.colorful"))
                 .text(EntityHighlightBox.config.colorful ? 
                     T.tl("message.value.on").withStyle(ChatFormatting.GREEN) : 
                     T.tl("message.value.off").withStyle(ChatFormatting.RED))
-                .description(OptionDescription.of(T.tl("entityhighlightBox.colorful.desc", EntityHighlightBox.config.unknownColor)))
+                .description(OptionDescription.of(T.tl("entityhighlightbox.colorful.desc", EntityHighlightBox.config.unknownColor)))
                 .action((yaclScreen, button) -> {
                     EntityHighlightBox.config.colorful = !EntityHighlightBox.config.colorful;
                     EntityHighlightBox.config.save();
@@ -75,12 +75,12 @@ public class EntityHighlightBoxConfigGui {
         if (EntityHighlightBox.config.colorful) {
             OptionGroup.Builder colorGroup = 
                 OptionGroup.createBuilder()
-                    .name(T.tl("entityhighlightBox.color.group"))
-                    .description(OptionDescription.of(T.tl("entityhighlightBox.color.group.desc")));
+                    .name(T.tl("entityhighlightbox.color.group"))
+                    .description(OptionDescription.of(T.tl("entityhighlightbox.color.group.desc")));
 
             colorGroup.option(Option.<Color>createBuilder()
-                    .name(T.tl("entityhighlightBox.color.monster"))
-                    .description(OptionDescription.of(T.tl("entityhighlightBox.color.monster.desc")))
+                    .name(T.tl("entityhighlightbox.color.monster"))
+                    .description(OptionDescription.of(T.tl("entityhighlightbox.color.monster.desc")))
                     .binding(
                             StringUtil.strToColor(HighlightConfig.getDefaultMonsterColor()),
                             () -> StringUtil.strToColor(EntityHighlightBox.config.monsterColor),
@@ -92,8 +92,8 @@ public class EntityHighlightBoxConfigGui {
             );
 
             colorGroup.option(Option.<Color>createBuilder()
-                    .name(T.tl("entityhighlightBox.color.friend"))
-                    .description(OptionDescription.of(T.tl("entityhighlightBox.color.friend.desc")))
+                    .name(T.tl("entityhighlightbox.color.friend"))
+                    .description(OptionDescription.of(T.tl("entityhighlightbox.color.friend.desc")))
                     .binding(
                             StringUtil.strToColor(HighlightConfig.getDefaultFriendColor()),
                             () -> StringUtil.strToColor(EntityHighlightBox.config.friendColor),
@@ -105,8 +105,8 @@ public class EntityHighlightBoxConfigGui {
             );
 
             colorGroup.option(Option.<Color>createBuilder()
-                    .name(T.tl("entityhighlightBox.color.neutral"))
-                    .description(OptionDescription.of(T.tl("entityhighlightBox.color.neutral.desc")))
+                    .name(T.tl("entityhighlightbox.color.neutral"))
+                    .description(OptionDescription.of(T.tl("entityhighlightbox.color.neutral.desc")))
                     .binding(
                             StringUtil.strToColor(HighlightConfig.getDefaultNeutralColor()),
                             () -> StringUtil.strToColor(EntityHighlightBox.config.neutralColor),
@@ -118,8 +118,8 @@ public class EntityHighlightBoxConfigGui {
             );
 
             colorGroup.option(Option.<Color>createBuilder()
-                    .name(T.tl("entityhighlightBox.color.player"))
-                    .description(OptionDescription.of(T.tl("entityhighlightBox.color.player.desc")))
+                    .name(T.tl("entityhighlightbox.color.player"))
+                    .description(OptionDescription.of(T.tl("entityhighlightbox.color.player.desc")))
                     .binding(
                             StringUtil.strToColor(HighlightConfig.getDefaultPlayerColor()),
                             () -> StringUtil.strToColor(EntityHighlightBox.config.playerColor),
@@ -131,8 +131,8 @@ public class EntityHighlightBoxConfigGui {
             );
 
             colorGroup.option(Option.<Color>createBuilder()
-                    .name(T.tl("entityhighlightBox.color.unknown"))
-                    .description(OptionDescription.of(T.tl("entityhighlightBox.color.unknown.desc")))
+                    .name(T.tl("entityhighlightbox.color.unknown"))
+                    .description(OptionDescription.of(T.tl("entityhighlightbox.color.unknown.desc")))
                     .binding(
                             StringUtil.strToColor(HighlightConfig.getDefaultUnknownColor()),
                             () -> StringUtil.strToColor(EntityHighlightBox.config.unknownColor),
@@ -147,16 +147,16 @@ public class EntityHighlightBoxConfigGui {
         }
 
         category.option(Factory.addToggleOption(
-            T.tl("entityhighlightBox.isRenderName"),
-            T.tl("entityhighlightBox.isRenderName.desc"),
+            T.tl("entityhighlightbox.isRenderName"),
+            T.tl("entityhighlightbox.isRenderName.desc"),
             HighlightConfig.getDefaultIsRenderName(),
             () -> EntityHighlightBox.config.isRenderName,
             val -> EntityHighlightBox.config.isRenderName = val
         ));
 
         category.option(Option.<Integer>createBuilder()
-                    .name(T.tl("entityhighlightBox.renderRadius"))
-                    .description(OptionDescription.of(T.tl("entityhighlightBox.renderRadius.desc")))
+                    .name(T.tl("entityhighlightbox.renderRadius"))
+                    .description(OptionDescription.of(T.tl("entityhighlightbox.renderRadius.desc")))
                     .binding(
                             HighlightConfig.getDefaultRenderRadius(),
                             () -> EntityHighlightBox.config.renderRadius,
@@ -169,8 +169,8 @@ public class EntityHighlightBoxConfigGui {
         );
 
         category.option(Option.<Integer>createBuilder()
-                    .name(T.tl("entityhighlightBox.renderMaxCounts"))
-                    .description(OptionDescription.of(T.tl("entityhighlightBox.renderMaxCounts.desc")))
+                    .name(T.tl("entityhighlightbox.renderMaxCounts"))
+                    .description(OptionDescription.of(T.tl("entityhighlightbox.renderMaxCounts.desc")))
                     .binding(
                             HighlightConfig.getDefaultRenderMaxCounts(),
                             () -> EntityHighlightBox.config.renderMaxCounts,
@@ -183,8 +183,8 @@ public class EntityHighlightBoxConfigGui {
         );
 
         category.option(Option.<Integer>createBuilder()
-                    .name(T.tl("entityhighlightBox.updateInterval"))
-                    .description(OptionDescription.of(T.tl("entityhighlightBox.updateInterval.desc")))
+                    .name(T.tl("entityhighlightbox.updateInterval"))
+                    .description(OptionDescription.of(T.tl("entityhighlightbox.updateInterval.desc")))
                     .binding(
                             HighlightConfig.getDefaultUpdateInterval(),
                             () -> EntityHighlightBox.config.updateInterval,
@@ -199,8 +199,8 @@ public class EntityHighlightBoxConfigGui {
 
         // TODO: 更改为三种可选值：白名单、黑名单、全部
         category.option(Option.<Boolean>createBuilder()
-                    .name(T.tl("entityhighlightBox.isWhitelist"))
-                    .description(OptionDescription.of(T.tl("entityhighlightBox.isWhitelist.desc")))
+                    .name(T.tl("entityhighlightbox.isWhitelist"))
+                    .description(OptionDescription.of(T.tl("entityhighlightbox.isWhitelist.desc")))
                     .binding(
                             HighlightConfig.getDefaultIsWhitelist(),
                             () -> EntityHighlightBox.config.isWhitelist,
@@ -208,15 +208,15 @@ public class EntityHighlightBoxConfigGui {
                     )
                     .controller(opt -> BooleanControllerBuilder.create(opt)
                         .formatValue(val -> val ? 
-                            T.tl("entityhighlightBox.isWhitelist.true").withStyle(ChatFormatting.GREEN) : 
-                            T.tl("entityhighlightBox.isWhitelist.false").withStyle(ChatFormatting.RED))
+                            T.tl("entityhighlightbox.isWhitelist.true").withStyle(ChatFormatting.GREEN) : 
+                            T.tl("entityhighlightbox.isWhitelist.false").withStyle(ChatFormatting.RED))
                         )
                     .build()
         );
 
         category.group(ListOption.<String>createBuilder()
-                    .name(T.tl("entityhighlightBox.entityTypes"))
-                    .description(OptionDescription.of(T.tl("entityhighlightBox.entityTypes.desc")))
+                    .name(T.tl("entityhighlightbox.entityTypes"))
+                    .description(OptionDescription.of(T.tl("entityhighlightbox.entityTypes.desc")))
                     .binding(
                             HighlightConfig.getDefaultEntityTypes(),
                             () -> EntityHighlightBox.config.entityTypes,

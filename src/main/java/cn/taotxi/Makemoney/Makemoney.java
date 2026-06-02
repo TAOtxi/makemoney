@@ -2,11 +2,15 @@ package cn.taotxi.Makemoney;
 
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.ConfirmScreen;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.TitleScreen;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -15,13 +19,14 @@ import org.slf4j.LoggerFactory;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.brigadier.context.CommandContext;
 
+import cn.taotxi.Makemoney.config.MakemoneyConfig;
+import cn.taotxi.Makemoney.gui.GuiUtil;
 import cn.taotxi.Makemoney.gui.ConfigScreen;
-import cn.taotxi.Makemoney.module.AutoAction.AutoAction;
+import cn.taotxi.Makemoney.gui.dialog.ConfirmWindow;
 import cn.taotxi.Makemoney.module.AutoDrop.AutoDrop;
 import cn.taotxi.Makemoney.module.AutoDrop.AutoDropConfigGui;
 import cn.taotxi.Makemoney.module.AutoFish.AutoFish;
 import cn.taotxi.Makemoney.module.StrangeFunction.StrangeFunctionInit;
-import cn.taotxi.Makemoney.util.EventBus;
 import cn.taotxi.Makemoney.util.T;
 import cn.taotxi.Makemoney.util.TaskUtil;
 import dev.isxander.yacl3.gui.YACLScreen;
@@ -31,19 +36,26 @@ import dev.isxander.yacl3.gui.YACLScreen;
 public class Makemoney implements ModInitializer {
 	public static final String MOD_ID = "makemoney";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-    private static int tickCounter = 0;
 
 	@Override
 	public void onInitialize() {
 		LOGGER.info("Starting mod...");
-        
-        registerTickEvents();
-        registerSomeEvents();
+
+        MakemoneyConfig.getInstance().loadConfig();
+        List<String> configChangeNameList = MakemoneyConfig.getInstance().getConfigChangeNameList();
+        if (!configChangeNameList.isEmpty()) {
+            GuiUtil.openConfigChangeTipWindow(configChangeNameList);
+        }
+
         registerCommand();
-        AutoDrop.init();
+        AutoDrop.initialize();
         AutoFish.initialize();
-        StrangeFunctionInit.init();
+        StrangeFunctionInit.initialize();
         TaskUtil.initialize();
+
+        // TaskUtil.createTimeTask("a", () -> {
+        //     System.out.println(Minecraft.getInstance().screen.getClass());
+        // }, 20);
 	}
 
     private void registerCommand() {
@@ -58,7 +70,7 @@ public class Makemoney implements ModInitializer {
                     .executes(Makemoney::showHelp))
                 .then(ClientCommandManager.literal("config")
                     .executes(context -> {
-                        EventBus.post("openMainConfigGui", Map.of("tab", 0));
+                        GuiUtil.openYaclScreen(MOD_ID);
                         return 1;
                     }))
             );
@@ -75,83 +87,23 @@ public class Makemoney implements ModInitializer {
                     .executes(Makemoney::showHelp)
                     .redirect(command));
 
-            // dispatcher.register(ClientCommandManager.literal("tt")
-            //     .then(ClientCommandManager.literal("1")
-            //         .executes(context -> {
-            //             System.out.println("Flying: " + Minecraft.getInstance().player.getAbilities().flying);
-            //             return 1;
-            //         }))
-            //     .then(ClientCommandManager.literal("2")
-            //         .executes(context -> {
-            //             var player = context.getSource().getClient().player;
-            //             System.out.println(player.getPassengers());
-            //             return 1;
-            //         }))
-            // );
+            dispatcher.register(ClientCommandManager.literal("tt")
+                .then(ClientCommandManager.literal("1")
+                    .executes(context -> {
+                        Minecraft.getInstance().setScreen(new ConfirmWindow(T.l("Confirm")));
+                        return 1;
+                    }))
+                .then(ClientCommandManager.literal("2")
+                    .executes(context -> {
+                        var player = context.getSource().getClient().player;
+                        System.out.println(player.getPassengers());
+                        return 1;
+                    }))
+            );
                 
         });
     }
 
-    private void registerTickEvents() {
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (client.level == null || client.player == null) return;
-            EventBus.checkQueue();
-            
-            tickCounter++;
-            // AutoRepair.registerTickEvents(client, tickCounter);
-            // AutoAction.registerTickEvents(client, tickCounter);
-            // EntityHighlightBox.registerTickEvents(client, tickCounter);
-        });
-    }
-
-    private void registerSomeEvents() {
-        // ScreenEvents.AFTER_INIT.register((client, screen, width, height) -> {
-        //     Message.sendMessage("Screen: " + screen.getClass().getSimpleName());
-        // });
-        // EntityHighlightBox.registerRenderEvents();
-        EventBus.register("openConfigGui", (args) -> {
-            Minecraft client = Minecraft.getInstance();
-            if (client.screen != null) {
-                EventBus.post("openConfigGui", args);
-                return;
-            }
-            
-            YACLScreen configScreen = null;
-            String module = (String) args.get("module");
-
-            if (module.equals(AutoDrop.MODULE_NAME)) {
-                configScreen = (YACLScreen) AutoDropConfigGui.createScreen(null);
-            } else {
-                LOGGER.error("Can not find module: " + module);
-                return;
-            }
-
-            Window window = client.getWindow(); 
-            configScreen.init(window.getGuiScaledWidth(), 
-                    window.getGuiScaledHeight());
-            client.setScreen(configScreen);
-        });
-
-        EventBus.register("openMainConfigGui", (args) -> {
-            Minecraft client = Minecraft.getInstance();
-            if (client.screen != null) {
-                EventBus.post("openMainConfigGui", args);
-                return;
-            }
-            
-            YACLScreen configScreen = (YACLScreen) ConfigScreen.getConfigScreen(null);
-            int openTab = (int) args.get("tab");
-            configScreen.init(client.getWindow().getGuiScaledWidth(), 
-                    client.getWindow().getGuiScaledHeight());
-            if (openTab < 0 || openTab >= configScreen.tabNavigationBar.getTabs().size()) {
-                LOGGER.error("Invalid tab: " + openTab);
-                return;
-            }
-            configScreen.tabNavigationBar.selectTab(openTab, true);
-
-            client.setScreen(configScreen);
-        });
-    }
 
     private static int showHelp(CommandContext<FabricClientCommandSource> context) {
         context.getSource().sendFeedback(T.tl("help.message"));

@@ -16,7 +16,7 @@ public class Message {
         client.player.displayClientMessage(msg, false);
     }
 
-    public static void chatMsg(String msg) {
+    public static void clientSideMsg(String msg) {
         chatMsg(Component.literal(msg));
     }
 
@@ -25,7 +25,7 @@ public class Message {
         for (String str : msgs) {
             sb.append(str);
         }
-        chatMsg(sb.toString());
+        clientSideMsg(sb.toString());
     }
 
     public static void chatMsg(String msg1, Component msg2) {

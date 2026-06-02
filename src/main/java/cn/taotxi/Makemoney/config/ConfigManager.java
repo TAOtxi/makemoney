@@ -1,5 +1,6 @@
 package cn.taotxi.Makemoney.config;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -7,30 +8,42 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
+
+import cn.taotxi.Makemoney.config.type.IConfigBase;
 
 
-public abstract class ConfigManager {
+public class ConfigManager {
     public String MODULE_NAME;
-    public JsonObject defaultConfig;
+    private List<IConfigBase<?>> options;
     private JsonObject config;
 
     public ConfigManager(String moduleName) {
         MODULE_NAME = moduleName;
-        defaultConfig = createDefaultConfig();
-        config = loadConfig(defaultConfig);
+        options = new ArrayList<>();
     }
 
-    protected abstract JsonObject createDefaultConfig();
+    public ConfigManager addOption(IConfigBase<?> option) {
+        options.add(option);
+        return this;
+    }
 
-    private JsonObject loadConfig(JsonObject defaultConfig) {
-        return ConfigMaker
+    private JsonObject createDefaultConfig() {
+        JsonObject defaultConfig = new JsonObject();
+        for (IConfigBase<?> option : options) {
+            defaultConfig.add(option.getKey(), getGson().toJsonTree(option.getDefaultValue()));
+        }
+        return defaultConfig;
+    };
+
+    public void loadConfig() {
+        JsonObject defaultConfig = createDefaultConfig();
+        config = ConfigMaker
             .loadConfig(MODULE_NAME, defaultConfig)
             .getAsJsonObject();
     }
 
     public void reloadConfig() {
-        config = loadConfig(defaultConfig);
+        loadConfig();
     }
     
     public void saveConfig() {
@@ -47,144 +60,20 @@ public abstract class ConfigManager {
         return ConfigMaker.gson;
     }
 
-    // public JsonObject getDefaultConfig() {
-    //     return defaultConfig;
-    // }
-
-    public int getInt(String key, boolean forceDefault) {
-        if (config.has(key) && !forceDefault) {
-            return config.get(key).getAsInt();
-        }
-        return defaultConfig.get(key).getAsInt();
+    public boolean has(String key) {
+        return config.has(key);
     }
 
-    public String getString(String key, boolean forceDefault) {
-        if (config.has(key) && !forceDefault) {
-            return config.get(key).getAsString();
-        }
-        return defaultConfig.get(key).getAsString();
+    public JsonElement get(String key) {
+        return config.get(key);
     }
 
-    public boolean getBoolean(String key, boolean forceDefault) {
-        if (config.has(key) && !forceDefault) {
-            return config.get(key).getAsBoolean();
-        }
-        return defaultConfig.get(key).getAsBoolean();
-    }
-
-    public double getDouble(String key, boolean forceDefault) {
-        if (config.has(key) && !forceDefault) {
-            return config.get(key).getAsDouble();
-        }
-        return defaultConfig.get(key).getAsDouble();
-    }
-
-    public float getFloat(String key, boolean forceDefault) {
-        if (config.has(key) && !forceDefault) {
-            return config.get(key).getAsFloat();
-        }
-        return defaultConfig.get(key).getAsFloat();
-    }
-
-    public JsonArray getJsonArray(String key, boolean forceDefault) {
-        if (config.has(key) && !forceDefault) {
-            return config.get(key).getAsJsonArray();
-        }
-        return defaultConfig.get(key).getAsJsonArray();
-    }
-
-    public JsonObject getJsonObject(String key, boolean forceDefault) {
-        if (config.has(key) && !forceDefault) {
-            return config.get(key).getAsJsonObject();
-        }
-        return defaultConfig.get(key).getAsJsonObject();
-    }
-
-    public List<Integer> getIntList(String key, boolean forceDefault) {
-        return jsonIntToList(getJsonArray(key, forceDefault));
-    }
-    
-    public List<String> getStringList(String key, boolean forceDefault) {
-        return jsonArrayToListStr(getJsonArray(key, forceDefault));
-    }
-
-    public int getInt(String key) {
-        return getInt(key, false);
-    }
-
-    public String getString(String key) {
-        return getString(key, false);
-    }
-
-    public boolean getBoolean(String key) {
-        return getBoolean(key, false);
-    }
-
-    public double getDouble(String key) {
-        return getDouble(key, false);
-    }
-
-    public float getFloat(String key) {
-        return getFloat(key, false);
-    }
-
-    public JsonArray getJsonArray(String key) {
-        return getJsonArray(key, false);
-    }
-
-    public JsonObject getJsonObject(String key) {
-        return getJsonObject(key, false);
-    }
-
-    public List<Integer> getIntList(String key) {
-        return getIntList(key, false);
-    }
-
-    public List<String> getStringList(String key) {
-        return getStringList(key, false);
-    }
-
-    public void set(String key, JsonElement element) {
+    public ConfigManager set(String key, JsonElement value) {
         if (config.has(key)) {
             config.remove(key);
         }
-        config.add(key, element);
-    }
-
-    public void setBoolean(String key, boolean value) {
-        set(key, new JsonPrimitive(value));
-    }
-
-    public void setInt(String key, int value) {
-        set(key, new JsonPrimitive(value));
-    }
-
-    public void setString(String key, String value) {
-        set(key, new JsonPrimitive(value));
-    }
-
-    public void setDouble(String key, double value) {
-        set(key, new JsonPrimitive(value));
-    }
-
-    public void setFloat(String key, float value) {
-        set(key, new JsonPrimitive(value));
-    }
-
-    public void setJsonArray(String key, JsonArray value) {
-        set(key, value);
-    }
-
-    public void setJsonObject(String key, JsonObject value) {
-        set(key, value);
-    }
-
-    public void reset(String key) {
-        if (!config.has(key)) return;
-        if (!defaultConfig.has(key)) return;
-
-        JsonElement element = defaultConfig.get(key);
-        set(key, element.deepCopy());
+        config.add(key, value);
+        return this;
     }
 
     public static List<String> jsonArrayToListStr(JsonArray jsonArray) {

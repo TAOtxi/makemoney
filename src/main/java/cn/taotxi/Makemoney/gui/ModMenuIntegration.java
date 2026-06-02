@@ -1,9 +1,6 @@
-package cn.taotxi.Makemoney.config;
+package cn.taotxi.Makemoney.gui;
 
 import com.terraformersmc.modmenu.api.ModMenuApi;
-
-import cn.taotxi.Makemoney.gui.ConfigScreen;
-
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 
 public class ModMenuIntegration implements ModMenuApi {

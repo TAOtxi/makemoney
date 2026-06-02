@@ -24,7 +24,7 @@ public class MLogger {
         if (!isDebug) {
             return;
         }
-        Message.chatMsg("[" + moduleName + "] " + message);
+        Message.clientSideMsg("[" + moduleName + "] " + message);
         logger.info("[{}] " + message, moduleName);
     }
 
@@ -32,7 +32,7 @@ public class MLogger {
         if (!isDebug) {
             return;
         }
-        Message.chatMsg("[" + moduleName + "] " + message + " " + arg1);
+        Message.clientSideMsg("[" + moduleName + "] " + message + " " + arg1);
         logger.info("[{}] " + message, moduleName, arg1);
     }
 
@@ -40,7 +40,7 @@ public class MLogger {
         if (!isDebug) {
             return;
         }
-        Message.chatMsg("[" + moduleName + "] " + message + " " + arg1);
+        Message.clientSideMsg("[" + moduleName + "] " + message + " " + arg1);
         logger.info("[{}] " + message, moduleName, arg1, arg2);
     }
 
@@ -48,7 +48,7 @@ public class MLogger {
         if (!isDebug) {
             return;
         }
-        Message.chatMsg("[" + moduleName + "] " + message + " " + Arrays.toString(args));
+        Message.clientSideMsg("[" + moduleName + "] " + message + " " + Arrays.toString(args));
         logger.info("[{}] " + message, moduleName, args);
     }
     

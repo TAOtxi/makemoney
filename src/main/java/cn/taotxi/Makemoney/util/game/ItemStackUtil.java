@@ -36,10 +36,12 @@ public class ItemStackUtil {
     }
 
     public static boolean equalName(ItemStack item, String name) {
+        if (item.isEmpty()) return false;
         return StringUtil.regMatch(getName(item), name);
     }
 
     public static boolean equalId(ItemStack item, String id) {
+        if (item.isEmpty()) return false;
         return StringUtil.regMatch(getId(item), withDefaultNamespace(id));
     }
 

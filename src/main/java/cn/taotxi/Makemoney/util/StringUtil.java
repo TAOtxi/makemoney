@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.google.gson.JsonArray;
+
 
 public class StringUtil {
     public static <Type> String join(List<Type> list, String sep) {
@@ -22,6 +24,10 @@ public class StringUtil {
 
     public static <Type> String join(List<Type> list) {
         return join(list, ", ");
+    }
+
+    public static String join(JsonArray array) {
+        return join(array.asList());
     }
 
     public static String joinStr(List<String> list) {

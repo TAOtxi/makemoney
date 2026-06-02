@@ -2,14 +2,13 @@ package cn.taotxi.Makemoney.module.AutoDrop;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 
-import cn.taotxi.Makemoney.util.EventBus;
+import cn.taotxi.Makemoney.gui.GuiUtil;
 import cn.taotxi.Makemoney.util.MLogger;
 import cn.taotxi.Makemoney.util.Message;
 import cn.taotxi.Makemoney.util.StringUtil;
@@ -33,47 +32,127 @@ public class AutoDrop {
     public static final String MODULE_NAME = "autodrop";
     public static final MLogger LOGGER = new MLogger(MODULE_NAME);
     public static boolean enabled = false;
+    private static AutoDropConfig CONFIG = AutoDropConfig.getInstance();
+    private static final String TIME_TRIGGER_TASK_NAME = "autodrop_timeTrigger";
+    private static final String SHOW_ATTENTION_MSG_TASK_NAME = "autodrop_showAttentionMsg";
 
-    public static void init() {
+    public static void initialize() {
+        CONFIG.loadConfig();
+
         ClientWorldEvents.AFTER_CLIENT_WORLD_CHANGE.register((mc, level) -> {
-            if (AutoDropConfig.getInstance().isTurnOffWhenChangeWorld()) {
+            if (CONFIG.turnOffWhenChangeWorld.getValue()) {
                 enabled = false;
             }
         });
-        TaskUtil.createTimeTask(
-            "autodrop_timeTrigger", 
-            AutoDrop::timeTriggerTask, 
-            () -> AutoDropConfig.getInstance().getTimeTriggerInterval()
+
+        CONFIG.isShowAttentionMsg.onChange(
+            (oldValue, newValue) -> {
+                if (!enabled) return;
+                if (newValue) {
+                    createShowAttentionMsgTask();
+                } else {
+                    TaskUtil.removeTimeTask(SHOW_ATTENTION_MSG_TASK_NAME);
+                }
+            }
         );
 
+        CONFIG.isTimeTrigger.onChange(
+            (oldValue, newValue) -> {
+                if (!enabled) return;
+                if (newValue) {
+                    createTimeTriggerTask();
+                } else {
+                    TaskUtil.removeTimeTask(TIME_TRIGGER_TASK_NAME);
+                }
+            }
+        );
+    }
+
+    public static void toggleSwitch(boolean enable) {
+        if (AutoDrop.enabled == enable) return;
+
+        AutoDrop.enabled = enable;
+        updateTask();
+    }
+
+    private static void updateTask() {
+        if (enabled) {
+            if (
+                CONFIG.isShowAttentionMsg.getValue() &&
+                !TaskUtil.hasTimeTask(SHOW_ATTENTION_MSG_TASK_NAME)
+            ) {
+                createShowAttentionMsgTask();
+            } else if (!CONFIG.isShowAttentionMsg.getValue()) {
+                TaskUtil.removeTimeTask(SHOW_ATTENTION_MSG_TASK_NAME);
+            }
+
+            if (
+                CONFIG.isTimeTrigger.getValue() &&
+                !TaskUtil.hasTimeTask(TIME_TRIGGER_TASK_NAME)
+            ) {
+                createTimeTriggerTask();
+            } else if (!CONFIG.isTimeTrigger.getValue()) {
+                TaskUtil.removeTimeTask(TIME_TRIGGER_TASK_NAME);
+            }
+        } else {
+            TaskUtil.removeTimeTask(SHOW_ATTENTION_MSG_TASK_NAME);
+            TaskUtil.removeTimeTask(TIME_TRIGGER_TASK_NAME);
+        }
+    }
+
+    private static void createShowAttentionMsgTask() {
         TaskUtil.createTimeTask(
-            "autodrop_showAttentionMsg", 
+            SHOW_ATTENTION_MSG_TASK_NAME, 
             AutoDrop::showAttentionMsg, 
             20
         );
     }
 
-    private static void timeTriggerTask() {
-        if (!enabled || !AutoDropConfig.getInstance().isTimeTrigger()) return;
-        Dropper.tryToDropItems();
+    private static void createTimeTriggerTask() {
+        TaskUtil.createTimeTask(
+            TIME_TRIGGER_TASK_NAME, 
+            Dropper::tryToDropItems, 
+            () -> CONFIG.timeTriggerInterval.getValue()
+        );
     }
 
     private static void showAttentionMsg() {
-        if (!enabled) return;
-        AutoDropConfig config = AutoDropConfig.getInstance();
-        if (!config.isShowAttentionMsg()) return;
-        if (!config.isTimeTrigger() && !config.isPickUpItemTrigger()) return;
+        boolean isTimeTrigger = CONFIG.isTimeTrigger.getValue();
+        boolean isPickUpItemTrigger = CONFIG.isPickUpItemTrigger.getValue();
+        if (!isTimeTrigger && !isPickUpItemTrigger) return;
 
-        Message.actionBarMsg(T.tl("autodrop.message.attention"));
+        String triggerItemId = CONFIG.triggerItemId.getValue();
+        if (!isTimeTrigger && isPickUpItemTrigger) {
+            if (!triggerItemId.isEmpty()) {
+                Message.actionBarMsg(T.tl("autodrop.message.attention.pickUpItemTriggerWithItem", triggerItemId));
+            } else {
+                Message.actionBarMsg(T.tl("autodrop.message.attention.pickUpItemTrigger"));
+            }
+            return;
+        }
+
+        int pendingTick = TaskUtil.getNextRunTick(TIME_TRIGGER_TASK_NAME) - TaskUtil.getTicker();
+        int pendingSeconds = pendingTick / 20;
+
+        if (!isPickUpItemTrigger) {
+            Message.actionBarMsg(T.tl("autodrop.message.attention.timeTrigger", pendingSeconds));
+            return;
+        }
+
+        if (!triggerItemId.isEmpty()) {
+            Message.actionBarMsg(T.tl("autodrop.message.attention.bothWithItem", pendingSeconds, triggerItemId));
+        } else {
+            Message.actionBarMsg(T.tl("autodrop.message.attention.both", pendingSeconds));
+        }
     }
 
     public static void onTakeItemEntity(ClientboundTakeItemEntityPacket clientboundTakeItemEntityPacket) {
         if (!enabled ||
             clientboundTakeItemEntityPacket.getPlayerId() != Minecraft.getInstance().player.getId() ||
-            !AutoDropConfig.getInstance().isPickUpItemTrigger()) {
+            !CONFIG.isPickUpItemTrigger.getValue()) {
             return;
         }
-        if (AutoDropConfig.getInstance().getTriggerItemId().isEmpty()) {
+        if (CONFIG.triggerItemId.getValue().isEmpty()) {
             Dropper.tryToDropItems();
             return;
         }
@@ -81,7 +160,7 @@ public class AutoDrop {
         Entity entity = Minecraft.getInstance().level.getEntity(clientboundTakeItemEntityPacket.getItemId());
         if (entity instanceof ItemEntity itemEntity) {
             ItemStack itemStack = itemEntity.getItem();
-            if (ItemStackUtil.equalId(itemStack, AutoDropConfig.getInstance().getTriggerItemId())) {
+            if (ItemStackUtil.equalId(itemStack, CONFIG.triggerItemId.getValue())) {
                 Dropper.tryToDropItems();
 
                 if (TaskUtil.hasTimeTask("autodrop_timeTrigger")) {
@@ -131,7 +210,8 @@ public class AutoDrop {
     }
 
     private static int reloadConfig(CommandContext<FabricClientCommandSource> context) {
-        AutoDropConfig.getInstance().reloadConfig();
+        CONFIG.reloadConfig();
+        updateTask();
         context.getSource().sendFeedback(T.tl("autodrop.reload.message"));
         return 1;
     }
@@ -142,35 +222,35 @@ public class AutoDrop {
                 T.tl("autodrop.enabled.message") : 
                 T.tl("autodrop.disabled.message")
         );
-        AutoDrop.enabled = enable;
+        toggleSwitch(enable);
         return 1;
     }
 
     private static int openConfigGui(CommandContext<FabricClientCommandSource> context) {
-        EventBus.post("openConfigGui", Map.of("module", MODULE_NAME));
+        GuiUtil.openYaclScreen(MODULE_NAME);
         return 1;
     }
 
     private static int setTimeTriggerInterval(CommandContext<FabricClientCommandSource> context) {
         int interval = context.getArgument("interval", Integer.class);
-        AutoDropConfig.getInstance().setTimeTriggerInterval(interval);
-        AutoDropConfig.getInstance().saveConfig();
+        CONFIG.timeTriggerInterval.setValue(interval);
+        CONFIG.saveConfig();
         context.getSource().sendFeedback(T.tl("autodrop.timeTriggerInterval.message", interval));
         return 1;
     }
 
     private static int ignoreNotEmptySlots(CommandContext<FabricClientCommandSource> context) {
         List<Integer> slots = InventoryUtil.getInventoryNotEmptySlots();
-        AutoDropConfig.getInstance().setIgnoreSlots(slots);
-        AutoDropConfig.getInstance().saveConfig();
+        CONFIG.ignoreSlots.setValue(slots);
+        CONFIG.saveConfig();
         String slotsStr = slots.toString();
         context.getSource().sendFeedback(T.tl("autodrop.ignore.current.message", slotsStr));
         return 1;
     }
 
     private static int resetIgnoreSlots(CommandContext<FabricClientCommandSource> context) {
-        AutoDropConfig.getInstance().setIgnoreSlots(List.of());
-        AutoDropConfig.getInstance().saveConfig();
+        CONFIG.ignoreSlots.resetValue();
+        CONFIG.saveConfig();
         context.getSource().sendFeedback(T.tl("autodrop.ignore.reset.message"));
         return 1;
     }
@@ -187,8 +267,8 @@ public class AutoDrop {
                 slots.remove(i);
             }
         }
-        AutoDropConfig.getInstance().setIgnoreSlots(slots);
-        AutoDropConfig.getInstance().saveConfig();
+        CONFIG.ignoreSlots.setValue(slots);
+        CONFIG.saveConfig();
         String slotsStr = slots.toString();
         context.getSource().sendFeedback(T.tl("autodrop.ignore.current.message", slotsStr));
         return 1;

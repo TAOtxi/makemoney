@@ -19,7 +19,7 @@
 			"cn.taotxi.Makemoney.Makemoney"
 		],
 		"modmenu": [
-        	"cn.taotxi.Makemoney.config.ModMenuIntegration"
+        	"cn.taotxi.Makemoney.gui.ModMenuIntegration"
     	]
 	},
 	"mixins": [

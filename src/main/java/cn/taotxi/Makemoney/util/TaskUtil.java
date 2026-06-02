@@ -83,6 +83,15 @@ public class TaskUtil {
         return timeTasks.stream().anyMatch(task -> task.getId().equals(id));
     }
 
+    public static int getNextRunTick(String id) {
+        for (TimeTask task : timeTasks) {
+            if (task.getId().equals(id)) {
+                return task.getNextRunTick();
+            }
+        }
+        throw new IllegalArgumentException("Time task with id " + id + " not found");
+    }
+
     public static void resetNextRunTick(String id) {
         for (TimeTask task: timeTasks) {
             if (task.getId().equals(id)) {
@@ -140,6 +149,10 @@ public class TaskUtil {
             throw new IllegalArgumentException("Tick task with id " + id + " not found");
         }
         tickTasks.get(id).tick();
+    }
+
+    public static int getTicker() {
+        return ticker;
     }
 
     private static int listTimeTasks(CommandContext<FabricClientCommandSource> context) {
