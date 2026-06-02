@@ -56,6 +56,10 @@ public class ConfigString implements IConfigBase<String> {
     public void setValue(Enum<?> value) {
         setValue(value.name());
     }
+
+    public boolean equals(Enum<?> value) {
+        return getValue().equals(value.name());
+    }
     
     @Override
     public void resetValue() {

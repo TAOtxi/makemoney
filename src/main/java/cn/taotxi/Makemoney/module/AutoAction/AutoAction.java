@@ -90,7 +90,7 @@ public class AutoAction {
     public static void resetActions() {
         actions.clear();
         isRunning = false;
-        Message.chatMsg(T.tl("autoaction.reset"));
+        Message.clientSideMsg(T.tl("autoaction.reset"));
     }
 
     public static List<Action> getCurrentActions() {

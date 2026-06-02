@@ -178,7 +178,7 @@ public class AutoDropConfigGui {
                 .build()
         );
 
-        MutableComponent throwConfigText = CONFIG.throwWay.getValue().equals(ThrowWay.DIRECTION) ? 
+        MutableComponent throwConfigText = CONFIG.throwWay.equals(ThrowWay.DIRECTION) ? 
             T.tl("autodrop.throwDirection") : 
             T.tl("autodrop.throwRotation");
         throwWayGroup.option(ButtonOption.createBuilder()
@@ -187,7 +187,7 @@ public class AutoDropConfigGui {
                 .description(OptionDescription.of(T.tl("autodrop.throwType.desc")))
                 .action((yaclScreen, button) -> {
                     CONFIG.throwWay.setValue(
-                        CONFIG.throwWay.getValue().equals(ThrowWay.DIRECTION) ? 
+                        CONFIG.throwWay.equals(ThrowWay.DIRECTION) ? 
                         ThrowWay.ROTATION : ThrowWay.DIRECTION);
                     CONFIG.saveConfig();
                     ConfigScreen.reload(yaclScreen, parent, true, AutoDropConfigGui::createScreen);
@@ -195,7 +195,7 @@ public class AutoDropConfigGui {
                 .build()
         );
 
-        if (CONFIG.throwWay.getValue().equals(ThrowWay.DIRECTION)) {
+        if (CONFIG.throwWay.equals(ThrowWay.DIRECTION)) {
             throwWayGroup.option(Option.<String>createBuilder()
                     .name(T.tl("autodrop.throwDirection"))
                     .description(OptionDescription.of(T.tl("autodrop.throwDirection.desc")))

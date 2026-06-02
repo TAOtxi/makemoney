@@ -8,7 +8,7 @@ import net.minecraft.network.chat.Component;
 public class Message {
     private static final Minecraft client = Minecraft.getInstance();
     
-    public static void chatMsg(Component msg) {
+    public static void clientSideMsg(Component msg) {
         if (client.player == null) {
             Makemoney.LOGGER.error("Player is null");
             return;
@@ -17,10 +17,10 @@ public class Message {
     }
 
     public static void clientSideMsg(String msg) {
-        chatMsg(Component.literal(msg));
+        clientSideMsg(Component.literal(msg));
     }
 
-    public static void chatMsg(String... msgs) {
+    public static void clientSideMsg(String... msgs) {
         StringBuilder sb = new StringBuilder();
         for (String str : msgs) {
             sb.append(str);
@@ -28,8 +28,8 @@ public class Message {
         clientSideMsg(sb.toString());
     }
 
-    public static void chatMsg(String msg1, Component msg2) {
-        chatMsg(Component.literal(msg1).append(msg2));
+    public static void clientSideMsg(String msg1, Component msg2) {
+        clientSideMsg(Component.literal(msg1).append(msg2));
     }
 
     public static void actionBarMsg(Component msg) {

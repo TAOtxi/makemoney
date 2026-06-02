@@ -2,34 +2,24 @@ package cn.taotxi.Makemoney;
 
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.ConfirmScreen;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.TitleScreen;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.mojang.blaze3d.platform.Window;
 import com.mojang.brigadier.context.CommandContext;
 
 import cn.taotxi.Makemoney.config.MakemoneyConfig;
 import cn.taotxi.Makemoney.gui.GuiUtil;
-import cn.taotxi.Makemoney.gui.ConfigScreen;
 import cn.taotxi.Makemoney.gui.dialog.ConfirmWindow;
 import cn.taotxi.Makemoney.module.AutoDrop.AutoDrop;
-import cn.taotxi.Makemoney.module.AutoDrop.AutoDropConfigGui;
 import cn.taotxi.Makemoney.module.AutoFish.AutoFish;
 import cn.taotxi.Makemoney.module.StrangeFunction.StrangeFunctionInit;
 import cn.taotxi.Makemoney.util.T;
 import cn.taotxi.Makemoney.util.TaskUtil;
-import dev.isxander.yacl3.gui.YACLScreen;
 
 // TODO: 屏蔽扫地机信息
 // TODO: 屏蔽地震消息

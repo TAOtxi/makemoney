@@ -32,9 +32,12 @@ public class AutoDrop {
     public static final String MODULE_NAME = "autodrop";
     public static final MLogger LOGGER = new MLogger(MODULE_NAME);
     public static boolean enabled = false;
+    private static final Minecraft client = Minecraft.getInstance();
     private static AutoDropConfig CONFIG = AutoDropConfig.getInstance();
+    private static final int throttleTick = 4;
     private static final String TIME_TRIGGER_TASK_NAME = "autodrop_timeTrigger";
     private static final String SHOW_ATTENTION_MSG_TASK_NAME = "autodrop_showAttentionMsg";
+    private static final String PICK_UP_DROP_TASK_NAME = "autodrop_pickUpDrop";
 
     public static void initialize() {
         CONFIG.loadConfig();
@@ -73,6 +76,15 @@ public class AutoDrop {
 
         AutoDrop.enabled = enable;
         updateTask();
+    }
+
+    public static void onPickUpDrop() {
+        if (TaskUtil.hasTimeTask(PICK_UP_DROP_TASK_NAME)) return;
+        TaskUtil.createOnceTimeTask(
+            PICK_UP_DROP_TASK_NAME, 
+            Dropper::tryToDropItems, 
+            throttleTick
+        );
     }
 
     public static void updateTask() {
@@ -117,6 +129,7 @@ public class AutoDrop {
     }
 
     private static void showAttentionMsg() {
+        if (client.player == null) return;
         boolean isTimeTrigger = CONFIG.isTimeTrigger.getValue();
         boolean isPickUpItemTrigger = CONFIG.isPickUpItemTrigger.getValue();
         if (!isTimeTrigger && !isPickUpItemTrigger) return;
@@ -148,23 +161,23 @@ public class AutoDrop {
 
     public static void onTakeItemEntity(ClientboundTakeItemEntityPacket clientboundTakeItemEntityPacket) {
         if (!enabled ||
-            clientboundTakeItemEntityPacket.getPlayerId() != Minecraft.getInstance().player.getId() ||
+            clientboundTakeItemEntityPacket.getPlayerId() != client.player.getId() ||
             !CONFIG.isPickUpItemTrigger.getValue()) {
             return;
         }
         if (CONFIG.triggerItemId.getValue().isEmpty()) {
-            Dropper.tryToDropItems();
+            onPickUpDrop();
             return;
         }
         
-        Entity entity = Minecraft.getInstance().level.getEntity(clientboundTakeItemEntityPacket.getItemId());
+        Entity entity = client.level.getEntity(clientboundTakeItemEntityPacket.getItemId());
         if (entity instanceof ItemEntity itemEntity) {
             ItemStack itemStack = itemEntity.getItem();
             if (ItemStackUtil.equalId(itemStack, CONFIG.triggerItemId.getValue())) {
-                Dropper.tryToDropItems();
+                onPickUpDrop();
 
-                if (TaskUtil.hasTimeTask("autodrop_timeTrigger")) {
-                    TaskUtil.resetNextRunTick("autodrop_timeTrigger");
+                if (TaskUtil.hasTimeTask(TIME_TRIGGER_TASK_NAME)) {
+                    TaskUtil.resetNextRunTick(TIME_TRIGGER_TASK_NAME);
                 }
             }
         }
