@@ -62,7 +62,7 @@ public class AutoDropConfigGui {
             T.tl("autodrop.on.desc"),
             false,
             () -> AutoDrop.enabled,
-            val -> AutoDrop.enabled = val
+            AutoDrop::toggleSwitch
         ));
 
         category.option(Factory.addToggleOption(
@@ -241,6 +241,8 @@ public class AutoDropConfigGui {
                 .description(OptionDescription.of(T.tl("autodrop.config.reset.desc")))
                 .action((yaclScreen, button) -> {
                     CONFIG.resetConfig();
+                    AutoDrop.enabled = false;
+                    AutoDrop.updateTask();
                     ConfigScreen.reload(yaclScreen, parent, false, AutoDropConfigGui::createScreen);
                 })
                 .build()
@@ -251,6 +253,7 @@ public class AutoDropConfigGui {
                 .description(OptionDescription.of(T.tl("autodrop.config.reload.desc")))
                 .action((yaclScreen, button) -> {
                     CONFIG.reloadConfig();
+                    AutoDrop.updateTask();
                     ConfigScreen.reload(yaclScreen, parent, false, AutoDropConfigGui::createScreen);
                 })
                 .build()
@@ -490,7 +493,4 @@ public class AutoDropConfigGui {
     }
 
 
-    public static void openConfigScreen(Screen parent) {
-        
-    }
 }

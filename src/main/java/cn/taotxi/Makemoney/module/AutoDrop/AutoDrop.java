@@ -75,7 +75,7 @@ public class AutoDrop {
         updateTask();
     }
 
-    private static void updateTask() {
+    public static void updateTask() {
         if (enabled) {
             if (
                 CONFIG.isShowAttentionMsg.getValue() &&
