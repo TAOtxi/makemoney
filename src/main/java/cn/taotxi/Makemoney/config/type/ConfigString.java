@@ -45,10 +45,11 @@ public class ConfigString implements IConfigBase<String> {
     
     @Override
     public void setValue(String value) {
-        if (value == getValue()) return;
+        String oldValue = getValue();
+        if (value.equals(oldValue)) return;
 
         if (listener != null) {
-            listener.accept(getValue(), value);
+            listener.accept(oldValue, value);
         }
         configManager.set(key, new JsonPrimitive(value));
     }
