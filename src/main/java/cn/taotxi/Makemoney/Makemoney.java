@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.File;
 import java.util.List;
@@ -32,16 +33,19 @@ public class Makemoney implements ModInitializer {
 	public void onInitialize() {
 		LOGGER.info("Starting mod...");
 
-        File folder = new File(MOD_ID);
+        File folder = new File(FabricLoader.getInstance().getConfigDir().toFile(), MOD_ID);
         boolean isNewUser = !folder.exists();
         MakemoneyConfig.getInstance().loadConfig();
         
         if (!isNewUser) {
+            LOGGER.info("Not a new user, check config change.");
             List<String> configChangeNameList = MakemoneyConfig.getInstance().getConfigChangeNameList();
             if (!configChangeNameList.isEmpty()) {
+                LOGGER.info("Config change detected: {}", configChangeNameList);
                 GuiUtil.openConfigChangeTipWindow(configChangeNameList);
             }
         } else {
+            LOGGER.info("New user, update config version field.");
             MakemoneyConfig.getInstance().updateConfigVersionField();
         }
 
