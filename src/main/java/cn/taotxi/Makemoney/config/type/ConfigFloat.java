@@ -45,11 +45,8 @@ public class ConfigFloat implements IConfigBase<Float> {
     
     @Override
     public void setValue(Float value) {
-        float oldValue = getValue();
-        if (value == oldValue) return;
-
         if (listener != null) {
-            listener.accept(oldValue, value);
+            listener.accept(getValue(), value);
         }
         configManager.set(key, new JsonPrimitive(value));
     }
@@ -67,5 +64,12 @@ public class ConfigFloat implements IConfigBase<Float> {
     @Override
     public void onChange(BiConsumer<Float, Float> listener) {
         this.listener = listener;
+    }
+    
+    @Override
+    public void triggerConfigChange() {
+        if (listener != null) {
+            listener.accept(getValue(), getDefaultValue());
+        }
     }
 }

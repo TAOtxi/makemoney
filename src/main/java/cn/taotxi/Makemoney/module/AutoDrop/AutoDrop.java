@@ -35,6 +35,7 @@ public class AutoDrop {
     private static final Minecraft client = Minecraft.getInstance();
     private static AutoDropConfig CONFIG = AutoDropConfig.getInstance();
     private static final int throttleTick = 4;
+    private static final int showAttentionMsgInterval = 20;
     private static final String TIME_TRIGGER_TASK_NAME = "autodrop_timeTrigger";
     private static final String SHOW_ATTENTION_MSG_TASK_NAME = "autodrop_showAttentionMsg";
     private static final String PICK_UP_DROP_TASK_NAME = "autodrop_pickUpDrop";
@@ -45,15 +46,17 @@ public class AutoDrop {
         ClientWorldEvents.AFTER_CLIENT_WORLD_CHANGE.register((mc, level) -> {
             if (CONFIG.turnOffWhenChangeWorld.getValue()) {
                 enabled = false;
+                onConfigChange();
             }
         });
 
         CONFIG.isShowAttentionMsg.onChange(
             (oldValue, newValue) -> {
                 if (!enabled) return;
-                if (newValue) {
+
+                if (newValue && !TaskUtil.hasTimeTask(SHOW_ATTENTION_MSG_TASK_NAME)) {
                     createShowAttentionMsgTask();
-                } else {
+                } else if (!newValue) {
                     TaskUtil.removeTimeTask(SHOW_ATTENTION_MSG_TASK_NAME);
                 }
             }
@@ -62,9 +65,10 @@ public class AutoDrop {
         CONFIG.isTimeTrigger.onChange(
             (oldValue, newValue) -> {
                 if (!enabled) return;
-                if (newValue) {
+                
+                if (newValue && !TaskUtil.hasTimeTask(TIME_TRIGGER_TASK_NAME)) {
                     createTimeTriggerTask();
-                } else {
+                } else if (!newValue) {
                     TaskUtil.removeTimeTask(TIME_TRIGGER_TASK_NAME);
                 }
             }
@@ -75,7 +79,7 @@ public class AutoDrop {
         if (AutoDrop.enabled == enable) return;
 
         AutoDrop.enabled = enable;
-        updateTask();
+        onConfigChange();
     }
 
     public static void onPickUpDrop() {
@@ -87,27 +91,28 @@ public class AutoDrop {
         );
     }
 
-    public static void updateTask() {
-        if (enabled) {
-            if (
-                CONFIG.isShowAttentionMsg.getValue() &&
-                !TaskUtil.hasTimeTask(SHOW_ATTENTION_MSG_TASK_NAME)
-            ) {
-                createShowAttentionMsgTask();
-            } else if (!CONFIG.isShowAttentionMsg.getValue()) {
-                TaskUtil.removeTimeTask(SHOW_ATTENTION_MSG_TASK_NAME);
-            }
-
-            if (
-                CONFIG.isTimeTrigger.getValue() &&
-                !TaskUtil.hasTimeTask(TIME_TRIGGER_TASK_NAME)
-            ) {
-                createTimeTriggerTask();
-            } else if (!CONFIG.isTimeTrigger.getValue()) {
-                TaskUtil.removeTimeTask(TIME_TRIGGER_TASK_NAME);
-            }
-        } else {
+    public static void onConfigChange() {
+        if (!enabled) {
             TaskUtil.removeTimeTask(SHOW_ATTENTION_MSG_TASK_NAME);
+            TaskUtil.removeTimeTask(TIME_TRIGGER_TASK_NAME);
+            return;
+        }
+
+        if (
+            CONFIG.isShowAttentionMsg.getValue() &&
+            !TaskUtil.hasTimeTask(SHOW_ATTENTION_MSG_TASK_NAME)
+        ) {
+            createShowAttentionMsgTask();
+        } else if (!CONFIG.isShowAttentionMsg.getValue()) {
+            TaskUtil.removeTimeTask(SHOW_ATTENTION_MSG_TASK_NAME);
+        }
+
+        if (
+            CONFIG.isTimeTrigger.getValue() &&
+            !TaskUtil.hasTimeTask(TIME_TRIGGER_TASK_NAME)
+        ) {
+            createTimeTriggerTask();
+        } else if (!CONFIG.isTimeTrigger.getValue()) {
             TaskUtil.removeTimeTask(TIME_TRIGGER_TASK_NAME);
         }
     }
@@ -116,7 +121,7 @@ public class AutoDrop {
         TaskUtil.createTimeTask(
             SHOW_ATTENTION_MSG_TASK_NAME, 
             AutoDrop::showAttentionMsg, 
-            20
+            showAttentionMsgInterval
         );
     }
 
@@ -124,7 +129,7 @@ public class AutoDrop {
         TaskUtil.createTimeTask(
             TIME_TRIGGER_TASK_NAME, 
             Dropper::tryToDropItems, 
-            () -> CONFIG.timeTriggerInterval.getValue()
+            CONFIG.timeTriggerInterval::getValue
         );
     }
 
@@ -166,6 +171,9 @@ public class AutoDrop {
             return;
         }
         if (CONFIG.triggerItemId.getValue().isEmpty()) {
+            if (TaskUtil.hasTimeTask(TIME_TRIGGER_TASK_NAME)) {
+                TaskUtil.resetNextRunTick(TIME_TRIGGER_TASK_NAME);
+            }
             onPickUpDrop();
             return;
         }
@@ -174,11 +182,10 @@ public class AutoDrop {
         if (entity instanceof ItemEntity itemEntity) {
             ItemStack itemStack = itemEntity.getItem();
             if (ItemStackUtil.equalId(itemStack, CONFIG.triggerItemId.getValue())) {
-                onPickUpDrop();
-
                 if (TaskUtil.hasTimeTask(TIME_TRIGGER_TASK_NAME)) {
                     TaskUtil.resetNextRunTick(TIME_TRIGGER_TASK_NAME);
                 }
+                onPickUpDrop();
             }
         }
     }
@@ -213,6 +220,9 @@ public class AutoDrop {
     }
 
     private static int test(CommandContext<FabricClientCommandSource> context) {
+        if (TaskUtil.hasTimeTask(TIME_TRIGGER_TASK_NAME)) {
+            TaskUtil.resetNextRunTick(TIME_TRIGGER_TASK_NAME);
+        }
         Dropper.drop();
         return 1;
     }
@@ -224,7 +234,7 @@ public class AutoDrop {
 
     private static int reloadConfig(CommandContext<FabricClientCommandSource> context) {
         CONFIG.reloadConfig();
-        updateTask();
+        onConfigChange();
         context.getSource().sendFeedback(T.tl("autodrop.reload.message"));
         return 1;
     }

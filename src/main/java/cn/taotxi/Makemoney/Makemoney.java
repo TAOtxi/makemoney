@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 
+import java.io.File;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -31,10 +32,17 @@ public class Makemoney implements ModInitializer {
 	public void onInitialize() {
 		LOGGER.info("Starting mod...");
 
+        File file = new File(MOD_ID, MOD_ID + ".json");
+        boolean isNewUser = !file.exists();
         MakemoneyConfig.getInstance().loadConfig();
-        List<String> configChangeNameList = MakemoneyConfig.getInstance().getConfigChangeNameList();
-        if (!configChangeNameList.isEmpty()) {
-            GuiUtil.openConfigChangeTipWindow(configChangeNameList);
+        
+        if (!isNewUser) {
+            List<String> configChangeNameList = MakemoneyConfig.getInstance().getConfigChangeNameList();
+            if (!configChangeNameList.isEmpty()) {
+                GuiUtil.openConfigChangeTipWindow(configChangeNameList);
+            }
+        } else {
+            MakemoneyConfig.getInstance().updateConfigVersionField();
         }
 
         registerCommand();

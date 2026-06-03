@@ -142,13 +142,7 @@ public class ConfigScreen {
             T.tl("autofish.enabled.desc"), 
             AUTOFISH_CONFIG.enabled.getDefaultValue(),
             AUTOFISH_CONFIG.enabled::getValue,
-            (val) -> {
-                if (val) {
-                    AutoFish.startFishing();
-                } else {
-                    AutoFish.stopFishing();
-                }
-            }
+            AUTOFISH_CONFIG.enabled::setValue
         ));
 
         autoFishGroup.option(Factory.addToggleOption(
@@ -188,9 +182,10 @@ public class ConfigScreen {
         strangeCategory.option(Factory.addToggleOption(
             T.tl("ignore.rightClickRide"), 
             T.tl("ignore.rightClickRide.desc"), 
-            RightClickRide.isEnabled(true), 
-            () -> RightClickRide.isEnabled(false),
-            RightClickRide::setEnabled));
+            STRANGE_CONFIG.rightClickRideEnabled.getDefaultValue(), 
+            STRANGE_CONFIG.rightClickRideEnabled::getValue,
+            STRANGE_CONFIG.rightClickRideEnabled::setValue
+        ));
 
         OptionGroup.Builder autoRideGroup = OptionGroup.createBuilder()
                 .name(T.tl("autoride"))
@@ -255,16 +250,6 @@ public class ConfigScreen {
             STRANGE_CONFIG.autoRideEnableShakeOffPlayer::setValue
         ));
 
-        autoRideGroup.option(ButtonOption.createBuilder()
-                .name(T.tl("autoride.reset"))
-                .description(OptionDescription.of(T.tl("autoride.reset.desc")))
-                .action((screen, option) -> {
-                    AutoRide.resetConfig();
-                    reload(screen, parent, false, ConfigScreen::getConfigScreen);
-                })
-                .build()
-        );
-
         strangeCategory.group(autoRideGroup.build());
 
 
@@ -275,9 +260,9 @@ public class ConfigScreen {
         ignoreGroup.option(Factory.addToggleOption(
                 T.tl("ignore.enabled"),
                 T.tl("ignore.enabled.desc"),
-                IgnoreMessage.isEnabled(true),
-                () -> IgnoreMessage.isEnabled(false),
-                IgnoreMessage::setEnabled
+                STRANGE_CONFIG.ignoreEnabled.getDefaultValue(),
+                STRANGE_CONFIG.ignoreEnabled::getValue,
+                STRANGE_CONFIG.ignoreEnabled::setValue
         ));
 
         ignoreGroup.option(ButtonOption.createBuilder()
@@ -297,8 +282,8 @@ public class ConfigScreen {
                 .description(OptionDescription.of(T.tl("ignore.deleteAll.desc")))
                 .action((screen, option) -> {
                     savePending(screen);
-                    IgnoreMessage.setIgnoreList(List.of());
-                    StrangeConfig.getInstance().saveConfig();
+                    STRANGE_CONFIG.ignoreList.clear();
+                    STRANGE_CONFIG.saveConfig();
                     reload(screen, parent, false, ConfigScreen::getConfigScreen);
                 })
                 .build()
@@ -310,9 +295,9 @@ public class ConfigScreen {
                     .name(T.tl("ignore.regex"))
                     .description(OptionDescription.of(T.tl("ignore.regex.desc")))
                     .binding(
-                        IgnoreMessage.getIgnoreList(false),
-                        () -> IgnoreMessage.getIgnoreList(false),
-                        IgnoreMessage::setIgnoreList
+                        List.of(),
+                        STRANGE_CONFIG.ignoreList::getValueAsStringList,
+                        STRANGE_CONFIG.ignoreList::setStringValue
                     )
                     .initial("")
                     .controller(StringControllerBuilder::create)

@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gson.JsonElement;
+
 import cn.taotxi.Makemoney.gui.ConfigScreen;
 import cn.taotxi.Makemoney.util.CommonUtil;
 import cn.taotxi.Makemoney.util.game.InventoryUtil;
@@ -24,11 +26,37 @@ import net.minecraft.world.inventory.InventoryMenu;
 
 public class Dropper {
     private static final AutoDropConfig CONFIG = AutoDropConfig.getInstance();
+    private static final List<Integer> ignoreSlots = CONFIG.ignoreSlots.getValueAsIntList();
+    private static final List<Item> matchItemList = CONFIG.getMatchItemLists();
+    private static final Minecraft client = Minecraft.getInstance();
+
+    public static void initialize() {
+        CONFIG.ignoreSlots.onChange(
+            (oldValue, newValue) -> {
+                ignoreSlots.clear();
+                for (JsonElement slot : newValue) {
+                    ignoreSlots.add(slot.getAsInt());
+                }
+            }
+        );
+
+        CONFIG.matchItemLists.onChange(
+            (oldValue, newValue) -> {
+                matchItemList.clear();
+                for (JsonElement item : newValue) {
+                    if (item.getAsJsonObject().get("enabled").getAsBoolean()) {
+                        matchItemList.add(AutoDropConfig.getGson().fromJson(item, Item.class));
+                    }
+                }
+            }
+        );
+
+    }
 
     // TODO: 在捡到物品的事件中，调用该方法
     public static void tryToDropItems() {
-        Minecraft client = Minecraft.getInstance();
         LocalPlayer player = client.player;
+        if (player == null) return;
 
         if (CONFIG.stopWhenCrouch.getValue() && player.isCrouching()) return;
         if (CONFIG.stopWhenOpenContainer.getValue() && player.hasContainerOpen()) return; // TODO: BUG: 无法检测是否打开背包
@@ -59,9 +87,7 @@ public class Dropper {
 
     public static void drop() {
         final List<Integer> dropSlots = new ArrayList<>();
-        InventoryMenu inventoryMenu = Minecraft.getInstance().player.inventoryMenu;
-        List<Item> matchLists = CONFIG.getMatchItemLists();
-        List<Integer> ignoreSlots = CONFIG.ignoreSlots.getValueAsList(Integer.class);
+        InventoryMenu inventoryMenu = client.player.inventoryMenu;
 
         for (int i = InventoryMenu.INV_SLOT_START; i < InventoryMenu.USE_ROW_SLOT_END; i++) {
             if (ignoreSlots.contains(i)) continue;
@@ -69,7 +95,7 @@ public class Dropper {
             ItemStack item = inventoryMenu.getSlot(i).getItem();
 
             // AutoDrop.LOGGER.info("Check item {} in slot {}", item.getItemName(), i);
-            if (isEqualItem(item, matchLists)) continue;
+            if (isEqualItem(item, matchItemList)) continue;
             // AutoDrop.LOGGER.info("Dropping item {} in slot {}", ItemStackUtil.getName(item), i);
             dropSlots.add(i);
         }
@@ -91,14 +117,14 @@ public class Dropper {
     }
 
     public static boolean isEqualItem(ItemStack item) {
-        return isEqualItem(item, CONFIG.getMatchItemLists());
+        return isEqualItem(item, matchItemList);
     }
 
     public static boolean isEqualItem(ItemStack item, List<Item> matchLists) {
         if (item.isEmpty()) return true;
 
         for (Item check: matchLists){
-            if (!check.enabled) continue;
+            // if (!check.enabled) continue;
 
             // TODO: 兼容其它命名空间
             // check name
@@ -168,7 +194,6 @@ public class Dropper {
     }
 
     private static void dropItems(List<Integer> slots) {
-        Minecraft client = Minecraft.getInstance();
         LocalPlayer player = client.player;
         InventoryMenu inventoryMenu = player.inventoryMenu;
         for (int slot: slots) {
@@ -181,7 +206,6 @@ public class Dropper {
     }
 
     private static void dropItemAnywhere(List<Integer> slots, float yaw, float pitch) {
-        Minecraft client = Minecraft.getInstance();
         float xRot = client.player.getXRot();
         float yRot = client.player.getYRot();
 
@@ -193,16 +217,13 @@ public class Dropper {
 
     // TODO: Bug: 创造模式会丢弃两个物品，但背包实际减少的是一个
     private static void dropItemAnywhere(List<Integer> slots, Direction direction) {
-        Minecraft client = Minecraft.getInstance();
-        LocalPlayer player = client.player;
-
         if (direction == Direction.LOOKING) {
           dropItems(slots);
           return;
         }
 
-        float xRot = player.getXRot();
-        float yRot = player.getYRot();
+        float xRot = client.player.getXRot();
+        float yRot = client.player.getYRot();
         setPlayerRotation(direction);
         dropItems(slots);
         setPlayerRotation(yRot, xRot);
@@ -237,7 +258,7 @@ public class Dropper {
     }
 
     private static void setPlayerRotation(float yaw, float pitch) {
-        LocalPlayer player = Minecraft.getInstance().player;
+        LocalPlayer player = client.player;
         player.setYRot(yaw);
         player.setXRot(pitch);
 

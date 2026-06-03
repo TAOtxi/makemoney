@@ -16,6 +16,8 @@ public interface IConfigBase<T> {
     
     public void resetValue();
 
+    public void triggerConfigChange();
+
     public boolean exists();
 
     public void onChange(BiConsumer<T, T> listener);

@@ -156,16 +156,21 @@ public class TaskUtil {
     }
 
     private static int listTimeTasks(CommandContext<FabricClientCommandSource> context) {
-        context.getSource().sendFeedback(T.l(""));
-        for (TimeTask task : timeTasks) {
+        context.getSource().sendFeedback(T.l("§7========== §6Task List§7 =========="));
+        for (int i = 0; i < timeTasks.size(); i++) {
+            TimeTask task = timeTasks.get(i);
+            context.getSource().sendFeedback(T.l("§7[§a" + task.getId() + "§7]"));
             context.getSource().sendFeedback(T.l(task.toString()));
+            if (i < timeTasks.size() - 1) {
+                context.getSource().sendFeedback(T.l());
+            }
         }
         return 1;
     }
 
     private static void registerCommand() {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-            dispatcher.register(ClientCommandManager.literal("taskUtil")
+            dispatcher.register(ClientCommandManager.literal("task")
                 .then(ClientCommandManager.literal("list")
                     .executes(TaskUtil::listTimeTasks)));
         });
@@ -198,8 +203,7 @@ class TimeTask {
 
     public String toString() {
         return "§7NextRunTick: §e" + nextRunTick + 
-                "  §7Interval: §e" + intervalSupplier.getAsInt() +
-                "  §7[§a" + id + "§7]";
+                "  §7Interval: §e" + intervalSupplier.getAsInt();
     }
 
     public void setIntervalSupplier(IntSupplier intervalSupplier) {

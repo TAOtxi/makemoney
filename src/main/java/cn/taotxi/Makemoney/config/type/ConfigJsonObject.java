@@ -65,4 +65,11 @@ public class ConfigJsonObject implements IConfigBase<JsonObject> {
     public void onChange(BiConsumer<JsonObject, JsonObject> listener) {
         this.listener = listener;
     }
+
+    @Override
+    public void triggerConfigChange() {
+        if (listener != null) {
+            listener.accept(getValue(), getDefaultValue());
+        }
+    }
 }

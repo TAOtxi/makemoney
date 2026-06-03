@@ -63,4 +63,11 @@ public class ConfigObject implements IConfigBase<Object> {
     public void onChange(BiConsumer<Object, Object> listener) {
         this.listener = listener;
     }
+
+    @Override
+    public void triggerConfigChange() {
+        if (listener != null) {
+            listener.accept(getValue(), getDefaultValue());
+        }
+    }
 }

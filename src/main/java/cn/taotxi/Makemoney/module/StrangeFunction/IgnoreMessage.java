@@ -6,61 +6,44 @@ import java.util.regex.Pattern;
 
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+
 import cn.taotxi.Makemoney.util.MLogger;
 import net.minecraft.network.protocol.game.ClientboundSystemChatPacket;
 
 public class IgnoreMessage {
     private static final String MODULE_NAME = "ignoreMessage";
     private static final MLogger logger = new MLogger(MODULE_NAME);
-    private static List<Pattern> ignorePatterns = new ArrayList<>();
+    private static final StrangeConfig CONFIG = StrangeConfig.getInstance();
+    private static List<Pattern> ignorePatterns;
 
     public static void initialize() {
-        for (String pattern : getIgnoreList(false)) {
+        JsonArray ignoreList = CONFIG.ignoreList.getValue();
+        ignorePatterns = new ArrayList<>(ignoreList.size());
+
+        for (JsonElement pattern : ignoreList) {
             try {
-                ignorePatterns.add(Pattern.compile(pattern));
+                ignorePatterns.add(Pattern.compile(pattern.getAsString()));
             } catch (Exception e) {
-                logger.error("Invalid ignore pattern: {}", pattern, e);
+                logger.error(
+                    "Invalid ignore pattern: {}", pattern.getAsString(), e);
             }
         }
-    }
 
-    public static boolean isEnabled(boolean isDefault) {
-        return StrangeConfig.getInstance().ignoreEnabled.getValue();
-    }
-
-    public static void setEnabled(boolean enabled) {
-        StrangeConfig.getInstance().ignoreEnabled.setValue(enabled);
-    }
-
-    public static boolean addIgnoreList(String pattern) {
-        if (pattern.isEmpty()) {
-            return false;
-        }
-        JsonArray ignoreListNode = StrangeConfig.getInstance().ignoreList.getValue();
-        try {
-            Pattern newPattern = Pattern.compile(pattern);
-            ignorePatterns.add(newPattern);
-            ignoreListNode.add(pattern);
-            return true;
-        } catch (Exception e) {
-            logger.error("Invalid ignore pattern: {}", pattern, e);
-            return false;
-        }
-    }
-
-    public static void setIgnoreList(List<String> ignoreList) {
-        ignorePatterns.clear();
-        StrangeConfig.getInstance().ignoreList.resetValue();
-        for (String pattern : ignoreList) {
-            addIgnoreList(pattern);
-        }
-    }
-
-    public static List<String> getIgnoreList(boolean isDefault) {
-        JsonArray ignoreListNode = StrangeConfig.getInstance().ignoreList.getValue();
-        return StrangeConfig.jsonArrayToListStr(ignoreListNode);
+        CONFIG.ignoreList.onChange(
+            (oldValue, newValue) -> {
+                ignorePatterns.clear();
+                for (JsonElement pattern : newValue) {
+                    try {
+                        ignorePatterns.add(Pattern.compile(pattern.getAsString()));
+                    } catch (Exception e) {
+                        logger.error(
+                            "Invalid ignore pattern: {}", pattern.getAsString(), e);
+                    }
+                }
+            }
+        );
     }
 
     public static boolean isIgnored(String message) {
@@ -70,7 +53,7 @@ public class IgnoreMessage {
     }
 
     public static void handleChatMessage(ClientboundSystemChatPacket chatMessageS2CPacket_1, CallbackInfo ci) {
-        if (!isEnabled(false)) {
+        if (!CONFIG.ignoreEnabled.getValue()) {
             return;
         }
         if (isIgnored(chatMessageS2CPacket_1.content().getString())) {
@@ -93,8 +76,6 @@ public class IgnoreMessage {
             "^\\w{1,16}(?:退出|加入)了游戏$|^\\w{1,16} joined \\w+$|^\\w{1,16} was disconnected$",
             "^<\\w{1,16}> (?:\\d+|all)$"
         );
-        for (String pattern : list) {
-            addIgnoreList(pattern);
-        }
+        CONFIG.ignoreList.setStringValue(list);
     }
 }

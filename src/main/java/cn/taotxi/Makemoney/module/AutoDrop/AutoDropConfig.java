@@ -44,7 +44,7 @@ public class AutoDropConfig extends ConfigManager {
     public ConfigFloat    throwPitch                = new ConfigFloat("throwPitch", 0.0f, "pitch", this);
 
     public ConfigBoolean  isTimeTrigger             = new ConfigBoolean("isTimeTrigger", true, "定时触发丢弃功能开关", this);
-    public ConfigInteger  timeTriggerInterval       = new ConfigInteger("timeTriggerInterval", 60 * 20, "定时触发时间间隔（tick）", this);
+    public ConfigInteger  timeTriggerInterval       = new ConfigInteger("timeTriggerInterval", 180 * 20, "定时触发时间间隔（tick）", this);
     public ConfigBoolean  isPickUpItemTrigger       = new ConfigBoolean("isPickUpItemTrigger", false, "拾取到指定掉落物触发丢弃功能开关", this);
     public ConfigString   triggerItemId             = new ConfigString("triggerItemId", "", "拾取到掉落物ID", this);
 
@@ -87,15 +87,18 @@ public class AutoDropConfig extends ConfigManager {
     }
 
     public List<Item> getMatchItemLists() {
-        List<Item> lists = new ArrayList<>();
-        for (JsonElement item: matchItemLists.getValue()) {
-            lists.add(getGson().fromJson(item, Item.class));
+        JsonArray matchLists = matchItemLists.getValue();
+        List<Item> lists = new ArrayList<>(matchLists.size());
+        for (JsonElement item: matchLists) {
+            if (item.getAsJsonObject().get("enabled").getAsBoolean()) {
+                lists.add(getGson().fromJson(item, Item.class));
+            }
         }
         return lists;
     }
 
     public void removeMatchItem(int index) {
-        matchItemLists.getValue().remove(index);
+        matchItemLists.remove(index);
     }
 
     public void addPresetItems() {

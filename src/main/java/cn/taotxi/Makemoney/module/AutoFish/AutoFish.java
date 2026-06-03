@@ -46,38 +46,37 @@ public class AutoFish {
 
     public static void initialize() {
         CONFIG.loadConfig();
-        onConfigChange();
         registerCommand();
-    }
 
-    private static void onConfigChange() {
-        if (CONFIG.enabled.getValue() && !TaskUtil.hasTimeTask(FISHING_STATUS_CHECK_TASK_ID)) {
-            TaskUtil.createTimeTask(FISHING_STATUS_CHECK_TASK_ID, AutoFish::fishingStatusCheck, checkInterval);
-        } else if (!CONFIG.enabled.getValue()) {
-            TaskUtil.removeTimeTask(FISHING_STATUS_CHECK_TASK_ID);
-            TaskUtil.removeTimeTask(THROW_FISHING_ROD_TASK_ID);
-            outOfWaterTime = 0;
-            bobberId = -1;
-            lastYaw = -1.0F;
-            lastPitch = -1.0F;
-        }
-    }
-
-    public static void startFishing() {
         if (CONFIG.enabled.getValue()) {
-            return;
+            TaskUtil.createTimeTask(
+                FISHING_STATUS_CHECK_TASK_ID, 
+                AutoFish::fishingStatusCheck, 
+                checkInterval
+            );
         }
-        bobberId = -1;
-        CONFIG.enabled.enable();
-        onConfigChange();
-    }
 
-    public static void stopFishing() {
-        if (!CONFIG.enabled.getValue()) {
-            return;
-        }
-        CONFIG.enabled.disable();
-        onConfigChange();
+        CONFIG.enabled.onChange(
+            (oldValue, newValue) -> {
+                if (!newValue) {
+                    TaskUtil.removeTimeTask(FISHING_STATUS_CHECK_TASK_ID);
+                    TaskUtil.removeTimeTask(THROW_FISHING_ROD_TASK_ID);
+                    outOfWaterTime = 0;
+                    bobberId = -1;
+                    lastYaw = -1.0F;
+                    lastPitch = -1.0F;
+                    return;
+                }
+                
+                if (!TaskUtil.hasTimeTask(FISHING_STATUS_CHECK_TASK_ID)) {
+                    TaskUtil.createTimeTask(
+                        FISHING_STATUS_CHECK_TASK_ID, 
+                        AutoFish::fishingStatusCheck, 
+                        checkInterval
+                    );
+                }
+            }
+        );
     }
 
     // TODO: 优雅地保存配置文件
@@ -88,14 +87,14 @@ public class AutoFish {
                 .then(ClientCommandManager.literal("help").executes(AutoFish::showHelp))
                 .then(ClientCommandManager.literal("on")
                     .executes(context -> {
-                        startFishing();
+                        CONFIG.enabled.enable();
                         CONFIG.saveConfig();
                         context.getSource().sendFeedback(T.tl("autofish.enabled.message"));
                         return 1;
                     }))
                 .then(ClientCommandManager.literal("off")
                     .executes(context -> {
-                        stopFishing();
+                        CONFIG.enabled.disable();
                         CONFIG.saveConfig();
                         context.getSource().sendFeedback(T.tl("autofish.disabled.message"));
                         return 1;
@@ -160,7 +159,6 @@ public class AutoFish {
                     .then(ClientCommandManager.literal("reload")
                         .executes(context -> {
                             CONFIG.reloadConfig();
-                            onConfigChange();
                             context.getSource().sendFeedback(T.tl("autofish.config.reload.message"));
                             return 1;
                         }))
@@ -206,6 +204,7 @@ public class AutoFish {
                 bobber = (FishingHook) entity;
                 client.player.fishing = bobber;
             } else {
+                bobberId = -1;
                 client.player.fishing = null;
                 logger.info("Fishing bobber is null, throw rod");
                 throwRod(hand);
@@ -258,10 +257,10 @@ public class AutoFish {
     }
 
     public static void onEntitySetData(ClientboundSetEntityDataPacket clientboundSetEntityDataPacket) {
-        if (CONFIG.enabled.getValue() &&
-            client.player != null &&
+        if (client.player != null &&
             client.player.fishing != null &&
-            clientboundSetEntityDataPacket.id() == client.player.fishing.getId()
+            clientboundSetEntityDataPacket.id() == client.player.fishing.getId() &&
+            CONFIG.enabled.getValue()
         ) {
             for (DataValue<?> dataValue : clientboundSetEntityDataPacket.packedItems()) {
                 // See https://minecraft.wiki/w/Java_Edition_protocol/Entity_metadata#Fishing_Bobber

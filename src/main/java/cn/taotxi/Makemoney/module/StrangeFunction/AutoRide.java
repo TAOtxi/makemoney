@@ -21,9 +21,10 @@ import cn.taotxi.Makemoney.util.game.GameUtil;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.protocol.game.ClientboundSetEntityLinkPacket;
+import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.network.protocol.game.ServerboundPlayerInputPacket;
 import net.minecraft.world.entity.player.Input;
 import net.minecraft.world.InteractionHand;
@@ -31,38 +32,29 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.EntityHitResult;
 
 public class AutoRide {
+    private static final String MODULE_NAME = "autoride";
     private static boolean enabled = false;
-    private static int tickCounter = 0;
+    private static final Minecraft client = Minecraft.getInstance();
     private static final StrangeConfig CONFIG = StrangeConfig.getInstance();
+    private static final String AUTORIDE_RUN_TASK = "autoRideRunTask";
+    private static String targetPlayer = "";
 
     public static void initialize() {
-        registerTickEvents();
         registerCommand();
-    }
 
-    private static void registerTickEvents() {
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (client.level == null || client.player == null) return;
-            
-            if (client.player.isCrouching()) return;
-            if (client.player.getVehicle() != null) return;
-            
-            if (CONFIG.autoRideEnableShakeOffPlayer.getValue()) {
-                tryToShakeOffPlayer(client.player);
+        CONFIG.autoRideRunInterval.onChange(
+            (oldValue, newValue) -> {
+                if (TaskUtil.hasTimeTask(AUTORIDE_RUN_TASK)) {
+                    TaskUtil.updateTimeTask(AUTORIDE_RUN_TASK, newValue);
+                }
             }
-            if (!enabled) return;
-            
-            tickCounter++;
-            if (tickCounter % CONFIG.autoRideRunInterval.getValue() != 0) return;
-
-            if (!client.player.getMainHandItem().isEmpty()) return;
-            if (client.level.players().size() < 2) return;
-
-            Player target = findTargetPlayer();
-            if (target == null) return;
-
-            rideTargetPlayer(target);
-        });
+        );
+        targetPlayer = CONFIG.autoRideTargetPlayer.getValue();
+        CONFIG.autoRideTargetPlayer.onChange(
+            (oldValue, newValue) -> {
+                targetPlayer = newValue;
+            }
+        );
     }
 
     public static boolean isEnabled() {
@@ -70,13 +62,41 @@ public class AutoRide {
     }
 
     public static void setEnabled(boolean enabled) {
+        if (AutoRide.enabled == enabled) return;
+
         AutoRide.enabled = enabled;
+        if (enabled) {
+            TaskUtil.createTimeTask(AUTORIDE_RUN_TASK, AutoRide::tick, CONFIG.autoRideRunInterval.getValue());
+        } else {
+            TaskUtil.removeTimeTask(AUTORIDE_RUN_TASK);
+        }
     }
 
-    private static void tryToShakeOffPlayer(LocalPlayer player) {
-        if (player.getPassengers().isEmpty()) return;
+    private static void tick() {
+        LocalPlayer player = client.player;
+        if (player == null) return;
+
+        if (player.isCrouching()) return;
+        if (player.getVehicle() != null) return;
+
+        if (!player.getMainHandItem().isEmpty()) return;
+        if (client.level.players().size() < 2) return;
+
+        Player target = findTargetPlayer();
+        if (target == null) return;
+
+        rideTargetPlayer(target);
+    }
+
+    public static void onEntityRidePlayer(ClientboundSetPassengersPacket clientboundSetPassengersPacket) {
+        LocalPlayer player = client.player;
+        if (clientboundSetPassengersPacket.getVehicle() != player.getId()) return;
+        if (!CONFIG.autoRideEnableShakeOffPlayer.getValue()) return;
+        if (player.isCrouching()) return;
+        if (player.getVehicle() != null) return;
+        
+        // if (player.getPassengers().isEmpty()) return;
         if (player.getAbilities().flying) return;   // 飞行状态下无法潜行
-        if (TaskUtil.hasTimeTask("shakeOffPlayer")) return;
 
         // TODO: 找到比较优雅让玩家潜行的方法
         // TODO: 考虑是否要覆盖掉原有输入
@@ -90,24 +110,21 @@ public class AutoRide {
             player.input.keyPresses.sprint()
         );
         player.connection.send(new ServerboundPlayerInputPacket(shiftInput));
-        TaskUtil.createOnceTimeTask("shakeOffPlayer", () -> {
-            Input cancelShiftInput = new Input(
-                player.input.keyPresses.forward(),
-                player.input.keyPresses.backward(),
-                player.input.keyPresses.left(),
-                player.input.keyPresses.right(),
-                player.input.keyPresses.jump(),
-                false,
-                player.input.keyPresses.sprint()
-            );
-            player.connection.send(new ServerboundPlayerInputPacket(cancelShiftInput));
-        }, 0);  // 暂时不考虑自定义周期
+
+        Input cancelShiftInput = new Input(
+            player.input.keyPresses.forward(),
+            player.input.keyPresses.backward(),
+            player.input.keyPresses.left(),
+            player.input.keyPresses.right(),
+            player.input.keyPresses.jump(),
+            false,
+            player.input.keyPresses.sprint()
+        );
+        player.connection.send(new ServerboundPlayerInputPacket(cancelShiftInput));
     }
 
     private static Player findTargetPlayer() {
-        Minecraft client = Minecraft.getInstance();
         LocalPlayer player = client.player;
-        String targetPlayer = CONFIG.autoRideTargetPlayer.getValue();
         List<String> onlinePlayers = GameUtil.getOnlinePlayerNames();
         return client.level.getNearestPlayer(
             player.getX(), player.getY(), player.getZ(), CONFIG.autoRideMinDistance.getValue(),
@@ -124,23 +141,22 @@ public class AutoRide {
     }
 
     private static void rideTargetPlayer(Player playerCow) {
-        Minecraft client = Minecraft.getInstance();
         client.gameMode.interactAt(client.player, playerCow, 
                 new EntityHitResult(playerCow), InteractionHand.MAIN_HAND);
-    }
-
-    public static void resetConfig() {
-        setEnabled(false);
-        CONFIG.autoRideTargetPlayer.resetValue();
-        CONFIG.autoRideMinDistance.resetValue();
-        CONFIG.autoRideRunInterval.resetValue();
-        CONFIG.autoRideEnableShakeOffPlayer.resetValue();
-        CONFIG.saveConfig();
     }
 
     private static int showHelp(CommandContext<FabricClientCommandSource> context) {
         context.getSource().sendFeedback(T.tl("autoride.help.message"));
         return 1;
+    }
+
+    public static void resetConfig() {
+        CONFIG.autoRideTargetPlayer.resetValue();
+        CONFIG.autoRideRunInterval.resetValue();
+        CONFIG.autoRideMinDistance.resetValue();
+        CONFIG.autoRideEnableShakeOffPlayer.resetValue();
+        setEnabled(false);
+        CONFIG.saveConfig();
     }
 
     // TODO: BUG: 插入的变量颜色是白色，即使设置为§e也无效。
@@ -179,7 +195,8 @@ public class AutoRide {
                             return 1;
                         })))
                 .then(ClientCommandManager.literal("reset").executes(context -> {
-                    resetConfig();
+                    CONFIG.resetConfig();
+                    setEnabled(false);
                     context.getSource().sendFeedback(T.tl("autoride.reset.message"));
                     return 1;
                 }))
@@ -200,12 +217,12 @@ public class AutoRide {
                         }))
                 )
                 .then(ClientCommandManager.literal("on").executes(context -> {
-                    enabled = true;
+                    setEnabled(true);
                     context.getSource().sendFeedback(T.tl("autoride.enabled.message"));
                     return 1;
                 }))
                 .then(ClientCommandManager.literal("off").executes(context -> {
-                    enabled = false;
+                    setEnabled(false);
                     context.getSource().sendFeedback(T.tl("autoride.disabled.message"));
                     return 1;
                 }))

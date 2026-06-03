@@ -16,20 +16,23 @@ import net.minecraft.world.entity.npc.villager.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 
 public class RightClickRide {
+    private static final String MODULE_NAME = "rightclickride";
+    private static final StrangeConfig CONFIG = StrangeConfig.getInstance();
+    private static final Minecraft client = Minecraft.getInstance();
+
     public static void handleInteract(
         Player player, 
         Entity entity,
         InteractionHand interactionHand, 
         CallbackInfoReturnable<InteractionResult> cir) 
     {
-        if (!isEnabled(false)) return;
         if (player.isCrouching()) return;
+        if (!CONFIG.rightClickRideEnabled.getValue()) return;
 
         // 右键一次左右手都会调用interact
         if (interactionHand != InteractionHand.MAIN_HAND) return;
         if (!player.getItemInHand(interactionHand).isEmpty()) return;
 
-        Minecraft client = Minecraft.getInstance();
         Entity lookEntity = client.crosshairPickEntity;
 
         if (lookEntity == null) return;
@@ -61,13 +64,5 @@ public class RightClickRide {
 
         // TODO: 配置界面可以自定义骑乘命令
         Message.sendMessage("/ride");
-    }
-
-    public static boolean isEnabled(boolean forceDefault) {
-        return StrangeConfig.getInstance().rightClickRideEnabled.getValue();
-    }
-
-    public static void setEnabled(boolean enabled) {
-        StrangeConfig.getInstance().rightClickRideEnabled.setValue(enabled);
     }
 }

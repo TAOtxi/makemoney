@@ -242,7 +242,7 @@ public class AutoDropConfigGui {
                 .action((yaclScreen, button) -> {
                     CONFIG.resetConfig();
                     AutoDrop.enabled = false;
-                    AutoDrop.updateTask();
+                    AutoDrop.onConfigChange();
                     ConfigScreen.reload(yaclScreen, parent, false, AutoDropConfigGui::createScreen);
                 })
                 .build()
@@ -253,7 +253,7 @@ public class AutoDropConfigGui {
                 .description(OptionDescription.of(T.tl("autodrop.config.reload.desc")))
                 .action((yaclScreen, button) -> {
                     CONFIG.reloadConfig();
-                    AutoDrop.updateTask();
+                    AutoDrop.onConfigChange();
                     ConfigScreen.reload(yaclScreen, parent, false, AutoDropConfigGui::createScreen);
                 })
                 .build()

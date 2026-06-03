@@ -44,6 +44,10 @@ public class ConfigManager {
 
     public void reloadConfig() {
         loadConfig();
+
+        for (IConfigBase<?> option : options) {
+            option.triggerConfigChange();
+        }
     }
     
     public void saveConfig() {
@@ -54,6 +58,10 @@ public class ConfigManager {
         JsonObject defaultConfig = createDefaultConfig();
         config = defaultConfig.deepCopy();
         saveConfig();
+
+        for (IConfigBase<?> option : options) {
+            option.triggerConfigChange();
+        }
     }
 
     public static Gson getGson() {

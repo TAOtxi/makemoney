@@ -45,11 +45,8 @@ public class ConfigString implements IConfigBase<String> {
     
     @Override
     public void setValue(String value) {
-        String oldValue = getValue();
-        if (value.equals(oldValue)) return;
-
         if (listener != null) {
-            listener.accept(oldValue, value);
+            listener.accept(getValue(), value);
         }
         configManager.set(key, new JsonPrimitive(value));
     }
@@ -75,5 +72,12 @@ public class ConfigString implements IConfigBase<String> {
     @Override
     public void onChange(BiConsumer<String, String> listener) {
         this.listener = listener;
+    }
+
+    @Override
+    public void triggerConfigChange() {
+        if (listener != null) {
+            listener.accept(getValue(), getDefaultValue());
+        }
     }
 }
