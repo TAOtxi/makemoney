@@ -1,12 +1,9 @@
 package cn.taotxi.Makemoney.module.StrangeFunction;
 
 
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
 import cn.taotxi.Makemoney.util.Message;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -23,19 +20,19 @@ public class RightClickRide {
     public static void handleInteract(
         Player player, 
         Entity entity,
-        InteractionHand interactionHand, 
-        CallbackInfoReturnable<InteractionResult> cir) 
+        InteractionHand interactionHand) 
     {
         if (player.isCrouching()) return;
         if (!CONFIG.rightClickRideEnabled.getValue()) return;
 
         // 右键一次左右手都会调用interact
         if (interactionHand != InteractionHand.MAIN_HAND) return;
-        if (!player.getItemInHand(interactionHand).isEmpty()) return;
-
+        
         Entity lookEntity = client.crosshairPickEntity;
-
+        
         if (lookEntity == null) return;
+        
+        if (!player.getItemInHand(interactionHand).isEmpty()) return;
         if (!(lookEntity instanceof LivingEntity)) return;
 
         // 跳过装备鞍的生物

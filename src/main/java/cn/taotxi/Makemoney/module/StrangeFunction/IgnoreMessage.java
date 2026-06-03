@@ -16,21 +16,9 @@ public class IgnoreMessage {
     private static final String MODULE_NAME = "ignoreMessage";
     private static final MLogger logger = new MLogger(MODULE_NAME);
     private static final StrangeConfig CONFIG = StrangeConfig.getInstance();
-    private static List<Pattern> ignorePatterns;
+    private static final List<Pattern> ignorePatterns = new ArrayList<>();
 
     public static void initialize() {
-        JsonArray ignoreList = CONFIG.ignoreList.getValue();
-        ignorePatterns = new ArrayList<>(ignoreList.size());
-
-        for (JsonElement pattern : ignoreList) {
-            try {
-                ignorePatterns.add(Pattern.compile(pattern.getAsString()));
-            } catch (Exception e) {
-                logger.error(
-                    "Invalid ignore pattern: {}", pattern.getAsString(), e);
-            }
-        }
-
         CONFIG.ignoreList.onChange(
             (oldValue, newValue) -> {
                 ignorePatterns.clear();
@@ -44,6 +32,7 @@ public class IgnoreMessage {
                 }
             }
         );
+        CONFIG.ignoreEnabled.triggerConfigChange();
     }
 
     public static boolean isIgnored(String message) {

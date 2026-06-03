@@ -32,8 +32,8 @@ public class Makemoney implements ModInitializer {
 	public void onInitialize() {
 		LOGGER.info("Starting mod...");
 
-        File file = new File(MOD_ID, MOD_ID + ".json");
-        boolean isNewUser = !file.exists();
+        File folder = new File(MOD_ID);
+        boolean isNewUser = !folder.exists();
         MakemoneyConfig.getInstance().loadConfig();
         
         if (!isNewUser) {

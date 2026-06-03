@@ -18,11 +18,11 @@ public class MultiPlayerGameModeMixin {
 
     @Inject(method = "interact", at = @At("HEAD"))
     public void interactBefore(Player player, Entity entity, InteractionHand interactionHand, CallbackInfoReturnable<InteractionResult> cir) {
-        RightClickRide.handleInteract(player, entity, interactionHand, cir);
+        RightClickRide.handleInteract(player, entity, interactionHand);
     }
 
     @Inject(method = "useItem", at = @At("HEAD"))
     public void useItemBefore(Player player, InteractionHand interactionHand, CallbackInfoReturnable<InteractionResult> cir) {
-        AutoFish.initRotaion(player, interactionHand, cir);
+        AutoFish.initRotaion(player, interactionHand);
     }
 }

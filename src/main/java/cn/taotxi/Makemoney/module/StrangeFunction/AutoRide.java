@@ -23,7 +23,6 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.network.protocol.game.ClientboundSetEntityLinkPacket;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.network.protocol.game.ServerboundPlayerInputPacket;
 import net.minecraft.world.entity.player.Input;
@@ -37,6 +36,8 @@ public class AutoRide {
     private static final Minecraft client = Minecraft.getInstance();
     private static final StrangeConfig CONFIG = StrangeConfig.getInstance();
     private static final String AUTORIDE_RUN_TASK = "autoRideRunTask";
+    private static final String AUTORIDE_SHAKE_OFF_PLAYER_TASK = "autoRideShakeOffPlayerTask";
+    private static final int SHAKE_OFF_PLAYER_INTERVAL = 5;
     private static String targetPlayer = "";
 
     public static void initialize() {
@@ -49,12 +50,30 @@ public class AutoRide {
                 }
             }
         );
-        targetPlayer = CONFIG.autoRideTargetPlayer.getValue();
+
         CONFIG.autoRideTargetPlayer.onChange(
             (oldValue, newValue) -> {
                 targetPlayer = newValue;
             }
         );
+        CONFIG.autoRideTargetPlayer.triggerConfigChange();
+
+        CONFIG.autoRideEnableShakeOffPlayer.onChange(
+            (oldValue, newValue) -> {
+                if (!newValue) {
+                    TaskUtil.removeTimeTask(AUTORIDE_SHAKE_OFF_PLAYER_TASK);
+                    return;
+                };
+
+                if (!TaskUtil.hasTimeTask(AUTORIDE_SHAKE_OFF_PLAYER_TASK)) {
+                    TaskUtil.createTimeTask(AUTORIDE_SHAKE_OFF_PLAYER_TASK, AutoRide::shakeOffPlayer, SHAKE_OFF_PLAYER_INTERVAL);
+                }
+
+                if (client.player == null || client.player.getPassengers().isEmpty()) return;
+                shakeOffPlayer();
+            }
+        );
+        CONFIG.autoRideEnableShakeOffPlayer.triggerConfigChange();
     }
 
     public static boolean isEnabled() {
@@ -88,10 +107,10 @@ public class AutoRide {
         rideTargetPlayer(target);
     }
 
-    public static void onEntityRidePlayer(ClientboundSetPassengersPacket clientboundSetPassengersPacket) {
+    public static void shakeOffPlayer() {
         LocalPlayer player = client.player;
-        if (clientboundSetPassengersPacket.getVehicle() != player.getId()) return;
-        if (!CONFIG.autoRideEnableShakeOffPlayer.getValue()) return;
+        if (player == null) return;
+        
         if (player.isCrouching()) return;
         if (player.getVehicle() != null) return;
         
@@ -121,6 +140,12 @@ public class AutoRide {
             player.input.keyPresses.sprint()
         );
         player.connection.send(new ServerboundPlayerInputPacket(cancelShiftInput));
+    }
+
+    public static void onEntityRidePlayer(ClientboundSetPassengersPacket clientboundSetPassengersPacket) {
+        if (clientboundSetPassengersPacket.getVehicle() != client.player.getId()) return;
+        if (!CONFIG.autoRideEnableShakeOffPlayer.getValue()) return;
+        shakeOffPlayer();
     }
 
     private static Player findTargetPlayer() {

@@ -75,9 +75,17 @@ public class ConfigString implements IConfigBase<String> {
     }
 
     @Override
-    public void triggerConfigChange() {
+    public void triggerConfigChangeDefault() {
         if (listener != null) {
             listener.accept(getValue(), getDefaultValue());
+        }
+    }
+
+    @Override
+    public void triggerConfigChange() {
+        if (listener != null) {
+            String value = getValue();
+            listener.accept(value, value);
         }
     }
 }

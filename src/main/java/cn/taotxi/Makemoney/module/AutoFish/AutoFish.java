@@ -48,23 +48,16 @@ public class AutoFish {
         CONFIG.loadConfig();
         registerCommand();
 
-        if (CONFIG.enabled.getValue()) {
-            TaskUtil.createTimeTask(
-                FISHING_STATUS_CHECK_TASK_ID, 
-                AutoFish::fishingStatusCheck, 
-                checkInterval
-            );
-        }
-
         CONFIG.enabled.onChange(
             (oldValue, newValue) -> {
+                outOfWaterTime = 0;
+                bobberId = -1;
+                lastYaw = -1.0F;
+                lastPitch = -1.0F;
+
                 if (!newValue) {
                     TaskUtil.removeTimeTask(FISHING_STATUS_CHECK_TASK_ID);
                     TaskUtil.removeTimeTask(THROW_FISHING_ROD_TASK_ID);
-                    outOfWaterTime = 0;
-                    bobberId = -1;
-                    lastYaw = -1.0F;
-                    lastPitch = -1.0F;
                     return;
                 }
                 
@@ -77,6 +70,7 @@ public class AutoFish {
                 }
             }
         );
+        CONFIG.enabled.triggerConfigChange();
     }
 
     // TODO: 优雅地保存配置文件
@@ -241,7 +235,7 @@ public class AutoFish {
         return true;
     }
 
-    public static void initRotaion(Player player, InteractionHand interactionHand, CallbackInfoReturnable<InteractionResult> cir) {
+    public static void initRotaion(Player player, InteractionHand interactionHand) {
         if (lastYaw == -1.0F && CONFIG.rotation.getValue() && getFishingHand() == interactionHand) {
             lastYaw = player.getYRot();
             lastPitch = player.getXRot();

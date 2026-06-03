@@ -75,9 +75,17 @@ public class ConfigBoolean implements IConfigBase<Boolean> {
     }
     
     @Override
-    public void triggerConfigChange() {
+    public void triggerConfigChangeDefault() {
         if (listener != null) {
             listener.accept(getValue(), getDefaultValue());
+        }
+    }
+
+    @Override
+    public void triggerConfigChange() {
+        if (listener != null) {
+            Boolean value = getValue();
+            listener.accept(value, value);
         }
     }
 }

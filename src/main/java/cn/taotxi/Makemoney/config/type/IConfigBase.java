@@ -15,8 +15,11 @@ public interface IConfigBase<T> {
     public String getComment();
     
     public void resetValue();
-
+    
     public void triggerConfigChange();
+    
+    public void triggerConfigChangeDefault();
+
 
     public boolean exists();
 

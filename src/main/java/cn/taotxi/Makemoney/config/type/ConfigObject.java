@@ -65,9 +65,17 @@ public class ConfigObject implements IConfigBase<Object> {
     }
 
     @Override
-    public void triggerConfigChange() {
+    public void triggerConfigChangeDefault() {
         if (listener != null) {
             listener.accept(getValue(), getDefaultValue());
+        }
+    }
+
+    @Override
+    public void triggerConfigChange() {
+        if (listener != null) {
+            Object value = getValue();
+            listener.accept(value, value);
         }
     }
 }

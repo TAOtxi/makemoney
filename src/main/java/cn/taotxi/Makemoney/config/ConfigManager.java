@@ -46,7 +46,7 @@ public class ConfigManager {
         loadConfig();
 
         for (IConfigBase<?> option : options) {
-            option.triggerConfigChange();
+            option.triggerConfigChangeDefault();
         }
     }
     
@@ -60,7 +60,7 @@ public class ConfigManager {
         saveConfig();
 
         for (IConfigBase<?> option : options) {
-            option.triggerConfigChange();
+            option.triggerConfigChangeDefault();
         }
     }
 

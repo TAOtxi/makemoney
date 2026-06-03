@@ -67,9 +67,17 @@ public class ConfigInteger implements IConfigBase<Integer> {
     }
     
     @Override
-    public void triggerConfigChange() {
+    public void triggerConfigChangeDefault() {
         if (listener != null) {
             listener.accept(getValue(), getDefaultValue());
+        }
+    }
+    
+    @Override
+    public void triggerConfigChange() {
+        if (listener != null) {
+            Integer value = getValue();
+            listener.accept(value, value);
         }
     }
 }
