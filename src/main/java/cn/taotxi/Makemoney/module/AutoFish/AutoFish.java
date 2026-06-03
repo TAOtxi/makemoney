@@ -14,10 +14,10 @@ import cn.taotxi.Makemoney.util.TaskUtil;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.network.syncher.SynchedEntityData.DataValue;
@@ -45,16 +45,25 @@ public class AutoFish {
     private static int bobberId = -1;
 
     public static void initialize() {
+        ClientWorldEvents.AFTER_CLIENT_WORLD_CHANGE.register((mc, level) -> {
+            lastYaw = -1.0F;
+            lastPitch = -1.0F;
+            bobberId = -1;
+            outOfWaterTime = 0;
+        });
+    
         CONFIG.loadConfig();
         registerCommand();
 
         CONFIG.enabled.onChange(
             (oldValue, newValue) -> {
-                outOfWaterTime = 0;
-                bobberId = -1;
-                lastYaw = -1.0F;
-                lastPitch = -1.0F;
-
+                if (oldValue != newValue) {
+                    outOfWaterTime = 0;
+                    bobberId = -1;
+                    lastYaw = -1.0F;
+                    lastPitch = -1.0F;
+                }
+                
                 if (!newValue) {
                     TaskUtil.removeTimeTask(FISHING_STATUS_CHECK_TASK_ID);
                     TaskUtil.removeTimeTask(THROW_FISHING_ROD_TASK_ID);

@@ -6,7 +6,6 @@ import java.util.regex.Pattern;
 
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 
 import cn.taotxi.Makemoney.util.MLogger;

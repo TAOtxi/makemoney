@@ -116,9 +116,9 @@
 
     "makemoney.autodrop.config.name": "配置文件管理",
     "makemoney.autodrop.config.reset": "重置配置文件",
-    "makemoney.autodrop.config.reset.desc": "将配置文件重置为默认值。\n\n§4§l此操作无法撤销！！！",
+    "makemoney.autodrop.config.reset.desc": "将配置文件重置为默认值。\n\n§c此操作无法撤销！！！",
     "makemoney.autodrop.config.reload": "重新加载配置文件",
-    "makemoney.autodrop.config.reload.desc": "从配置文件中重新加载配置，\n\n§4§l此操作会覆盖当前配置。",
+    "makemoney.autodrop.config.reload.desc": "从配置文件中重新加载配置，\n\n§c此操作会覆盖当前配置。",
 
     "makemoney.autodrop.addMatchItem": "添加匹配条件",
     "makemoney.autodrop.addMatchItem.desc": "添加一个新的匹配条件",
@@ -180,7 +180,7 @@
     "makemoney.autoride": "狗皮膏药",
     "makemoney.autoride.desc": "像一个狗皮膏药一样，黏在玩家头上。\n\n（感谢搞直男贡献的名字）",
     "makemoney.autoride.enabled": "开关",
-    "makemoney.autoride.enabled.desc": "开启后，可以黏上所指定的玩家，即使玩家潜行后，也可以再次粘上去。",
+    "makemoney.autoride.enabled.desc": "开启后，可以黏上所指定的玩家，即使玩家潜行后，也可以再次粘上去。\n\n每次打开mc，此值默认设置为false。",
     "makemoney.autoride.enabled.message": "§7[§d狗皮膏药§7] §a已开启",
     "makemoney.autoride.disabled.message": "§7[§d狗皮膏药§7] §c已关闭",
     "makemoney.autoride.interval": "检查周期的时间间隔",

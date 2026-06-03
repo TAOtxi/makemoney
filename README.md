@@ -32,7 +32,7 @@
 
 ### 小功能
 #### autofish
-- 指令 `/autofish` | `/af` | `/fish`
+- 指令 `/autofish` | `/fish`
 - 自动钓鱼
 - 通过监听网络数据包判断是否上钩
 
