@@ -252,8 +252,7 @@
     "makemoney.messageCommand.rule.command.desc": "可以将匹配规则捕获的内容替换掉本命令设置的占位符。\n\n占位符格式为 §7${捕获组序号}§r 或 §7${捕获组序号:默认值}，§r\n\n捕获组序号从1开始，序号0为完整匹配内容。\n\n如果某个捕获组是可选的且没有匹配到内容，\n\n将用默认值替换，默认值可省略，其初始值为空字符串。\n\n下面格式是合法的：\n\n§7/tell ${1} ${2:v我50}\n\n/tell ${1:Gzn12138} ${2:v我100}\n\n/pay ${2:TAOtxi} ${1}§r\n\n若前缀没有斜杠，视为发送聊天消息。\n\n§c注意，捕获组编号不要大于捕获组的数量！",
     "makemoney.messageCommand.rule.remove": "删除",
     "makemoney.messageCommand.rule.remove.desc": "删除此匹配规则",
+    "makemoney.messageCommand.help.message": "§7[§d消息命令§7] §7帮助信息待完善...",
     "makemoney.messageCommand.enabled.message": "§7[§d消息命令§7] §a已开启",
-    "makemoney.messageCommand.disabled.message": "§7[§d消息命令§7] §c已关闭",
-    "makemoney.messageCommand.config.reload.message": "§7[§d消息命令§7] §7已重新加载配置文件",
-    "makemoney.messageCommand.config.reset.message": "§7[§d消息命令§7] §7已重置配置"
+    "makemoney.messageCommand.disabled.message": "§7[§d消息命令§7] §c已关闭"
 }

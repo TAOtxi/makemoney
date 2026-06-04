@@ -103,11 +103,13 @@ public class MessageCommand {
                 .then(ClientCommandManager.literal("on")
                     .executes(context -> {
                         CONFIG.enabled.enable();
+                        context.getSource().sendFeedback(T.l("messageCommand.enabled.message"));
                         return 1;
                     }))
                 .then(ClientCommandManager.literal("off")
                     .executes(context -> {
                         CONFIG.enabled.disable();
+                        context.getSource().sendFeedback(T.l("messageCommand.disabled.message"));
                         return 1;
                     }))
             );
@@ -119,7 +121,7 @@ public class MessageCommand {
     }
 
     private static int showHelp(CommandContext<FabricClientCommandSource> context) {
-        context.getSource().sendFeedback(T.l("messageCommand.help"));
+        context.getSource().sendFeedback(T.l("messageCommand.help.message"));
         return 1;
     }
 }
