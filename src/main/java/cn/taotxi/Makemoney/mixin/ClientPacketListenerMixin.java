@@ -22,6 +22,7 @@ import cn.taotxi.Makemoney.module.StrangeFunction.AutoRide;
 import cn.taotxi.Makemoney.module.StrangeFunction.IgnoreMessage;
 import cn.taotxi.Makemoney.module.AutoDrop.AutoDrop;
 import cn.taotxi.Makemoney.module.AutoFish.AutoFish;
+// import cn.taotxi.Makemoney.module.MessageCommand.MessageCommand;
 
 
 @Mixin(ClientPacketListener.class)
@@ -33,7 +34,9 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
     @Inject(method = "handleSystemChat", at = @At("HEAD"), cancellable = true)
     public void onChatMessage(ClientboundSystemChatPacket chatMessageS2CPacket_1, CallbackInfo ci) {
         if (minecraft.isSameThread()) {
-            IgnoreMessage.handleChatMessage(chatMessageS2CPacket_1, ci);
+            String message = chatMessageS2CPacket_1.content().getString();
+            // MessageCommand.onMessage(message);
+            IgnoreMessage.handleChatMessage(message, ci);
         };
     }
 
