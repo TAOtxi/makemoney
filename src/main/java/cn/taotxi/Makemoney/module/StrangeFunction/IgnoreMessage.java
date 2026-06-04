@@ -9,7 +9,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import com.google.gson.JsonElement;
 
 import cn.taotxi.Makemoney.util.MLogger;
-import net.minecraft.network.protocol.game.ClientboundSystemChatPacket;
 
 public class IgnoreMessage {
     private static final String MODULE_NAME = "ignoreMessage";
@@ -31,7 +30,7 @@ public class IgnoreMessage {
                 }
             }
         );
-        CONFIG.ignoreEnabled.triggerConfigChange();
+        CONFIG.ignoreList.triggerConfigChange();
     }
 
     public static boolean isIgnored(String message) {
@@ -40,11 +39,8 @@ public class IgnoreMessage {
             pattern -> pattern.matcher(message).find());
     }
 
-    public static void handleChatMessage(ClientboundSystemChatPacket chatMessageS2CPacket_1, CallbackInfo ci) {
-        if (!CONFIG.ignoreEnabled.getValue()) {
-            return;
-        }
-        if (isIgnored(chatMessageS2CPacket_1.content().getString())) {
+    public static void handleChatMessage(String message, CallbackInfo ci) {
+        if (CONFIG.ignoreEnabled.getValue() && isIgnored(message)) {
             ci.cancel();
         }
     }
