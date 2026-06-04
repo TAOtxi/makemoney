@@ -201,7 +201,7 @@ public class AutoDrop {
                 .then(ClientCommandManager.literal("off")
                     .executes(context -> toggleAutoDrop(context, false)))
                 .then(ClientCommandManager.literal("ignore")
-                    .then(ClientCommandManager.literal("reset")
+                    .then(ClientCommandManager.literal("clear")
                         .executes(AutoDrop::resetIgnoreSlots))
                     .then(ClientCommandManager.literal("set")
                         .then(ClientCommandManager.argument("1,2,3,4,...", StringArgumentType.string())

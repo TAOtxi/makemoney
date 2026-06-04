@@ -19,6 +19,7 @@ import cn.taotxi.Makemoney.gui.GuiUtil;
 import cn.taotxi.Makemoney.gui.dialog.ConfirmWindow;
 import cn.taotxi.Makemoney.module.AutoDrop.AutoDrop;
 import cn.taotxi.Makemoney.module.AutoFish.AutoFish;
+import cn.taotxi.Makemoney.module.MessageCommand.MessageCommand;
 import cn.taotxi.Makemoney.module.StrangeFunction.StrangeFunctionInit;
 import cn.taotxi.Makemoney.util.T;
 import cn.taotxi.Makemoney.util.TaskUtil;
@@ -53,6 +54,7 @@ public class Makemoney implements ModInitializer {
         AutoDrop.initialize();
         AutoFish.initialize();
         StrangeFunctionInit.initialize();
+        MessageCommand.initialize();
         TaskUtil.initialize();
 
         // TaskUtil.createTimeTask("a", () -> {

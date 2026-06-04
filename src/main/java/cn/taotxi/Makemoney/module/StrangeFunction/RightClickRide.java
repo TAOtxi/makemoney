@@ -1,6 +1,5 @@
 package cn.taotxi.Makemoney.module.StrangeFunction;
 
-
 import cn.taotxi.Makemoney.util.Message;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
@@ -9,6 +8,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PlayerRideable;
 import net.minecraft.world.entity.animal.happyghast.HappyGhast;
+import net.minecraft.world.entity.animal.nautilus.AbstractNautilus;
 import net.minecraft.world.entity.npc.villager.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 
@@ -25,7 +25,7 @@ public class RightClickRide {
         if (player.isCrouching()) return;
         if (!CONFIG.rightClickRideEnabled.getValue()) return;
 
-        // 右键一次左右手都会调用interact
+        // 右键一次，左右手都会调用interact
         if (interactionHand != InteractionHand.MAIN_HAND) return;
         
         Entity lookEntity = client.crosshairPickEntity;
@@ -43,7 +43,13 @@ public class RightClickRide {
             return;
         }
 
-        // 跳过可以交互或者可以骑乘的生物
+        // 单独判断鹦鹉螺
+        if (lookEntity instanceof AbstractNautilus) {
+            Message.sendMessage("/ride");
+            return;
+        }
+
+        // 跳过可以交互或者原版可以骑乘的生物
         if (
             lookEntity instanceof PlayerRideable ||
             lookEntity instanceof Player ||

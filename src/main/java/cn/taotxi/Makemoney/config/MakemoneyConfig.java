@@ -33,6 +33,8 @@ public class MakemoneyConfig extends ConfigManager {
     public ConfigString strangefunctionVersion    = new ConfigString("strangefunctionVersion", "", "StrangeFunction版本", this);
     public ConfigString autoRepairVersion         = new ConfigString("autorepairVersion", "", "AutoRepair版本", this);
     public ConfigString entityHighlightBoxVersion = new ConfigString("entityhighlightboxVersion", "", "EntityHighlightBox版本", this);
+    public ConfigString messageCommandVersion     = new ConfigString("messagecommandVersion", "", "MessageCommand版本", this);
+
 
     private Map<String, String> getConfigVersionMap() {
         Map<String, String> map = new HashMap<>();
@@ -42,6 +44,8 @@ public class MakemoneyConfig extends ConfigManager {
         map.put(strangefunctionVersion.getKey(),    "1.2.9-beta.2+1.21.11");
         map.put(autoRepairVersion.getKey(),         "");
         map.put(entityHighlightBoxVersion.getKey(), "");
+        map.put(messageCommandVersion.getKey(),     "");
+
         return map;
     }
 
@@ -64,6 +68,9 @@ public class MakemoneyConfig extends ConfigManager {
         }
         if (!entityHighlightBoxVersion.getValue().equals(getConfigVersionMap().get(entityHighlightBoxVersion.getKey()))) {
             list.add(entityHighlightBoxVersion.getKey());
+        }
+        if (!messageCommandVersion.getValue().equals(getConfigVersionMap().get(messageCommandVersion.getKey()))) {
+            list.add(messageCommandVersion.getKey());
         }
 
         return list;

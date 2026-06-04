@@ -17,13 +17,13 @@ import com.mojang.blaze3d.platform.Window;
 
 import cn.taotxi.Makemoney.Makemoney;
 import cn.taotxi.Makemoney.module.AutoDrop.AutoDropConfigGui;
-import cn.taotxi.Makemoney.module.AutoFish.AutoFish;
 import cn.taotxi.Makemoney.module.AutoFish.AutoFishConfig;
 import cn.taotxi.Makemoney.module.AutoRepair.AutoRepairConfigGui;
 import cn.taotxi.Makemoney.module.EntityHighlightBox.EntityHighlightBoxConfigGui;
+import cn.taotxi.Makemoney.module.MessageCommand.MessageCommandConfig;
+import cn.taotxi.Makemoney.module.MessageCommand.MessageCommandGui;
 import cn.taotxi.Makemoney.module.StrangeFunction.AutoRide;
 import cn.taotxi.Makemoney.module.StrangeFunction.IgnoreMessage;
-import cn.taotxi.Makemoney.module.StrangeFunction.RightClickRide;
 import cn.taotxi.Makemoney.module.StrangeFunction.StrangeConfig;
 import cn.taotxi.Makemoney.util.T;
 import dev.isxander.yacl3.api.ButtonOption;
@@ -47,6 +47,7 @@ import dev.isxander.yacl3.impl.utils.YACLConstants;
 public class ConfigScreen {
     private static final StrangeConfig STRANGE_CONFIG = StrangeConfig.getInstance();
     private static final AutoFishConfig AUTOFISH_CONFIG = AutoFishConfig.getInstance();
+    private static final MessageCommandConfig MESSAGE_COMMAND_CONFIG = MessageCommandConfig.getInstance();
 
     // TODO: 待完善
     public static Screen getConfigScreen(Screen parent) {
@@ -54,12 +55,19 @@ public class ConfigScreen {
             YetAnotherConfigLib.createBuilder()
                 .title(T.tl("gui.config.title"))
                 .save(() -> {
-                    StrangeConfig.getInstance().saveConfig();
-                    AutoFishConfig.getInstance().saveConfig();
+                    STRANGE_CONFIG.saveConfig();
+                    AUTOFISH_CONFIG.saveConfig();
+                    MESSAGE_COMMAND_CONFIG.saveConfig();
+
+                    // TODO: 待寻找更合适的触发方式
+                    MESSAGE_COMMAND_CONFIG.messageRules.triggerConfigChange();
                 });
 
         ConfigCategory.Builder strangeCategory = createStrangeCategory(parent);
         builder.category(strangeCategory.build());
+
+        ConfigCategory.Builder messageRuleCategory = MessageCommandGui.createMessageRuleCategory(parent);
+        builder.category(messageRuleCategory.build());
         
         ConfigCategory.Builder moduleCategory = createConfigCategory(parent);
         builder.category(moduleCategory.build());
@@ -68,65 +76,6 @@ public class ConfigScreen {
         YetAnotherConfigLib yacl = builder.build();
         return yacl.generateScreen(parent);
     }
-
-    private static ConfigCategory.Builder createConfigCategory(Screen parent) {
-        ConfigCategory.Builder moduleCategory = ConfigCategory.createBuilder()
-                .name(T.tl("gui.config.module"));
-
-        OptionGroup.Builder autodropGroup = OptionGroup.createBuilder()
-                .name(T.tl("autodrop.name"))
-                .description(OptionDescription.of(T.tl("autodrop.desc")));
-
-        autodropGroup.option(ButtonOption.createBuilder()
-                .name(T.tl("gui.config.open.autodrop"))
-                .text(T.tl("gui.config.open"))
-                .action((screen, option) -> {
-                    YACLScreen autodropScreem = (YACLScreen) AutoDropConfigGui.createScreen(screen);
-                    Window window = Minecraft.getInstance().getWindow(); 
-                    autodropScreem.init(window.getGuiScaledWidth(), window.getGuiScaledHeight());
-                    Minecraft.getInstance().setScreen(autodropScreem);
-                })
-                .build()
-        );
-        moduleCategory.group(autodropGroup.build());
-
-        OptionGroup.Builder autorepairGroup = OptionGroup.createBuilder()
-                .name(T.tl("autorepair.name"))
-                .description(OptionDescription.of(T.tl("autorepair.desc")));
-
-        autorepairGroup.option(ButtonOption.createBuilder()
-                .name(T.tl("gui.config.open.autorepair"))
-                .text(T.tl("gui.config.open"))
-                .action((screen, option) -> {
-                    YACLScreen autorepairScreem = (YACLScreen) AutoRepairConfigGui.createConfigScreen(screen);
-                    Window window = Minecraft.getInstance().getWindow(); 
-                    autorepairScreem.init(window.getGuiScaledWidth(), window.getGuiScaledHeight());
-                    Minecraft.getInstance().setScreen(autorepairScreem);
-                })
-                .build()
-        );
-        moduleCategory.group(autorepairGroup.build());
-
-        OptionGroup.Builder entityhighlightboxGroup = OptionGroup.createBuilder()
-                .name(T.tl("entityhighlightbox.name"))
-                .description(OptionDescription.of(T.tl("entityhighlightbox.desc")));
-
-        entityhighlightboxGroup.option(ButtonOption.createBuilder()
-                .name(T.tl("gui.config.open.entityhighlightbox"))
-                .text(T.tl("gui.config.open"))
-                .action((screen, option) -> {
-                    YACLScreen entityhighlightboxScreen = (YACLScreen) EntityHighlightBoxConfigGui.createConfigScreen(screen);
-                    Window window = Minecraft.getInstance().getWindow(); 
-                    entityhighlightboxScreen.init(window.getGuiScaledWidth(), window.getGuiScaledHeight());
-                    Minecraft.getInstance().setScreen(entityhighlightboxScreen);
-                })
-                .build()
-        );
-        moduleCategory.group(entityhighlightboxGroup.build());
-
-        return moduleCategory;
-    }
-    
 
     private static ConfigCategory.Builder createStrangeCategory(Screen parent) {
         ConfigCategory.Builder strangeCategory = ConfigCategory.createBuilder()
@@ -271,7 +220,7 @@ public class ConfigScreen {
                 .action((screen, option) -> {
                     savePending(screen);
                     IgnoreMessage.addPresetIgnoreList();
-                    StrangeConfig.getInstance().saveConfig();
+                    STRANGE_CONFIG.saveConfig();
                     reload(screen, parent, false, ConfigScreen::getConfigScreen);
                 })
                 .build()
@@ -307,6 +256,64 @@ public class ConfigScreen {
         return strangeCategory;
     }
 
+    
+    private static ConfigCategory.Builder createConfigCategory(Screen parent) {
+        ConfigCategory.Builder moduleCategory = ConfigCategory.createBuilder()
+                .name(T.tl("gui.config.module"));
+
+        OptionGroup.Builder autodropGroup = OptionGroup.createBuilder()
+                .name(T.tl("autodrop.name"))
+                .description(OptionDescription.of(T.tl("autodrop.desc")));
+
+        autodropGroup.option(ButtonOption.createBuilder()
+                .name(T.tl("gui.config.open.autodrop"))
+                .text(T.tl("gui.config.open"))
+                .action((screen, option) -> {
+                    YACLScreen autodropScreen = (YACLScreen) AutoDropConfigGui.createScreen(screen);
+                    Window window = Minecraft.getInstance().getWindow(); 
+                    autodropScreen.init(window.getGuiScaledWidth(), window.getGuiScaledHeight());
+                    Minecraft.getInstance().setScreen(autodropScreen);
+                })
+                .build()
+        );
+        moduleCategory.group(autodropGroup.build());
+
+        OptionGroup.Builder autorepairGroup = OptionGroup.createBuilder()
+                .name(T.tl("autorepair.name"))
+                .description(OptionDescription.of(T.tl("autorepair.desc")));
+
+        autorepairGroup.option(ButtonOption.createBuilder()
+                .name(T.tl("gui.config.open.autorepair"))
+                .text(T.tl("gui.config.open"))
+                .action((screen, option) -> {
+                    YACLScreen autorepairScreem = (YACLScreen) AutoRepairConfigGui.createConfigScreen(screen);
+                    Window window = Minecraft.getInstance().getWindow(); 
+                    autorepairScreem.init(window.getGuiScaledWidth(), window.getGuiScaledHeight());
+                    Minecraft.getInstance().setScreen(autorepairScreem);
+                })
+                .build()
+        );
+        moduleCategory.group(autorepairGroup.build());
+
+        OptionGroup.Builder entityhighlightboxGroup = OptionGroup.createBuilder()
+                .name(T.tl("entityhighlightbox.name"))
+                .description(OptionDescription.of(T.tl("entityhighlightbox.desc")));
+
+        entityhighlightboxGroup.option(ButtonOption.createBuilder()
+                .name(T.tl("gui.config.open.entityhighlightbox"))
+                .text(T.tl("gui.config.open"))
+                .action((screen, option) -> {
+                    YACLScreen entityhighlightboxScreen = (YACLScreen) EntityHighlightBoxConfigGui.createConfigScreen(screen);
+                    Window window = Minecraft.getInstance().getWindow(); 
+                    entityhighlightboxScreen.init(window.getGuiScaledWidth(), window.getGuiScaledHeight());
+                    Minecraft.getInstance().setScreen(entityhighlightboxScreen);
+                })
+                .build()
+        );
+        moduleCategory.group(entityhighlightboxGroup.build());
+
+        return moduleCategory;
+    }
 
     public static void reload(YACLScreen screen, Screen parent, boolean saveConfig, Function<Screen, Screen> createConfigScreen) {
         Minecraft client = Minecraft.getInstance();

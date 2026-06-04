@@ -46,6 +46,11 @@ public class ConfigArray implements IConfigBase<JsonArray> {
         return defaultValue;
     }
 
+    
+    public <T> T get(int index, Class<T> type) {
+        return ConfigManager.getGson().fromJson(getValue().get(index), type);
+    }
+
     public <T> List<T> getValueAsList(Class<T> type) {
         return ConfigManager.jsonToList(getValue(), type);
     }

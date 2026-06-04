@@ -37,6 +37,7 @@ public class AutoDropConfigGui {
                 .title(T.tl("autodrop.name"))
                 .save(() -> {
                     CONFIG.saveConfig();
+                    CONFIG.matchItemLists.triggerConfigChange();
                     AutoDrop.LOGGER.info("Config saved...");
                 });
         
