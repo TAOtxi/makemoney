@@ -178,7 +178,7 @@
     "makemoney.strange.desc": "在这里，你将能看到一些实用的设置，嘻嘻",
 
     "makemoney.autoride": "狗皮膏药",
-    "makemoney.autoride.desc": "像一个狗皮膏药一样，黏在玩家头上。\n\n（感谢搞直男贡献的名字）\n\n该功能仅适用于拾玖世界。",
+    "makemoney.autoride.desc": "像一个狗皮膏药一样，黏在玩家头上。\n\n潜行或手持物品时，禁用该功能。\n\n（感谢搞直男贡献的名字）\n\n（Tips：该功能仅适用于拾玖世界。）",
     "makemoney.autoride.enabled": "开关",
     "makemoney.autoride.enabled.desc": "开启后，可以黏上所指定的玩家，\n\n即使玩家潜行后，也可以再次粘上去。\n\n每次打开mc，此值默认设置为false。",
     "makemoney.autoride.enabled.message": "§7[§d狗皮膏药§7] §a已开启",

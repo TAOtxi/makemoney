@@ -33,7 +33,7 @@ public class AutoDrop {
     public static final MLogger LOGGER = new MLogger(MODULE_NAME);
     public static boolean enabled = false;
     private static final Minecraft client = Minecraft.getInstance();
-    private static AutoDropConfig CONFIG = AutoDropConfig.getInstance();
+    private static final AutoDropConfig CONFIG = AutoDropConfig.getInstance();
     private static final int throttleTick = 4;
     private static final int showAttentionMsgInterval = 20;
     private static final String TIME_TRIGGER_TASK_NAME = "autodrop_timeTrigger";
@@ -45,8 +45,7 @@ public class AutoDrop {
 
         ClientWorldEvents.AFTER_CLIENT_WORLD_CHANGE.register((mc, level) -> {
             if (CONFIG.turnOffWhenChangeWorld.getValue()) {
-                enabled = false;
-                onConfigChange();
+                toggleSwitch(false);
             }
         });
 

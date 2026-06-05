@@ -1,13 +1,16 @@
+<div align="center"><center>
+
+<img alt="Icon" src="./icon.png" width="200">
+
 # Makemoney
-<div style="display: flex; justify-content: center; width: 100%;">
-    <img src="./icon.png" alt="icon" width="200" height="200">
-</div>
+
+</center></div>
 
 <br>
-> 专用于拾玖世界服务器的模组<br>
-> ohhhhhhh<br>
-><br>
-> 拾玖世界Q群：`518271249`
+专用于拾玖世界服务器的模组<br>
+ohhhhhhh <br>
+
+拾玖世界Q群：`518271249`
 
 ## 前置模组
 [Yacl >=3.8.2+1.21.11-fabric](https://modrinth.com/mod/yacl)
