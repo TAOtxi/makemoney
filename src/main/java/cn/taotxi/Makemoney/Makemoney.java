@@ -19,6 +19,7 @@ import cn.taotxi.Makemoney.gui.GuiUtil;
 import cn.taotxi.Makemoney.gui.dialog.ConfirmWindow;
 import cn.taotxi.Makemoney.module.AutoDrop.AutoDrop;
 import cn.taotxi.Makemoney.module.AutoFish.AutoFish;
+import cn.taotxi.Makemoney.module.MenuClick.MenuClick;
 import cn.taotxi.Makemoney.module.MessageCommand.MessageCommand;
 import cn.taotxi.Makemoney.module.StrangeFunction.StrangeFunctionInit;
 import cn.taotxi.Makemoney.util.T;
@@ -55,10 +56,14 @@ public class Makemoney implements ModInitializer {
         AutoFish.initialize();
         StrangeFunctionInit.initialize();
         MessageCommand.initialize();
+        MenuClick.initialize();
         TaskUtil.initialize();
 
         // TaskUtil.createTimeTask("a", () -> {
-        //     System.out.println(Minecraft.getInstance().screen.getClass());
+        //     if (Minecraft.getInstance().player == null) {
+        //         return;
+        //     }
+        //     System.out.println(Minecraft.getInstance().player.containerMenu.getClass());
         // }, 20);
 	}
 

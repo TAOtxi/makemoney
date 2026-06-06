@@ -51,6 +51,10 @@ public class ConfigArray implements IConfigBase<JsonArray> {
         return ConfigManager.getGson().fromJson(getValue().get(index), type);
     }
 
+    public JsonElement get(int index) {
+        return getValue().get(index);
+    }
+
     public <T> List<T> getValueAsList(Class<T> type) {
         return ConfigManager.jsonToList(getValue(), type);
     }
@@ -79,6 +83,13 @@ public class ConfigArray implements IConfigBase<JsonArray> {
 
     public void add(JsonElement element) {
         getValue().add(element);
+    }
+
+    public void addTop(JsonElement element) {
+        JsonArray newArray = new JsonArray();
+        newArray.add(element);
+        newArray.addAll(getValue());
+        setValue(newArray);
     }
 
     public void add(int element) {

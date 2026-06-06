@@ -20,6 +20,8 @@ import cn.taotxi.Makemoney.module.AutoDrop.AutoDropConfigGui;
 import cn.taotxi.Makemoney.module.AutoFish.AutoFishConfig;
 import cn.taotxi.Makemoney.module.AutoRepair.AutoRepairConfigGui;
 import cn.taotxi.Makemoney.module.EntityHighlightBox.EntityHighlightBoxConfigGui;
+import cn.taotxi.Makemoney.module.MenuClick.MenuClickConfig;
+import cn.taotxi.Makemoney.module.MenuClick.MenuClickConfigGui;
 import cn.taotxi.Makemoney.module.MessageCommand.MessageCommandConfig;
 import cn.taotxi.Makemoney.module.MessageCommand.MessageCommandGui;
 import cn.taotxi.Makemoney.module.StrangeFunction.AutoRide;
@@ -47,7 +49,6 @@ import dev.isxander.yacl3.impl.utils.YACLConstants;
 public class ConfigScreen {
     private static final StrangeConfig STRANGE_CONFIG = StrangeConfig.getInstance();
     private static final AutoFishConfig AUTOFISH_CONFIG = AutoFishConfig.getInstance();
-    private static final MessageCommandConfig MESSAGE_COMMAND_CONFIG = MessageCommandConfig.getInstance();
 
     // TODO: 待完善
     public static Screen getConfigScreen(Screen parent) {
@@ -57,10 +58,11 @@ public class ConfigScreen {
                 .save(() -> {
                     STRANGE_CONFIG.saveConfig();
                     AUTOFISH_CONFIG.saveConfig();
-                    MESSAGE_COMMAND_CONFIG.saveConfig();
+                    MessageCommandConfig.getInstance().saveConfig();
+                    MenuClickConfig.getInstance().saveConfig();
 
                     // TODO: 待寻找更合适的触发方式
-                    MESSAGE_COMMAND_CONFIG.messageRules.triggerConfigChange();
+                    MessageCommandConfig.getInstance().messageRules.triggerConfigChange();
                 });
 
         ConfigCategory.Builder strangeCategory = createStrangeCategory(parent);
@@ -68,6 +70,9 @@ public class ConfigScreen {
 
         ConfigCategory.Builder messageRuleCategory = MessageCommandGui.createMessageRuleCategory(parent);
         builder.category(messageRuleCategory.build());
+
+        ConfigCategory.Builder menuClickCategory = MenuClickConfigGui.createMenuClickConfigCategory(parent);
+        builder.category(menuClickCategory.build());
         
         ConfigCategory.Builder moduleCategory = createConfigCategory(parent);
         builder.category(moduleCategory.build());

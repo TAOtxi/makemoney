@@ -193,7 +193,7 @@ public class AutoRide {
                     .executes(AutoRide::showHelp))
                 .then(ClientCommandManager.literal("target")
                     .then(ClientCommandManager.argument("player", StringArgumentType.string())
-                        .suggests(new PlayerSuggestionProvider())
+                        .suggests((context, builder) -> suggestPlayerNames(context, builder))
                         .executes(context -> {
                             String target = context.getArgument("player", String.class);
                             CONFIG.autoRideTargetPlayer.setValue(target);
@@ -262,6 +262,17 @@ public class AutoRide {
                     .redirect(command));
         });
 
+    }
+
+    private static CompletableFuture<Suggestions> suggestPlayerNames(
+        CommandContext<FabricClientCommandSource> context,
+        SuggestionsBuilder builder
+    ) {
+        List<String> taskNameList = GameUtil.getOnlinePlayerNames();
+        for (String name : taskNameList) {
+            builder.suggest(name);
+        }
+        return builder.buildFuture();
     }
 }
 

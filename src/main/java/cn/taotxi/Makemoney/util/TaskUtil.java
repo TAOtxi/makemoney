@@ -25,7 +25,10 @@ public class TaskUtil {
                 return;
             }
             ticker++;
-            for (int i = timeTasks.size() - 1; i >= 0; i--) {
+            for (int i = 0; i < timeTasks.size(); i++) {
+                if (i >= timeTasks.size()) {
+                    break;
+                }
                 timeTasks.get(i).tick(ticker);
             }
         });
