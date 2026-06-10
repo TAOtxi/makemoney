@@ -294,14 +294,6 @@ public class AutoDropConfigGui {
         );
 
         category.option(Factory.addToggleOption(
-            T.tl("autodrop.stopWhenOpenContainer"),
-            T.tl("autodrop.stopWhenOpenContainer.desc"),
-            CONFIG.stopWhenOpenContainer.getDefaultValue(),
-            CONFIG.stopWhenOpenContainer::getValue,
-            CONFIG.stopWhenOpenContainer::setValue
-        ));
-
-        category.option(Factory.addToggleOption(
             T.tl("autodrop.stopWhenOpenConfigGui"),
             T.tl("autodrop.stopWhenOpenConfigGui.desc"),
             CONFIG.stopWhenOpenConfigGui.getDefaultValue(),

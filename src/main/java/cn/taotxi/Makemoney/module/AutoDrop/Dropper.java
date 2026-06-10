@@ -59,7 +59,7 @@ public class Dropper {
         if (player == null) return;
 
         if (CONFIG.stopWhenCrouch.getValue() && player.isCrouching()) return;
-        if (CONFIG.stopWhenOpenContainer.getValue() && player.hasContainerOpen()) return; // TODO: BUG: 无法检测是否打开背包
+        if (player.hasContainerOpen()) return; // TODO: BUG: 无法检测是否打开背包
         if (CONFIG.stopWhenOpenConfigGui.getValue() && ConfigScreen.isOpenYaclScreen()) return;
         if (CONFIG.triggerMinCount.getValue() > 0 && CONFIG.triggerMinCount.getValue() > notEmptySlotCount()) return;
         

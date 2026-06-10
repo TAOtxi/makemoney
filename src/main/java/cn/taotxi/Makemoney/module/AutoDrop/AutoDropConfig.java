@@ -51,7 +51,6 @@ public class AutoDropConfig extends ConfigManager {
     public ConfigBoolean  turnOffWhenChangeWorld    = new ConfigBoolean("turnOffWhenChangeWorld", true, "切换世界时是否关闭自动丢弃功能", this);
     public ConfigInteger  triggerMinCount           = new ConfigInteger("triggerMinCount", 0, "允许丢弃所需最少物品槽位数量", this);
     public ConfigBoolean  stopWhenCrouch            = new ConfigBoolean("stopWhenCrouch", true, "潜行时是否禁用丢弃功能", this);
-    public ConfigBoolean  stopWhenOpenContainer     = new ConfigBoolean("stopWhenOpenContainer", true, "打开容器时是否禁用丢弃功能", this);
     public ConfigBoolean  stopWhenOpenConfigGui     = new ConfigBoolean("stopWhenOpenConfigGui", true, "打开配置GUI时是否禁用丢弃功能", this);   
 
     public ConfigBoolean  stopWhenNotHoldingItem    = new ConfigBoolean("stopWhenNotHoldingItem", false, "未手持指定物品时是否禁用丢弃功能", this);
