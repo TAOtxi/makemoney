@@ -11,6 +11,7 @@ import net.minecraft.world.item.ItemStack;
 
 public class ItemStackUtil {
     public static final Pattern KEY_PATTERN = Pattern.compile("key='(.*?)'");
+    public static final Pattern HAS_NAMESPACE_PATTERN = Pattern.compile("^\\w+:\\w+$");
 
     public static String getId(ItemStack item) {
         return item.getItemHolder().getRegisteredName();
@@ -42,6 +43,11 @@ public class ItemStackUtil {
 
     public static boolean equalId(ItemStack item, String id) {
         if (item.isEmpty()) return false;
+        return StringUtil.regMatch(getId(item), id);
+    }
+
+    public static boolean equalIdWithDefaultNamespace(ItemStack item, String id) {
+        if (item.isEmpty()) return false;
         return StringUtil.regMatch(getId(item), withDefaultNamespace(id));
     }
 
@@ -66,14 +72,6 @@ public class ItemStackUtil {
             return id;
         };
 
-        if (isTag(id)) {
-            String rawId = id.substring(1);
-            if (hasNamespace(namespace, rawId)) {
-                return id;
-            }
-            return "#" + namespace + ":" + rawId;
-        }
-
         if (hasNamespace(namespace, id)) {
             return id;
         }
@@ -81,14 +79,21 @@ public class ItemStackUtil {
     }
 
     public static String withDefaultNamespace(String id) {
-        // TODO: 斟酌是否合适
-        if (id.contains(":")) {
+        int index = id.indexOf(":");
+        if (index != -1 && index != 0 && index != id.length() - 1) {
             return id;
         }
         return withNamespace("minecraft", id);
     }
 
+    public static String tagWithDefaultNamespace(String tag) {
+        String rawTag = tag.substring(1);
+        return "#" + withNamespace("minecraft", rawTag);
+    }
+
     public static String withoutDefaultNamespace(String id) {
         return id.replace("minecraft:", "");
     }
+
+    
 }

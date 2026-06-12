@@ -20,7 +20,6 @@ public interface IConfigBase<T> {
     
     public void triggerConfigChangeDefault();
 
-
     public boolean exists();
 
     public void onChange(BiConsumer<T, T> listener);

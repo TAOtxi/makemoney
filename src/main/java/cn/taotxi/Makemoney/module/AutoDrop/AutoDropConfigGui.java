@@ -359,9 +359,10 @@ public class AutoDropConfigGui {
                 .name(T.tl("autodrop.addMatchItem").withStyle(ChatFormatting.GREEN))
                 .description(OptionDescription.of(T.tl("autodrop.addMatchItem.desc")))
                 .action((yaclScreen, button) -> {
+                    ConfigScreen.savePending(yaclScreen);
                     CONFIG.addMatchItem();
                     CONFIG.saveConfig();
-                    ConfigScreen.reload(yaclScreen, parent, true, AutoDropConfigGui::createScreen);
+                    ConfigScreen.reload(yaclScreen, parent, false, AutoDropConfigGui::createScreen);
                 })
                 .build()
         );
@@ -370,9 +371,10 @@ public class AutoDropConfigGui {
                 .name(T.tl("autodrop.addPresetMatchItem").withStyle(ChatFormatting.GREEN))
                 .description(OptionDescription.of(T.tl("autodrop.addPresetMatchItem.desc")))
                 .action((yaclScreen, button) -> {
+                    ConfigScreen.savePending(yaclScreen);
                     CONFIG.addPresetItems();
                     CONFIG.saveConfig();
-                    ConfigScreen.reload(yaclScreen, parent, true, AutoDropConfigGui::createScreen);
+                    ConfigScreen.reload(yaclScreen, parent, false, AutoDropConfigGui::createScreen);
                 })
                 .build()
         );
@@ -381,9 +383,10 @@ public class AutoDropConfigGui {
                 .name(T.tl("autodrop.removeAll").withStyle(ChatFormatting.RED))
                 .description(OptionDescription.of(T.tl("autodrop.removeAll.desc")))
                 .action((yaclScreen, button) -> {
+                    ConfigScreen.savePending(yaclScreen);
                     CONFIG.matchItemLists.resetValue();
                     CONFIG.saveConfig();
-                    ConfigScreen.reload(yaclScreen, parent, true, AutoDropConfigGui::createScreen);
+                    ConfigScreen.reload(yaclScreen, parent, false, AutoDropConfigGui::createScreen);
                 })
                 .build()
         );
@@ -403,9 +406,10 @@ public class AutoDropConfigGui {
                 .name(T.tl("autodrop.matchItem.remove").withStyle(ChatFormatting.RED))
                 .description(OptionDescription.of(T.tl("autodrop.matchItem.remove.desc")))
                 .action((yaclScreen, button) -> {
+                    ConfigScreen.savePending(yaclScreen);
                     CONFIG.removeMatchItem(index);
                     CONFIG.saveConfig();
-                    ConfigScreen.reload(yaclScreen, parent, true, AutoDropConfigGui::createScreen);
+                    ConfigScreen.reload(yaclScreen, parent, false, AutoDropConfigGui::createScreen);
                 })
                 .build()
             );

@@ -1,7 +1,6 @@
 package cn.taotxi.Makemoney.module.AutoFish;
 
 
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;

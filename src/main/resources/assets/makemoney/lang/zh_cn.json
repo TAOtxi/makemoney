@@ -98,6 +98,8 @@
     "makemoney.autodrop.ignoreSlots.desc": "指定要忽略的物品槽位。\n\n具体的槽位分布如上图所示，使用逗号分隔多个物品槽位，比如 0, 1, 2, 3。",
     "makemoney.autodrop.ignore.current.message": "§7[§d自动丢弃§7] §7当前忽略的槽位设置为 §e%s",
     "makemoney.autodrop.ignore.reset.message": "§7[§d自动丢弃§7] §7已清空忽略的槽位",
+    "makemoney.autodrop.debug.enabled.message": "§7[§d自动丢弃§7] §a已开启调试模式",
+    "makemoney.autodrop.debug.disabled.message": "§7[§d自动丢弃§7] §c已关闭调试模式",
 
     "makemoney.autodrop.throw.name": "丢弃视角",
     "makemoney.autodrop.throw.desc": "指定物品丢弃的视角设置",

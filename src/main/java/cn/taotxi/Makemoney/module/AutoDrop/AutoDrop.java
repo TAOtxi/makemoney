@@ -21,8 +21,6 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandBuildContext;
-import net.minecraft.network.protocol.game.ClientboundTakeItemEntityPacket;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
@@ -32,6 +30,7 @@ public class AutoDrop {
     public static final String MODULE_NAME = "autodrop";
     public static final MLogger LOGGER = new MLogger(MODULE_NAME);
     public static boolean enabled = false;
+    private static boolean dropThrottleFlag = true;
     private static final Minecraft client = Minecraft.getInstance();
     private static final AutoDropConfig CONFIG = AutoDropConfig.getInstance();
     private static final int throttleTick = 4;
@@ -72,6 +71,8 @@ public class AutoDrop {
                 }
             }
         );
+
+        Dropper.initialize();
     }
 
     public static void toggleSwitch(boolean enable) {
@@ -82,12 +83,16 @@ public class AutoDrop {
     }
 
     public static void onPickUpDrop() {
-        if (TaskUtil.hasTimeTask(PICK_UP_DROP_TASK_NAME)) return;
-        TaskUtil.createOnceTimeTask(
-            PICK_UP_DROP_TASK_NAME, 
-            Dropper::tryToDropItems, 
-            throttleTick
-        );
+        dropThrottleFlag = false;
+
+        if (TaskUtil.hasTimeTask(TIME_TRIGGER_TASK_NAME)) {
+            TaskUtil.resetNextRunTick(TIME_TRIGGER_TASK_NAME);
+        }
+
+        TaskUtil.createOnceTimeTask(PICK_UP_DROP_TASK_NAME, () -> {
+                Dropper.tryToDropItems();
+                dropThrottleFlag = true;
+            }, throttleTick);
     }
 
     public static void onConfigChange() {
@@ -163,29 +168,18 @@ public class AutoDrop {
         }
     }
 
-    public static void onTakeItemEntity(ClientboundTakeItemEntityPacket clientboundTakeItemEntityPacket) {
-        if (!enabled ||
-            clientboundTakeItemEntityPacket.getPlayerId() != client.player.getId() ||
-            !CONFIG.isPickUpItemTrigger.getValue()) {
-            return;
-        }
+    public static void onTakeItemEntity(ItemEntity itemEntity) {
+        if (!enabled || !dropThrottleFlag) return;
+        if (!CONFIG.isPickUpItemTrigger.getValue()) return;
+
         if (CONFIG.triggerItemId.getValue().isEmpty()) {
-            if (TaskUtil.hasTimeTask(TIME_TRIGGER_TASK_NAME)) {
-                TaskUtil.resetNextRunTick(TIME_TRIGGER_TASK_NAME);
-            }
             onPickUpDrop();
             return;
         }
         
-        Entity entity = client.level.getEntity(clientboundTakeItemEntityPacket.getItemId());
-        if (entity instanceof ItemEntity itemEntity) {
-            ItemStack itemStack = itemEntity.getItem();
-            if (ItemStackUtil.equalId(itemStack, CONFIG.triggerItemId.getValue())) {
-                if (TaskUtil.hasTimeTask(TIME_TRIGGER_TASK_NAME)) {
-                    TaskUtil.resetNextRunTick(TIME_TRIGGER_TASK_NAME);
-                }
-                onPickUpDrop();
-            }
+        ItemStack itemStack = itemEntity.getItem();
+        if (ItemStackUtil.equalId(itemStack, CONFIG.triggerItemId.getValue())) {
+            onPickUpDrop();
         }
     }
 
@@ -210,8 +204,12 @@ public class AutoDrop {
                 )
                 .then(ClientCommandManager.literal("interval")
                     .then(ClientCommandManager.argument("interval", IntegerArgumentType.integer(1))
-                        .executes(AutoDrop::setTimeTriggerInterval))
-                )
+                        .executes(AutoDrop::setTimeTriggerInterval)))
+                .then(ClientCommandManager.literal("debug")
+                    .then(ClientCommandManager.literal("on")
+                        .executes(context -> setDebug(context, true)))
+                    .then(ClientCommandManager.literal("off")
+                        .executes(context -> setDebug(context, false))))
             );
         dispatcher.register(ClientCommandManager.literal("ad")
                 .executes(AutoDrop::showHelp)
@@ -223,6 +221,16 @@ public class AutoDrop {
             TaskUtil.resetNextRunTick(TIME_TRIGGER_TASK_NAME);
         }
         Dropper.drop();
+        return 1;
+    }
+
+    private static int setDebug(CommandContext<FabricClientCommandSource> context, boolean debug) {
+        LOGGER.setDebug(debug);
+        context.getSource().sendFeedback(
+            debug ? 
+                T.tl("autodrop.debug.enabled.message") : 
+                T.tl("autodrop.debug.disabled.message")
+        );
         return 1;
     }
 

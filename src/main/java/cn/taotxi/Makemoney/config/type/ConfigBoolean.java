@@ -45,10 +45,13 @@ public class ConfigBoolean implements IConfigBase<Boolean> {
     
     @Override
     public void setValue(Boolean value) {
-        if (listener != null) {
-            listener.accept(getValue(), value);
+        if (listener == null) {
+            configManager.set(key, new JsonPrimitive(value));
+            return;
         }
+        Boolean oldValue = getValue();
         configManager.set(key, new JsonPrimitive(value));
+        listener.accept(oldValue, value);
     }
 
     public void enable() {

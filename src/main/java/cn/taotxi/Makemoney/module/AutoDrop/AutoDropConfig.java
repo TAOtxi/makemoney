@@ -21,6 +21,7 @@ import cn.taotxi.Makemoney.config.type.ConfigString;
 
 import cn.taotxi.Makemoney.config.ConfigManager;
 import cn.taotxi.Makemoney.util.StringUtil;
+import cn.taotxi.Makemoney.util.game.ItemStackUtil;
 
 public class AutoDropConfig extends ConfigManager {
     private static AutoDropConfig instance = null;
@@ -81,18 +82,41 @@ public class AutoDropConfig extends ConfigManager {
         // matchLists.getValue().add(item);
     }
 
-    public Item getMatchItem(int index) {
-        return getGson().fromJson(matchItemLists.getValue().get(index), Item.class);
+    public Item getStdMatchItem(int index) {
+        Item matchItem = getGson().fromJson(matchItemLists.getValue().get(index), Item.class);
+        if (!matchItem.id.equals("*") && !StringUtil.isRegex(matchItem.id)) {
+            matchItem.id = ItemStackUtil.withDefaultNamespace(matchItem.id);
+        }
+        Map<String, Integer> withDefaultNameSpaceMap = new HashMap<>();
+        for (Map.Entry<String, Integer> entry: matchItem.enchantments.entrySet()) {
+            String enchantmentName = ItemStackUtil.withDefaultNamespace(entry.getKey());
+            withDefaultNameSpaceMap.put(enchantmentName, entry.getValue());
+        }
+        matchItem.enchantments = withDefaultNameSpaceMap;
+        
+        if (matchItem.tags.contains("*")) {
+            matchItem.tags.clear();
+        } else {
+            List<String> withNamespaceTags = new ArrayList<>(matchItem.tags.size());
+            for (String tag: matchItem.tags) {
+                if (!tag.startsWith("#")) {
+                    throw new IllegalArgumentException("Tag must start with #, but got " + tag);
+                };
+                withNamespaceTags.add(ItemStackUtil.tagWithDefaultNamespace(tag));
+            }
+            matchItem.tags = withNamespaceTags;
+        }
+
+        return matchItem;
     }
 
-    public List<Item> getMatchItemLists() {
-        JsonArray matchLists = matchItemLists.getValue();
-        List<Item> lists = new ArrayList<>(matchLists.size());
-        for (JsonElement item: matchLists) {
-            if (item.getAsJsonObject().get("enabled").getAsBoolean()) {
-                lists.add(getGson().fromJson(item, Item.class));
-            }
+    public List<Item> getStdMatchItemLists() {
+        int size = matchItemLists.getValue().size();
+        List<Item> lists = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) {
+            lists.add(getStdMatchItem(i));
         }
+        
         return lists;
     }
 
@@ -289,7 +313,7 @@ class Item {
     public String name = "";
     public String id = "";
     public List<String> tags = new ArrayList<>();
-    public int minEnchantRequir = -1;
+    public int minEnchantRequir = 0;
     public Map<String, Integer> enchantments = new HashMap<>();
 
     public Item(boolean enabled, String description, String name, String id, List<String> tags, int minEnchantRequir, Map<String, Integer> enchantments) {

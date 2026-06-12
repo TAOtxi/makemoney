@@ -10,6 +10,7 @@ public class MLogger {
     private String moduleName;
     private Logger logger;
     private boolean isDebug;
+    private boolean toClientSide;
 
     public void setDebug(boolean bool) {
         isDebug = bool;
@@ -18,13 +19,17 @@ public class MLogger {
     public MLogger(String moduleName) {
         this.moduleName = moduleName;
         this.logger = Makemoney.LOGGER;
+        this.toClientSide = false;
+        this.isDebug = false;
     }
 
     public void info(String message) {
         if (!isDebug) {
             return;
         }
-        Message.clientSideMsg("[" + moduleName + "] " + message);
+        if (toClientSide) {
+            Message.clientSideMsg("[" + moduleName + "] " + message);
+        }
         logger.info("[{}] " + message, moduleName);
     }
 
@@ -32,7 +37,9 @@ public class MLogger {
         if (!isDebug) {
             return;
         }
-        Message.clientSideMsg("[" + moduleName + "] " + message + " " + arg1);
+        if (toClientSide) {
+            Message.clientSideMsg("[" + moduleName + "] " + message + " " + arg1);
+        }
         logger.info("[{}] " + message, moduleName, arg1);
     }
 
@@ -40,7 +47,9 @@ public class MLogger {
         if (!isDebug) {
             return;
         }
-        Message.clientSideMsg("[" + moduleName + "] " + message + " " + arg1);
+        if (toClientSide) {
+            Message.clientSideMsg("[" + moduleName + "] " + message + " " + arg2);
+        }
         logger.info("[{}] " + message, moduleName, arg1, arg2);
     }
 
@@ -48,7 +57,9 @@ public class MLogger {
         if (!isDebug) {
             return;
         }
-        Message.clientSideMsg("[" + moduleName + "] " + message + " " + Arrays.toString(args));
+        if (toClientSide) {
+            Message.clientSideMsg("[" + moduleName + "] " + message + " " + Arrays.toString(args));
+        }
         logger.info("[{}] " + message, moduleName, args);
     }
     

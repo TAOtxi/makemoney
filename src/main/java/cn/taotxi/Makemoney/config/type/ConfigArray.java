@@ -79,10 +79,12 @@ public class ConfigArray implements IConfigBase<JsonArray> {
 
     public void add(String element) {
         getValue().add(element);
+        triggerConfigChange();
     }
 
     public void add(JsonElement element) {
         getValue().add(element);
+        triggerConfigChange();
     }
 
     public void addTop(JsonElement element) {
@@ -94,30 +96,40 @@ public class ConfigArray implements IConfigBase<JsonArray> {
 
     public void add(int element) {
         getValue().add(element);
+        triggerConfigChange();
     }
 
     public void add(boolean element) {
         getValue().add(element);
+        triggerConfigChange();
     }
 
     public void add(double element) {
         getValue().add(element);
+        triggerConfigChange();
     }
 
     public void add(float element) {
         getValue().add(element);
+        triggerConfigChange();
     }
 
     public JsonElement remove(int index) {
-        return getValue().remove(index);
+        JsonElement element = getValue().get(index);
+        getValue().remove(index);
+        triggerConfigChange();
+        return element;
     }
     
     @Override
     public void setValue(JsonArray value) {
-        if (listener != null) {
-            listener.accept(getValue(), value);
+        if (listener == null) {
+            configManager.set(key, value);
+            return;
         }
+        JsonArray oldValue = getValue();
         configManager.set(key, value);
+        listener.accept(oldValue, value);
     }
 
     public void setValue(List<?> list) {

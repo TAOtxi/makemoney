@@ -45,10 +45,13 @@ public class ConfigString implements IConfigBase<String> {
     
     @Override
     public void setValue(String value) {
-        if (listener != null) {
-            listener.accept(getValue(), value);
+        if (listener == null) {
+            configManager.set(key, new JsonPrimitive(value));
+            return;
         }
+        String oldValue = getValue();
         configManager.set(key, new JsonPrimitive(value));
+        listener.accept(oldValue, value);
     }
 
     public void setValue(Enum<?> value) {
@@ -57,6 +60,14 @@ public class ConfigString implements IConfigBase<String> {
 
     public boolean equals(Enum<?> value) {
         return getValue().equals(value.name());
+    }
+
+    public boolean equals(String value) {
+        return getValue().equals(value);
+    }
+
+    public boolean isEmpty() {
+        return getValue().isEmpty();
     }
     
     @Override

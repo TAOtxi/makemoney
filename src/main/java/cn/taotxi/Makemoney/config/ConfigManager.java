@@ -46,7 +46,7 @@ public class ConfigManager {
         loadConfig();
 
         for (IConfigBase<?> option : options) {
-            option.triggerConfigChangeDefault();
+            option.triggerConfigChange();
         }
     }
     

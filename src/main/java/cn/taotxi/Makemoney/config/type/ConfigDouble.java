@@ -45,10 +45,13 @@ public class ConfigDouble implements IConfigBase<Double> {
     
     @Override
     public void setValue(Double value) {
-        if (listener != null) {
-            listener.accept(getValue(), value);
+        if (listener == null) {
+            configManager.set(key, new JsonPrimitive(value));
+            return;
         }
+        Double oldValue = getValue();
         configManager.set(key, new JsonPrimitive(value));
+        listener.accept(oldValue, value);
     }
     
     @Override

@@ -1,6 +1,5 @@
 package cn.taotxi.Makemoney.module.AutoDrop;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -9,17 +8,13 @@ import com.google.gson.JsonElement;
 
 import cn.taotxi.Makemoney.gui.ConfigScreen;
 import cn.taotxi.Makemoney.util.CommonUtil;
+import cn.taotxi.Makemoney.util.game.EnchantmentHelper;
 import cn.taotxi.Makemoney.util.game.InventoryUtil;
 import cn.taotxi.Makemoney.util.game.ItemStackUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.core.Holder;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.InventoryMenu;
 
@@ -27,7 +22,7 @@ import net.minecraft.world.inventory.InventoryMenu;
 public class Dropper {
     private static final AutoDropConfig CONFIG = AutoDropConfig.getInstance();
     private static final List<Integer> ignoreSlots = CONFIG.ignoreSlots.getValueAsIntList();
-    private static final List<Item> matchItemList = CONFIG.getMatchItemLists();
+    private static final List<Item> matchItemList = CONFIG.getStdMatchItemLists();
     private static final Minecraft client = Minecraft.getInstance();
 
     public static void initialize() {
@@ -43,14 +38,15 @@ public class Dropper {
         CONFIG.matchItemLists.onChange(
             (oldValue, newValue) -> {
                 matchItemList.clear();
-                for (JsonElement item : newValue) {
+                for (int i = 0; i < newValue.size(); i++) {
+                    JsonElement item = newValue.get(i);
                     if (item.getAsJsonObject().get("enabled").getAsBoolean()) {
-                        matchItemList.add(AutoDropConfig.getGson().fromJson(item, Item.class));
+                        matchItemList.add(CONFIG.getStdMatchItem(i));
                     }
                 }
             }
         );
-
+        CONFIG.matchItemLists.triggerConfigChange();
     }
 
     // TODO: 在捡到物品的事件中，调用该方法
@@ -124,35 +120,26 @@ public class Dropper {
         if (item.isEmpty()) return true;
 
         for (Item check: matchLists){
-            // if (!check.enabled) continue;
+            // // if (!check.enabled) continue;
+            // AutoDrop.LOGGER.info("Checker: {}", check.description);
+            // AutoDrop.LOGGER.info("Name: {} --- {}", ItemStackUtil.getName(item), check.name);
+            // AutoDrop.LOGGER.info("Id: {} --- {}", ItemStackUtil.getId(item), check.id);
+            // AutoDrop.LOGGER.info("");
 
-            // TODO: 兼容其它命名空间
+
             // check name
             if (!check.name.equals("*") && !ItemStackUtil.equalName(item, check.name)) {
-                // String name = ItemStackUtil.getName(item);
-                // AutoDrop.LOGGER.info("name not match: " + name + " " + check.name);
                 continue;
             }
             // check id
             if (!check.id.equals("*") && !ItemStackUtil.equalId(item, check.id)) {
-                // AutoDrop.LOGGER.info("id not match: " + item + " " + ItemStackUtil.withDefaultNamespace(check.id));
                 continue;
             }
 
-            /**
-             * 有点绕，梳理下思路
-             * 1. 如果check.tags包含`*`，匹配直接通过
-             * 2. 如果check.tags为空，匹配通过
-             * 3. 如果itemTags和check.tags有交集，则通过
-             * 下面第一个if不赘述
-             * 第二个if：没有包含`*`，且itemTags和check.tags没有交集，表示匹配不通过
-             */
             if (!check.tags.isEmpty()) {
                 List<String> itemTags = ItemStackUtil.getTags(item);
                 // check tag
-                List<String> withNamespaceCheckTags = check.tags.stream().map(tag -> ItemStackUtil.withDefaultNamespace(tag)).toList();
-                if (!check.tags.contains("*") && !CommonUtil.hasIntersection_regMatch(itemTags, withNamespaceCheckTags)) {
-                    // AutoDrop.LOGGER.info("tags not match: " + itemTags + " " + withNamespaceCheckTags);
+                if (!CommonUtil.hasIntersection_hash(itemTags, check.tags)) {
                     continue;
                 };
             }
@@ -163,7 +150,7 @@ public class Dropper {
             }
 
             if (check.enchantments.size() < check.minEnchantRequir) {
-                continue;       // 不可能通过匹配
+                continue;   // 不可能通过匹配
             }
 
             int minEnchantRequir = check.minEnchantRequir == -1 ? check.enchantments.size() : check.minEnchantRequir;
@@ -171,22 +158,17 @@ public class Dropper {
             if (hasEnchantCount >= minEnchantRequir) {
                 return true;   // ✔
             }
-            // AutoDrop.LOGGER.info("enchantments not match.");
         }
         return false;
     }
 
     private static int calEnchantCounts(ItemStack item, Map<String, Integer> enchantments) {
         int counter = 0;
-        ItemEnchantments it = 
-            item.is(Items.ENCHANTED_BOOK) ?
-            item.getOrDefault(DataComponents.STORED_ENCHANTMENTS, ItemEnchantments.EMPTY) :
-            item.getEnchantments();
-        for (Holder<Enchantment> enchant: it.keySet()) {
-            String ID = enchant.getRegisteredName();
-            int level = it.getLevel(enchant);
-            if (level >= enchantments.getOrDefault(ID, 666) || 
-                level >= enchantments.getOrDefault(ItemStackUtil.withoutDefaultNamespace(ID), 666)) {
+        Map<String, Integer> itemEnchantments = EnchantmentHelper.getEnchantments(item);
+        for (Map.Entry<String, Integer> entry: itemEnchantments.entrySet()) {
+            String ID = entry.getKey();
+            int level = entry.getValue();
+            if (level >= enchantments.getOrDefault(ID, 6666)) {
                 counter++;
             }
         }

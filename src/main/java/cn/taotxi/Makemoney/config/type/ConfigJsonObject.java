@@ -58,6 +58,7 @@ public class ConfigJsonObject implements IConfigBase<JsonObject> {
             jsonObject.remove(key);
         }
         jsonObject.addProperty(key, value);
+        triggerConfigChange();
     }
 
     public int getInt(String key) {
@@ -70,6 +71,7 @@ public class ConfigJsonObject implements IConfigBase<JsonObject> {
             jsonObject.remove(key);
         }
         jsonObject.addProperty(key, value);
+        triggerConfigChange();
     }
 
     public float getFloat(String key) {
@@ -82,6 +84,7 @@ public class ConfigJsonObject implements IConfigBase<JsonObject> {
             jsonObject.remove(key);
         }
         jsonObject.addProperty(key, value);
+        triggerConfigChange();
     }
 
     public boolean getBoolean(String key) {
@@ -94,6 +97,7 @@ public class ConfigJsonObject implements IConfigBase<JsonObject> {
             jsonObject.remove(key);
         }
         jsonObject.addProperty(key, value);        
+        triggerConfigChange();
     }
 
     public double getDouble(String key) {
@@ -106,6 +110,7 @@ public class ConfigJsonObject implements IConfigBase<JsonObject> {
             jsonObject.remove(key);
         }
         jsonObject.addProperty(key, value);
+        triggerConfigChange();
     }
 
     public JsonArray getJsonArray(String key) {
@@ -118,6 +123,7 @@ public class ConfigJsonObject implements IConfigBase<JsonObject> {
             jsonObject.remove(key);
         }
         jsonObject.add(key, value);
+        triggerConfigChange();
     }
 
     public JsonObject getJsonObject(String key) {
@@ -130,14 +136,18 @@ public class ConfigJsonObject implements IConfigBase<JsonObject> {
             jsonObject.remove(key);
         }
         jsonObject.add(key, value);
+        triggerConfigChange();
     }
     
     @Override
     public void setValue(JsonObject value) {
-        if (listener != null) {
-            listener.accept(getValue(), value);
+        if (listener == null) {
+            configManager.set(key, value);
+            return;
         }
+        JsonObject oldValue = getValue();
         configManager.set(key, value);
+        listener.accept(oldValue, value);
     }
     
     @Override

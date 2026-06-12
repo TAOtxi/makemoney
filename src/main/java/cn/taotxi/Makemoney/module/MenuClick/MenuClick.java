@@ -115,7 +115,7 @@ public class MenuClick {
                 }
                 taskMap.put(name, i + 1);
 
-            }, task.delay);
+            }, task.delay, true);
         }, task.startDelay);
     }
 

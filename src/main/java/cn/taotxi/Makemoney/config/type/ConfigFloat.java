@@ -45,10 +45,13 @@ public class ConfigFloat implements IConfigBase<Float> {
     
     @Override
     public void setValue(Float value) {
-        if (listener != null) {
-            listener.accept(getValue(), value);
+        if (listener == null) {
+            configManager.set(key, new JsonPrimitive(value));
+            return;
         }
+        Float oldValue = getValue();
         configManager.set(key, new JsonPrimitive(value));
+        listener.accept(oldValue, value);
     }
     
     @Override

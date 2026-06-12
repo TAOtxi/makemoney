@@ -16,12 +16,13 @@ import com.mojang.brigadier.context.CommandContext;
 
 import cn.taotxi.Makemoney.config.MakemoneyConfig;
 import cn.taotxi.Makemoney.gui.GuiUtil;
-import cn.taotxi.Makemoney.gui.dialog.ConfirmWindow;
 import cn.taotxi.Makemoney.module.AutoDrop.AutoDrop;
 import cn.taotxi.Makemoney.module.AutoFish.AutoFish;
+// import cn.taotxi.Makemoney.module.MendingHelper.MendingHelper;
 import cn.taotxi.Makemoney.module.MenuClick.MenuClick;
 import cn.taotxi.Makemoney.module.MessageCommand.MessageCommand;
 import cn.taotxi.Makemoney.module.StrangeFunction.StrangeFunctionInit;
+import cn.taotxi.Makemoney.util.Message;
 import cn.taotxi.Makemoney.util.T;
 import cn.taotxi.Makemoney.util.TaskUtil;
 
@@ -57,6 +58,7 @@ public class Makemoney implements ModInitializer {
         StrangeFunctionInit.initialize();
         MessageCommand.initialize();
         MenuClick.initialize();
+        // MendingHelper.initialize();
         TaskUtil.initialize();
 
         // TaskUtil.createTimeTask("a", () -> {
@@ -99,7 +101,9 @@ public class Makemoney implements ModInitializer {
             dispatcher.register(ClientCommandManager.literal("tt")
                 .then(ClientCommandManager.literal("1")
                     .executes(context -> {
-                        Minecraft.getInstance().setScreen(new ConfirmWindow(T.l("Confirm")));
+                        var client = context.getSource().getClient();
+                        var menu = client.player.inventoryMenu;
+                        System.out.println("Carried: " + (menu.getCarried() == client.player.getInventory().getSelectedItem()));
                         return 1;
                     }))
                 .then(ClientCommandManager.literal("2")
