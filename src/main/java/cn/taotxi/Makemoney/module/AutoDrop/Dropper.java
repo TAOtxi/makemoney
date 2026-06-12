@@ -73,7 +73,7 @@ public class Dropper {
 
             if (
                 !itemId.equals("*") &&
-                !ItemStackUtil.equalId(heldItem, itemId)
+                !ItemStackUtil.equalIdWithDefaultNamespace(heldItem, itemId)
             )
                 return;
         };
@@ -106,7 +106,6 @@ public class Dropper {
             throw new IllegalArgumentException("Unknown throwWay: " + throwWay +". Please use DIRECTION or ROTATION."); 
         }
     }
-
 
     public static int notEmptySlotCount() {
         return InventoryUtil.getInventoryNotEmptySlots().size();

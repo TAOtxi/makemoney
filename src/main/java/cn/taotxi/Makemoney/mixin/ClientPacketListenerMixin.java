@@ -29,7 +29,7 @@ import cn.taotxi.Makemoney.module.StrangeFunction.IgnoreMessage;
 import cn.taotxi.Makemoney.module.AutoDrop.AutoDrop;
 import cn.taotxi.Makemoney.module.AutoFish.AutoFish;
 import cn.taotxi.Makemoney.module.MessageCommand.MessageCommand;
-// import cn.taotxi.Makemoney.module.MendingHelper.AutoReplace;
+// import cn.taotxi.Makemoney.module.MendingHelper.AutoMendingReplace;
 
 
 @Mixin(ClientPacketListener.class)
@@ -69,7 +69,7 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
             if (entity instanceof ItemEntity itemEntity) {
                 AutoDrop.onTakeItemEntity(itemEntity);
             } else {    // Experience Orb
-                // AutoReplace.tryToReplaceOffHand();
+                // AutoMendingReplace.tryToReplaceOffHand();
             }
         };
     }

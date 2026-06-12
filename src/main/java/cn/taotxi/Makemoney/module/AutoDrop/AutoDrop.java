@@ -172,13 +172,14 @@ public class AutoDrop {
         if (!enabled || !dropThrottleFlag) return;
         if (!CONFIG.isPickUpItemTrigger.getValue()) return;
 
-        if (CONFIG.triggerItemId.getValue().isEmpty()) {
+        String triggerItemId = CONFIG.triggerItemId.getValue();
+        if (triggerItemId.isEmpty()) {
             onPickUpDrop();
             return;
         }
         
         ItemStack itemStack = itemEntity.getItem();
-        if (ItemStackUtil.equalId(itemStack, CONFIG.triggerItemId.getValue())) {
+        if (ItemStackUtil.equalIdWithDefaultNamespace(itemStack, triggerItemId)) {
             onPickUpDrop();
         }
     }
