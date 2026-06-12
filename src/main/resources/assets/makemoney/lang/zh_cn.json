@@ -90,8 +90,8 @@
     "makemoney.autodrop.stopWhenNotHoldingItemId": "手持物品的ID",
     "makemoney.autodrop.stopWhenNotHoldingItemId.desc": "\" * \"表示匹配所有物品ID。\n\n可以用普通字符串，也支持形如 /正则表达式/ 的形式",
 
-    "makemoney.autodrop.showAttentionMsg": "是否显示注意信息",
-    "makemoney.autodrop.showAttentionMsg.desc": "开启后，在自动丢弃模式开启时，会在状态栏上方显示注意信息",
+    "makemoney.autodrop.showAttentionMsg": "是否显示丢弃提示信息",
+    "makemoney.autodrop.showAttentionMsg.desc": "开启后，在自动丢弃模式开启时，会在状态栏上方显示丢弃提示信息",
     "makemoney.autodrop.ignoreCurrentSlot": "懒人添加按钮",
     "makemoney.autodrop.ignoreCurrentSlot.desc": "一键将当前背包内不为空的槽位添加到忽略列表",
     "makemoney.autodrop.ignoreSlots": "忽略的物品槽位",
