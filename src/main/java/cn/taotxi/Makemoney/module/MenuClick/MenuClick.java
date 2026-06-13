@@ -152,7 +152,7 @@ public class MenuClick {
                     .executes(MenuClick::showHelp))
                 .then(ClientCommandManager.literal("config")
                     .executes(context -> {
-                        GuiUtil.openYaclScreen(Makemoney.MOD_ID, 2);
+                        GuiUtil.openYaclScreen(Makemoney.MOD_ID, 4);
                         return 1;
                     }))
                 .then(ClientCommandManager.literal("run")

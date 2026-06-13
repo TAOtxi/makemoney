@@ -1,6 +1,5 @@
 package cn.taotxi.Makemoney.module.StrangeFunction;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -8,8 +7,6 @@ import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
@@ -268,29 +265,10 @@ public class AutoRide {
         CommandContext<FabricClientCommandSource> context,
         SuggestionsBuilder builder
     ) {
-        List<String> taskNameList = GameUtil.getOnlinePlayerNames();
-        for (String name : taskNameList) {
+        List<String> playerNameList = GameUtil.getOnlinePlayerNames();
+        for (String name : playerNameList) {
             builder.suggest(name);
         }
         return builder.buildFuture();
     }
-}
-
-
-class PlayerSuggestionProvider implements SuggestionProvider<FabricClientCommandSource> {
-	@Override
-	public CompletableFuture<Suggestions> getSuggestions(CommandContext<FabricClientCommandSource> context, SuggestionsBuilder builder) throws CommandSyntaxException {
-		FabricClientCommandSource source = context.getSource();
-
-		// Thankfully, the ServerCommandSource has a method to get a list of player names.
-		Collection<String> playerNames = source.getOnlinePlayerNames();
-
-		// Add all player names to the builder.
-		for (String playerName : playerNames) {
-			builder.suggest(playerName);
-		}
-
-		// Lock the suggestions after we've modified them.
-		return builder.buildFuture();
-	}
 }

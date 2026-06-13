@@ -166,7 +166,7 @@ public class AutoFish {
                         }))
                     .then(ClientCommandManager.literal("open")
                         .executes(context -> {
-                            GuiUtil.openYaclScreen(Makemoney.MOD_ID);
+                            GuiUtil.openYaclScreen(Makemoney.MOD_ID, 1);
                             return 1;
                         })))
             );

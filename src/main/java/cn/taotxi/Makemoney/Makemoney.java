@@ -2,6 +2,7 @@ package cn.taotxi.Makemoney;
 
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.world.item.Items;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -18,7 +19,7 @@ import cn.taotxi.Makemoney.config.MakemoneyConfig;
 import cn.taotxi.Makemoney.gui.GuiUtil;
 import cn.taotxi.Makemoney.module.AutoDrop.AutoDrop;
 import cn.taotxi.Makemoney.module.AutoFish.AutoFish;
-// import cn.taotxi.Makemoney.module.MendingHelper.MendingHelper;
+import cn.taotxi.Makemoney.module.MendingHelper.MendingHelper;
 import cn.taotxi.Makemoney.module.MenuClick.MenuClick;
 import cn.taotxi.Makemoney.module.MessageCommand.MessageCommand;
 import cn.taotxi.Makemoney.module.StrangeFunction.StrangeFunctionInit;
@@ -58,7 +59,7 @@ public class Makemoney implements ModInitializer {
         StrangeFunctionInit.initialize();
         MessageCommand.initialize();
         MenuClick.initialize();
-        // MendingHelper.initialize();
+        MendingHelper.initialize();
         TaskUtil.initialize();
 
         // TaskUtil.createTimeTask("a", () -> {
@@ -102,8 +103,8 @@ public class Makemoney implements ModInitializer {
                 .then(ClientCommandManager.literal("1")
                     .executes(context -> {
                         var client = context.getSource().getClient();
-                        var menu = client.player.inventoryMenu;
-                        System.out.println("Carried: " + (menu.getCarried() == client.player.getInventory().getSelectedItem()));
+                        var itemStack = client.player.getInventory().getSelectedItem();
+                        Message.clientSideMsg("" + itemStack.is(Items.DIAMOND));
                         return 1;
                     }))
                 .then(ClientCommandManager.literal("2")

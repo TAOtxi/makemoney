@@ -29,7 +29,8 @@ import cn.taotxi.Makemoney.module.StrangeFunction.IgnoreMessage;
 import cn.taotxi.Makemoney.module.AutoDrop.AutoDrop;
 import cn.taotxi.Makemoney.module.AutoFish.AutoFish;
 import cn.taotxi.Makemoney.module.MessageCommand.MessageCommand;
-// import cn.taotxi.Makemoney.module.MendingHelper.AutoMendingReplace;
+import cn.taotxi.Makemoney.module.MendingHelper.AutoEnchantMending;
+import cn.taotxi.Makemoney.module.MendingHelper.AutoMendingReplace;
 
 
 @Mixin(ClientPacketListener.class)
@@ -69,7 +70,7 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
             if (entity instanceof ItemEntity itemEntity) {
                 AutoDrop.onTakeItemEntity(itemEntity);
             } else {    // Experience Orb
-                // AutoMendingReplace.tryToReplaceOffHand();
+                AutoMendingReplace.tryToReplaceOffHand();
             }
         };
     }
@@ -81,12 +82,12 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
         };
     }
 
-    // @Inject(method = "handleOpenScreen", at = @At("HEAD"))
-    // public void onOpenScreen(ClientboundOpenScreenPacket packet, CallbackInfo ci) {
-    //     if (minecraft.isSameThread()) {
-    //         System.out.println("Open Container ID: " + packet.getContainerId() + " " + packet.getTitle().getString());
-    //     };
-    // }
+    @Inject(method = "handleOpenScreen", at = @At("TAIL"))
+    public void onOpenScreen(ClientboundOpenScreenPacket packet, CallbackInfo ci) {
+        if (minecraft.isSameThread()) {
+            AutoEnchantMending.onOpenContainer();
+        };
+    }
 
     // @Inject(method = "handleContainerClose", at = @At("HEAD"))
     // public void onContainerClose(ClientboundContainerClosePacket packet, CallbackInfo ci) {

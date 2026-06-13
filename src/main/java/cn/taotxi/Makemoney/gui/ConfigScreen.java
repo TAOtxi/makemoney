@@ -18,8 +18,7 @@ import com.mojang.blaze3d.platform.Window;
 import cn.taotxi.Makemoney.Makemoney;
 import cn.taotxi.Makemoney.module.AutoDrop.AutoDropConfigGui;
 import cn.taotxi.Makemoney.module.AutoFish.AutoFishConfig;
-import cn.taotxi.Makemoney.module.AutoRepair.AutoRepairConfigGui;
-import cn.taotxi.Makemoney.module.EntityHighlightBox.EntityHighlightBoxConfigGui;
+import cn.taotxi.Makemoney.module.MendingHelper.MendingHelperConfig;
 import cn.taotxi.Makemoney.module.MenuClick.MenuClickConfig;
 import cn.taotxi.Makemoney.module.MenuClick.MenuClickConfigGui;
 import cn.taotxi.Makemoney.module.MessageCommand.MessageCommandConfig;
@@ -49,6 +48,7 @@ import dev.isxander.yacl3.impl.utils.YACLConstants;
 public class ConfigScreen {
     private static final StrangeConfig STRANGE_CONFIG = StrangeConfig.getInstance();
     private static final AutoFishConfig AUTOFISH_CONFIG = AutoFishConfig.getInstance();
+    private static final MendingHelperConfig MENDING_HELPER_CONFIG = MendingHelperConfig.getInstance();
 
     // TODO: 待完善
     public static Screen getConfigScreen(Screen parent) {
@@ -60,6 +60,7 @@ public class ConfigScreen {
                     AUTOFISH_CONFIG.saveConfig();
                     MessageCommandConfig.getInstance().saveConfig();
                     MenuClickConfig.getInstance().saveConfig();
+                    MENDING_HELPER_CONFIG.saveConfig();
 
                     // TODO: 待寻找更合适的触发方式
                     MessageCommandConfig.getInstance().messageRules.triggerConfigChange();
@@ -67,6 +68,12 @@ public class ConfigScreen {
 
         ConfigCategory.Builder strangeCategory = createStrangeCategory(parent);
         builder.category(strangeCategory.build());
+
+        ConfigCategory.Builder fishCategory = createFishCategory(parent);
+        builder.category(fishCategory.build());
+
+        ConfigCategory.Builder ignoreMessageCategory = createIgnoreMessageCategory(parent);
+        builder.category(ignoreMessageCategory.build());
 
         ConfigCategory.Builder messageRuleCategory = MessageCommandGui.createMessageRuleCategory(parent);
         builder.category(messageRuleCategory.build());
@@ -87,55 +94,9 @@ public class ConfigScreen {
                 .name(T.tl("strange.name"))
                 .tooltip(T.tl("strange.desc"));
 
-        OptionGroup.Builder autoFishGroup = OptionGroup.createBuilder()
-                .name(T.tl("autofish.name"))
-                .description(OptionDescription.of(T.tl("autofish.desc")));
-
-        autoFishGroup.option(Factory.addToggleOption(
-            T.tl("autofish.enabled"), 
-            T.tl("autofish.enabled.desc"), 
-            AUTOFISH_CONFIG.enabled.getDefaultValue(),
-            AUTOFISH_CONFIG.enabled::getValue,
-            AUTOFISH_CONFIG.enabled::setValue
-        ));
-
-        autoFishGroup.option(Factory.addToggleOption(
-            T.tl("autofish.rotation"), 
-            T.tl("autofish.rotation.desc"), 
-            AUTOFISH_CONFIG.rotation.getDefaultValue(),
-            AUTOFISH_CONFIG.rotation::getValue,
-            AUTOFISH_CONFIG.rotation::setValue
-        ));
-
-        autoFishGroup.option(Factory.addToggleOption(
-            T.tl("autofish.randomDelay"), 
-            T.tl("autofish.randomDelay.desc"), 
-            AUTOFISH_CONFIG.randomDelay.getDefaultValue(),
-            AUTOFISH_CONFIG.randomDelay::getValue,
-            AUTOFISH_CONFIG.randomDelay::setValue
-        ));
-
-        autoFishGroup.option(Option.<Integer>createBuilder()
-                .name(T.tl("autofish.throwDelay"))
-                .description(OptionDescription.of(T.tl("autofish.throwDelay.desc")))
-                .binding(
-                    AUTOFISH_CONFIG.throwDelay.getDefaultValue(),
-                    AUTOFISH_CONFIG.throwDelay::getValue,
-                    AUTOFISH_CONFIG.throwDelay::setValue
-                )
-                .controller(opt -> IntegerSliderControllerBuilder.create(opt)
-                    .range(0, 100)
-                    .step(1)
-                    .formatValue(val -> T.l(val + " tick"))
-                )
-                .build()
-        );
-
-        strangeCategory.group(autoFishGroup.build());
-
         strangeCategory.option(Factory.addToggleOption(
-            T.tl("ignore.rightClickRide"), 
-            T.tl("ignore.rightClickRide.desc"), 
+            T.tl("rightClickRide"), 
+            T.tl("rightClickRide.desc"), 
             STRANGE_CONFIG.rightClickRideEnabled.getDefaultValue(), 
             STRANGE_CONFIG.rightClickRideEnabled::getValue,
             STRANGE_CONFIG.rightClickRideEnabled::setValue
@@ -205,7 +166,106 @@ public class ConfigScreen {
         ));
 
         strangeCategory.group(autoRideGroup.build());
+        
+        return strangeCategory;
+    }
 
+    private static ConfigCategory.Builder createFishCategory(Screen parent) {
+        ConfigCategory.Builder fishCategory = ConfigCategory.createBuilder()
+                .name(T.tl("fishCategory"))
+                .tooltip(T.tl("fishCategory.desc"));
+
+        OptionGroup.Builder autoFishGroup = OptionGroup.createBuilder()
+                .name(T.tl("autofish.name"))
+                .description(OptionDescription.of(T.tl("autofish.desc")));
+
+        autoFishGroup.option(Factory.addToggleOption(
+            T.tl("autofish.enabled"), 
+            T.tl("autofish.enabled.desc"), 
+            AUTOFISH_CONFIG.enabled.getDefaultValue(),
+            AUTOFISH_CONFIG.enabled::getValue,
+            AUTOFISH_CONFIG.enabled::setValue
+        ));
+
+        autoFishGroup.option(Factory.addToggleOption(
+            T.tl("autofish.rotation"), 
+            T.tl("autofish.rotation.desc"), 
+            AUTOFISH_CONFIG.rotation.getDefaultValue(),
+            AUTOFISH_CONFIG.rotation::getValue,
+            AUTOFISH_CONFIG.rotation::setValue
+        ));
+
+        autoFishGroup.option(Factory.addToggleOption(
+            T.tl("autofish.randomDelay"), 
+            T.tl("autofish.randomDelay.desc"), 
+            AUTOFISH_CONFIG.randomDelay.getDefaultValue(),
+            AUTOFISH_CONFIG.randomDelay::getValue,
+            AUTOFISH_CONFIG.randomDelay::setValue
+        ));
+
+        autoFishGroup.option(Option.<Integer>createBuilder()
+                .name(T.tl("autofish.throwDelay"))
+                .description(OptionDescription.of(T.tl("autofish.throwDelay.desc")))
+                .binding(
+                    AUTOFISH_CONFIG.throwDelay.getDefaultValue(),
+                    AUTOFISH_CONFIG.throwDelay::getValue,
+                    AUTOFISH_CONFIG.throwDelay::setValue
+                )
+                .controller(opt -> IntegerSliderControllerBuilder.create(opt)
+                    .range(0, 100)
+                    .step(1)
+                    .formatValue(val -> T.l(val + " tick"))
+                )
+                .build()
+        );
+
+        fishCategory.group(autoFishGroup.build());
+
+        OptionGroup.Builder enchantHelperGroup = OptionGroup.createBuilder()
+                .name(T.tl("mendingHelper.name"))
+                .description(OptionDescription.of(T.tl("mendingHelper.desc")));
+
+        enchantHelperGroup.option(Factory.addToggleOption(
+            T.tl("mendingHelper.autoReplace.name"), 
+            T.tl("mendingHelper.autoReplace.desc"), 
+            MENDING_HELPER_CONFIG.autoReplaceEnabled.getDefaultValue(),
+            MENDING_HELPER_CONFIG.autoReplaceEnabled::getValue,
+            MENDING_HELPER_CONFIG.autoReplaceEnabled::setValue
+        ));
+
+        enchantHelperGroup.option(Factory.addToggleOption(
+            T.tl("mendingHelper.autoEnchant.name"), 
+            T.tl("mendingHelper.autoEnchant.desc"), 
+            MENDING_HELPER_CONFIG.autoEnchantEnabled.getDefaultValue(),
+            MENDING_HELPER_CONFIG.autoEnchantEnabled::getValue,
+            MENDING_HELPER_CONFIG.autoEnchantEnabled::setValue
+        ));
+
+        enchantHelperGroup.option(Factory.addToggleOption(
+            T.tl("mendingHelper.autoDecompose.name"), 
+            T.tl("mendingHelper.autoDecompose.desc"), 
+            MENDING_HELPER_CONFIG.autoDecomposeEnabled.getDefaultValue(),
+            MENDING_HELPER_CONFIG.autoDecomposeEnabled::getValue,
+            MENDING_HELPER_CONFIG.autoDecomposeEnabled::setValue
+        ));
+
+        enchantHelperGroup.option(Factory.addToggleOption(
+            T.tl("mendingHelper.onlyDecomposeNoneDamage.name"), 
+            T.tl("mendingHelper.onlyDecomposeNoneDamage.desc"), 
+            MENDING_HELPER_CONFIG.onlyDecomposeNoneDamage.getDefaultValue(),
+            MENDING_HELPER_CONFIG.onlyDecomposeNoneDamage::getValue,
+            MENDING_HELPER_CONFIG.onlyDecomposeNoneDamage::setValue
+        ));
+        fishCategory.group(enchantHelperGroup.build());
+
+        return fishCategory;
+    }
+
+
+    private static ConfigCategory.Builder createIgnoreMessageCategory(Screen parent) {
+        ConfigCategory.Builder ignoreMessageCategory = ConfigCategory.createBuilder()
+                .name(T.tl("ignore"))
+                .tooltip(T.tl("ignore.desc"));
 
         OptionGroup.Builder ignoreGroup = OptionGroup.createBuilder()
                 .name(T.tl("ignore"))
@@ -244,8 +304,8 @@ public class ConfigScreen {
         );
 
 
-        strangeCategory.group(ignoreGroup.build());
-        strangeCategory.group(ListOption.<String>createBuilder()
+        ignoreMessageCategory.group(ignoreGroup.build());
+        ignoreMessageCategory.group(ListOption.<String>createBuilder()
                     .name(T.tl("ignore.regex"))
                     .description(OptionDescription.of(T.tl("ignore.regex.desc")))
                     .binding(
@@ -257,8 +317,8 @@ public class ConfigScreen {
                     .controller(StringControllerBuilder::create)
                     .build()
             );
-        
-        return strangeCategory;
+
+        return ignoreMessageCategory;
     }
 
     
@@ -283,42 +343,9 @@ public class ConfigScreen {
         );
         moduleCategory.group(autodropGroup.build());
 
-        OptionGroup.Builder autorepairGroup = OptionGroup.createBuilder()
-                .name(T.tl("autorepair.name"))
-                .description(OptionDescription.of(T.tl("autorepair.desc")));
-
-        autorepairGroup.option(ButtonOption.createBuilder()
-                .name(T.tl("gui.config.open.autorepair"))
-                .text(T.tl("gui.config.open"))
-                .action((screen, option) -> {
-                    YACLScreen autorepairScreem = (YACLScreen) AutoRepairConfigGui.createConfigScreen(screen);
-                    Window window = Minecraft.getInstance().getWindow(); 
-                    autorepairScreem.init(window.getGuiScaledWidth(), window.getGuiScaledHeight());
-                    Minecraft.getInstance().setScreen(autorepairScreem);
-                })
-                .build()
-        );
-        moduleCategory.group(autorepairGroup.build());
-
-        OptionGroup.Builder entityhighlightboxGroup = OptionGroup.createBuilder()
-                .name(T.tl("entityhighlightbox.name"))
-                .description(OptionDescription.of(T.tl("entityhighlightbox.desc")));
-
-        entityhighlightboxGroup.option(ButtonOption.createBuilder()
-                .name(T.tl("gui.config.open.entityhighlightbox"))
-                .text(T.tl("gui.config.open"))
-                .action((screen, option) -> {
-                    YACLScreen entityhighlightboxScreen = (YACLScreen) EntityHighlightBoxConfigGui.createConfigScreen(screen);
-                    Window window = Minecraft.getInstance().getWindow(); 
-                    entityhighlightboxScreen.init(window.getGuiScaledWidth(), window.getGuiScaledHeight());
-                    Minecraft.getInstance().setScreen(entityhighlightboxScreen);
-                })
-                .build()
-        );
-        moduleCategory.group(entityhighlightboxGroup.build());
-
         return moduleCategory;
     }
+
 
     public static void reload(YACLScreen screen, Screen parent, boolean saveConfig, Function<Screen, Screen> createConfigScreen) {
         Minecraft client = Minecraft.getInstance();
