@@ -115,7 +115,6 @@ public class AutoRide {
         if (player.getAbilities().flying) return;   // 飞行状态下无法潜行
 
         // TODO: 找到比较优雅让玩家潜行的方法
-        // TODO: 考虑是否要覆盖掉原有输入
         Input shiftInput = new Input(
             player.input.keyPresses.forward(),
             player.input.keyPresses.backward(),

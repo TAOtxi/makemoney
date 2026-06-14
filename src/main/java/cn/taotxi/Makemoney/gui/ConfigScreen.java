@@ -50,7 +50,6 @@ public class ConfigScreen {
     private static final AutoFishConfig AUTOFISH_CONFIG = AutoFishConfig.getInstance();
     private static final MendingHelperConfig MENDING_HELPER_CONFIG = MendingHelperConfig.getInstance();
 
-    // TODO: 待完善
     public static Screen getConfigScreen(Screen parent) {
         YetAnotherConfigLib.Builder builder = 
             YetAnotherConfigLib.createBuilder()

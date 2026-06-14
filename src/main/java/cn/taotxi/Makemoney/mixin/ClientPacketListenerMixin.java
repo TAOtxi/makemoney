@@ -27,6 +27,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import cn.taotxi.Makemoney.module.StrangeFunction.AutoRide;
 import cn.taotxi.Makemoney.module.StrangeFunction.IgnoreMessage;
 import cn.taotxi.Makemoney.module.AutoDrop.AutoDrop;
+import cn.taotxi.Makemoney.module.AutoDrop.Dropper;
 import cn.taotxi.Makemoney.module.AutoFish.AutoFish;
 import cn.taotxi.Makemoney.module.MessageCommand.MessageCommand;
 import cn.taotxi.Makemoney.module.MendingHelper.AutoEnchantMending;
@@ -86,6 +87,17 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
     public void onOpenScreen(ClientboundOpenScreenPacket packet, CallbackInfo ci) {
         if (minecraft.isSameThread()) {
             AutoEnchantMending.onOpenContainer();
+        };
+    }
+
+    @Inject(method = "handleContainerContent", at = @At("TAIL"))
+    public void onContainerContent(ClientboundContainerSetContentPacket packet, CallbackInfo ci) {
+        if (minecraft.isSameThread()) {
+            if (minecraft.player.hasContainerOpen() && 
+                packet.containerId() == minecraft.player.containerMenu.containerId
+            ) {
+                Dropper.onOpenContainerDrop();
+            }
         };
     }
 

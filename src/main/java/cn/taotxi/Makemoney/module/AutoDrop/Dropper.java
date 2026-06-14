@@ -15,8 +15,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.inventory.HopperMenu;
+import net.minecraft.world.inventory.ShulkerBoxMenu;
+import net.minecraft.world.inventory.DispenserMenu;
+import net.minecraft.world.inventory.CrafterMenu;
 
 
 public class Dropper {
@@ -49,34 +55,40 @@ public class Dropper {
         CONFIG.matchItemLists.triggerConfigChange();
     }
 
-    // TODO: 在捡到物品的事件中，调用该方法
-    public static void tryToDropItems() {
-        LocalPlayer player = client.player;
-        if (player == null) return;
+    private static boolean canDrop() {
+        if (!AutoDrop.enabled) return false;
+        if (client.player == null) return false;
 
-        if (CONFIG.stopWhenCrouch.getValue() && player.isCrouching()) return;
-        if (player.hasContainerOpen()) return; // TODO: BUG: 无法检测是否打开背包
-        if (CONFIG.stopWhenOpenConfigGui.getValue() && ConfigScreen.isOpenYaclScreen()) return;
-        if (CONFIG.triggerMinCount.getValue() > 0 && CONFIG.triggerMinCount.getValue() > notEmptySlotCount()) return;
-        
+        if (CONFIG.stopWhenCrouch.getValue() && client.player.isCrouching()) return false;
+        if (CONFIG.stopWhenOpenConfigGui.getValue() && ConfigScreen.isOpenYaclScreen()) return false;
+
         if (CONFIG.stopWhenNotHoldingItem.getValue()) {
-            ItemStack heldItem = player.getMainHandItem();
+            ItemStack heldItem = client.player.getMainHandItem();
             String itemName = CONFIG.stopWhenNotHoldingItemName.getValue();
             String itemId = CONFIG.stopWhenNotHoldingItemId.getValue();
-            if (itemName.isEmpty() || itemId.isEmpty()) return;
+            if (itemName.isEmpty() || itemId.isEmpty()) return false;
 
             if (
                 !itemName.equals("*") &&
                 !ItemStackUtil.equalName(heldItem, itemName)
             )
-                return;
+                return false;
 
             if (
                 !itemId.equals("*") &&
                 !ItemStackUtil.equalIdWithDefaultNamespace(heldItem, itemId)
             )
-                return;
+                return false;
         };
+
+        return true;
+    }
+
+    public static void tryToDropItems() {
+        if (!canDrop()) return;
+
+        if (client.player.hasContainerOpen()) return; // TODO: BUG: 无法检测是否打开背包
+        if (CONFIG.triggerMinCount.getValue() > 0 && CONFIG.triggerMinCount.getValue() > notEmptySlotCount()) return;
 
         drop();
     }
@@ -90,6 +102,7 @@ public class Dropper {
             if (ignoreSlots.contains(i)) continue;
 
             ItemStack item = inventoryMenu.getSlot(i).getItem();
+            if (item.isEmpty()) continue;
 
             if (
                 (isWhiteListMode && !isEqualItem(item, matchItemList)) ||
@@ -119,10 +132,8 @@ public class Dropper {
     }
 
     public static boolean isEqualItem(ItemStack item, List<Item> matchLists) {
-        if (item.isEmpty()) return true;
-
         for (Item check: matchLists){
-            // // if (!check.enabled) continue;
+            // if (!check.enabled) continue;
             // AutoDrop.LOGGER.info("Checker: {}", check.description);
             // AutoDrop.LOGGER.info("Name: {} --- {}", ItemStackUtil.getName(item), check.name);
             // AutoDrop.LOGGER.info("Id: {} --- {}", ItemStackUtil.getId(item), check.id);
@@ -253,5 +264,57 @@ public class Dropper {
                 false
             )
         );
+    }
+
+    public static void onOpenContainerDrop() {
+        if (!canDrop()) return;
+
+        if (!CONFIG.dropWhenOpenContainer.getValue()) return;
+
+        boolean isWhiteListMode = CONFIG.whiteListMode.getValue();
+
+        List<Integer> dropSlots = new ArrayList<>(6 * 9);
+        int startSlot = 0;
+        int endSlot = -1;
+
+        AbstractContainerMenu containerMenu = client.player.containerMenu;
+        if (containerMenu instanceof ChestMenu chestMenu) {
+            endSlot = chestMenu.getContainer().getContainerSize() - 1;
+        } else if (containerMenu instanceof ShulkerBoxMenu) {
+            endSlot = 27 - 1;
+        } else if (containerMenu instanceof HopperMenu) {
+            endSlot = 5 - 1;
+        } else if (containerMenu instanceof DispenserMenu) {
+            endSlot = 9 - 1;
+        } else if (containerMenu instanceof CrafterMenu) {
+            startSlot = 1;
+            endSlot = startSlot + 9 - 1;
+        } else {
+            return;
+        }
+
+        if (startSlot > endSlot) {
+            throw new IllegalArgumentException("startSlot must be less than or equal to endSlot");
+        }
+
+        for (int i = startSlot; i <= endSlot; i++) {
+            ItemStack item = containerMenu.getSlot(i).getItem();
+            
+            if (item.isEmpty()) continue;
+            
+            if (
+                (isWhiteListMode && !isEqualItem(item, matchItemList)) ||
+                (!isWhiteListMode && isEqualItem(item, matchItemList))
+            ) {
+                dropSlots.add(i);
+            }
+        }
+        
+        for (int slot: dropSlots) {
+            client.gameMode.handleInventoryMouseClick(
+                containerMenu.containerId, slot, 1, ClickType.THROW, client.player);
+        }
+
+        client.player.closeContainer();
     }
 }

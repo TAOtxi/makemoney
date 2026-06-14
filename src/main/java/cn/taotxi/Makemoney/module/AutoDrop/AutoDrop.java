@@ -257,6 +257,17 @@ public class AutoDrop {
         return 1;
     }
 
+    private static int setDropWhenOpenContainer(CommandContext<FabricClientCommandSource> context, boolean enable) {
+        CONFIG.dropWhenOpenContainer.setValue(enable);
+        CONFIG.saveConfig();
+        context.getSource().sendFeedback(
+            enable ? 
+                T.tl("autodrop.dropWhenOpenContainer.enabled.message") : 
+                T.tl("autodrop.dropWhenOpenContainer.disabled.message")
+        );
+        return 1;
+    }
+
     private static int openConfigGui(CommandContext<FabricClientCommandSource> context) {
         GuiUtil.openYaclScreen(MODULE_NAME);
         return 1;

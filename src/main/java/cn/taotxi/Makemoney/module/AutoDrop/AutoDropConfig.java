@@ -44,6 +44,7 @@ public class AutoDropConfig extends ConfigManager {
     public ConfigFloat    throwYaw                  = new ConfigFloat("throwYaw", 0.0f, "yaw", this);
     public ConfigFloat    throwPitch                = new ConfigFloat("throwPitch", 0.0f, "pitch", this);
 
+    public ConfigBoolean  dropWhenOpenContainer     = new ConfigBoolean("dropWhenOpenContainer", false, "打开容器时是否丢弃容器内物品", this);
     public ConfigBoolean  isTimeTrigger             = new ConfigBoolean("isTimeTrigger", true, "定时触发丢弃功能开关", this);
     public ConfigInteger  timeTriggerInterval       = new ConfigInteger("timeTriggerInterval", 180 * 20, "定时触发时间间隔（tick）", this);
     public ConfigBoolean  isPickUpItemTrigger       = new ConfigBoolean("isPickUpItemTrigger", false, "拾取到指定掉落物触发丢弃功能开关", this);

@@ -3,16 +3,11 @@ package cn.taotxi.Makemoney.util.game;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-
-import com.mojang.logging.LogUtils;
-
 import cn.taotxi.Makemoney.util.StringUtil;
 import net.minecraft.client.Minecraft;
 
 public class GameUtil {
     private final static Minecraft client = Minecraft.getInstance();
-    private static final Logger LOGGER = LogUtils.getLogger();
     
     // Bug: 
     // 在原版客户端，所有的玩家实体，包括 NPC 玩家实体，都会被添加到在线玩家列表中。

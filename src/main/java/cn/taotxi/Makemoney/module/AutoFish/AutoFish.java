@@ -8,6 +8,7 @@ import com.mojang.brigadier.context.CommandContext;
 import cn.taotxi.Makemoney.Makemoney;
 import cn.taotxi.Makemoney.gui.GuiUtil;
 import cn.taotxi.Makemoney.util.MLogger;
+import cn.taotxi.Makemoney.util.Message;
 import cn.taotxi.Makemoney.util.T;
 import cn.taotxi.Makemoney.util.TaskUtil;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
@@ -152,9 +153,6 @@ public class AutoFish {
                         CONFIG.saveConfig();
                         context.getSource().sendFeedback(T.tl("autofish.throwDelay.message", delay));
 
-                        if (TaskUtil.hasTimeTask(THROW_FISHING_ROD_TASK_ID)) {
-                            throwRodAfterDelay(true);
-                        }
                         return 1;
                     })))
                 .then(ClientCommandManager.literal("config")
@@ -170,11 +168,6 @@ public class AutoFish {
                             return 1;
                         })))
             );
-
-            // dispatcher.register(ClientCommandManager.literal("af")
-            //     .executes(AutoFish::showHelp)
-            //     .redirect(cmd)
-            // );
 
             dispatcher.register(ClientCommandManager.literal("fish")
                 .executes(AutoFish::showHelp)
@@ -234,7 +227,9 @@ public class AutoFish {
         outOfWaterTime = 0;
         ItemStack fishingRod = client.player.getItemInHand(hand);
         if (fishingRod.nextDamageWillBreak()) {
-            logger.info("Fishing rod is broken, stop fishing");
+            Message.clientSideMsg(T.tl("autofish.warn.message"));
+            CONFIG.enabled.disable();
+            CONFIG.saveConfig();
             return false;
         };
 

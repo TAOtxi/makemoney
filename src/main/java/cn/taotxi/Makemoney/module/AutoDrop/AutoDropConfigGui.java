@@ -119,6 +119,14 @@ public class AutoDropConfigGui {
                     .description(OptionDescription.of(T.tl("autodrop.triggerWay.desc")));
         
         tiggerWayGroup.option(Factory.addToggleOption(
+            T.tl("autodrop.dropWhenOpenContainer"),
+            T.tl("autodrop.dropWhenOpenContainer.desc"),
+            CONFIG.dropWhenOpenContainer.getDefaultValue(),
+            CONFIG.dropWhenOpenContainer::getValue,
+            CONFIG.dropWhenOpenContainer::setValue
+        ));
+
+        tiggerWayGroup.option(Factory.addToggleOption(
             T.tl("autodrop.timeTrigger"),
             T.tl("autodrop.timeTrigger.desc"),
             CONFIG.isTimeTrigger.getDefaultValue(),

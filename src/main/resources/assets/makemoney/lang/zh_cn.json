@@ -44,7 +44,11 @@
     "makemoney.autodrop.controlTab": "控制操作",
 
     "makemoney.autodrop.triggerWay": "丢弃功能触发方式",
-    "makemoney.autodrop.triggerWay.desc": "有两种触发方式，定时触发和拾取到掉落物时触发。\n\n它们并不冲突，可以同时开启两种触发方式。",
+    "makemoney.autodrop.triggerWay.desc": "有三种触发方式，分别是定时触发、拾取到指定掉落物时触发以及打开容器时触发。\n\n它们并不冲突，可以同时开启三种触发方式。",
+    "makemoney.autodrop.dropWhenOpenContainer": "打开容器时在容器内应用丢弃功能",
+    "makemoney.autodrop.dropWhenOpenContainer.desc": "丢弃完成后将会自动关闭容器。\n\n目前设置的容器有:\n\n大小箱子、潜影盒、发射器、投掷器、合成器和漏斗",
+    "makemoney.autodrop.dropWhenOpenContainer.enabled.message": "§7[§d自动丢弃§7] §a容器清理已开启",
+    "makemoney.autodrop.dropWhenOpenContainer.disabled.message": "§7[§d自动丢弃§7] §c容器清理已关闭",
     "makemoney.autodrop.timeTrigger": "定时触发",
     "makemoney.autodrop.timeTrigger.desc": "按设置的时间周期来触发丢弃功能",
     "makemoney.autodrop.timeTriggerInterval": "触发间隔 (tick)",
@@ -185,6 +189,7 @@
     "makemoney.autofish.randomDelay.disabled.message": "§7[§d自动钓鱼§7] §f随机抛竿延迟 §c已关闭",
     "makemoney.autofish.throwDelay.message": "§7[§d自动钓鱼§7] §f抛竿延迟设置为 §e%d §7tick",
     "makemoney.autofish.config.reload.message": "§7[§d自动钓鱼§7] §7已重新加载配置文件",
+    "makemoney.autofish.warn.message": "§7[§d自动钓鱼§7] §7鱼竿接近损坏，已关闭自动钓鱼",
 
     "makemoney.messageCommand.name": "消息命令",
     "makemoney.messageCommand.desc": "匹配游戏中的消息，若匹配成功，则执行对应的命令",

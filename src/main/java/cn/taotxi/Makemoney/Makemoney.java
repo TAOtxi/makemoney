@@ -1,7 +1,6 @@
 package cn.taotxi.Makemoney;
 
 import net.fabricmc.api.ModInitializer;
-import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.Items;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -27,8 +26,7 @@ import cn.taotxi.Makemoney.util.Message;
 import cn.taotxi.Makemoney.util.T;
 import cn.taotxi.Makemoney.util.TaskUtil;
 
-// TODO: 屏蔽扫地机信息
-// TODO: 屏蔽地震消息
+
 public class Makemoney implements ModInitializer {
 	public static final String MOD_ID = "makemoney";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
