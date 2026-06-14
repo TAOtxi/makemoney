@@ -84,16 +84,19 @@ public class Dropper {
     public static void drop() {
         final List<Integer> dropSlots = new ArrayList<>();
         InventoryMenu inventoryMenu = client.player.inventoryMenu;
+        boolean isWhiteListMode = CONFIG.whiteListMode.getValue();
 
         for (int i = InventoryMenu.INV_SLOT_START; i < InventoryMenu.USE_ROW_SLOT_END; i++) {
             if (ignoreSlots.contains(i)) continue;
 
             ItemStack item = inventoryMenu.getSlot(i).getItem();
 
-            // AutoDrop.LOGGER.info("Check item {} in slot {}", item.getItemName(), i);
-            if (isEqualItem(item, matchItemList)) continue;
-            // AutoDrop.LOGGER.info("Dropping item {} in slot {}", ItemStackUtil.getName(item), i);
-            dropSlots.add(i);
+            if (
+                (isWhiteListMode && !isEqualItem(item, matchItemList)) ||
+                (!isWhiteListMode && isEqualItem(item, matchItemList))
+            ) {
+                dropSlots.add(i);
+            };
         }
         if (dropSlots.isEmpty()) return;
 

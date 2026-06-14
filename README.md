@@ -57,15 +57,15 @@ ohhhhhhh <br>
 /fish throwDelay <tick>      # 设置抛掷延迟（单位：tick）
 ```
 
-### 装备分解辅助 (MendingHelper)
+### ♋ 装备分解辅助 (MendingHelper)
 吸取到经验球时，自动替换带有经验修补且耐久未满的装备到副手<br>
 打开铁砧时，自动为装备附魔经验修补<br>
-站在金块上时，自动触发装备分解<br>
+站在金块上时，自动触发装备分解 (mcmmo)<br>
 
 
 ### 🐕 狗皮膏药 (AutoRide)
 像个狗皮膏药一样黏在其它玩家头上<br>
- 也可以禁止别的玩家骑你头上<br>
+也可以禁止别的玩家骑你头上<br>
 基础命令：
 ```bash
 /autoride                  # 别名 /ar

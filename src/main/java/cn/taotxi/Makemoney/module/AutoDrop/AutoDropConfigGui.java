@@ -355,6 +355,14 @@ public class AutoDropConfigGui {
             ConfigCategory.createBuilder()
                 .name(T.tl("autodrop.conditionTab"));
 
+        category.option(Factory.addToggleOption(
+            T.tl("autodrop.whiteListMode"),
+            T.tl("autodrop.whiteListMode.desc"),
+            CONFIG.whiteListMode.getDefaultValue(),
+            CONFIG.whiteListMode::getValue,
+            CONFIG.whiteListMode::setValue
+        ));
+
         category.option(ButtonOption.createBuilder()
                 .name(T.tl("autodrop.addMatchItem").withStyle(ChatFormatting.GREEN))
                 .description(OptionDescription.of(T.tl("autodrop.addMatchItem.desc")))

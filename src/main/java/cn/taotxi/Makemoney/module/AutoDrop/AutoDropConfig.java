@@ -58,6 +58,7 @@ public class AutoDropConfig extends ConfigManager {
     public ConfigString   stopWhenNotHoldingItemName= new ConfigString("stopWhenNotHoldingItemName", "", "指定手持指定物品的名字", this);
     public ConfigString   stopWhenNotHoldingItemId  = new ConfigString("stopWhenNotHoldingItemId", "", "指定手持指定物品的ID", this);
 
+    public ConfigBoolean  whiteListMode             = new ConfigBoolean("whiteListMode", true, "是否开启白名单模式", this);
     public ConfigArray    matchItemLists            = new ConfigArray("matchItemLists", new JsonArray(), "物品匹配条件列表", this);
 
     public List<String> getAllThrowDirections() {
@@ -183,7 +184,7 @@ public class AutoDropConfig extends ConfigManager {
         newMatchLists.add(getGson().toJsonTree(bowPreset));
 
         Item paperPreset = new Item();
-        paperPreset.description = "匹配点卷、拾玖币、装备兑换卷（无法排除普通纸）";
+        paperPreset.description = "点卷、拾玖币、装备兑换卷（无法排除普通纸）";
         paperPreset.name = "*";
         paperPreset.id = "paper";
         newMatchLists.add(getGson().toJsonTree(paperPreset));
@@ -313,7 +314,7 @@ class Item {
     public String name = "";
     public String id = "";
     public List<String> tags = new ArrayList<>();
-    public int minEnchantRequir = 0;
+    public int minEnchantRequir = -1;
     public Map<String, Integer> enchantments = new HashMap<>();
 
     public Item(boolean enabled, String description, String name, String id, List<String> tags, int minEnchantRequir, Map<String, Integer> enchantments) {
