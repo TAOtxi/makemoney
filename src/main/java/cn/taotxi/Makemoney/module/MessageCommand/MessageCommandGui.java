@@ -40,7 +40,7 @@ public class MessageCommandGui {
         );
 
         moduleCategory.option(ButtonOption.createBuilder()
-                .name(T.tl("messageCommand.clear").withStyle(ChatFormatting.RED))
+                .name(T.tl("messageCommand.clear"))
                 .description(OptionDescription.of(T.tl("messageCommand.clear.desc")))
                 .action((screen, option) -> {
                     ConfigScreen.savePending(screen);
@@ -52,7 +52,7 @@ public class MessageCommandGui {
         );
 
         moduleCategory.option(ButtonOption.createBuilder()
-                .name(T.tl("messageCommand.add").withStyle(ChatFormatting.GREEN))
+                .name(T.tl("messageCommand.add"))
                 .description(OptionDescription.of(T.tl("messageCommand.add.desc")))
                 .action((screen, option) -> {
                     ConfigScreen.savePending(screen);
@@ -110,7 +110,7 @@ public class MessageCommandGui {
 
             group.option(ButtonOption.createBuilder()
                 .name(
-                    T.tl("messageCommand.rule.remove").withStyle(ChatFormatting.RED))
+                    T.tl("messageCommand.rule.remove"))
                 .description(
                     OptionDescription.of(T.tl("messageCommand.rule.remove.desc")))
                 .action((screen, option) -> {

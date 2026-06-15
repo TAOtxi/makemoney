@@ -60,6 +60,7 @@ public class AutoDropConfig extends ConfigManager {
     public ConfigString   stopWhenNotHoldingItemId  = new ConfigString("stopWhenNotHoldingItemId", "", "指定手持指定物品的ID", this);
 
     public ConfigBoolean  whiteListMode             = new ConfigBoolean("whiteListMode", true, "是否开启白名单模式", this);
+    public ConfigBoolean  foldMatchItemLists        = new ConfigBoolean("foldMatchItemLists", false, "是否折叠物品匹配条件列表", this);
     public ConfigArray    matchItemLists            = new ConfigArray("matchItemLists", new JsonArray(), "物品匹配条件列表", this);
 
     public List<String> getAllThrowDirections() {
@@ -86,6 +87,11 @@ public class AutoDropConfig extends ConfigManager {
 
     public Item getStdMatchItem(int index) {
         Item matchItem = getGson().fromJson(matchItemLists.getValue().get(index), Item.class);
+
+        if (matchItem.name.isEmpty() || matchItem.id.isEmpty()) {
+            return null;
+        }
+
         if (!matchItem.id.equals("*") && !StringUtil.isRegex(matchItem.id)) {
             matchItem.id = ItemStackUtil.withDefaultNamespace(matchItem.id);
         }
@@ -116,7 +122,9 @@ public class AutoDropConfig extends ConfigManager {
         int size = matchItemLists.getValue().size();
         List<Item> lists = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
-            lists.add(getStdMatchItem(i));
+            Item matchItem = getStdMatchItem(i);
+            if (matchItem == null) continue;
+            lists.add(matchItem);
         }
         
         return lists;
@@ -310,12 +318,12 @@ public class AutoDropConfig extends ConfigManager {
 
 class Item {
     public static final Pattern enchantmentPattern = Pattern.compile("^(?:minecraft:)?([^:]+)(?::(\\d+))?$");
-    public String description = "匹配组";
+    public String description = "";
     public boolean enabled = true;
     public String name = "";
     public String id = "";
     public List<String> tags = new ArrayList<>();
-    public int minEnchantRequir = -1;
+    public int minEnchantRequir = 0;
     public Map<String, Integer> enchantments = new HashMap<>();
 
     public Item(boolean enabled, String description, String name, String id, List<String> tags, int minEnchantRequir, Map<String, Integer> enchantments) {
@@ -329,6 +337,25 @@ class Item {
     }
 
     public Item() {
+        AutoDropConfig config = AutoDropConfig.getInstance();
+        int size = config.matchItemLists.size();
+        for (int i=0; i<size; i++) {
+            String desc = "Group " + i;
+            boolean hasSameDesc = false;
+            
+            for (int j=0; j<size; j++) {
+                if (config.getMatchItemDescription(j).equals(desc)) {
+                    hasSameDesc = true;
+                    break;
+                }
+            }
+            if (!hasSameDesc) {
+                this.description = desc;
+                return;
+            }
+        }
+
+        this.description = "Group " + size;
     }
 
     public static List<String> parseTags(String tagsStr) {

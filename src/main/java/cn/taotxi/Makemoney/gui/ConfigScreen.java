@@ -291,7 +291,7 @@ public class ConfigScreen {
         );
 
         ignoreGroup.option(ButtonOption.createBuilder()
-                .name(T.tl("ignore.deleteAll").withStyle(ChatFormatting.RED))
+                .name(T.tl("ignore.deleteAll"))
                 .description(OptionDescription.of(T.tl("ignore.deleteAll.desc")))
                 .action((screen, option) -> {
                     savePending(screen);

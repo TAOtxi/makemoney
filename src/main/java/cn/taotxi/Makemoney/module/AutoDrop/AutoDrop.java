@@ -35,9 +35,9 @@ public class AutoDrop {
     private static final AutoDropConfig CONFIG = AutoDropConfig.getInstance();
     private static final int throttleTick = 4;
     private static final int showAttentionMsgInterval = 20;
-    private static final String TIME_TRIGGER_TASK_NAME = "autodrop_timeTrigger";
-    private static final String SHOW_ATTENTION_MSG_TASK_NAME = "autodrop_showAttentionMsg";
-    private static final String PICK_UP_DROP_TASK_NAME = "autodrop_pickUpDrop";
+    private static final String TIME_TRIGGER_TASK_NAME = "autoDropTimeTrigger";
+    private static final String SHOW_ATTENTION_MSG_TASK_NAME = "autoDropShowAttentionMsg";
+    private static final String PICK_UP_DROP_TASK_NAME = "autoDropPickUpDrop";
 
     public static void initialize() {
         CONFIG.loadConfig();

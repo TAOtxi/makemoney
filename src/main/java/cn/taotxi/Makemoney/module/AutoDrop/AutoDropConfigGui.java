@@ -20,7 +20,6 @@ import dev.isxander.yacl3.api.controller.DropdownStringControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
 import dev.isxander.yacl3.api.controller.StringControllerBuilder;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
@@ -372,7 +371,7 @@ public class AutoDropConfigGui {
         ));
 
         category.option(ButtonOption.createBuilder()
-                .name(T.tl("autodrop.addMatchItem").withStyle(ChatFormatting.GREEN))
+                .name(T.tl("autodrop.addMatchItem"))
                 .description(OptionDescription.of(T.tl("autodrop.addMatchItem.desc")))
                 .action((yaclScreen, button) -> {
                     ConfigScreen.savePending(yaclScreen);
@@ -384,7 +383,7 @@ public class AutoDropConfigGui {
         );
 
         category.option(ButtonOption.createBuilder()
-                .name(T.tl("autodrop.addPresetMatchItem").withStyle(ChatFormatting.GREEN))
+                .name(T.tl("autodrop.addPresetMatchItem"))
                 .description(OptionDescription.of(T.tl("autodrop.addPresetMatchItem.desc")))
                 .action((yaclScreen, button) -> {
                     ConfigScreen.savePending(yaclScreen);
@@ -396,7 +395,7 @@ public class AutoDropConfigGui {
         );
 
         category.option(ButtonOption.createBuilder()
-                .name(T.tl("autodrop.removeAll").withStyle(ChatFormatting.RED))
+                .name(T.tl("autodrop.removeAll"))
                 .description(OptionDescription.of(T.tl("autodrop.removeAll.desc")))
                 .action((yaclScreen, button) -> {
                     ConfigScreen.savePending(yaclScreen);
@@ -407,19 +406,57 @@ public class AutoDropConfigGui {
                 .build()
         );
 
+        boolean foldMatchItemLists = CONFIG.foldMatchItemLists.getValue();
+        MutableComponent buttonText = foldMatchItemLists ? 
+            T.tl("gui.config.option.on") : 
+            T.tl("gui.config.option.off");
+        category.option(ButtonOption.createBuilder()
+                .name(T.tl("autodrop.foldMatchItemLists"))
+                .description(OptionDescription.of(T.tl("autodrop.foldMatchItemLists.desc")))
+                .text(buttonText)
+                .action((yaclScreen, button) -> {
+                    ConfigScreen.savePending(yaclScreen);
+                    CONFIG.foldMatchItemLists.setValue(!foldMatchItemLists);
+                    CONFIG.saveConfig();
+                    ConfigScreen.reload(yaclScreen, parent, false, AutoDropConfigGui::createScreen);
+                })
+                .build()
+        );
+
+        if (foldMatchItemLists && CONFIG.matchItemLists.size() > 0) {
+            OptionGroup.Builder matchGroup = OptionGroup.createBuilder()
+                    .name(T.tl("autodrop.matchGroup"));
+
+            for (int i=0; i<CONFIG.matchItemLists.size(); i++) {
+                final int index = i;
+
+                matchGroup.option(Factory.addToggleOption(
+                    T.l(CONFIG.getMatchItemDescription(index)),
+                    T.l(),
+                    CONFIG.isMatchItemEnabled(index),
+                    () -> CONFIG.isMatchItemEnabled(index),
+                    val -> CONFIG.setMatchItemEnabled(index, val)
+                ));
+            }
+
+            category.group(matchGroup.build());
+            return category;
+        }
+
         Item DEFAULT_MATCH_ITEM = CONFIG.getDefaultMatchItem();
         for (int i=0; i<CONFIG.matchItemLists.size(); i++) {
             final int index = i;
             MutableComponent matchName = CONFIG.getMatchItemDescription(index).isEmpty() ? 
                 T.tl("autodrop.matchItem.description") : 
                 T.l(CONFIG.getMatchItemDescription(index));
-            OptionGroup.Builder whiteListGroup = OptionGroup.createBuilder()
+
+            OptionGroup.Builder matchGroup = OptionGroup.createBuilder()
                     .name(matchName)
                     .description(OptionDescription.of(T.tl("autodrop.matchItem.description.desc")));
             
 
-            whiteListGroup.option(ButtonOption.createBuilder()
-                .name(T.tl("autodrop.matchItem.remove").withStyle(ChatFormatting.RED))
+            matchGroup.option(ButtonOption.createBuilder()
+                .name(T.tl("autodrop.matchItem.remove"))
                 .description(OptionDescription.of(T.tl("autodrop.matchItem.remove.desc")))
                 .action((yaclScreen, button) -> {
                     ConfigScreen.savePending(yaclScreen);
@@ -430,7 +467,7 @@ public class AutoDropConfigGui {
                 .build()
             );
 
-             whiteListGroup.option(Factory.addToggleOption(
+             matchGroup.option(Factory.addToggleOption(
                 T.tl("autodrop.matchItem.enabled"),
                 T.tl("autodrop.matchItem.enabled.desc"),
                 DEFAULT_MATCH_ITEM.enabled,
@@ -438,7 +475,7 @@ public class AutoDropConfigGui {
                 val -> CONFIG.setMatchItemEnabled(index, val)
             ));
 
-            whiteListGroup.option(Option.<String>createBuilder()
+            matchGroup.option(Option.<String>createBuilder()
                     .name(T.tl("autodrop.matchItem.itemName"))
                     .description(OptionDescription.of(T.tl("autodrop.matchItem.itemName.desc")))
                     .binding(
@@ -450,7 +487,7 @@ public class AutoDropConfigGui {
                     .build()
             );
 
-            whiteListGroup.option(Option.<String>createBuilder()
+            matchGroup.option(Option.<String>createBuilder()
                     .name(T.tl("autodrop.matchItem.itemID"))
                     .description(OptionDescription.of(T.tl("autodrop.matchItem.itemID.desc")))
                     .binding(
@@ -462,7 +499,7 @@ public class AutoDropConfigGui {
                     .build()
             );
 
-            whiteListGroup.option(Option.<String>createBuilder()
+            matchGroup.option(Option.<String>createBuilder()
                     .name(T.tl("autodrop.matchItem.itemTags"))
                     .description(OptionDescription.of(T.tl("autodrop.matchItem.itemTags.desc")))
                     .binding(
@@ -474,7 +511,7 @@ public class AutoDropConfigGui {
                     .build()
             );
 
-             whiteListGroup.option(Option.<Integer>createBuilder()
+             matchGroup.option(Option.<Integer>createBuilder()
                     .name(T.tl("autodrop.matchItem.minEnchantRequir"))
                     .description(OptionDescription.of(T.tl("autodrop.matchItem.minEnchantRequir.desc")))
                     .binding(
@@ -488,7 +525,7 @@ public class AutoDropConfigGui {
                     .build()
             );
 
-            category.group(whiteListGroup.build());
+            category.group(matchGroup.build());
             category.group(ListOption.<String>createBuilder()
                     .name(T.tl("autodrop.matchItem.enchantment.name"))
                     .description(OptionDescription.of(T.tl("autodrop.matchItem.enchantment.name.desc")))

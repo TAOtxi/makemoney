@@ -28,7 +28,7 @@ import net.minecraft.world.inventory.CrafterMenu;
 public class Dropper {
     private static final AutoDropConfig CONFIG = AutoDropConfig.getInstance();
     private static final List<Integer> ignoreSlots = CONFIG.ignoreSlots.getValueAsIntList();
-    private static final List<Item> matchItemList = CONFIG.getStdMatchItemLists();
+    private static final List<Item> matchItemList = new ArrayList<>();
     private static final Minecraft client = Minecraft.getInstance();
 
     public static void initialize() {
@@ -47,7 +47,10 @@ public class Dropper {
                 for (int i = 0; i < newValue.size(); i++) {
                     JsonElement item = newValue.get(i);
                     if (item.getAsJsonObject().get("enabled").getAsBoolean()) {
-                        matchItemList.add(CONFIG.getStdMatchItem(i));
+                        Item matchItem = CONFIG.getStdMatchItem(i);
+                        if (matchItem == null) continue;
+
+                        matchItemList.add(matchItem);
                     }
                 }
             }
@@ -87,7 +90,7 @@ public class Dropper {
     public static void tryToDropItems() {
         if (!canDrop()) return;
 
-        if (client.player.hasContainerOpen()) return; // TODO: BUG: 无法检测是否打开背包
+        if (client.player.hasContainerOpen()) return;
         if (CONFIG.triggerMinCount.getValue() > 0 && CONFIG.triggerMinCount.getValue() > notEmptySlotCount()) return;
 
         drop();
@@ -271,8 +274,6 @@ public class Dropper {
 
         if (!CONFIG.dropWhenOpenContainer.getValue()) return;
 
-        boolean isWhiteListMode = CONFIG.whiteListMode.getValue();
-
         List<Integer> dropSlots = new ArrayList<>(6 * 9);
         int startSlot = 0;
         int endSlot = -1;
@@ -297,6 +298,7 @@ public class Dropper {
             throw new IllegalArgumentException("startSlot must be less than or equal to endSlot");
         }
 
+        boolean isWhiteListMode = CONFIG.whiteListMode.getValue();
         for (int i = startSlot; i <= endSlot; i++) {
             ItemStack item = containerMenu.getSlot(i).getItem();
             

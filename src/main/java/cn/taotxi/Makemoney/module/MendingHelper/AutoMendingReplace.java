@@ -32,7 +32,7 @@ public class AutoMendingReplace {
         if (client.player.hasContainerOpen()) return;
         throttleFlag = false;
         TaskUtil.createOnceTimeTask(
-            MENDING_HELPER_AUTO_REPLACE_THROTTLE_KEY, () -> throttleFlag = true, 10);
+            MENDING_HELPER_AUTO_REPLACE_THROTTLE_KEY, () -> throttleFlag = true, 20);
         
         ItemStack offhandItem = client.player.getOffhandItem();
         if (shouldAtOffhand(offhandItem)) {
