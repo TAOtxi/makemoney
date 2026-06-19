@@ -61,7 +61,7 @@ public class GuiUtil {
     }
 
     public static void openYaclScreen(String key, String tabName) {
-        int tabIndex = configTabIndexMap.getOrDefault(key, 0);
+        int tabIndex = configTabIndexMap.getOrDefault(tabName, 0);
         openYaclScreen(key, tabIndex);
     }
 
