@@ -28,7 +28,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.EntityHitResult;
 
 public class AutoRide {
-    private static final String MODULE_NAME = "autoride";
+    public static final String MODULE_NAME = "autoride";
     private static boolean enabled = false;
     private static final Minecraft client = Minecraft.getInstance();
     private static final StrangeConfig CONFIG = StrangeConfig.getInstance();
@@ -248,7 +248,7 @@ public class AutoRide {
                     return 1;
                 }))
                 .then(ClientCommandManager.literal("config").executes(context -> {
-                    GuiUtil.openYaclScreen(Makemoney.MOD_ID);
+                    GuiUtil.openYaclScreen(Makemoney.MOD_ID, MODULE_NAME);
                     return 1;
                 }))
             );

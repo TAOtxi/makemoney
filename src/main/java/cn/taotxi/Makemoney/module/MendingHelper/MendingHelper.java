@@ -70,7 +70,7 @@ public class MendingHelper {
     }
 
     private static int openConfigScreen(CommandContext<FabricClientCommandSource> context) {
-        GuiUtil.openYaclScreen(Makemoney.MOD_ID, 1);
+        GuiUtil.openYaclScreen(Makemoney.MOD_ID, MODULE_NAME);
         return 1;
     }
 

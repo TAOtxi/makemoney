@@ -1,11 +1,17 @@
 package cn.taotxi.Makemoney.gui;
 
 import java.util.List;
+import java.util.Map;
 
 import cn.taotxi.Makemoney.Makemoney;
 import cn.taotxi.Makemoney.config.MakemoneyConfig;
 import cn.taotxi.Makemoney.module.AutoDrop.AutoDrop;
 import cn.taotxi.Makemoney.module.AutoDrop.AutoDropConfigGui;
+import cn.taotxi.Makemoney.module.AutoFish.AutoFish;
+import cn.taotxi.Makemoney.module.MendingHelper.MendingHelper;
+import cn.taotxi.Makemoney.module.MenuClick.MenuClick;
+import cn.taotxi.Makemoney.module.MessageCommand.MessageCommand;
+import cn.taotxi.Makemoney.module.StrangeFunction.AutoRide;
 import cn.taotxi.Makemoney.util.Message;
 import cn.taotxi.Makemoney.util.T;
 import cn.taotxi.Makemoney.util.TaskUtil;
@@ -17,6 +23,17 @@ import net.minecraft.client.gui.screens.TitleScreen;
 
 public class GuiUtil {
     private static final Minecraft client = Minecraft.getInstance();
+    private static final Map<String, Integer> configTabIndexMap;
+
+    static {
+        configTabIndexMap = Map.of(
+            AutoRide.MODULE_NAME, 0,
+            AutoFish.MODULE_NAME, 1,
+            MendingHelper.MODULE_NAME, 1,
+            MessageCommand.MODULE_NAME, 3,
+            MenuClick.MODULE_NAME, 4
+        );
+    }
 
     public static void openConfigChangeTipWindow(List<String> configChangeNameList) {
         TaskUtil.createTimeTask("configChangeTipWindow", () -> {
@@ -41,6 +58,11 @@ public class GuiUtil {
             Minecraft.getInstance().setScreen(confirmScreen);
             TaskUtil.removeTimeTask("configChangeTipWindow");
         }, 5);
+    }
+
+    public static void openYaclScreen(String key, String tabName) {
+        int tabIndex = configTabIndexMap.getOrDefault(key, 0);
+        openYaclScreen(key, tabIndex);
     }
 
     public static void openYaclScreen(String key, int tabIndex) {
