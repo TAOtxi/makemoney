@@ -116,14 +116,6 @@ public class AutoDropConfigGui {
         OptionGroup.Builder tiggerWayGroup = OptionGroup.createBuilder()
                     .name(T.tl("autodrop.triggerWay"))
                     .description(OptionDescription.of(T.tl("autodrop.triggerWay.desc")));
-        
-        tiggerWayGroup.option(Factory.addToggleOption(
-            T.tl("autodrop.dropWhenOpenContainer"),
-            T.tl("autodrop.dropWhenOpenContainer.desc"),
-            CONFIG.dropWhenOpenContainer.getDefaultValue(),
-            CONFIG.dropWhenOpenContainer::getValue,
-            CONFIG.dropWhenOpenContainer::setValue
-        ));
 
         tiggerWayGroup.option(Factory.addToggleOption(
             T.tl("autodrop.timeTrigger"),
@@ -164,6 +156,22 @@ public class AutoDropConfigGui {
                 .controller(StringControllerBuilder::create)
                 .build()
         );
+
+        tiggerWayGroup.option(Factory.addToggleOption(
+            T.tl("autodrop.dropWhenOpenContainer"),
+            T.tl("autodrop.dropWhenOpenContainer.desc"),
+            CONFIG.dropWhenOpenContainer.getDefaultValue(),
+            CONFIG.dropWhenOpenContainer::getValue,
+            CONFIG.dropWhenOpenContainer::setValue
+        ));
+
+        tiggerWayGroup.option(Factory.addToggleOption(
+            T.tl("autodrop.putItemInInventoryWhenOpenContainer"),
+            T.tl("autodrop.putItemInInventoryWhenOpenContainer.desc"),
+            CONFIG.putItemInInventoryWhenOpenContainer.getDefaultValue(),
+            CONFIG.putItemInInventoryWhenOpenContainer::getValue,
+            CONFIG.putItemInInventoryWhenOpenContainer::setValue
+        ));
 
         category.group(tiggerWayGroup.build());
 
@@ -222,18 +230,8 @@ public class AutoDropConfigGui {
                     .description(OptionDescription.of(T.tl("autodrop.throwRotation.desc")))
                     .binding(
                         "<0.0, 0.0>",
-                        () -> StringUtil.posToString(
-                            List.of(
-                                CONFIG.throwYaw.getValue(), 
-                                CONFIG.throwPitch.getValue()
-                            )
-                        ),
-                        val -> {
-                            List<Float> rotation = StringUtil.parseFloatPos(val);
-                            if (rotation.size() != 2) return;
-                            CONFIG.throwYaw.setValue(rotation.get(0));
-                            CONFIG.throwPitch.setValue(rotation.get(1));
-                        }
+                        CONFIG::getThrowYawPitch,
+                        CONFIG::setThrowYawPitch
                     )
                     .controller(StringControllerBuilder::create)
                     .build()
@@ -496,6 +494,19 @@ public class AutoDropConfigGui {
                         val -> CONFIG.setMatchItemId(index, val)
                     )
                     .controller(StringControllerBuilder::create)
+                    .build()
+            );
+
+            matchGroup.option(Option.<Integer>createBuilder()
+                    .name(T.tl("autodrop.matchItem.durability"))
+                    .description(OptionDescription.of(T.tl("autodrop.matchItem.durability.desc")))
+                    .binding(
+                        DEFAULT_MATCH_ITEM.durability,
+                        () -> CONFIG.getMatchItemDurability(index),
+                        val -> CONFIG.setMatchItemDurability(index, val)
+                    )
+                    .controller(opt -> IntegerFieldControllerBuilder.create(opt)
+                        .min(0))
                     .build()
             );
 

@@ -44,11 +44,12 @@ public class AutoDropConfig extends ConfigManager {
     public ConfigFloat    throwYaw                  = new ConfigFloat("throwYaw", 0.0f, "yaw", this);
     public ConfigFloat    throwPitch                = new ConfigFloat("throwPitch", 0.0f, "pitch", this);
 
-    public ConfigBoolean  dropWhenOpenContainer     = new ConfigBoolean("dropWhenOpenContainer", false, "打开容器时是否丢弃容器内物品", this);
     public ConfigBoolean  isTimeTrigger             = new ConfigBoolean("isTimeTrigger", true, "定时触发丢弃功能开关", this);
     public ConfigInteger  timeTriggerInterval       = new ConfigInteger("timeTriggerInterval", 180 * 20, "定时触发时间间隔（tick）", this);
     public ConfigBoolean  isPickUpItemTrigger       = new ConfigBoolean("isPickUpItemTrigger", false, "拾取到指定掉落物触发丢弃功能开关", this);
     public ConfigString   triggerItemId             = new ConfigString("triggerItemId", "", "拾取到掉落物ID", this);
+    public ConfigBoolean  dropWhenOpenContainer     = new ConfigBoolean("dropWhenOpenContainer", false, "打开容器时是否丢弃容器内物品", this);
+    public ConfigBoolean  putItemInInventoryWhenOpenContainer = new ConfigBoolean("putItemInInventoryWhenOpenContainer", false, "清理容器时是否将物品放入背包", this);
 
     public ConfigBoolean  turnOffWhenChangeWorld    = new ConfigBoolean("turnOffWhenChangeWorld", true, "切换世界时是否关闭自动丢弃功能", this);
     public ConfigInteger  triggerMinCount           = new ConfigInteger("triggerMinCount", 0, "允许丢弃所需最少物品槽位数量", this);
@@ -69,6 +70,18 @@ public class AutoDropConfig extends ConfigManager {
 
     public Item getDefaultMatchItem() {
         return new Item();
+    }
+
+    public String getThrowYawPitch() {
+        return StringUtil.posToString(List.of(throwYaw.getValue(), throwPitch.getValue()));
+    }
+
+    public void setThrowYawPitch(String yawPitch) {
+        List<Float> rotation = StringUtil.parseFloatPos(yawPitch);
+        if (rotation.size() != 2) return;
+
+        throwYaw.setValue(rotation.get(0));
+        throwPitch.setValue(rotation.get(1));
     }
 
     public void addMatchItem() {
@@ -254,6 +267,24 @@ public class AutoDropConfig extends ConfigManager {
         item.addProperty("id", id);
     }
 
+    public int getMatchItemDurability(int index) {
+        JsonObject item = matchItemLists.getValue().get(index).getAsJsonObject();
+
+        // 兼容旧版不存在durability字段的情况，以后记得删掉
+        if (!item.has("durability")) {
+            item.addProperty("durability", 0);
+            return 0;
+        }
+
+        return item.get("durability").getAsInt();
+    }
+
+    public void setMatchItemDurability(int index, int durability) {
+        JsonObject item = matchItemLists.getValue().get(index).getAsJsonObject();
+        item.remove("durability");
+        item.addProperty("durability", durability);
+    }
+
     public List<String> getMatchItemTags(int index) {
         JsonArray tags = matchItemLists.getValue().get(index).getAsJsonObject()
             .get("tags").getAsJsonArray();
@@ -322,15 +353,17 @@ class Item {
     public boolean enabled = true;
     public String name = "";
     public String id = "";
+    public int durability = 0;
     public List<String> tags = new ArrayList<>();
     public int minEnchantRequir = 0;
     public Map<String, Integer> enchantments = new HashMap<>();
 
-    public Item(boolean enabled, String description, String name, String id, List<String> tags, int minEnchantRequir, Map<String, Integer> enchantments) {
+    public Item(boolean enabled, String description, String name, String id, int durability, List<String> tags, int minEnchantRequir, Map<String, Integer> enchantments) {
         this.enabled = enabled;
         this.description = description;
         this.name = name;
         this.id = id;
+        this.durability = durability;
         this.tags = tags;
         this.minEnchantRequir = minEnchantRequir;
         this.enchantments = enchantments;

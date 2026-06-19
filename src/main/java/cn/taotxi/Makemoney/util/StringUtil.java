@@ -40,7 +40,7 @@ public class StringUtil {
 
     public static String strReplace(String str) {
         return str.replace("，", ",")
-                 .replace(", ", ",");
+                 .replace(" ", "");
     }
 
     public static List<String> strToList(String str) {
@@ -48,12 +48,17 @@ public class StringUtil {
     }
 
     public static List<Integer> strToIntList(String str, String sep) {
-        if (str.isEmpty()) return new ArrayList<>();
+        if (str.isEmpty()) return List.of();
         return strToList(str, sep).stream().map(Integer::parseInt).collect(Collectors.toList());
     }
 
     public static List<Integer> strToIntList(String str) {
         return strToIntList(strReplace(str), ",");
+    }
+
+    public static List<Float> strToFloatList(String str) {
+        if (str.isEmpty()) return List.of();
+        return strToList(str, ",").stream().map(Float::parseFloat).collect(Collectors.toList());
     }
 
     public static String colorToStr(Color color) {
@@ -89,23 +94,23 @@ public class StringUtil {
     }
 
     public static List<Float> parseFloatPos(String str) {
-        Pattern pattern = Pattern.compile("\\d+(?:\\.\\d+)?");
+        Pattern pattern = Pattern.compile("^<(-?\\d+(?:\\.\\d+)?(?:,\\s*-?\\d+(?:\\.\\d+)?)*)>$");
         Matcher matcher = pattern.matcher(str);
-        List<Float> posList = new ArrayList<>();
-        while (matcher.find()) {
-            posList.add(Float.parseFloat(matcher.group()));
+        if (matcher.find()) {
+            return strToFloatList(matcher.group(1));
+        } else {
+            return List.of();
         }
-        return posList;
     }
 
     public static List<Integer> parseIntPos(String str) {
-        Pattern pattern = Pattern.compile("\\d+");
+        Pattern pattern = Pattern.compile("^<(-?\\d+(?:,\\s*-?\\d+)*)>$");
         Matcher matcher = pattern.matcher(str);
-        List<Integer> posList = new ArrayList<>();
-        while (matcher.find()) {
-            posList.add(Integer.parseInt(matcher.group()));
+        if (matcher.find()) {
+            return strToIntList(matcher.group(1));
+        } else {
+            return List.of();
         }
-        return posList;
     }
 
     public static <Type> String posToString(List<Type> pos) {

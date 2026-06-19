@@ -2,6 +2,7 @@ package cn.taotxi.Makemoney.module.MendingHelper;
 
 import cn.taotxi.Makemoney.util.TaskUtil;
 import cn.taotxi.Makemoney.util.game.EnchantmentHelper;
+import cn.taotxi.Makemoney.util.game.InventoryUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.AnvilMenu;
@@ -17,7 +18,7 @@ public class AutoEnchantMending {
     private static final String AUTO_ENCHANT_MENDING_TASK = "autoEnchantMendingTask";
     private static Enchantment mending;
 
-    public static void onOpenContainer() {
+    public static void onOpenAnvil() {
         if (!(client.player.containerMenu instanceof AnvilMenu)) {
             return;
         }
@@ -32,7 +33,6 @@ public class AutoEnchantMending {
                 1
             );
         }
-
     }
 
     private static void tryToEnchantMendingForEquipment() {
@@ -70,7 +70,11 @@ public class AutoEnchantMending {
                     break;
                 }
             }
-            if (!isInputSlotValid) return;
+            if (!isInputSlotValid) {
+                client.player.closeContainer();
+                AutoRepair.stopRepairing();
+                return;
+            }
         }
 
         if (!isAdditionSlotValid) {
@@ -83,7 +87,23 @@ public class AutoEnchantMending {
                     break;
                 }
             }
-            if (!isAdditionSlotValid) return;
+            if (!isAdditionSlotValid) {
+                client.player.closeContainer();
+                AutoRepair.stopRepairing();
+                return;
+            }
+        }
+
+        // 移动到背包而不是丢出
+        if (AutoRepair.isRepairing()) {
+            if (!InventoryUtil.inventoryHasEmptySlot()) {
+                client.player.closeContainer();
+                AutoRepair.stopRepairing();
+                return;
+            }
+            client.gameMode.handleInventoryMouseClick(
+                anvilMenu.containerId, AnvilMenu.RESULT_SLOT, 0, ClickType.QUICK_MOVE, client.player);
+            return;
         }
 
         client.gameMode.handleInventoryMouseClick(
@@ -91,6 +111,10 @@ public class AutoEnchantMending {
     }
 
     private static boolean shouldAtSlot1(ItemStack item) {
+        if (AutoRepair.isRepairing()) {
+            return AutoRepair.isNeedRepairNetheriteEquipment(item);
+        }
+
         if (item.isEmpty()) return false;
         if (item.is(Items.ENCHANTED_BOOK)) return false;
         if (!getMending().canEnchant(item)) return false;

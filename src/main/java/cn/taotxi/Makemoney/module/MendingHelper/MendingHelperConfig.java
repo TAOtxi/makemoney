@@ -1,8 +1,14 @@
 package cn.taotxi.Makemoney.module.MendingHelper;
 
 
+import java.util.List;
+
+import com.google.gson.JsonArray;
+
 import cn.taotxi.Makemoney.config.ConfigManager;
+import cn.taotxi.Makemoney.config.type.ConfigArray;
 import cn.taotxi.Makemoney.config.type.ConfigBoolean;
+import cn.taotxi.Makemoney.util.StringUtil;
 
 
 public class MendingHelperConfig extends ConfigManager {
@@ -23,4 +29,41 @@ public class MendingHelperConfig extends ConfigManager {
     public ConfigBoolean autoEnchantEnabled        = new ConfigBoolean("autoEnchantEnabled", false, "打开铁砧时自动为装备附魔经验修补", this);
     public ConfigBoolean autoDecomposeEnabled      = new ConfigBoolean("autoDecomposeEnabled", false, "站金块上时自动分解装备", this);
     public ConfigBoolean onlyDecomposeNoneDamage   = new ConfigBoolean("onlyDecomposeNoneDamage", false, "仅分解满耐久装备", this);
+    public ConfigBoolean autoRepairEnabled         = new ConfigBoolean("autoRepairEnabled", false, "自动为合金装备附魔经验修补", this);
+    public ConfigArray   mendingBookPositions      = new ConfigArray("mendingBookPositions", createDefaultMendingBookPositions(), "经验修补附魔书容器位置", this);
+    public ConfigBoolean dropFullDurabilityNetheriteItem = new ConfigBoolean("dropFullDurabilityNetheriteItem", true, "丢弃满耐久的合金装备和武器", this);
+      
+    private static JsonArray createDefaultMendingBookPositions() {
+        JsonArray defaultPositions = new JsonArray(3);
+        defaultPositions.add(0);
+        defaultPositions.add(0);
+        defaultPositions.add(0);
+        return defaultPositions;
+    }
+
+    public List<Integer> getMendingBookPositions() {
+        return mendingBookPositions.getValueAsIntList();
+    }
+
+    public String getMendingBookPositionsString() {
+        List<Integer> positions = getMendingBookPositions();
+        return StringUtil.posToString(positions);
+    }
+
+    public boolean setMendingBookPosition(String positions) {
+        List<Integer> positionsList = StringUtil.parseIntPos(positions);
+        if (positionsList.size() != 3) {
+            return false;
+        }
+        JsonArray newPos = new JsonArray();
+        for (int position : positionsList) {
+            newPos.add(position);
+        }
+        mendingBookPositions.setValue(newPos);
+        return true;
+    }
+
+    public void setMendingBookPosition(int x, int y, int z) {
+        mendingBookPositions.setValue(List.of(x, y, z));
+    }
 }

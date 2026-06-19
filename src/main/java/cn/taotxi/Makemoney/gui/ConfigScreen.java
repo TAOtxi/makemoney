@@ -1,7 +1,6 @@
 package cn.taotxi.Makemoney.gui;
 
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
@@ -44,7 +43,7 @@ import dev.isxander.yacl3.gui.YACLScreen.CategoryTab;
 import dev.isxander.yacl3.gui.utils.GuiUtils;
 import dev.isxander.yacl3.impl.utils.YACLConstants;
 
-
+// TODO: 设置验证字符串字段的提示信息
 public class ConfigScreen {
     private static final StrangeConfig STRANGE_CONFIG = StrangeConfig.getInstance();
     private static final AutoFishConfig AUTOFISH_CONFIG = AutoFishConfig.getInstance();
@@ -255,6 +254,35 @@ public class ConfigScreen {
             MENDING_HELPER_CONFIG.onlyDecomposeNoneDamage::getValue,
             MENDING_HELPER_CONFIG.onlyDecomposeNoneDamage::setValue
         ));
+
+        enchantHelperGroup.option(Factory.addToggleOption(
+            T.tl("mendingHelper.autoRepair.name"), 
+            T.tl("mendingHelper.autoRepair.desc"), 
+            MENDING_HELPER_CONFIG.autoRepairEnabled.getDefaultValue(),
+            MENDING_HELPER_CONFIG.autoRepairEnabled::getValue,
+            MENDING_HELPER_CONFIG.autoRepairEnabled::setValue
+        ));
+
+        enchantHelperGroup.option(Option.<String>createBuilder()
+                .name(T.tl("mendingHelper.mendingBookPosition.name"))
+                .description(OptionDescription.of(T.tl("mendingHelper.mendingBookPosition.desc")))
+                .binding(
+                    "<0, 0, 0>",
+                    MENDING_HELPER_CONFIG::getMendingBookPositionsString,
+                    MENDING_HELPER_CONFIG::setMendingBookPosition
+                )
+                .controller(StringControllerBuilder::create)
+                .build()
+        );
+
+        enchantHelperGroup.option(Factory.addToggleOption(
+            T.tl("mendingHelper.dropFullDurabilityNetheriteItem.name"), 
+            T.tl("mendingHelper.dropFullDurabilityNetheriteItem.desc"), 
+            MENDING_HELPER_CONFIG.dropFullDurabilityNetheriteItem.getDefaultValue(),
+            MENDING_HELPER_CONFIG.dropFullDurabilityNetheriteItem::getValue,
+            MENDING_HELPER_CONFIG.dropFullDurabilityNetheriteItem::setValue
+        ));
+
         fishCategory.group(enchantHelperGroup.build());
 
         return fishCategory;

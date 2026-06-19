@@ -68,4 +68,8 @@ public class AutoMendingReplace {
         boolean hasMending = EnchantmentHelper.hasEnchantment(item, Enchantments.MENDING);
         return hasMending && item.isDamaged();
     }
+
+    public static boolean isOffhandSuitable() {
+        return shouldAtOffhand(client.player.getOffhandItem());
+    }
 }

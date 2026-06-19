@@ -1,6 +1,8 @@
 package cn.taotxi.Makemoney;
 
 import net.fabricmc.api.ModInitializer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.Items;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -12,6 +14,9 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 
 import cn.taotxi.Makemoney.config.MakemoneyConfig;
@@ -101,8 +106,8 @@ public class Makemoney implements ModInitializer {
                 .then(ClientCommandManager.literal("1")
                     .executes(context -> {
                         var client = context.getSource().getClient();
-                        var itemStack = client.player.getInventory().getSelectedItem();
-                        Message.clientSideMsg("" + itemStack.is(Items.DIAMOND));
+                        var state = client.level.getBlockState(new BlockPos(0, 0, 0));
+                        Message.clientSideMsg(state.toString());
                         return 1;
                     }))
                 .then(ClientCommandManager.literal("2")
@@ -112,6 +117,22 @@ public class Makemoney implements ModInitializer {
                         return 1;
                     }))
             );
+
+            // dispatcher.register(ClientCommandManager.literal("copy")
+            //     .executes(context -> {
+            //         var client = context.getSource().getClient();
+            //         var inventoryMenu = client.player.containerMenu;
+            //         if (inventoryMenu.getSlot(36).getItem().isEmpty()) {
+            //             return 1;
+            //         }
+            //         if (!inventoryMenu.getSlot(37).getItem().isEmpty()) {
+            //             return 1;
+            //         }
+            //         inventoryMenu.getSlot(37).set(inventoryMenu.getSlot(36).getItem().copy());
+
+            //         return 1;
+            //     })
+            // );
                 
         });
     }

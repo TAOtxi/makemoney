@@ -32,6 +32,7 @@ import cn.taotxi.Makemoney.module.AutoFish.AutoFish;
 import cn.taotxi.Makemoney.module.MessageCommand.MessageCommand;
 import cn.taotxi.Makemoney.module.MendingHelper.AutoEnchantMending;
 import cn.taotxi.Makemoney.module.MendingHelper.AutoMendingReplace;
+import cn.taotxi.Makemoney.module.MendingHelper.AutoRepair;
 
 
 @Mixin(ClientPacketListener.class)
@@ -86,17 +87,16 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
     @Inject(method = "handleOpenScreen", at = @At("TAIL"))
     public void onOpenScreen(ClientboundOpenScreenPacket packet, CallbackInfo ci) {
         if (minecraft.isSameThread()) {
-            AutoEnchantMending.onOpenContainer();
+            AutoEnchantMending.onOpenAnvil();
         };
     }
 
     @Inject(method = "handleContainerContent", at = @At("TAIL"))
     public void onContainerContent(ClientboundContainerSetContentPacket packet, CallbackInfo ci) {
-        if (minecraft.isSameThread()) {
-            if (minecraft.player.hasContainerOpen() && 
-                packet.containerId() == minecraft.player.containerMenu.containerId
-            ) {
+        if (minecraft.isSameThread() && minecraft.player.hasContainerOpen()) {
+            if (packet.containerId() == minecraft.player.containerMenu.containerId) {
                 Dropper.onOpenContainerDrop();
+                AutoRepair.onOpenContainer();
             }
         };
     }

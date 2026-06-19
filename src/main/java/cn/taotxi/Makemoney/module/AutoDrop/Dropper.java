@@ -16,13 +16,8 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.InventoryMenu;
-import net.minecraft.world.inventory.HopperMenu;
-import net.minecraft.world.inventory.ShulkerBoxMenu;
-import net.minecraft.world.inventory.DispenserMenu;
-import net.minecraft.world.inventory.CrafterMenu;
 
 
 public class Dropper {
@@ -116,6 +111,10 @@ public class Dropper {
         }
         if (dropSlots.isEmpty()) return;
 
+        startToDropItems(dropSlots);
+    }
+
+    public static void startToDropItems(List<Integer> dropSlots) {
         ThrowWay throwWay = ThrowWay.valueOf(CONFIG.throwWay.getValue());
         if (throwWay.equals(ThrowWay.DIRECTION)) {
             dropItemAnywhere(dropSlots, Direction.valueOf(CONFIG.throwDirection.getValue()));
@@ -150,6 +149,16 @@ public class Dropper {
             // check id
             if (!check.id.equals("*") && !ItemStackUtil.equalId(item, check.id)) {
                 continue;
+            }
+
+            // check durability
+            if (item.isDamageableItem()) {
+                if (check.durability == -1 && item.getDamageValue() > 0) {
+                    continue;
+                }
+                if (item.getMaxDamage() - item.getDamageValue() < check.durability) {
+                    continue;
+                }
             }
 
             if (!check.tags.isEmpty()) {
@@ -274,29 +283,14 @@ public class Dropper {
 
         if (!CONFIG.dropWhenOpenContainer.getValue()) return;
 
-        List<Integer> dropSlots = new ArrayList<>(6 * 9);
-        int startSlot = 0;
-        int endSlot = -1;
-
+        
         AbstractContainerMenu containerMenu = client.player.containerMenu;
-        if (containerMenu instanceof ChestMenu chestMenu) {
-            endSlot = chestMenu.getContainer().getContainerSize() - 1;
-        } else if (containerMenu instanceof ShulkerBoxMenu) {
-            endSlot = 27 - 1;
-        } else if (containerMenu instanceof HopperMenu) {
-            endSlot = 5 - 1;
-        } else if (containerMenu instanceof DispenserMenu) {
-            endSlot = 9 - 1;
-        } else if (containerMenu instanceof CrafterMenu) {
-            startSlot = 1;
-            endSlot = startSlot + 9 - 1;
-        } else {
-            return;
-        }
-
-        if (startSlot > endSlot) {
-            throw new IllegalArgumentException("startSlot must be less than or equal to endSlot");
-        }
+        Map.Entry<Integer, Integer> slotRange = InventoryUtil.getContainerSlotRange(containerMenu);
+        if (slotRange == null) return;
+        
+        int startSlot = slotRange.getKey();
+        int endSlot = slotRange.getValue();
+        List<Integer> dropSlots = new ArrayList<>(endSlot - startSlot + 1);
 
         boolean isWhiteListMode = CONFIG.whiteListMode.getValue();
         for (int i = startSlot; i <= endSlot; i++) {
@@ -312,9 +306,16 @@ public class Dropper {
             }
         }
         
+        boolean putItemInInventory = CONFIG.putItemInInventoryWhenOpenContainer.getValue();
         for (int slot: dropSlots) {
-            client.gameMode.handleInventoryMouseClick(
-                containerMenu.containerId, slot, 1, ClickType.THROW, client.player);
+            if (!putItemInInventory) {
+                client.gameMode.handleInventoryMouseClick(
+                    containerMenu.containerId, slot, 1, ClickType.THROW, client.player);
+            }
+            else {
+                client.gameMode.handleInventoryMouseClick(
+                    containerMenu.containerId, slot, 0, ClickType.QUICK_MOVE, client.player);
+            }
         }
 
         client.player.closeContainer();

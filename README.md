@@ -37,7 +37,7 @@ ohhhhhhh <br>
 /ad interval <tick>         # 设置定时触发丢弃的间隔（单位：tick）
 /ad test                    # 手动触发一次丢弃功能
 /ad ignore
-       ├── current          # 将当前背包内不为空的槽位加入忽略列表
+       ├── current          # 忽略当前背包内不为空的槽位
        ├── clear            # 清空忽略列表
        └── set <1,2,3,...>  # 设置忽略的槽位，使用逗号分隔
 ```
@@ -61,7 +61,17 @@ ohhhhhhh <br>
 吸取到经验球时，自动替换带有经验修补且耐久未满的装备到副手<br>
 打开铁砧时，自动为装备附魔经验修补<br>
 站在金块上时，自动触发装备分解 (mcmmo)<br>
-
+背包内存在合金装备时，自动从容器中拿取经验修补进行附魔（可搭配自动钓鱼）<br>
+基础命令：
+```bash
+/mendingHelper                    # 别名 /mh
+/mh config                        # 打开配置界面
+/mh autoreplace on | off          # 开启/关闭 自动替换经验修补装备到副手
+/mh autoenchant on | off          # 开启/关闭 自动为装备附魔经验修补
+/mh autodecompose on | off        # 开启/关闭 自动触发装备分解
+/mh autorepair on | off           # 开启/关闭 自动修复装备
+/mh autorepair setMendingBookPos  # 设置存储经验修补附魔书的容器坐标为注视的方块
+```
 
 ### 🐕 狗皮膏药 (AutoRide)
 像个狗皮膏药一样黏在其它玩家头上<br>
