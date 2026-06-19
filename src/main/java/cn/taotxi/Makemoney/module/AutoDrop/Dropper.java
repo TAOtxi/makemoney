@@ -156,6 +156,10 @@ public class Dropper {
                 if (check.durability == -1 && item.getDamageValue() > 0) {
                     continue;
                 }
+                if (check.durability == -2 && item.getDamageValue() == 0) {
+                    continue;
+                }
+
                 if (item.getMaxDamage() - item.getDamageValue() < check.durability) {
                     continue;
                 }

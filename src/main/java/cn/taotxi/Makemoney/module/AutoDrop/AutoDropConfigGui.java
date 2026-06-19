@@ -506,7 +506,7 @@ public class AutoDropConfigGui {
                         val -> CONFIG.setMatchItemDurability(index, val)
                     )
                     .controller(opt -> IntegerFieldControllerBuilder.create(opt)
-                        .min(0))
+                        .min(-2))
                     .build()
             );
 

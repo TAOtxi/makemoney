@@ -275,14 +275,6 @@ public class ConfigScreen {
                 .build()
         );
 
-        enchantHelperGroup.option(Factory.addToggleOption(
-            T.tl("mendingHelper.dropFullDurabilityNetheriteItem.name"), 
-            T.tl("mendingHelper.dropFullDurabilityNetheriteItem.desc"), 
-            MENDING_HELPER_CONFIG.dropFullDurabilityNetheriteItem.getDefaultValue(),
-            MENDING_HELPER_CONFIG.dropFullDurabilityNetheriteItem::getValue,
-            MENDING_HELPER_CONFIG.dropFullDurabilityNetheriteItem::setValue
-        ));
-
         fishCategory.group(enchantHelperGroup.build());
 
         return fishCategory;

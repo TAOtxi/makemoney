@@ -31,8 +31,7 @@ public class MendingHelperConfig extends ConfigManager {
     public ConfigBoolean onlyDecomposeNoneDamage   = new ConfigBoolean("onlyDecomposeNoneDamage", false, "仅分解满耐久装备", this);
     public ConfigBoolean autoRepairEnabled         = new ConfigBoolean("autoRepairEnabled", false, "自动为合金装备附魔经验修补", this);
     public ConfigArray   mendingBookPositions      = new ConfigArray("mendingBookPositions", createDefaultMendingBookPositions(), "经验修补附魔书容器位置", this);
-    public ConfigBoolean dropFullDurabilityNetheriteItem = new ConfigBoolean("dropFullDurabilityNetheriteItem", true, "丢弃满耐久的合金装备和武器", this);
-      
+    
     private static JsonArray createDefaultMendingBookPositions() {
         JsonArray defaultPositions = new JsonArray(3);
         defaultPositions.add(0);

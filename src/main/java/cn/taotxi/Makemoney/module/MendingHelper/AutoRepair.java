@@ -15,6 +15,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -260,41 +261,5 @@ public class AutoRepair {
         isRepairing = true;
         BlockHitResult hitResult = new BlockHitResult(anvilPos.getCenter(), Direction.UP, anvilPos, false);
         client.gameMode.useItemOn(client.player, InteractionHand.MAIN_HAND, hitResult);
-        tryToCreateDropTask();
-    }
-
-    private static void tryToCreateDropTask() {
-        if (!CONFIG.dropFullDurabilityNetheriteItem.getValue()) return;
-
-        if (!TaskUtil.hasTimeTask(AUTO_REPAIR_DROP)) {
-            TaskUtil.createOnceTimeTask(
-                AUTO_REPAIR_DROP, 
-                AutoRepair::dropFullDurabilityNetheriteItem, 
-                10
-            );
-        }
-    }
-
-    private static boolean shouldDropItem(ItemStack itemStack) {
-        if (
-            !itemStack.is(Items.NETHERITE_SWORD) &&
-            !itemStack.is(Items.NETHERITE_AXE) &&
-            !itemStack.is(Items.NETHERITE_PICKAXE) &&
-            !itemStack.is(Items.NETHERITE_SHOVEL) &&
-            !itemStack.is(Items.NETHERITE_HOE) &&
-            !itemStack.is(Items.NETHERITE_HELMET) &&
-            !itemStack.is(Items.NETHERITE_CHESTPLATE) &&
-            !itemStack.is(Items.NETHERITE_LEGGINGS) &&
-            !itemStack.is(Items.NETHERITE_BOOTS)
-        ) {
-            return false;
-        }
-        return !itemStack.isDamaged();
-    }
-
-    private static void dropFullDurabilityNetheriteItem() {
-        if (client.player.hasContainerOpen()) return;
-        List<Integer> dropableItemSlots = InventoryUtil.findSuitableSlots(AutoRepair::shouldDropItem);
-        Dropper.startToDropItems(dropableItemSlots);
     }
 }
