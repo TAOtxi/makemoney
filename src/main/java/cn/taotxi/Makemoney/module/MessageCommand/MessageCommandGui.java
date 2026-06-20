@@ -9,7 +9,6 @@ import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.OptionDescription;
 import dev.isxander.yacl3.api.OptionGroup;
 import dev.isxander.yacl3.api.controller.StringControllerBuilder;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 
 public class MessageCommandGui {

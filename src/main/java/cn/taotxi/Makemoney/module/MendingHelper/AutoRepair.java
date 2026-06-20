@@ -3,7 +3,6 @@ package cn.taotxi.Makemoney.module.MendingHelper;
 import java.util.List;
 import java.util.Map;
 
-import cn.taotxi.Makemoney.module.AutoDrop.Dropper;
 import cn.taotxi.Makemoney.util.Message;
 import cn.taotxi.Makemoney.util.T;
 import cn.taotxi.Makemoney.util.TaskUtil;
@@ -15,7 +14,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickType;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -218,6 +216,7 @@ public class AutoRepair {
 
     private static void tick() {
         if (client.player == null) return;
+        if (client.player.experienceLevel < 5) return;
 
         if (
             !CONFIG.autoEnchantEnabled.getValue() ||

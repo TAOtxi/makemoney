@@ -95,6 +95,12 @@ public class AutoEnchantMending {
             }
         }
 
+        if (anvilMenu.getCost() > client.player.experienceLevel) {
+            client.player.closeContainer();
+            AutoRepair.stopRepairing();
+            return;
+        }
+
         // 移动到背包而不是丢出
         if (AutoRepair.isRepairing()) {
             if (!InventoryUtil.inventoryHasEmptySlot()) {
