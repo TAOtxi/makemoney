@@ -47,7 +47,7 @@ public class AutoDropConfig extends ConfigManager {
     public ConfigBoolean  isTimeTrigger             = new ConfigBoolean("isTimeTrigger", true, "定时触发丢弃功能开关", this);
     public ConfigInteger  timeTriggerInterval       = new ConfigInteger("timeTriggerInterval", 180 * 20, "定时触发时间间隔（tick）", this);
     public ConfigBoolean  isPickUpItemTrigger       = new ConfigBoolean("isPickUpItemTrigger", false, "拾取到指定掉落物触发丢弃功能开关", this);
-    public ConfigString   triggerItemId             = new ConfigString("triggerItemId", "", "拾取到掉落物ID", this);
+    public ConfigString   triggerItemId             = new ConfigString("triggerItemId", "*", "拾取到掉落物ID", this);
     public ConfigBoolean  dropWhenOpenContainer     = new ConfigBoolean("dropWhenOpenContainer", false, "打开容器时是否丢弃容器内物品", this);
     public ConfigBoolean  putItemInInventoryWhenOpenContainer = new ConfigBoolean("putItemInInventoryWhenOpenContainer", false, "清理容器时是否将物品放入背包", this);
 

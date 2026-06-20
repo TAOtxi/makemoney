@@ -28,7 +28,6 @@ public class AutoRepair {
     private static final Minecraft client = Minecraft.getInstance();
     private static final MendingHelperConfig CONFIG = MendingHelperConfig.getInstance();
     private static final String AUTO_REPAIR_CHECK = "autoRepairCheck";
-    private static final String AUTO_REPAIR_DROP = "autoRepairDrop";
     private static final double BLOCK_INTERACTION_RANGE = 4.5d;
     private static BlockPos mendingBookPos = null;
     private static BlockPos anvilPos = null;
@@ -53,6 +52,9 @@ public class AutoRepair {
 
         CONFIG.autoRepairEnabled.onChange(
             (oldValue, newValue) -> {
+                isRepairing = false;
+                isGetingMendingBook = false;
+
                 if (newValue && !TaskUtil.hasTimeTask(AUTO_REPAIR_CHECK)) {
                     TaskUtil.createTimeTask(AUTO_REPAIR_CHECK, AutoRepair::tick, 20);
                 } else if (!newValue) {
@@ -229,7 +231,7 @@ public class AutoRepair {
         if (isGetingMendingBook) return;
         if (isRepairing) return;
 
-        if (AutoMendingReplace.isOffhandSuitable()) return;
+        // if (AutoMendingReplace.isOffhandSuitable()) return;
 
         List<Integer> repairableItemSlots = InventoryUtil.findSuitableSlots(
             AutoRepair::isNeedRepairNetheriteEquipment);

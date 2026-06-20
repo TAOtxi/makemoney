@@ -19,8 +19,11 @@ import cn.taotxi.Makemoney.util.game.ItemStackUtil;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
@@ -90,9 +93,9 @@ public class AutoDrop {
         }
 
         TaskUtil.createOnceTimeTask(PICK_UP_DROP_TASK_NAME, () -> {
-                Dropper.tryToDropItems();
-                dropThrottleFlag = true;
-            }, throttleTick);
+            Dropper.tryToDropItems();
+            dropThrottleFlag = true;
+        }, throttleTick);
     }
 
     public static void onConfigChange() {
@@ -141,31 +144,49 @@ public class AutoDrop {
         if (client.player == null) return;
         boolean isTimeTrigger = CONFIG.isTimeTrigger.getValue();
         boolean isPickUpItemTrigger = CONFIG.isPickUpItemTrigger.getValue();
-        if (!isTimeTrigger && !isPickUpItemTrigger) return;
+        boolean isDropWhenOpenContainer = CONFIG.dropWhenOpenContainer.getValue();
 
         String triggerItemId = CONFIG.triggerItemId.getValue();
-        if (!isTimeTrigger && isPickUpItemTrigger) {
-            if (!triggerItemId.isEmpty()) {
-                Message.actionBarMsg(T.tl("autodrop.message.attention.pickUpItemTriggerWithItem", triggerItemId));
-            } else {
-                Message.actionBarMsg(T.tl("autodrop.message.attention.pickUpItemTrigger"));
+        if (
+            !isTimeTrigger && 
+            (!isPickUpItemTrigger || triggerItemId.isEmpty()) && 
+            !isDropWhenOpenContainer
+        ) {
+            return;
+        }
+        
+        MutableComponent showMessage = T.tl("autodrop.message.prefix");
+        
+        MutableComponent seperator = T.l(" | ").withStyle(ChatFormatting.GREEN);
+
+        if (isTimeTrigger) {
+            int pendingTick = TaskUtil.getNextRunTick(TIME_TRIGGER_TASK_NAME) - TaskUtil.getTicker();
+            int pendingSeconds = pendingTick / 20;
+            showMessage.append(T.tl("autodrop.message.attention.timeTrigger", pendingSeconds));
+        }
+
+        if (isPickUpItemTrigger && !triggerItemId.isEmpty()) {
+            if (isTimeTrigger) {
+                showMessage.append(seperator);
             }
-            return;
+            if (triggerItemId.equals("*")) {
+                showMessage.append(T.tl("autodrop.message.attention.pickUpItemTrigger"));
+            } else {
+                showMessage.append(T.tl("autodrop.message.attention.pickUpItemTriggerWithItem", triggerItemId));
+            }
         }
 
-        int pendingTick = TaskUtil.getNextRunTick(TIME_TRIGGER_TASK_NAME) - TaskUtil.getTicker();
-        int pendingSeconds = pendingTick / 20;
-
-        if (!isPickUpItemTrigger) {
-            Message.actionBarMsg(T.tl("autodrop.message.attention.timeTrigger", pendingSeconds));
-            return;
+        if (isDropWhenOpenContainer) {
+            if (
+                isTimeTrigger ||
+                (isPickUpItemTrigger && !triggerItemId.isEmpty())
+            ) {
+                showMessage.append(seperator);
+            }
+            showMessage.append(T.tl("autodrop.message.attention.dropWhenOpenContainer"));
         }
 
-        if (!triggerItemId.isEmpty()) {
-            Message.actionBarMsg(T.tl("autodrop.message.attention.bothWithItem", pendingSeconds, triggerItemId));
-        } else {
-            Message.actionBarMsg(T.tl("autodrop.message.attention.both", pendingSeconds));
-        }
+        Message.actionBarMsg(showMessage);
     }
 
     public static void onTakeItemEntity(ItemEntity itemEntity) {
@@ -173,14 +194,26 @@ public class AutoDrop {
         if (!CONFIG.isPickUpItemTrigger.getValue()) return;
 
         String triggerItemId = CONFIG.triggerItemId.getValue();
-        if (triggerItemId.isEmpty()) {
+        if (triggerItemId.equals("*")) {
             onPickUpDrop();
             return;
         }
+        if (triggerItemId.isEmpty()) return;
         
         ItemStack itemStack = itemEntity.getItem();
-        if (ItemStackUtil.equalIdWithDefaultNamespace(itemStack, triggerItemId)) {
+        if (
+            StringUtil.isRegex(triggerItemId) &&
+            ItemStackUtil.equalId(itemStack, triggerItemId)
+        ) {
             onPickUpDrop();
+            return;
+        }
+        if (
+            !StringUtil.isRegex(triggerItemId) &&
+            ItemStackUtil.equalIdWithDefaultNamespace(itemStack, triggerItemId)
+        ) {
+            onPickUpDrop();
+            return;
         }
     }
 
