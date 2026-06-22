@@ -163,4 +163,15 @@ public class InventoryUtil {
         
         return Map.entry(startSlot, endSlot);
     }
+
+    public static int getInventoryEmptySlotCount() {
+        int count = 0;
+        InventoryMenu inventoryMenu = client.player.inventoryMenu;
+        for (int i = InventoryMenu.INV_SLOT_START; i < InventoryMenu.USE_ROW_SLOT_END; i++) {
+            if (inventoryMenu.getSlot(i).getItem().isEmpty()) {
+                count++;
+            }
+        }
+        return count;
+    }
 }

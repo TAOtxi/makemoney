@@ -184,6 +184,8 @@ public class AutoRepair {
     }
 
     private static void tryToOpenMendingBookContainer() {
+        if (toGetMendingBookCount <= 0) return;
+
         if (mendingBookPos == null) {
             Message.clientSideMsg(T.tl("mendingHelper.mendingBookPos.notSet.message"));
             disableAutoRepair();
@@ -216,7 +218,9 @@ public class AutoRepair {
 
     private static void tick() {
         if (client.player == null) return;
-        if (client.player.experienceLevel < 5) return;
+
+        int level = client.player.experienceLevel;
+        if (level < 5) return;
 
         if (
             !CONFIG.autoEnchantEnabled.getValue() ||
@@ -242,9 +246,15 @@ public class AutoRepair {
         int mendingBookCount = mendingBookSlots.size();
 
         if (mendingBookCount == 0) {
-            if (!InventoryUtil.inventoryHasEmptySlot()) return;
+            if (client.player.hasContainerOpen()) {
+                client.player.closeContainer();
+            }
 
-            toGetMendingBookCount = needMendingBookCount;
+            int emptySlotCount = InventoryUtil.getInventoryEmptySlotCount();
+
+            toGetMendingBookCount = Math.min(needMendingBookCount, level / 2);
+            toGetMendingBookCount = Math.min(toGetMendingBookCount, emptySlotCount);
+
             // 从容器拿点经验修补
             tryToOpenMendingBookContainer();
             return;
