@@ -39,20 +39,23 @@ public class AutoMendingReplace {
             return;
         }
 
-        int targetSlot = -1;
         InventoryMenu inventoryMenu = client.player.inventoryMenu;
         int mainHandSlot = client.player.getInventory().getSelectedSlot() + InventoryMenu.USE_ROW_SLOT_START;
+
+        int minDamageSlot = -1;
+        int minDamage = Integer.MAX_VALUE;
+
         for (int i=InventoryMenu.INV_SLOT_START; i<InventoryMenu.USE_ROW_SLOT_END; i++) {
             ItemStack item = inventoryMenu.getSlot(i).getItem();
             if (i == mainHandSlot) continue;
-            if (shouldAtOffhand(item)) {
-                targetSlot = i;
-                break;
+            if (shouldAtOffhand(item) && item.getDamageValue() < minDamage) {
+                minDamageSlot = i;
+                minDamage = item.getDamageValue();
             }
         }
-        if (targetSlot == -1) return;
+        if (minDamageSlot == -1) return;
 
-        InventoryUtil.swapItemToHand(InteractionHand.OFF_HAND, targetSlot);
+        InventoryUtil.swapItemToHand(InteractionHand.OFF_HAND, minDamageSlot);
 
         client.level.playPlayerSound(
             SoundEvents.ARMOR_EQUIP_LEATHER.value(),

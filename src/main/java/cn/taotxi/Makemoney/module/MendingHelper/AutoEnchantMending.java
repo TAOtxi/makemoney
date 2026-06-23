@@ -36,7 +36,10 @@ public class AutoEnchantMending {
     }
 
     private static void tryToEnchantMendingForEquipment() {
-        if (!(client.player.containerMenu instanceof AnvilMenu anvilMenu)) {
+        if (
+            client.player == null || 
+            !(client.player.containerMenu instanceof AnvilMenu anvilMenu)
+        ) {
             TaskUtil.removeTimeTask(AUTO_ENCHANT_MENDING_TASK);
             AutoRepair.stopRepairing();
             return;

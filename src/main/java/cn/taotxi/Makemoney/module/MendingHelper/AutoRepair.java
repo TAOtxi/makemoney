@@ -218,6 +218,14 @@ public class AutoRepair {
 
     private static void tick() {
         if (client.player == null) return;
+        if (
+            !client.player.hasContainerOpen() &&
+            (isRepairing || isGetingMendingBook)
+        ) {
+            isRepairing = false;
+            isGetingMendingBook = false;
+            return;
+        }
 
         int level = client.player.experienceLevel;
         if (level < 5) return;
