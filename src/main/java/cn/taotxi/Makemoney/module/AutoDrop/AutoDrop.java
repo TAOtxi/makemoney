@@ -243,7 +243,23 @@ public class AutoDrop {
                         .executes(context -> setDebug(context, true)))
                     .then(ClientCommandManager.literal("off")
                         .executes(context -> setDebug(context, false))))
+                .then(ClientCommandManager.literal("itemTrigger")
+                    .then(ClientCommandManager.literal("on")
+                        .executes(context -> setItemTrigger(context, true)))
+                    .then(ClientCommandManager.literal("off")
+                        .executes(context -> setItemTrigger(context, false))))
+                .then(ClientCommandManager.literal("timeTrigger")
+                    .then(ClientCommandManager.literal("on")
+                        .executes(context -> setTimeTrigger(context, true)))
+                    .then(ClientCommandManager.literal("off")
+                        .executes(context -> setTimeTrigger(context, false))))
+                .then(ClientCommandManager.literal("containerTrigger")
+                    .then(ClientCommandManager.literal("on")
+                        .executes(context -> setDropWhenOpenContainer(context, true)))
+                    .then(ClientCommandManager.literal("off")
+                        .executes(context -> setDropWhenOpenContainer(context, false))))
             );
+
         dispatcher.register(ClientCommandManager.literal("ad")
                 .executes(AutoDrop::showHelp)
                 .redirect(command));
@@ -286,6 +302,28 @@ public class AutoDrop {
                 T.tl("autodrop.disabled.message")
         );
         toggleSwitch(enable);
+        return 1;
+    }
+
+    private static int setTimeTrigger(CommandContext<FabricClientCommandSource> context, boolean enable) {
+        CONFIG.isTimeTrigger.setValue(enable);
+        CONFIG.saveConfig();
+        context.getSource().sendFeedback(
+            enable ? 
+                T.tl("autodrop.timeTrigger.enabled.message") : 
+                T.tl("autodrop.timeTrigger.disabled.message")
+        );
+        return 1;
+    }
+
+    private static int setItemTrigger(CommandContext<FabricClientCommandSource> context, boolean enable) {
+        CONFIG.isPickUpItemTrigger.setValue(enable);
+        CONFIG.saveConfig();
+        context.getSource().sendFeedback(
+            enable ? 
+                T.tl("autodrop.itemTrigger.enabled.message") : 
+                T.tl("autodrop.itemTrigger.disabled.message")
+        );
         return 1;
     }
 

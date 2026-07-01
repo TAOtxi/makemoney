@@ -355,7 +355,7 @@ class Item {
     public String id = "";
     public int durability = 0;
     public List<String> tags = new ArrayList<>();
-    public int minEnchantRequir = 0;
+    public int minEnchantRequir = -1;
     public Map<String, Integer> enchantments = new HashMap<>();
 
     public Item(boolean enabled, String description, String name, String id, int durability, List<String> tags, int minEnchantRequir, Map<String, Integer> enchantments) {

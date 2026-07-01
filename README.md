@@ -29,17 +29,20 @@ ohhhhhhh <br>
 一般用于搞冲突附魔装备，或者钓鱼佬的懒人分类。<br>
 基础命令：
 ```bash
-/autodrop                   # 别名 /ad
-/ad help                    # 查看帮助
-/ad on | off                # 开启/关闭丢弃功能
-/ad config                  # 打开配置界面
-/ad reload                  # 重新加载配置
-/ad interval <tick>         # 设置定时触发丢弃的间隔（单位：tick）
-/ad test                    # 手动触发一次丢弃功能
+/autodrop                      # 别名 /ad
+/ad help                       # 查看帮助
+/ad on | off                   # 开启/关闭丢弃功能
+/ad config                     # 打开配置界面
+/ad reload                     # 重新加载配置
+/ad interval <tick>            # 设置定时触发丢弃的间隔（单位：tick）
+/ad test                       # 手动触发一次丢弃功能
 /ad ignore
-       ├── current          # 忽略当前背包内不为空的槽位
-       ├── clear            # 清空忽略列表
-       └── set <1,2,3,...>  # 设置忽略的槽位，使用逗号分隔
+       ├── current             # 忽略当前背包内不为空的槽位
+       ├── clear               # 清空忽略列表
+       └── set <1,2,3,...>     # 设置忽略的槽位，使用逗号分隔
+/ad timeTrigger on | off       # 开启/关闭 时间触发丢弃功能
+/ad itemTrigger on | off       # 开启/关闭 拾取指定掉落物触发丢弃功能
+/ad containerTrigger on | off  # 开启/关闭 打开容器时触发丢弃功能
 ```
 
 
@@ -69,7 +72,7 @@ ohhhhhhh <br>
 /mh autoreplace on | off          # 开启/关闭 自动替换经验修补装备到副手
 /mh autoenchant on | off          # 开启/关闭 自动为装备附魔经验修补
 /mh autodecompose on | off        # 开启/关闭 自动触发装备分解
-/mh autorepair on | off           # 开启/关闭 自动修复装备
+/mh autorepair on | off           # 开启/关闭 自动修复合金装备
 /mh autorepair setMendingBookPos  # 设置存储经验修补附魔书的容器坐标为注视的方块
 ```
 
