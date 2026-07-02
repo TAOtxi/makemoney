@@ -15,19 +15,24 @@ public class calcServerTps {
             return;
         }
 
-        // if (msTps == Float.POSITIVE_INFINITY) {
+        // if (msTps == Float.POSITIVE_INFINITY || msTps == Float.NEGATIVE_INFINITY) {
         //     msTps = 50f;
         //     return;
         // }
 
         long currentTime = System.nanoTime();
         long deltaTick = currentTick - lastTick;
+
+        if (deltaTick == 0) {
+            return;
+        }
+
         long deltaTime = currentTime - lastTime;
         lastTime = currentTime;
         lastTick = currentTick;
 
         float instanceMsTps = (float) deltaTime / (float) deltaTick / 1e6f;
-        msTps = 0.99f * msTps + 0.01f * instanceMsTps;
+        msTps = 0.9f * msTps + 0.1f * instanceMsTps;
     }
 
     public static void reset() {
