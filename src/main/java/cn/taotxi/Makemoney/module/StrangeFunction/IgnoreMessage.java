@@ -11,7 +11,7 @@ import com.google.gson.JsonElement;
 import cn.taotxi.Makemoney.util.MLogger;
 
 public class IgnoreMessage {
-    private static final String MODULE_NAME = "ignoreMessage";
+    public static final String MODULE_NAME = "ignoremessage";
     private static final MLogger logger = new MLogger(MODULE_NAME);
     private static final StrangeConfig CONFIG = StrangeConfig.getInstance();
     private static final List<Pattern> ignorePatterns = new ArrayList<>();
@@ -61,6 +61,6 @@ public class IgnoreMessage {
             "^\\w{1,16}(?:退出|加入)了游戏|^\\w{1,16} joined \\w+|^\\w{1,16} was disconnected",
             "^<\\w{1,16}> (?:\\d+|all)$"
         );
-        CONFIG.ignoreList.setStringValue(list);
+        CONFIG.ignoreList.setValue(list);
     }
 }

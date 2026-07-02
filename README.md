@@ -76,6 +76,18 @@ ohhhhhhh <br>
 /mh autorepair setMendingBookPos  # 设置存储经验修补附魔书的容器坐标为注视的方块
 ```
 
+### 🌐 自动挂机 (AutoAFK)
+根据服务器tps动态调整攻击周期。<br>
+基础命令：
+```bash
+/autoafk                           # 别名 /afkk
+/autoafk config                    # 打开配置界面
+/autoafk help                      # 查看帮助
+/autoafk attack on | off           # 开启/关闭 自适应攻击
+/autoafk attack interval <tick>    # 设置攻击周期
+/autoafk attack info               # 查看攻击周期相关数据
+```
+
 ### 🐕 狗皮膏药 (AutoRide)
 像个狗皮膏药一样黏在其它玩家头上<br>
 也可以禁止别的玩家骑你头上<br>

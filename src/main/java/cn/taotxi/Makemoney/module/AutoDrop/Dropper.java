@@ -22,7 +22,7 @@ import net.minecraft.world.inventory.InventoryMenu;
 
 public class Dropper {
     private static final AutoDropConfig CONFIG = AutoDropConfig.getInstance();
-    private static final List<Integer> ignoreSlots = CONFIG.ignoreSlots.getValueAsIntList();
+    private static final List<Integer> ignoreSlots = new ArrayList<>();
     private static final List<Item> matchItemList = new ArrayList<>();
     private static final Minecraft client = Minecraft.getInstance();
 
@@ -35,6 +35,7 @@ public class Dropper {
                 }
             }
         );
+        CONFIG.ignoreSlots.triggerConfigChange();
 
         CONFIG.matchItemLists.onChange(
             (oldValue, newValue) -> {

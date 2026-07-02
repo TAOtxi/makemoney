@@ -280,5 +280,27 @@
     "makemoney.mendingHelper.mendingBookPos.notSet.message": "§7[§d装备分解辅助§7] §c未设置经验修补容器坐标！已关闭自动修补功能。",
     "makemoney.mendingHelper.mendingBookPos.noOpenOtherFunction.message": "§7[§d装备分解辅助§7] 请确保开启§f自动替换经验修补装备§7和§f自动附魔经验修补§7功能！",
     "makemoney.mendingHelper.mendingBookPos.notContainer.message": "§7[§d装备分解辅助§7] §c坐标 §7<%d, %d, %d> §c不是一个容器方块！已关闭自动修补功能。",
-    "makemoney.mendingHelper.mendingBookPos.noMendingBook.message": "§7[§d装备分解辅助§7] §c容器缺少经验修补附魔书！已关闭自动修补功能。"
+    "makemoney.mendingHelper.mendingBookPos.noMendingBook.message": "§7[§d装备分解辅助§7] §c容器缺少经验修补附魔书！已关闭自动修补功能。",
+
+    "makemoney.autoAFK.category": "挂机相关",
+    "makemoney.autoAFK.help.message": "§7[§d自动挂机§7] §7待完善...",
+    "makemoney.autoAFK.autoAttack": "自适应攻击",
+    "makemoney.autoAFK.autoAttack.desc": "根据服务器tps动态调整攻击周期。\n\n需要注意的是，客户端无法获取服务器的真实tps，\n\n计算出的tps并不准确。",
+    "makemoney.autoAFK.autoAttack.enabled": "开关",
+    "makemoney.autoAFK.autoAttack.enabled.desc": "开启后, 将自动攻击生物。\n\n此功能用于在服务器卡的情况下仍能触发横扫效果。\n\n简单解释下服务器tps低时难以触发横扫的问题:\n\n假如tps过低，服务器的时间相对于我们是变慢了，\n\n相应地, 我们在服务器看来就变快了。\n\n客户端上周期为10tick的攻击, 在服务器看来, 有可能会是7, 甚至更低。\n\n因此需要根据tps降低攻击周期。\n\n自动调整周期公式: \n\n实际攻击周期 = 设置的攻击周期 / (tps / 20)",
+    "makemoney.autoAFK.autoAttack.interval": "攻击周期",
+    "makemoney.autoAFK.autoAttack.interval.desc": "设置自适应攻击的相对周期，单位为tick",
+    "makemoney.autoAFK.autoAttack.durabilityCheck": "防止工具损坏",
+    "makemoney.autoAFK.autoAttack.durabilityCheck.desc": "在主手工具耐久度过低时停止攻击。",
+    "makemoney.autoAFK.autoAttack.showInfo": "是否显示攻击周期信息",
+    "makemoney.autoAFK.autoAttack.showInfo.desc": "开启后，将在物品栏上方显示当前攻击周期信息。",
+    "makemoney.autoAFK.autoAttack.mode": "白名单模式",
+    "makemoney.autoAFK.autoAttack.mode.desc": "开启后，仅攻击攻击列表中的生物。\n\n若关闭，则攻击除列表之外的所有生物。",
+    "makemoney.autoAFK.autoAttack.list": "攻击列表",
+    "makemoney.autoAFK.autoAttack.list.desc": "设置要攻击的生物列表，值为生物的id，小写。\n\n例如 player, zombie_villager等等。",
+    "makemoney.autoAFK.autoAttack.help.message": "§7[§d自适应攻击§7] §7帮助信息待完善...",
+    "makemoney.autoAFK.autoAttack.enabled.message": "§7[§d自适应攻击§7] §7已开启自适应攻击",
+    "makemoney.autoAFK.autoAttack.disabled.message": "§7[§d自适应攻击§7] §7已关闭自适应攻击",
+    "makemoney.autoAFK.autoAttack.interval.message": "§7[§d自适应攻击§7] §7攻击攻击周期设置为 §e%d §7tick",
+    "makemoney.autoAFK.autoAttack.info.message": "§7[§d自适应攻击§7] §7当前tps: §e%.1f §7，调整后的攻击周期: §e%d §7tick"
 }

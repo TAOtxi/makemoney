@@ -13,6 +13,7 @@ import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
 import net.minecraft.network.protocol.game.ClientboundOpenScreenPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
+import net.minecraft.network.protocol.game.ClientboundSetTimePacket;
 import net.minecraft.network.TickablePacketListener;
 import net.minecraft.network.protocol.game.ClientboundSystemChatPacket;
 import net.minecraft.network.protocol.game.ClientboundTakeItemEntityPacket;
@@ -26,6 +27,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import cn.taotxi.Makemoney.module.StrangeFunction.AutoRide;
 import cn.taotxi.Makemoney.module.StrangeFunction.IgnoreMessage;
+import cn.taotxi.Makemoney.module.AutoAFK.calcServerTps;
 import cn.taotxi.Makemoney.module.AutoDrop.AutoDrop;
 import cn.taotxi.Makemoney.module.AutoDrop.Dropper;
 import cn.taotxi.Makemoney.module.AutoFish.AutoFish;
@@ -98,6 +100,13 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
                 Dropper.onOpenContainerDrop();
                 AutoRepair.onOpenContainer();
             }
+        };
+    }
+
+    @Inject(method = "handleSetTime", at = @At("HEAD"))
+    public void onSetTime(ClientboundSetTimePacket packet, CallbackInfo ci) {
+        if (minecraft.isSameThread()) {
+            calcServerTps.onSetTime(packet.gameTime());
         };
     }
 

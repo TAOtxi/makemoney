@@ -38,7 +38,7 @@ public class AutoDropConfig extends ConfigManager {
     }
 
     public ConfigBoolean  isShowAttentionMsg        = new ConfigBoolean("isShowAttentionMsg", true, "是否显示注意信息", this);
-    public ConfigArray    ignoreSlots               = new ConfigArray("ignoreSlots", new JsonArray(), "忽略的背包槽位列表", this);
+    public ConfigArray<Integer> ignoreSlots         = new ConfigArray<>("ignoreSlots", "忽略的背包槽位列表", this, Integer.class);
     public ConfigString   throwWay                  = new ConfigString("throwWay", ThrowWay.DIRECTION.name(), "丢弃方式", this);
     public ConfigString   throwDirection            = new ConfigString("throwDirection", Direction.LOOKING.name(), "丢弃方向", this);
     public ConfigFloat    throwYaw                  = new ConfigFloat("throwYaw", 0.0f, "yaw", this);
@@ -62,7 +62,7 @@ public class AutoDropConfig extends ConfigManager {
 
     public ConfigBoolean  whiteListMode             = new ConfigBoolean("whiteListMode", true, "是否开启白名单模式", this);
     public ConfigBoolean  foldMatchItemLists        = new ConfigBoolean("foldMatchItemLists", false, "是否折叠物品匹配条件列表", this);
-    public ConfigArray    matchItemLists            = new ConfigArray("matchItemLists", new JsonArray(), "物品匹配条件列表", this);
+    public ConfigArray<Item> matchItemLists         = new ConfigArray<>("matchItemLists", "物品匹配条件列表", this, Item.class);
 
     public List<String> getAllThrowDirections() {
         return Arrays.stream(Direction.values()).map(Enum::name).collect(Collectors.toList());

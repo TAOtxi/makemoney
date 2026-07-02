@@ -1,7 +1,5 @@
 package cn.taotxi.Makemoney.module.StrangeFunction;
 
-import com.google.gson.JsonArray;
-
 import cn.taotxi.Makemoney.config.ConfigManager;
 import cn.taotxi.Makemoney.config.type.ConfigArray;
 import cn.taotxi.Makemoney.config.type.ConfigBoolean;
@@ -31,7 +29,7 @@ public class StrangeConfig extends ConfigManager {
 
     /******************* Ignore *******************/
     public ConfigBoolean ignoreEnabled                 = new ConfigBoolean("ignoreEnabled", false, "是否启用屏蔽消息功能", this);
-    public ConfigArray   ignoreList                    = new ConfigArray("ignoreList", new JsonArray(), "屏蔽规则", this);
+    public ConfigArray<String>   ignoreList            = new ConfigArray<String>("ignoreList", "屏蔽规则", this, String.class);
 
     /******************* RightClickRide *******************/
     public ConfigBoolean rightClickRideEnabled         = new ConfigBoolean("rightClickRideEnabled", true, "是否启用右键骑乘功能", this);

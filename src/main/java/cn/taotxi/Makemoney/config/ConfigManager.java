@@ -11,7 +11,7 @@ import com.google.gson.JsonObject;
 
 import cn.taotxi.Makemoney.config.type.IConfigBase;
 
-
+// TODO: 配置文件不再存储为JsonElement的形式
 public class ConfigManager {
     public String MODULE_NAME;
     private List<IConfigBase<?>> options;

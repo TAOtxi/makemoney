@@ -3,7 +3,6 @@ package cn.taotxi.Makemoney;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.item.Items;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -16,11 +15,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 
 import cn.taotxi.Makemoney.config.MakemoneyConfig;
 import cn.taotxi.Makemoney.gui.GuiUtil;
+import cn.taotxi.Makemoney.module.AutoAFK.AutoAFK;
 import cn.taotxi.Makemoney.module.AutoDrop.AutoDrop;
 import cn.taotxi.Makemoney.module.AutoFish.AutoFish;
 import cn.taotxi.Makemoney.module.MendingHelper.MendingHelper;
@@ -63,6 +62,7 @@ public class Makemoney implements ModInitializer {
         MessageCommand.initialize();
         MenuClick.initialize();
         MendingHelper.initialize();
+        AutoAFK.initialize();
         TaskUtil.initialize();
 
         // TaskUtil.createTimeTask("a", () -> {
@@ -87,7 +87,14 @@ public class Makemoney implements ModInitializer {
                     .executes(context -> {
                         GuiUtil.openYaclScreen(MOD_ID);
                         return 1;
-                    }))
+                    })
+                    .then(ClientCommandManager.argument("tab", IntegerArgumentType.integer(0, 5))
+                        .executes(context -> {
+                            int tab = context.getArgument("tab", Integer.class);
+                            GuiUtil.openYaclScreen(MOD_ID, tab);
+                            return 1;
+                        }))
+                )
             );
 
             dispatcher.register(ClientCommandManager.literal("mn")

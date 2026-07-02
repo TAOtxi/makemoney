@@ -9,20 +9,73 @@ import com.google.gson.JsonElement;
 
 import cn.taotxi.Makemoney.config.ConfigManager;
 
-public class ConfigArray implements IConfigBase<JsonArray> {
+public class ConfigArray<T> implements IConfigBase<JsonArray> {
     private String key;
     private String comment;
     private JsonArray defaultValue;
     private BiConsumer<JsonArray, JsonArray> listener;
     private final ConfigManager configManager;
+    private final Class<T> elementType;
     
     public ConfigArray(String key, JsonArray defaultValue, String comment, ConfigManager configManager) {
         this.key = key;
         this.comment = comment;
         this.defaultValue = defaultValue;
         this.configManager = configManager;
+        this.elementType = null;
         configManager.addOption(this);
     }
+
+    public ConfigArray(String key, String comment, ConfigManager configManager) {
+        this(key, new JsonArray(), comment, configManager);
+    }
+
+    @SuppressWarnings("unchecked")
+    public ConfigArray(String key, List<T> defaultValue, String comment, ConfigManager configManager) {
+        this.key = key;
+        this.comment = comment;
+        this.configManager = configManager;
+        
+        if (!defaultValue.isEmpty()) {
+            this.elementType = (Class<T>) defaultValue.get(0).getClass();
+        } else {
+            this.elementType = null;
+        }
+        
+        JsonArray defaultArray = new JsonArray(defaultValue.size());
+        for (T element : defaultValue) {
+            addToJsonArray(defaultArray, element);
+        }
+        this.defaultValue = defaultArray;
+        
+        configManager.addOption(this);
+    }
+
+    public ConfigArray(String key, List<T> defaultValue, String comment, ConfigManager configManager, Class<T> elementType) {
+        this.key = key;
+        this.comment = comment;
+        this.configManager = configManager;
+        this.elementType = elementType;
+        
+        JsonArray defaultArray = new JsonArray(defaultValue.size());
+        for (T element : defaultValue) {
+            addToJsonArray(defaultArray, element);
+        }
+        this.defaultValue = defaultArray;
+        
+        configManager.addOption(this);
+    }
+
+    public ConfigArray(String key, String comment, ConfigManager configManager, Class<T> elementType) {
+        this.key = key;
+        this.comment = comment;
+        this.configManager = configManager;
+        this.elementType = elementType;
+    
+        this.defaultValue = new JsonArray();
+        configManager.addOption(this);
+    }
+
     
     public String getKey() {
         return key;
@@ -46,39 +99,30 @@ public class ConfigArray implements IConfigBase<JsonArray> {
         return defaultValue;
     }
 
-    
-    public <T> T get(int index, Class<T> type) {
-        return ConfigManager.getGson().fromJson(getValue().get(index), type);
+    @SuppressWarnings("unchecked")
+    public T get(int index) {
+        JsonElement element = getValue().get(index);
+        if (elementType != null) {
+            return convertJsonElement(element, elementType);
+        }
+        return (T) ConfigManager.getGson().fromJson(element, Object.class);
     }
 
-    public JsonElement get(int index) {
+    public JsonElement getRaw(int index) {
         return getValue().get(index);
     }
 
-    public <T> List<T> getValueAsList(Class<T> type) {
-        return ConfigManager.jsonToList(getValue(), type);
-    }
-
-    public List<String> getValueAsStringList() {
+    public List<T> getValueAsList() {
         JsonArray jsonList = getValue();
-        List<String> list = new ArrayList<>(jsonList.size());
+        List<T> list = new ArrayList<>(jsonList.size());
         for (JsonElement element : jsonList) {
-            list.add(element.getAsString());
+            list.add(convertJsonElement(element, elementType));
         }
         return list;
     }
 
-    public List<Integer> getValueAsIntList() {
-        JsonArray jsonList = getValue();
-        List<Integer> list = new ArrayList<>(jsonList.size());
-        for (JsonElement element : jsonList) {
-            list.add(element.getAsInt());
-        }
-        return list;
-    }
-
-    public void add(String element) {
-        getValue().add(element);
+    public void add(T element) {
+        addToJsonArray(getValue(), element);
         triggerConfigChange();
     }
 
@@ -87,31 +131,11 @@ public class ConfigArray implements IConfigBase<JsonArray> {
         triggerConfigChange();
     }
 
-    public void addTop(JsonElement element) {
+    public void addTop(T element) {
         JsonArray newArray = new JsonArray();
-        newArray.add(element);
+        addToJsonArray(newArray, element);
         newArray.addAll(getValue());
         setValue(newArray);
-    }
-
-    public void add(int element) {
-        getValue().add(element);
-        triggerConfigChange();
-    }
-
-    public void add(boolean element) {
-        getValue().add(element);
-        triggerConfigChange();
-    }
-
-    public void add(double element) {
-        getValue().add(element);
-        triggerConfigChange();
-    }
-
-    public void add(float element) {
-        getValue().add(element);
-        triggerConfigChange();
     }
 
     public JsonElement remove(int index) {
@@ -132,14 +156,10 @@ public class ConfigArray implements IConfigBase<JsonArray> {
         listener.accept(oldValue, value);
     }
 
-    public void setValue(List<?> list) {
-        setValue(ConfigManager.getGson().toJsonTree(list).getAsJsonArray());
-    }
-
-    public void setStringValue(List<String> list) {
+    public void setValue(List<T> list) {
         JsonArray jsonArray = new JsonArray();
-        for (String element : list) {
-            jsonArray.add(element);
+        for (T element : list) {
+            addToJsonArray(jsonArray, element);
         }
         setValue(jsonArray);
     }
@@ -179,6 +199,43 @@ public class ConfigArray implements IConfigBase<JsonArray> {
         if (listener != null) {
             JsonArray value = getValue();
             listener.accept(value, value);
+        }
+    }
+
+    private void addToJsonArray(JsonArray array, T element) {
+        if (element instanceof String) {
+            array.add((String) element);
+        } else if (element instanceof Number) {
+            array.add((Number) element);
+        } else if (element instanceof Boolean) {
+            array.add((Boolean) element);
+        } else if (element instanceof Character) {
+            array.add(String.valueOf(element));
+        } else {
+            array.add(ConfigManager.getGson().toJsonTree(element));
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private T convertJsonElement(JsonElement element, Class<T> type) {
+        if (type == null) {
+            return (T) ConfigManager.getGson().fromJson(element, Object.class);
+        }
+        
+        if (type == String.class) {
+            return (T) element.getAsString();
+        } else if (type == Integer.class || type == int.class) {
+            return (T) Integer.valueOf(element.getAsInt());
+        } else if (type == Long.class || type == long.class) {
+            return (T) Long.valueOf(element.getAsLong());
+        } else if (type == Float.class || type == float.class) {
+            return (T) Float.valueOf(element.getAsFloat());
+        } else if (type == Double.class || type == double.class) {
+            return (T) Double.valueOf(element.getAsDouble());
+        } else if (type == Boolean.class || type == boolean.class) {
+            return (T) Boolean.valueOf(element.getAsBoolean());
+        } else {
+            return ConfigManager.getGson().fromJson(element, type);
         }
     }
 }

@@ -27,11 +27,11 @@ public class MenuClickConfig extends ConfigManager {
         super(moduleName);
     }
 
-    public ConfigArray tasks = new ConfigArray("tasks", new JsonArray(), "任务", this);
+    public ConfigArray<MenuClickTask> tasks = new ConfigArray<>("tasks", "任务", this, MenuClickTask.class);
 
     public void addClickTask() {
         MenuClickTask task = new MenuClickTask("TASK_" + System.currentTimeMillis());
-        tasks.addTop(MenuClickConfig.getGson().toJsonTree(task));
+        tasks.addTop(task);
     }
 
     public List<String> getTaskNameList() {
@@ -41,7 +41,7 @@ public class MenuClickConfig extends ConfigManager {
             nameList.add(task.get("name").getAsString());
         }
         return nameList;
-    }
+       }
 
     public MenuClickTask getTask(String name) {
         for (JsonElement element : tasks.getValue()) {
@@ -54,63 +54,65 @@ public class MenuClickConfig extends ConfigManager {
     }
 
     public String getTaskName(int index) {
-        return tasks.get(index).getAsJsonObject().get("name").getAsString();
+        return tasks.getRaw(index).getAsJsonObject().get("name").getAsString();
     }
 
     public void setTaskName(int index, String name) {
-        JsonObject task = tasks.get(index).getAsJsonObject();
+        JsonObject task = tasks.getRaw(index).getAsJsonObject();
         task.remove("name");
         task.addProperty("name", name);
     }
 
     public int getTaskStartDelay(int index) {
-        return tasks.get(index).getAsJsonObject().get("startDelay").getAsInt();
+        return tasks.getRaw(index).getAsJsonObject().get("startDelay").getAsInt();
     }
 
+
+
     public void setTaskStartDelay(int index, int delay) {
-        JsonObject task = tasks.get(index).getAsJsonObject();
+        JsonObject task = tasks.getRaw(index).getAsJsonObject();
         task.remove("startDelay");
         task.addProperty("startDelay", delay);
     }
 
     public int getTaskDelay(int index) {
-        return tasks.get(index).getAsJsonObject().get("delay").getAsInt();
+        return tasks.getRaw(index).getAsJsonObject().get("delay").getAsInt();
     }
 
     public void setTaskDelay(int index, int delay) {
-        JsonObject task = tasks.get(index).getAsJsonObject();
+        JsonObject task = tasks.getRaw(index).getAsJsonObject();
         task.remove("delay");
         task.addProperty("delay", delay);
     }
 
     public String getTaskDescription(int index) {
-        return tasks.get(index).getAsJsonObject().get("description").getAsString();
+        return tasks.getRaw(index).getAsJsonObject().get("description").getAsString();
     }
 
     public void setTaskDescription(int index, String description) {
-        JsonObject task = tasks.get(index).getAsJsonObject();
+        JsonObject task = tasks.getRaw(index).getAsJsonObject();
         task.remove("description");
         task.addProperty("description", description);
     }
 
     public boolean getTaskIsLoop(int index) {
-        return tasks.get(index).getAsJsonObject().get("isLoop").getAsBoolean();
+        return tasks.getRaw(index).getAsJsonObject().get("isLoop").getAsBoolean();
     }
 
     public void setTaskIsLoop(int index, boolean isLoop) {
-        JsonObject task = tasks.get(index).getAsJsonObject();
+        JsonObject task = tasks.getRaw(index).getAsJsonObject();
         task.remove("isLoop");
         task.addProperty("isLoop", isLoop);
     }
 
     public List<String> getTaskActions(int index) {
-        JsonArray actions = tasks.get(index).getAsJsonObject().get("actions").getAsJsonArray();
+        JsonArray actions = tasks.getRaw(index).getAsJsonObject().get("actions").getAsJsonArray();
         List<String> actionList = MenuClickConfig.jsonArrayToListStr(actions);
         return actionList;
     }
 
     public void setTaskActions(int index, List<String> actions) {
-        JsonObject task = tasks.get(index).getAsJsonObject();
+        JsonObject task = tasks.getRaw(index).getAsJsonObject();
         task.remove("actions");
         
         JsonArray actionArray = new JsonArray();
@@ -122,7 +124,7 @@ public class MenuClickConfig extends ConfigManager {
 
     public void removeTask(String name) {
         for (int i = tasks.size() - 1; i >= 0; i--) {
-            JsonObject task = tasks.get(i).getAsJsonObject();
+            JsonObject task = tasks.getRaw(i).getAsJsonObject();
             if (task.get("name").getAsString().equals(name)) {
                 tasks.remove(i);
                 break;

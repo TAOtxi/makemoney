@@ -5,6 +5,7 @@ import java.util.Map;
 
 import cn.taotxi.Makemoney.Makemoney;
 import cn.taotxi.Makemoney.config.MakemoneyConfig;
+import cn.taotxi.Makemoney.module.AutoAFK.AutoAFK;
 import cn.taotxi.Makemoney.module.AutoDrop.AutoDrop;
 import cn.taotxi.Makemoney.module.AutoDrop.AutoDropConfigGui;
 import cn.taotxi.Makemoney.module.AutoFish.AutoFish;
@@ -12,6 +13,7 @@ import cn.taotxi.Makemoney.module.MendingHelper.MendingHelper;
 import cn.taotxi.Makemoney.module.MenuClick.MenuClick;
 import cn.taotxi.Makemoney.module.MessageCommand.MessageCommand;
 import cn.taotxi.Makemoney.module.StrangeFunction.AutoRide;
+import cn.taotxi.Makemoney.module.StrangeFunction.IgnoreMessage;
 import cn.taotxi.Makemoney.util.Message;
 import cn.taotxi.Makemoney.util.T;
 import cn.taotxi.Makemoney.util.TaskUtil;
@@ -30,8 +32,10 @@ public class GuiUtil {
             AutoRide.MODULE_NAME, 0,
             AutoFish.MODULE_NAME, 1,
             MendingHelper.MODULE_NAME, 1,
-            MessageCommand.MODULE_NAME, 3,
-            MenuClick.MODULE_NAME, 4
+            AutoAFK.MODULE_NAME, 2,
+            IgnoreMessage.MODULE_NAME, 3,
+            MessageCommand.MODULE_NAME, 4,
+            MenuClick.MODULE_NAME, 5
         );
     }
 

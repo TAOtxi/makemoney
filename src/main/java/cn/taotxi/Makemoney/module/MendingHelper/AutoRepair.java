@@ -64,9 +64,9 @@ public class AutoRepair {
 
         if (CONFIG.mendingBookPositions.size() == 3) {
             mendingBookPos = new BlockPos(
-                CONFIG.mendingBookPositions.get(0).getAsInt(),
-                CONFIG.mendingBookPositions.get(1).getAsInt(),
-                CONFIG.mendingBookPositions.get(2).getAsInt()
+                CONFIG.mendingBookPositions.get(0),
+                CONFIG.mendingBookPositions.get(1),
+                CONFIG.mendingBookPositions.get(2)
             );
         }
     }

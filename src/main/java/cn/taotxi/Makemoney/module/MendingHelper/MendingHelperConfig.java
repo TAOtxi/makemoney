@@ -25,23 +25,15 @@ public class MendingHelperConfig extends ConfigManager {
         super(moduleName);
     }
 
-    public ConfigBoolean autoReplaceEnabled        = new ConfigBoolean("autoReplaceEnabled", false, "吸取到经验时将副手替换为带有经验修补且耐久未满的装备", this);
-    public ConfigBoolean autoEnchantEnabled        = new ConfigBoolean("autoEnchantEnabled", false, "打开铁砧时自动为装备附魔经验修补", this);
-    public ConfigBoolean autoDecomposeEnabled      = new ConfigBoolean("autoDecomposeEnabled", false, "站金块上时自动分解装备", this);
-    public ConfigBoolean onlyDecomposeNoneDamage   = new ConfigBoolean("onlyDecomposeNoneDamage", false, "仅分解满耐久装备", this);
-    public ConfigBoolean autoRepairEnabled         = new ConfigBoolean("autoRepairEnabled", false, "自动为合金装备附魔经验修补", this);
-    public ConfigArray   mendingBookPositions      = new ConfigArray("mendingBookPositions", createDefaultMendingBookPositions(), "经验修补附魔书容器位置", this);
-    
-    private static JsonArray createDefaultMendingBookPositions() {
-        JsonArray defaultPositions = new JsonArray(3);
-        defaultPositions.add(0);
-        defaultPositions.add(0);
-        defaultPositions.add(0);
-        return defaultPositions;
-    }
+    public ConfigBoolean        autoReplaceEnabled        = new ConfigBoolean("autoReplaceEnabled", false, "吸取到经验时将副手替换为带有经验修补且耐久未满的装备", this);
+    public ConfigBoolean        autoEnchantEnabled        = new ConfigBoolean("autoEnchantEnabled", false, "打开铁砧时自动为装备附魔经验修补", this);
+    public ConfigBoolean        autoDecomposeEnabled      = new ConfigBoolean("autoDecomposeEnabled", false, "站金块上时自动分解装备", this);
+    public ConfigBoolean        onlyDecomposeNoneDamage   = new ConfigBoolean("onlyDecomposeNoneDamage", false, "仅分解满耐久装备", this);
+    public ConfigBoolean        autoRepairEnabled         = new ConfigBoolean("autoRepairEnabled", false, "自动为合金装备附魔经验修补", this);
+    public ConfigArray<Integer> mendingBookPositions      = new ConfigArray<>("mendingBookPositions", List.of(0, 0, 0), "经验修补附魔书容器位置", this, Integer.class);
 
     public List<Integer> getMendingBookPositions() {
-        return mendingBookPositions.getValueAsIntList();
+        return mendingBookPositions.getValueAsList();
     }
 
     public String getMendingBookPositionsString() {

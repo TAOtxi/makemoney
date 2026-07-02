@@ -25,6 +25,7 @@ import cn.taotxi.Makemoney.module.MessageCommand.MessageCommandGui;
 import cn.taotxi.Makemoney.module.StrangeFunction.AutoRide;
 import cn.taotxi.Makemoney.module.StrangeFunction.IgnoreMessage;
 import cn.taotxi.Makemoney.module.StrangeFunction.StrangeConfig;
+import cn.taotxi.Makemoney.module.AutoAFK.AutoAFKGui;
 import cn.taotxi.Makemoney.util.T;
 import dev.isxander.yacl3.api.ButtonOption;
 import dev.isxander.yacl3.api.ConfigCategory;
@@ -69,6 +70,9 @@ public class ConfigScreen {
 
         ConfigCategory.Builder fishCategory = createFishCategory(parent);
         builder.category(fishCategory.build());
+
+        ConfigCategory.Builder autoAFKCategory = AutoAFKGui.createAutoAFKCategory(parent);
+        builder.category(autoAFKCategory.build());
 
         ConfigCategory.Builder ignoreMessageCategory = createIgnoreMessageCategory(parent);
         builder.category(ignoreMessageCategory.build());
@@ -329,8 +333,8 @@ public class ConfigScreen {
                     .description(OptionDescription.of(T.tl("ignore.regex.desc")))
                     .binding(
                         List.of(),
-                        STRANGE_CONFIG.ignoreList::getValueAsStringList,
-                        STRANGE_CONFIG.ignoreList::setStringValue
+                        STRANGE_CONFIG.ignoreList::getValueAsList,
+                        STRANGE_CONFIG.ignoreList::setValue
                     )
                     .initial("")
                     .controller(StringControllerBuilder::create)
