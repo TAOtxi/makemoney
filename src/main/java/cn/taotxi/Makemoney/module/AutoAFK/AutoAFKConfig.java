@@ -8,6 +8,7 @@ import cn.taotxi.Makemoney.config.ConfigManager;
 import cn.taotxi.Makemoney.config.type.ConfigArray;
 import cn.taotxi.Makemoney.config.type.ConfigBoolean;
 import cn.taotxi.Makemoney.config.type.ConfigInteger;
+import cn.taotxi.Makemoney.config.type.ConfigString;
 
 
 public class AutoAFKConfig extends ConfigManager {
@@ -30,4 +31,8 @@ public class AutoAFKConfig extends ConfigManager {
     public final ConfigBoolean  showInfo            = new ConfigBoolean("showInfo", false, "是否显示攻击周期", this);
     public final ConfigBoolean  attackMode          = new ConfigBoolean("attackMode", false, "是否为白名单模式", this);
     public final ConfigArray<String> attackList     = new ConfigArray<>("attackList",  List.of("player"), "攻击列表", this, String.class);
+
+    public final ConfigBoolean  tpsCheckEnabled     = new ConfigBoolean("tpsCheckEnabled", true, "是否启用tps检查", this);
+    public final ConfigInteger  safetyTpsThreshold  = new ConfigInteger("tpsThreshold", 8, "tps安全阈值", this);
+    public final ConfigString   triggerCommand      = new ConfigString("triggerCommand", "/spawn", "低于阈值时触发的命令", this);
 }

@@ -24,8 +24,8 @@ public class MessageCommandConfig extends ConfigManager {
         super(moduleName);
     }
 
-    public ConfigBoolean  enabled                 = new ConfigBoolean("enabled", false, "开关", this);
-    public ConfigArray<MessageRule> messageRules  = new ConfigArray<MessageRule>("messageRules", "消息规则", this, MessageRule.class);
+    public final ConfigBoolean  enabled                 = new ConfigBoolean("enabled", false, "开关", this);
+    public final ConfigArray<MessageRule> messageRules  = new ConfigArray<MessageRule>("messageRules", "消息规则", this, MessageRule.class);
 
     public void cleanRule() {
         messageRules.clear();

@@ -35,8 +35,6 @@ public class AutoDrop {
     private static boolean dropThrottleFlag = true;
     private static final Minecraft client = Minecraft.getInstance();
     private static final AutoDropConfig CONFIG = AutoDropConfig.getInstance();
-    private static final int throttleTick = 4;
-    private static final int showAttentionMsgInterval = 20;
     private static final String TIME_TRIGGER_TASK_NAME = "autoDropTimeTrigger";
     private static final String SHOW_ATTENTION_MSG_TASK_NAME = "autoDropShowAttentionMsg";
     private static final String PICK_UP_DROP_TASK_NAME = "autoDropPickUpDrop";
@@ -50,29 +48,8 @@ public class AutoDrop {
             }
         });
 
-        CONFIG.isShowAttentionMsg.onChange(
-            (oldValue, newValue) -> {
-                if (!enabled) return;
-
-                if (newValue && !TaskUtil.hasTimeTask(SHOW_ATTENTION_MSG_TASK_NAME)) {
-                    createShowAttentionMsgTask();
-                } else if (!newValue) {
-                    TaskUtil.removeTimeTask(SHOW_ATTENTION_MSG_TASK_NAME);
-                }
-            }
-        );
-
-        CONFIG.isTimeTrigger.onChange(
-            (oldValue, newValue) -> {
-                if (!enabled) return;
-                
-                if (newValue && !TaskUtil.hasTimeTask(TIME_TRIGGER_TASK_NAME)) {
-                    createTimeTriggerTask();
-                } else if (!newValue) {
-                    TaskUtil.removeTimeTask(TIME_TRIGGER_TASK_NAME);
-                }
-            }
-        );
+        CONFIG.isShowAttentionMsg.onChange((oldValue, newValue) -> onConfigChange());
+        CONFIG.isTimeTrigger.onChange((oldValue, newValue) -> onConfigChange());
 
         Dropper.initialize();
     }
@@ -94,7 +71,7 @@ public class AutoDrop {
         TaskUtil.createOnceTimeTask(PICK_UP_DROP_TASK_NAME, () -> {
             Dropper.tryToDropItems();
             dropThrottleFlag = true;
-        }, throttleTick);
+        }, 4);
     }
 
     public static void onConfigChange() {
@@ -127,7 +104,7 @@ public class AutoDrop {
         TaskUtil.createTimeTask(
             SHOW_ATTENTION_MSG_TASK_NAME, 
             AutoDrop::showAttentionMsg, 
-            showAttentionMsgInterval
+            20
         );
     }
 

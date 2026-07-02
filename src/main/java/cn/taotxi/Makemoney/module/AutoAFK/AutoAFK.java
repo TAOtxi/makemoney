@@ -4,11 +4,11 @@ import com.mojang.brigadier.context.CommandContext;
 
 import cn.taotxi.Makemoney.Makemoney;
 import cn.taotxi.Makemoney.gui.GuiUtil;
-import cn.taotxi.Makemoney.module.AutoFish.AutoFish;
 import cn.taotxi.Makemoney.util.T;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents;
 
 public class AutoAFK {
     public static final String MODULE_NAME = "autoafk";
@@ -16,7 +16,12 @@ public class AutoAFK {
     public static void initialize() {
         AutoAFKConfig.getInstance().loadConfig();
         AutoAttack.initialize();
+        TpsChecker.initialize();
         registerCommand();
+
+        ClientWorldEvents.AFTER_CLIENT_WORLD_CHANGE.register((mc, level) -> {
+            calcServerTps.reset();
+        });
     }
 
     private static void registerCommand() {

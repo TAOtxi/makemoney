@@ -78,6 +78,7 @@ ohhhhhhh <br>
 
 ### 🌐 自动挂机 (AutoAFK)
 根据服务器tps动态调整攻击周期。<br>
+当服务器tps低于设定阈值时，将触发指定命令。<br>
 基础命令：
 ```bash
 /autoafk                           # 别名 /afkk

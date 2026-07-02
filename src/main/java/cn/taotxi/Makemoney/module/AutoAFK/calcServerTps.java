@@ -15,11 +15,25 @@ public class calcServerTps {
             return;
         }
 
+        // if (msTps == Float.POSITIVE_INFINITY) {
+        //     msTps = 50f;
+        //     return;
+        // }
+
+        long currentTime = System.nanoTime();
         long deltaTick = currentTick - lastTick;
-        long deltaTime = System.nanoTime() - lastTime;
+        long deltaTime = currentTime - lastTime;
+        lastTime = currentTime;
+        lastTick = currentTick;
 
         float instanceMsTps = (float) deltaTime / (float) deltaTick / 1e6f;
         msTps = 0.99f * msTps + 0.01f * instanceMsTps;
+    }
+
+    public static void reset() {
+        lastTick = -1;
+        lastTime = -1;
+        msTps = 50f;
     }
 
     public static float getTps() {

@@ -37,32 +37,32 @@ public class AutoDropConfig extends ConfigManager {
         super(moduleName);
     }
 
-    public ConfigBoolean  isShowAttentionMsg        = new ConfigBoolean("isShowAttentionMsg", true, "是否显示注意信息", this);
-    public ConfigArray<Integer> ignoreSlots         = new ConfigArray<>("ignoreSlots", "忽略的背包槽位列表", this, Integer.class);
-    public ConfigString   throwWay                  = new ConfigString("throwWay", ThrowWay.DIRECTION.name(), "丢弃方式", this);
-    public ConfigString   throwDirection            = new ConfigString("throwDirection", Direction.LOOKING.name(), "丢弃方向", this);
-    public ConfigFloat    throwYaw                  = new ConfigFloat("throwYaw", 0.0f, "yaw", this);
-    public ConfigFloat    throwPitch                = new ConfigFloat("throwPitch", 0.0f, "pitch", this);
+    public final ConfigBoolean  isShowAttentionMsg        = new ConfigBoolean("isShowAttentionMsg", true, "是否显示注意信息", this);
+    public final ConfigArray<Integer> ignoreSlots         = new ConfigArray<>("ignoreSlots", "忽略的背包槽位列表", this, Integer.class);
+    public final ConfigString   throwWay                  = new ConfigString("throwWay", ThrowWay.DIRECTION.name(), "丢弃方式", this);
+    public final ConfigString   throwDirection            = new ConfigString("throwDirection", Direction.LOOKING.name(), "丢弃方向", this);
+    public final ConfigFloat    throwYaw                  = new ConfigFloat("throwYaw", 0.0f, "yaw", this);
+    public final ConfigFloat    throwPitch                = new ConfigFloat("throwPitch", 0.0f, "pitch", this);
 
-    public ConfigBoolean  isTimeTrigger             = new ConfigBoolean("isTimeTrigger", true, "定时触发丢弃功能开关", this);
-    public ConfigInteger  timeTriggerInterval       = new ConfigInteger("timeTriggerInterval", 180 * 20, "定时触发时间间隔（tick）", this);
-    public ConfigBoolean  isPickUpItemTrigger       = new ConfigBoolean("isPickUpItemTrigger", false, "拾取到指定掉落物触发丢弃功能开关", this);
-    public ConfigString   triggerItemId             = new ConfigString("triggerItemId", "*", "拾取到掉落物ID", this);
-    public ConfigBoolean  dropWhenOpenContainer     = new ConfigBoolean("dropWhenOpenContainer", false, "打开容器时是否丢弃容器内物品", this);
-    public ConfigBoolean  putItemInInventoryWhenOpenContainer = new ConfigBoolean("putItemInInventoryWhenOpenContainer", false, "清理容器时是否将物品放入背包", this);
+    public final ConfigBoolean  isTimeTrigger             = new ConfigBoolean("isTimeTrigger", true, "定时触发丢弃功能开关", this);
+    public final ConfigInteger  timeTriggerInterval       = new ConfigInteger("timeTriggerInterval", 180 * 20, "定时触发时间间隔（tick）", this);
+    public final ConfigBoolean  isPickUpItemTrigger       = new ConfigBoolean("isPickUpItemTrigger", false, "拾取到指定掉落物触发丢弃功能开关", this);
+    public final ConfigString   triggerItemId             = new ConfigString("triggerItemId", "*", "拾取到掉落物ID", this);
+    public final ConfigBoolean  dropWhenOpenContainer     = new ConfigBoolean("dropWhenOpenContainer", false, "打开容器时是否丢弃容器内物品", this);
+    public final ConfigBoolean  putItemInInventoryWhenOpenContainer = new ConfigBoolean("putItemInInventoryWhenOpenContainer", false, "清理容器时是否将物品放入背包", this);
 
-    public ConfigBoolean  turnOffWhenChangeWorld    = new ConfigBoolean("turnOffWhenChangeWorld", true, "切换世界时是否关闭自动丢弃功能", this);
-    public ConfigInteger  triggerMinCount           = new ConfigInteger("triggerMinCount", 0, "允许丢弃所需最少物品槽位数量", this);
-    public ConfigBoolean  stopWhenCrouch            = new ConfigBoolean("stopWhenCrouch", true, "潜行时是否禁用丢弃功能", this);
-    public ConfigBoolean  stopWhenOpenConfigGui     = new ConfigBoolean("stopWhenOpenConfigGui", true, "打开配置GUI时是否禁用丢弃功能", this);   
+    public final ConfigBoolean  turnOffWhenChangeWorld    = new ConfigBoolean("turnOffWhenChangeWorld", true, "切换世界时是否关闭自动丢弃功能", this);
+    public final ConfigInteger  triggerMinCount           = new ConfigInteger("triggerMinCount", 0, "允许丢弃所需最少物品槽位数量", this);
+    public final ConfigBoolean  stopWhenCrouch            = new ConfigBoolean("stopWhenCrouch", true, "潜行时是否禁用丢弃功能", this);
+    public final ConfigBoolean  stopWhenOpenConfigGui     = new ConfigBoolean("stopWhenOpenConfigGui", true, "打开配置GUI时是否禁用丢弃功能", this);   
 
-    public ConfigBoolean  stopWhenNotHoldingItem    = new ConfigBoolean("stopWhenNotHoldingItem", false, "未手持指定物品时是否禁用丢弃功能", this);
-    public ConfigString   stopWhenNotHoldingItemName= new ConfigString("stopWhenNotHoldingItemName", "", "指定手持指定物品的名字", this);
-    public ConfigString   stopWhenNotHoldingItemId  = new ConfigString("stopWhenNotHoldingItemId", "", "指定手持指定物品的ID", this);
+    public final ConfigBoolean  stopWhenNotHoldingItem    = new ConfigBoolean("stopWhenNotHoldingItem", false, "未手持指定物品时是否禁用丢弃功能", this);
+    public final ConfigString   stopWhenNotHoldingItemName= new ConfigString("stopWhenNotHoldingItemName", "", "指定手持指定物品的名字", this);
+    public final ConfigString   stopWhenNotHoldingItemId  = new ConfigString("stopWhenNotHoldingItemId", "", "指定手持指定物品的ID", this);
 
-    public ConfigBoolean  whiteListMode             = new ConfigBoolean("whiteListMode", true, "是否开启白名单模式", this);
-    public ConfigBoolean  foldMatchItemLists        = new ConfigBoolean("foldMatchItemLists", false, "是否折叠物品匹配条件列表", this);
-    public ConfigArray<Item> matchItemLists         = new ConfigArray<>("matchItemLists", "物品匹配条件列表", this, Item.class);
+    public final ConfigBoolean  whiteListMode             = new ConfigBoolean("whiteListMode", true, "是否开启白名单模式", this);
+    public final ConfigBoolean  foldMatchItemLists        = new ConfigBoolean("foldMatchItemLists", false, "是否折叠物品匹配条件列表", this);
+    public final ConfigArray<Item> matchItemLists         = new ConfigArray<>("matchItemLists", "物品匹配条件列表", this, Item.class);
 
     public List<String> getAllThrowDirections() {
         return Arrays.stream(Direction.values()).map(Enum::name).collect(Collectors.toList());

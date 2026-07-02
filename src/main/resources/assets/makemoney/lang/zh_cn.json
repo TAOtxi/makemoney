@@ -302,5 +302,15 @@
     "makemoney.autoAFK.autoAttack.enabled.message": "§7[§d自适应攻击§7] §7已开启自适应攻击",
     "makemoney.autoAFK.autoAttack.disabled.message": "§7[§d自适应攻击§7] §7已关闭自适应攻击",
     "makemoney.autoAFK.autoAttack.interval.message": "§7[§d自适应攻击§7] §7攻击攻击周期设置为 §e%d §7tick",
-    "makemoney.autoAFK.autoAttack.info.message": "§7[§d自适应攻击§7] §7当前tps: §e%.1f §7，调整后的攻击周期: §e%d §7tick"
+    "makemoney.autoAFK.autoAttack.info.message": "§7[§d自适应攻击§7] §7当前tps: §e%.1f §7，调整后的攻击周期: §e%d §7tick",
+
+    "makemoney.autoAFK.tpsCheck": "TPS检测",
+    "makemoney.autoAFK.tpsCheck.desc": "当服务器tps低于设定的阈值时，将触发设置的命令。",
+    "makemoney.autoAFK.tpsCheck.enabled": "开关",
+    "makemoney.autoAFK.tpsCheck.enabled.desc": "开启后, 将检查服务器tps是否低于设定的阈值。\n\n若低于, 将触发设置的命令。\n\n触发之后，为了防止重复触发，将自动关闭检测功能。",
+    "makemoney.autoAFK.tpsCheck.threshold": "tps安全阈值",
+    "makemoney.autoAFK.tpsCheck.threshold.desc": "需要注意的是，服务器TPS是预估得出，且为平均值。\n\n所以tps低于阈值时并不会立即触发命令。",
+    "makemoney.autoAFK.tpsCheck.command": "触发命令",
+    "makemoney.autoAFK.tpsCheck.command.desc": "当tps低于阈值时，将触发的命令。",
+    "makemoney.autoAFK.tpsCheck.message": "§7[§dTps检测§7] §7当前tps §e%.1f §7小于设定的阈值 §e%d§7，将触发命令。"
 }

@@ -86,6 +86,48 @@ public class AutoAFKGui {
                     .build()
             );
 
+        OptionGroup.Builder tpsCheckGroup = OptionGroup.createBuilder()
+                .name(T.tl("autoAFK.tpsCheck"))
+                .description(OptionDescription.of(T.tl("autoAFK.tpsCheck.desc")));
+
+        tpsCheckGroup.option(Factory.addToggleOption(
+            T.tl("autoAFK.tpsCheck.enabled"), 
+            T.tl("autoAFK.tpsCheck.enabled.desc"), 
+            CONFIG.tpsCheckEnabled.getDefaultValue(),
+            CONFIG.tpsCheckEnabled::getValue,
+            CONFIG.tpsCheckEnabled::setValue
+        ));
+
+        tpsCheckGroup.option(Option.<Integer>createBuilder()
+                .name(T.tl("autoAFK.tpsCheck.threshold"))
+                .description(OptionDescription.of(T.tl("autoAFK.tpsCheck.threshold.desc")))
+                .binding(
+                    CONFIG.safetyTpsThreshold.getDefaultValue(),
+                    CONFIG.safetyTpsThreshold::getValue,
+                    CONFIG.safetyTpsThreshold::setValue
+                )
+                .controller(opt -> IntegerSliderControllerBuilder.create(opt)
+                    .range(5, 15)
+                    .step(1)
+                    .formatValue(val -> T.l(val + " tick"))
+                )
+                .build()
+        );
+
+        tpsCheckGroup.option(Option.<String>createBuilder()
+                .name(T.tl("autoAFK.tpsCheck.command"))
+                .description(OptionDescription.of(T.tl("autoAFK.tpsCheck.command.desc")))
+                .binding(
+                    CONFIG.triggerCommand.getDefaultValue(),
+                    CONFIG.triggerCommand::getValue,
+                    CONFIG.triggerCommand::setValue
+                )
+                .controller(StringControllerBuilder::create)
+                .build()
+        );
+
+        autoAFKCategory.group(tpsCheckGroup.build());
+
         return autoAFKCategory;
     }
 }

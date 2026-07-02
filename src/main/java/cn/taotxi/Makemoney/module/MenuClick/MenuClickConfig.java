@@ -27,7 +27,7 @@ public class MenuClickConfig extends ConfigManager {
         super(moduleName);
     }
 
-    public ConfigArray<MenuClickTask> tasks = new ConfigArray<>("tasks", "任务", this, MenuClickTask.class);
+    public final ConfigArray<MenuClickTask> tasks = new ConfigArray<>("tasks", "任务", this, MenuClickTask.class);
 
     public void addClickTask() {
         MenuClickTask task = new MenuClickTask("TASK_" + System.currentTimeMillis());

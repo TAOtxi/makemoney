@@ -22,15 +22,15 @@ public class StrangeConfig extends ConfigManager {
     }
 
     /******************* AutoRide *******************/
-    public ConfigString   autoRideTargetPlayer         = new ConfigString("autoRideTargetPlayer", "", "需要黏住的目标目标玩家", this);
-    public ConfigInteger  autoRideRunInterval          = new ConfigInteger("autoRideRunInterval", 5, "检测周期", this);
-    public ConfigBoolean  autoRideEnableShakeOffPlayer = new ConfigBoolean("autoRideEnableShakeOffPlayer", false, "是否启用光滑的头顶", this);
-    public ConfigFloat    autoRideMinDistance          = new ConfigFloat("autoRideMinDistance", 6, "检测范围最小距离", this);
+    public final ConfigString   autoRideTargetPlayer         = new ConfigString("autoRideTargetPlayer", "", "需要黏住的目标目标玩家", this);
+    public final ConfigInteger  autoRideRunInterval          = new ConfigInteger("autoRideRunInterval", 5, "检测周期", this);
+    public final ConfigBoolean  autoRideEnableShakeOffPlayer = new ConfigBoolean("autoRideEnableShakeOffPlayer", false, "是否启用光滑的头顶", this);
+    public final ConfigFloat    autoRideMinDistance          = new ConfigFloat("autoRideMinDistance", 6, "检测范围最小距离", this);
 
     /******************* Ignore *******************/
-    public ConfigBoolean ignoreEnabled                 = new ConfigBoolean("ignoreEnabled", false, "是否启用屏蔽消息功能", this);
-    public ConfigArray<String>   ignoreList            = new ConfigArray<String>("ignoreList", "屏蔽规则", this, String.class);
+    public final ConfigBoolean ignoreEnabled                 = new ConfigBoolean("ignoreEnabled", false, "是否启用屏蔽消息功能", this);
+    public final ConfigArray<String>   ignoreList            = new ConfigArray<String>("ignoreList", "屏蔽规则", this, String.class);
 
     /******************* RightClickRide *******************/
-    public ConfigBoolean rightClickRideEnabled         = new ConfigBoolean("rightClickRideEnabled", true, "是否启用右键骑乘功能", this);
+    public final ConfigBoolean rightClickRideEnabled         = new ConfigBoolean("rightClickRideEnabled", true, "是否启用右键骑乘功能", this);
 }
