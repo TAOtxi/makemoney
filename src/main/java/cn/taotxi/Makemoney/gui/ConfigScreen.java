@@ -25,6 +25,7 @@ import cn.taotxi.Makemoney.module.MessageCommand.MessageCommandGui;
 import cn.taotxi.Makemoney.module.StrangeFunction.AutoRide;
 import cn.taotxi.Makemoney.module.StrangeFunction.IgnoreMessage;
 import cn.taotxi.Makemoney.module.StrangeFunction.StrangeConfig;
+import cn.taotxi.Makemoney.module.AutoAFK.AutoAFKConfig;
 import cn.taotxi.Makemoney.module.AutoAFK.AutoAFKGui;
 import cn.taotxi.Makemoney.util.T;
 import dev.isxander.yacl3.api.ButtonOption;
@@ -59,6 +60,7 @@ public class ConfigScreen {
                     AUTOFISH_CONFIG.saveConfig();
                     MessageCommandConfig.getInstance().saveConfig();
                     MenuClickConfig.getInstance().saveConfig();
+                    AutoAFKConfig.getInstance().saveConfig();
                     MENDING_HELPER_CONFIG.saveConfig();
 
                     // TODO: 待寻找更合适的触发方式

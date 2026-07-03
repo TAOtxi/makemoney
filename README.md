@@ -78,16 +78,17 @@ ohhhhhhh <br>
 
 ### 🌐 自动挂机 (AutoAFK)
 根据服务器tps动态调整攻击周期。<br>
-当服务器tps低于设定阈值时，将触发指定命令。<br>
-触发之后，若tps高于第二个设定的阈值，将触发第二个设定的命令。<br>
+当服务器tps低于阈值`x`时，则触发指定命令`a`。<br>
+触发之后，若tps回升到阈值`y`时，则触发指定命令`b`。<br>
 基础命令：
 ```bash
-/autoafk                           # 别名 /afkk
-/autoafk config                    # 打开配置界面
-/autoafk help                      # 查看帮助
-/autoafk attack on | off           # 开启/关闭 自适应攻击
-/autoafk attack interval <tick>    # 设置攻击周期
-/autoafk attack info               # 查看攻击周期相关数据
+/autoafk                        # 别名 /afkk
+/afkk config                    # 打开配置界面
+/afkk help                      # 查看帮助
+/afkk attack on | off           # 开启/关闭 自适应攻击
+/afkk attack interval <tick>    # 设置攻击周期
+/afkk attack info               # 查看攻击周期相关数据
+/afkk tpsCheck on | off         # 开启/关闭tps检查功能
 ```
 
 ### 🐕 狗皮膏药 (AutoRide)
