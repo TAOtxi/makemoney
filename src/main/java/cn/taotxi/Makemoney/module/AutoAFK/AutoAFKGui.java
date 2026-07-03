@@ -114,6 +114,22 @@ public class AutoAFKGui {
                 .build()
         );
 
+        tpsCheckGroup.option(Option.<Integer>createBuilder()
+                .name(T.tl("autoAFK.tpsCheck.greenThreshold"))
+                .description(OptionDescription.of(T.tl("autoAFK.tpsCheck.greenThreshold.desc")))
+                .binding(
+                    CONFIG.greenTpsThreshold.getDefaultValue(),
+                    CONFIG.greenTpsThreshold::getValue,
+                    CONFIG.greenTpsThreshold::setValue
+                )
+                .controller(opt -> IntegerSliderControllerBuilder.create(opt)
+                    .range(10, 20)
+                    .step(1)
+                    .formatValue(val -> T.l(val + " tick"))
+                )
+                .build()
+        );
+
         tpsCheckGroup.option(Option.<String>createBuilder()
                 .name(T.tl("autoAFK.tpsCheck.command"))
                 .description(OptionDescription.of(T.tl("autoAFK.tpsCheck.command.desc")))
@@ -121,6 +137,18 @@ public class AutoAFKGui {
                     CONFIG.triggerCommand.getDefaultValue(),
                     CONFIG.triggerCommand::getValue,
                     CONFIG.triggerCommand::setValue
+                )
+                .controller(StringControllerBuilder::create)
+                .build()
+        );
+
+        tpsCheckGroup.option(Option.<String>createBuilder()
+                .name(T.tl("autoAFK.tpsCheck.greenCommand"))
+                .description(OptionDescription.of(T.tl("autoAFK.tpsCheck.greenCommand.desc")))
+                .binding(
+                    CONFIG.greenTriggerCommand.getDefaultValue(),
+                    CONFIG.greenTriggerCommand::getValue,
+                    CONFIG.greenTriggerCommand::setValue
                 )
                 .controller(StringControllerBuilder::create)
                 .build()

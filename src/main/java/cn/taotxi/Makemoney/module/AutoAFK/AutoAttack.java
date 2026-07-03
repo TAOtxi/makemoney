@@ -86,18 +86,13 @@ public class AutoAttack {
     }
 
     private static boolean isAttackAbled(Entity entity) {
-        if (entity == null) return false;
+        if (entity == null || entity.isRemoved()) return false;
         if (!(entity instanceof LivingEntity)) return false;
 
         boolean isWhiteListMode = CONFIG.attackMode.getValue();
 
-        if (
-            (isWhiteListMode && isEntityInAttackList(entity)) || 
-            (!isWhiteListMode && !isEntityInAttackList(entity))
-        ) {
-            return true;
-        }
-        return false;
+        return (isWhiteListMode && isEntityInAttackList(entity)) || 
+               (!isWhiteListMode && !isEntityInAttackList(entity));
     }
 
     private static boolean isEntityInAttackList(Entity entity) {

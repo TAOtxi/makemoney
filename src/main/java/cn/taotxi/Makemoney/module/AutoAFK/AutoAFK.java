@@ -31,6 +31,7 @@ public class AutoAFK {
                 .then(ClientCommandManager.literal("help")
                     .executes(AutoAFK::showHelp))
                 .then(AutoAttack.attackCommand())
+                .then(TpsChecker.tpsCheckCmd())
                 .then(ClientCommandManager.literal("config")
                     .executes(context -> {
                         GuiUtil.openYaclScreen(Makemoney.MOD_ID, MODULE_NAME);

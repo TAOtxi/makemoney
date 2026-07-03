@@ -32,7 +32,7 @@ public class calcServerTps {
         lastTick = currentTick;
 
         float instanceMsTps = (float) deltaTime / (float) deltaTick / 1e6f;
-        msTps = 0.9f * msTps + 0.1f * instanceMsTps;
+        msTps = 0.8f * msTps + 0.2f * instanceMsTps;
     }
 
     public static void reset() {

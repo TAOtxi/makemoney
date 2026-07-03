@@ -34,5 +34,7 @@ public class AutoAFKConfig extends ConfigManager {
 
     public final ConfigBoolean  tpsCheckEnabled     = new ConfigBoolean("tpsCheckEnabled", true, "是否启用tps检查", this);
     public final ConfigInteger  safetyTpsThreshold  = new ConfigInteger("tpsThreshold", 8, "tps安全阈值", this);
+    public final ConfigInteger  greenTpsThreshold   = new ConfigInteger("greenTpsThreshold", 16, "tps绿色阈值", this);
     public final ConfigString   triggerCommand      = new ConfigString("triggerCommand", "/spawn", "低于阈值时触发的命令", this);
+    public final ConfigString   greenTriggerCommand = new ConfigString("greenTriggerCommand", "/back", "绿色阈值时触发的命令", this);
 }

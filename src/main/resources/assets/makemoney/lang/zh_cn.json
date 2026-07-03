@@ -307,10 +307,17 @@
     "makemoney.autoAFK.tpsCheck": "TPS检测",
     "makemoney.autoAFK.tpsCheck.desc": "当服务器tps低于设定的阈值时，将触发设置的命令。",
     "makemoney.autoAFK.tpsCheck.enabled": "开关",
-    "makemoney.autoAFK.tpsCheck.enabled.desc": "开启后, 将检查服务器tps是否低于设定的阈值。\n\n若低于, 将触发设置的命令。\n\n触发之后，为了防止重复触发，将自动关闭检测功能。",
+    "makemoney.autoAFK.tpsCheck.enabled.desc": "开启后, 将检查服务器tps是否低于设定的阈值。\n\n若低于, 将触发设置的命令。\n\n触发之后，为了防止重复触发，将自动关闭检测功能。\n\n若此后tps大于等于绿色阈值, 将触发设置的命令。\n\n只有在tps低于安全阈值之后，才会开始绿色tps功能的检测。\n\n例如，tps低于8时，触发回城命令，\n\n之后当tps高于16时，则触发/back命令。",
     "makemoney.autoAFK.tpsCheck.threshold": "tps安全阈值",
     "makemoney.autoAFK.tpsCheck.threshold.desc": "需要注意的是，服务器TPS是预估得出，且为平均值。\n\n所以tps低于阈值时并不会立即触发命令。",
+    "makemoney.autoAFK.tpsCheck.greenThreshold": "tps绿色阈值",
+    "makemoney.autoAFK.tpsCheck.greenThreshold.desc": "当tps高于此值时，将触发设置的命令。\n\n该值必须大于tps安全阈值，否则后果自负。",
     "makemoney.autoAFK.tpsCheck.command": "触发命令",
-    "makemoney.autoAFK.tpsCheck.command.desc": "当tps低于阈值时，将触发的命令。",
-    "makemoney.autoAFK.tpsCheck.message": "§7[§dTps检测§7] §7当前tps §e%.1f §7小于设定的阈值 §e%d§7，将触发命令。"
+    "makemoney.autoAFK.tpsCheck.command.desc": "当tps低于安全阈值时，将触发的命令。",
+    "makemoney.autoAFK.tpsCheck.greenCommand": "绿色触发命令",
+    "makemoney.autoAFK.tpsCheck.greenCommand.desc": "大于等于绿色阈值时，将触发设置的命令。\n\n若此值为空，则不进行绿色tps检测。",
+    "makemoney.autoAFK.tpsCheck.message": "§7[§dTps检测§7] §7当前tps §e%.1f §7小于安全阈值 §e%d§7，触发安全命令",
+    "makemoney.autoAFK.tpsCheck.greenMessage": "§7[§dTps检测§7] §7当前tps §e%.1f §7大于等于绿色阈值 §e%d§7，触发绿色命令",
+    "makemoney.autoAFK.tpsCheck.on.message": "§7[§dTps检测§7] §7已开启tps检测",
+    "makemoney.autoAFK.tpsCheck.off.message": "§7[§dTps检测§7] §7已关闭tps检测"
 }
