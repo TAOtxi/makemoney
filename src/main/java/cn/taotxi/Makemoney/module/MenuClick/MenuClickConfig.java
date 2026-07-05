@@ -146,7 +146,7 @@ public class MenuClickConfig extends ConfigManager {
 }
 
 class MenuClickTask {
-    private static final Pattern PATTERN = Pattern.compile("(\\w+) (\\d+) (\\d+)");
+    private static final Pattern PATTERN = Pattern.compile("(\\w+) (\\d+) (\\d+)( \\d+)?");
     public String description = "";
     public String name = "1";
     public boolean isLoop = false;
@@ -172,8 +172,9 @@ class MenuClickTask {
         String clickType = matcher.group(1).toLowerCase().replaceAll("_", "");
         int button = Integer.parseInt(matcher.group(2));
         int slot = Integer.parseInt(matcher.group(3));
+        int delay = matcher.group(4) != null ? Integer.parseInt(matcher.group(4).trim()) : -1;
 
-        if (slot < 0 || slot >= 54 || button < 0) {
+        if (slot < 0 || slot >= 54) {
             throw new IllegalArgumentException("Invalid action format: " + action);
         }
 
@@ -181,38 +182,38 @@ class MenuClickTask {
             if (button != 0 && button != 1) {
                 throw new IllegalArgumentException("Invalid action format: " + action);
             }
-            return new TaskAction(ClickType.PICKUP, button, slot);
+            return new TaskAction(ClickType.PICKUP, button, slot, delay);
         }
         if (clickType.equals("throw")) {
             if (button != 0 && button != 1) {
                 throw new IllegalArgumentException("Invalid action format: " + action);
             }
-            return new TaskAction(ClickType.THROW, button, slot);
+            return new TaskAction(ClickType.THROW, button, slot, delay);
         }
         if (clickType.equals("swap")) {
             if (button != 40 && (button < 0 || button >= 9)) {
                 throw new IllegalArgumentException("Invalid action format: " + action);
             }
-            return new TaskAction(ClickType.SWAP, button, slot);
+            return new TaskAction(ClickType.SWAP, button, slot, delay);
         }
         if (clickType.equals("quickmove")) {
             if (button != 0 && button != 1) {
                 throw new IllegalArgumentException("Invalid action format: " + action);
             }
-            return new TaskAction(ClickType.QUICK_MOVE, button, slot);
+            return new TaskAction(ClickType.QUICK_MOVE, button, slot, delay);
         }
         if (clickType.equals("clone")) {
-            return new TaskAction(ClickType.CLONE, button, slot);   
+            return new TaskAction(ClickType.CLONE, button, slot, delay);   
         }
         if (clickType.equals("pickupall")) {
             if (button != 0 && button != 1) {
                 throw new IllegalArgumentException("Invalid action format: " + action);
             }
-            return new TaskAction(ClickType.PICKUP_ALL, button, slot);
+            return new TaskAction(ClickType.PICKUP_ALL, button, slot, delay);
         }
         if (clickType.equals("quickcraft")) {
             // TODO: 完善约束条件
-            return new TaskAction(ClickType.QUICK_CRAFT, button, slot);
+            return new TaskAction(ClickType.QUICK_CRAFT, button, slot, delay);
         }
         throw new IllegalArgumentException("Unknown action type: " + clickType);
     }
@@ -224,12 +225,20 @@ class TaskAction {
     ClickType clickType = null;
     int button = -1;
     int slot = -1;
+    int delay = -1;
 
     TaskAction(ClickType type, int button, int slot) {
         this.clickType = type;
         this.button = button;
         this.slot = slot;
- }
+    }
+
+    TaskAction(ClickType type, int button, int slot, int delay) {
+        this.clickType = type;
+        this.button = button;
+        this.slot = slot;
+        this.delay = delay;
+    }
 
     TaskAction(String command) {
         this.command = command;

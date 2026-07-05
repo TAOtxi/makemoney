@@ -1,8 +1,6 @@
 package cn.taotxi.Makemoney;
 
 import net.fabricmc.api.ModInitializer;
-import net.minecraft.client.Minecraft;
-import net.minecraft.core.BlockPos;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -26,9 +24,10 @@ import cn.taotxi.Makemoney.module.MendingHelper.MendingHelper;
 import cn.taotxi.Makemoney.module.MenuClick.MenuClick;
 import cn.taotxi.Makemoney.module.MessageCommand.MessageCommand;
 import cn.taotxi.Makemoney.module.StrangeFunction.StrangeFunctionInit;
-import cn.taotxi.Makemoney.util.Message;
+import cn.taotxi.Makemoney.module.Test.Test;
 import cn.taotxi.Makemoney.util.T;
 import cn.taotxi.Makemoney.util.TaskUtil;
+import cn.taotxi.Makemoney.module.Task.TaskEntry;
 
 
 public class Makemoney implements ModInitializer {
@@ -64,20 +63,13 @@ public class Makemoney implements ModInitializer {
         MendingHelper.initialize();
         AutoAFK.initialize();
         TaskUtil.initialize();
-
-        // TaskUtil.createTimeTask("a", () -> {
-        //     if (Minecraft.getInstance().player == null) {
-        //         return;
-        //     }
-        //     System.out.println(Minecraft.getInstance().player.containerMenu.getClass());
-        // }, 20);
+        TaskEntry.initialize();
+        Test.initialize();
 	}
 
     private void registerCommand() {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-            // AutoRepair.registerCommand(dispatcher, registryAccess);
             AutoDrop.registerCommand(dispatcher, registryAccess);
-            // AutoAction.registerCommand(dispatcher, registryAccess);
 
             var command = dispatcher.register(ClientCommandManager.literal("makemoney")
                 .executes(Makemoney::showHelp)
@@ -101,46 +93,13 @@ public class Makemoney implements ModInitializer {
                     .executes(Makemoney::showHelp)
                     .redirect(command));
 
-            dispatcher.register(ClientCommandManager.literal("mk")
-                    .executes(Makemoney::showHelp)
-                    .redirect(command));
+            // dispatcher.register(ClientCommandManager.literal("mk")
+            //         .executes(Makemoney::showHelp)
+            //         .redirect(command));
 
-            dispatcher.register(ClientCommandManager.literal("mkm")
-                    .executes(Makemoney::showHelp)
-                    .redirect(command));
-
-            dispatcher.register(ClientCommandManager.literal("tt")
-                .then(ClientCommandManager.literal("1")
-                    .executes(context -> {
-                        var client = context.getSource().getClient();
-                        var state = client.level.getBlockState(new BlockPos(0, 0, 0));
-                        Message.clientSideMsg(state.toString());
-                        return 1;
-                    }))
-                .then(ClientCommandManager.literal("2")
-                    .executes(context -> {
-                        var player = context.getSource().getClient().player;
-                        System.out.println(player.getPassengers());
-                        return 1;
-                    }))
-            );
-
-            // dispatcher.register(ClientCommandManager.literal("copy")
-            //     .executes(context -> {
-            //         var client = context.getSource().getClient();
-            //         var inventoryMenu = client.player.containerMenu;
-            //         if (inventoryMenu.getSlot(36).getItem().isEmpty()) {
-            //             return 1;
-            //         }
-            //         if (!inventoryMenu.getSlot(37).getItem().isEmpty()) {
-            //             return 1;
-            //         }
-            //         inventoryMenu.getSlot(37).set(inventoryMenu.getSlot(36).getItem().copy());
-
-            //         return 1;
-            //     })
-            // );
-                
+            // dispatcher.register(ClientCommandManager.literal("mkm")
+            //         .executes(Makemoney::showHelp)
+            //         .redirect(command)); 
         });
     }
 

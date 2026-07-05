@@ -27,6 +27,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import cn.taotxi.Makemoney.module.StrangeFunction.AutoRide;
 import cn.taotxi.Makemoney.module.StrangeFunction.IgnoreMessage;
+import cn.taotxi.Makemoney.module.Task.DropItemInShulkerBox;
 import cn.taotxi.Makemoney.module.AutoAFK.calcServerTps;
 import cn.taotxi.Makemoney.module.AutoDrop.AutoDrop;
 import cn.taotxi.Makemoney.module.AutoDrop.Dropper;
@@ -99,6 +100,7 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
             if (packet.containerId() == minecraft.player.containerMenu.containerId) {
                 Dropper.onOpenContainerDrop();
                 AutoRepair.onOpenContainer();
+                DropItemInShulkerBox.onOpenContainer();
             }
         };
     }

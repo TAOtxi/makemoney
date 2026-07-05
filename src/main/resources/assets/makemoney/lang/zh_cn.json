@@ -235,20 +235,23 @@
     "makemoney.menuClick.task.name": "任务名称",
     "makemoney.menuClick.task.name.desc": "使用指令 §7/click run %s §r来运行此任务。\n\n在运行任务的过程中，如果不是菜单界面，\n\n将会自动停止任务。（菜单界面就是箱子容器的UI）",
     "makemoney.menuClick.task.isLoop": "是否循环执行",
-    "makemoney.menuClick.task.isLoop.desc": "开启后，任务将循环执行，直到关闭容器界面。",
+    "makemoney.menuClick.task.isLoop.desc": "开启后，任务将循环执行，直到关闭容器界面或按下 control 键。",
     "makemoney.menuClick.task.startDelay": "启动延迟",
     "makemoney.menuClick.task.startDelay.desc": "指定任务启动前的延迟时间，单位为GameTick。",
-    "makemoney.menuClick.task.delay": "任务运行间隔",
-    "makemoney.menuClick.task.delay.desc": "每个任务之间的延迟时间，单位为GameTick。",
+    "makemoney.menuClick.task.delay": "命令运行间隔",
+    "makemoney.menuClick.task.delay.desc": "每条命令之间的间隔时间，单位为GameTick。",
     "makemoney.menuClick.task.remove": "§c删除此任务",
     "makemoney.menuClick.task.remove.desc": "删除此任务。\n\n§c此操作无法撤销。",
     "makemoney.menuClick.task.list": "命令列表",
-    "makemoney.menuClick.task.list.desc": "执行的任务有两大类，1是菜单点击任务，2是命令任务。\n\n菜单点击任务格式: §7<ClickType> <Button> <Slot>§r\n\n§7ClickType§r: 操作类型，§7Button§r: 按键类型，§7Slot§r: 物品槽位。\n\n菜单左上角第一个槽位为0，从左到右、从上到下递增。\n\n例如：\n\n§7pickUp <Button> <Slot>§r\n鼠标左键 (Button=0) 或鼠标右键 (Button=1) 单击槽位的物品§7\n\nquickMove <Button> <Slot>§r\n鼠标左键 (Button=0) 或鼠标右键 (Button=1) 快速移动槽位的物品\n（类似于shift+鼠标操作）§7\n\nswap <Button> <Slot>§r\nButton表示与Slot交换的槽位，取值为0-8, 40，分别表示快捷栏和副手§7\n\nthrow <Button> <Slot>§r\nButton=0表示丢弃1个物品，Button=1表示丢弃整堆物品§7\n\nclone <Button> <Slot>§r\nButton可取任意数值，表示鼠标中键点击§7\n\npickUpAll <Button> <Slot>§r\n鼠标左键双击，\nButton=0表示从容器开头向后搜索，Button=1与之相反。\n\n第二种命令任务，格式为必须以 “/” 开头的字符串。",
+    "makemoney.menuClick.task.list.desc": "支持两种类型的任务: \n\n1. 菜单点击任务: 打开拾玖菜单后，模拟鼠标操作。\n\n2. 指令任务：向服务器发送指令。\n\n\n菜单点击任务格式: §7<ClickType> <Button> <Slot> [Delay]§r\n\n§7ClickType§r: 鼠标操作类型\n\n§7Button§r: 鼠标按键类型\n\n§7Slot§r: 目标物品所在的槽位，菜单左上角第一个槽位编号为0。\n\n§7Delay§r: 可选，当前命令到下一个命令的间隔，默认为命令运行间隔。\n\n\n支持的鼠标操作类型（不分大小写）：\n\n1. pickUp: 鼠标单击，Button可取0或1，分别表示左键和右键;\n\n2. quickMove: shift+鼠标单击，Button取值同pickUp;\n\n3. swap: 交互物品位置。Button可取0-8和40，分别表示9个快捷栏和副手;\n\n4. throw: 丢弃物品。0表示丢弃1个物品，1表示丢弃整组物品;\n\n5. clone: 鼠标中键点击，Button可取任意值;\n\n6. pickUpAll: 鼠标左键双击。0表示从容器开头向后搜索，1与之相反。\n\n\n第二种指令任务，格式为必须以 “/” 开头的字符串。",
     "makemoney.menuClick.notFound.message": "§7[§d菜单点击§7] §e%s §7任务不存在。",
     "makemoney.menuClick.noAction.message": "§7[§d菜单点击§7] §e%s §7命令列表为空。",
     "makemoney.menuClick.isRunning.message": "§7[§d菜单点击§7] §e%s §7任务已经在运行！",
     "makemoney.menuClick.help.message": "§7[§d菜单点击§7] §7帮助信息待完善...",
+    "makemoney.menuClick.start.message": "§7[§d菜单点击§7] §7开始执行任务 §e%s",
     "makemoney.menuClick.cancel.message": "§7[§d菜单点击§7] §7已取消任务 §e%s",
+    "makemoney.menuClick.finish.message": "§7[§d菜单点击§7] §7任务 §e%s §7已完成",
+    "makemoney.menuClick.break.message": "§7[§d菜单点击§7] §7任务 §e%s §7中断",
 
     "makemoney.mendingHelper.help.message": "§7[§d装备分解辅助§7] §7帮助信息待完善...",
     "makemoney.mendingHelper.name": "装备分解辅助",
@@ -319,5 +322,8 @@
     "makemoney.autoAFK.tpsCheck.message": "§7[§dTps检测§7] §7当前tps §e%.1f §7小于危险阈值 §e%d§7，触发补救命令 §e%s",
     "makemoney.autoAFK.tpsCheck.greenMessage": "§7[§dTps检测§7] §7当前tps §e%.1f §7大于等于良好阈值 §e%d§7，触发归位命令 §e%s",
     "makemoney.autoAFK.tpsCheck.on.message": "§7[§dTps检测§7] §7已开启tps检测",
-    "makemoney.autoAFK.tpsCheck.off.message": "§7[§dTps检测§7] §7已关闭tps检测"
+    "makemoney.autoAFK.tpsCheck.off.message": "§7[§dTps检测§7] §7已关闭tps检测",
+
+    "makemoney.task.dropItemInShulkerBox.on": "§7[§d自定义任务§7] §7自动将背包内潜影盒物品全部丢出功能已开启",
+    "makemoney.task.dropItemInShulkerBox.off": "§7[§d自定义任务§7] §7自动将背包内潜影盒物品全部丢出功能已关闭"
 }

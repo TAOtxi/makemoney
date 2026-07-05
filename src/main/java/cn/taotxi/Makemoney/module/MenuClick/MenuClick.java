@@ -37,20 +37,20 @@ public class MenuClick {
         registCommand();
     }
 
-    private static void runTask(String name) {
-        if (taskMap.containsKey(name)) {
-            Message.clientSideMsg(T.tl("menuClick.isRunning.message", name));
+    private static void runTask(String taskName) {
+        if (taskMap.containsKey(taskName)) {
+            Message.clientSideMsg(T.tl("menuClick.isRunning.message", taskName));
             return;
         }
 
-        MenuClickTask task = CONFIG.getTask(name);
+        MenuClickTask task = CONFIG.getTask(taskName);
         if (task == null) {
-            Message.clientSideMsg(T.tl("menuClick.notFound.message", name));
+            Message.clientSideMsg(T.tl("menuClick.notFound.message", taskName));
             return;
         }
 
         if (task.actions.isEmpty()) {
-            Message.clientSideMsg(T.tl("menuClick.noAction.message", name));
+            Message.clientSideMsg(T.tl("menuClick.noAction.message", taskName));
             return;
         }
 
@@ -58,75 +58,100 @@ public class MenuClick {
             TaskUtil.createTimeTask(CONTROL_LISTENER, () -> {
                 if (!client.hasControlDown()) return;
 
-                for (String taskName : taskMap.keySet()) {
-                    cancelTask(taskName);
+                for (String _taskName : taskMap.keySet()) {
+                    cancelTask(_taskName);
+                    Message.clientSideMsg(T.tl("menuClick.cancel.message", _taskName));
                 }
             }, 1);
         }
 
-        taskMap.put(name, 0);
-        String taskName = createTaskName(name);
+        taskMap.put(taskName, 0);
+        String taskNameWithPrefix = createTaskName(taskName);
 
         List<TaskAction> taskActions = new ArrayList<>();
         for (int i = 0; i < task.actions.size(); i++) {
             taskActions.add(task.getAction(i));
         }
         
-        TaskUtil.createOnceTimeTask(createStartTaskName(name), () -> {
-            TaskUtil.createTimeTask(taskName, () -> {
-                if (client.player == null) {
-                    cancelAllTask();
+        Message.clientSideMsg(T.tl("menuClick.start.message", taskName));
+        TaskUtil.createTimeTask(taskNameWithPrefix, () -> {
+            if (client.player == null) {
+                cancelAllTask();
+                return;
+            }
+
+            int i = taskMap.get(taskName);
+            if (i >= taskActions.size()) {
+                taskMap.put(taskName, 0);
+                i = 0;
+            }   
+            
+            TaskAction currentAction = taskActions.get(i);
+            boolean success = execute(currentAction, taskName);
+            if (!success) {
+                cancelTask(taskName);
+                return;
+            }
+
+            int nextIndex = i + 1;
+
+            while (currentAction.delay == 0) {
+                if (nextIndex >= taskActions.size()) {
+                    if (task.isLoop) nextIndex = 0;
+                    break;
+                }
+                currentAction = taskActions.get(nextIndex);
+                success = execute(currentAction, taskName);
+                if (!success) {
+                    cancelTask(taskName);
                     return;
                 }
 
-                int i = taskMap.get(name);
-                if (i >= taskActions.size()) {
-                    if (task.isLoop) {
-                        taskMap.put(name, 0);
-                        i = 0;
-                    } else {
-                        cancelTask(name);
-                        return;
-                    }
-                }
-                
-                TaskAction currentAction = taskActions.get(i);
-                if (currentAction.isClick()) {
-                    if (!(client.player.containerMenu instanceof ChestMenu chestMenu)) {
-                        cancelTask(name);
-                        return;
-                    }
+                nextIndex++;
+            }
+            
+            if (nextIndex >= taskActions.size() && !task.isLoop) {
+                cancelTask(taskName);
+                Message.clientSideMsg(T.tl("menuClick.finish.message", taskName));
+                return;
+            }
+            taskMap.put(taskName, nextIndex);
+            
+            int nextDelay = currentAction.delay == -1 ? task.delay : currentAction.delay;
+            TaskUtil.updateTimeTask(taskNameWithPrefix, Math.max(1, nextDelay));
+            TaskUtil.resetNextRunTick(taskNameWithPrefix);
+        }, Math.max(1, task.startDelay));
+    }
 
-                    client.gameMode.handleInventoryMouseClick(
-                        chestMenu.containerId, 
-                        currentAction.slot, 
-                        currentAction.button, 
-                        currentAction.clickType, 
-                        client.player
-                    );
-                } else if (currentAction.isCommand()) {
-                    Message.sendMessage(currentAction.command);
-                } else {
-                    throw new IllegalArgumentException("Unknown action type: " + task.name);
-                }
-                taskMap.put(name, i + 1);
+    private static boolean execute(TaskAction action, String taskName) {
+        if (action.isClick()) {
+            if (!(client.player.containerMenu instanceof ChestMenu chestMenu)) {
+                Message.clientSideMsg(T.tl("menuClick.break.message", taskName));
+                return false;
+            }
 
-            }, task.delay, true);
-        }, task.startDelay);
+            client.gameMode.handleInventoryMouseClick(
+                chestMenu.containerId, 
+                action.slot, 
+                action.button, 
+                action.clickType, 
+                client.player
+            );
+        } else if (action.isCommand()) {
+            Message.sendMessage(action.command);
+        } else {
+            throw new IllegalArgumentException("Unknown action: " + taskName);
+        }
+        return true;
     }
 
     private static String createTaskName(String name) {
         return MODULE_NAME + "_" + name;
     }
 
-    private static String createStartTaskName(String name) {
-        return MODULE_NAME + "_start_" + name;
-    }
-
     private static void cancelTask(String name) {
         taskMap.remove(name);
         TaskUtil.removeTimeTask(createTaskName(name));
-        TaskUtil.removeTimeTask(createStartTaskName(name));
 
         if (taskMap.isEmpty()) {
             TaskUtil.removeTimeTask(CONTROL_LISTENER);

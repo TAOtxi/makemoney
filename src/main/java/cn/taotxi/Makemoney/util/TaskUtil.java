@@ -83,13 +83,22 @@ public class TaskUtil {
     }
 
     public static boolean hasTimeTask(String id) {
-        return timeTasks.stream().anyMatch(task -> task.getId().equals(id));
+        return timeTasks.stream().anyMatch(task -> task.is(id));
     }
 
     public static int getNextRunTick(String id) {
         for (TimeTask task : timeTasks) {
-            if (task.getId().equals(id)) {
+            if (task.is(id)) {
                 return task.getNextRunTick();
+            }
+        }
+        throw new IllegalArgumentException("Time task with id " + id + " not found");
+    }
+
+    public static Runnable getCallBack(String id) {
+        for (TimeTask task : timeTasks) {
+            if (task.is(id)) {
+                return task.getCallback();
             }
         }
         throw new IllegalArgumentException("Time task with id " + id + " not found");
@@ -97,7 +106,7 @@ public class TaskUtil {
 
     public static void resetNextRunTick(String id) {
         for (TimeTask task: timeTasks) {
-            if (task.getId().equals(id)) {
+            if (task.is(id)) {
                 task.resetNextRunTick(ticker);
                 return;
             }
@@ -107,7 +116,7 @@ public class TaskUtil {
 
     public static void updateTimeTask(String id, int interval) {
         for (TimeTask task : timeTasks) {
-            if (task.getId().equals(id)) {
+            if (task.is(id)) {
                 task.updateTask(interval);
                 return;
             }
@@ -117,7 +126,7 @@ public class TaskUtil {
 
     public static TimeTask removeTimeTask(String id) {
         for (TimeTask task : timeTasks) {
-            if (task.getId().equals(id)) {
+            if (task.is(id)) {
                 timeTasks.remove(task);
                 return task;
             }
@@ -173,7 +182,7 @@ public class TaskUtil {
 
     private static void registerCommand() {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-            dispatcher.register(ClientCommandManager.literal("task")
+            dispatcher.register(ClientCommandManager.literal("taskUtil")
                 .then(ClientCommandManager.literal("list")
                     .executes(TaskUtil::listTimeTasks)));
         });
@@ -238,8 +247,16 @@ class TimeTask {
         return nextRunTick;
     }
 
+    public boolean is(String id) {
+        return this.id.equals(id);
+    }
+
     public String getId() {
         return id;
+    }
+
+    public Runnable getCallback() {
+        return callback;
     }
 }
 
