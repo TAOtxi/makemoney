@@ -40,8 +40,8 @@ public class TpsChecker {
             return;
         }
 
-        Message.clientSideMsg(T.tl("autoAFK.tpsCheck.message", tps, tpsThreshold));
         String command = CONFIG.triggerCommand.getValue();
+        Message.clientSideMsg(T.tl("autoAFK.tpsCheck.message", tps, tpsThreshold, command));
         if (!command.isEmpty()) {
             Message.sendMessage(command);
         }
@@ -65,8 +65,8 @@ public class TpsChecker {
             return;
         }
 
-        Message.clientSideMsg(T.tl("autoAFK.tpsCheck.greenMessage", tps, tpsThreshold));
         String command = CONFIG.greenTriggerCommand.getValue();
+        Message.clientSideMsg(T.tl("autoAFK.tpsCheck.greenMessage", tps, tpsThreshold, command));
         if (!command.isEmpty()) {
             Message.sendMessage(command);
         }
