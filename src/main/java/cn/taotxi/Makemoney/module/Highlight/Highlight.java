@@ -3,6 +3,7 @@ package cn.taotxi.Makemoney.module.Highlight;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 
 import cn.taotxi.Makemoney.Makemoney;
@@ -18,6 +19,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
 
 public class Highlight {
     private static final Minecraft client = Minecraft.getInstance();
@@ -33,19 +35,9 @@ public class Highlight {
         registerCommand();
         Drawing.updateColorMap();
 
-        CONFIG.renderInList.onChange(
-            (oldValue, newValue) -> {
-                if (!TaskUtil.hasTimeTask(UPDATE_RENDER_ENTITY) && newValue) {
-                    TaskUtil.createTimeTask(UPDATE_RENDER_ENTITY, Highlight::updateRenderEntity, 40);
-                } else if (!newValue) {
-                    TaskUtil.removeTimeTask(UPDATE_RENDER_ENTITY);
-                }
-            }
-        );
-
         CONFIG.enabled.onChange(
             (oldValue, newValue) -> {
-                if (!TaskUtil.hasTimeTask(UPDATE_RENDER_ENTITY) && newValue) {
+                if (newValue && !TaskUtil.hasTimeTask(UPDATE_RENDER_ENTITY)) {
                     TaskUtil.createTimeTask(UPDATE_RENDER_ENTITY, Highlight::updateRenderEntity, 40);
                 } else if (!newValue) {
                     TaskUtil.removeTimeTask(UPDATE_RENDER_ENTITY);
@@ -65,9 +57,9 @@ public class Highlight {
             enabled = true;
         }
 
-        WorldRenderEvents.BEFORE_TRANSLUCENT.register(context -> {
+        WorldRenderEvents.AFTER_ENTITIES.register(context -> {
             if (!enabled) return;
-            Drawing.drawHighlightBox(context, getRenderEntities());
+            Drawing.drawHighlightBox(context, renderEntities);
         });
 
         ClientWorldEvents.AFTER_CLIENT_WORLD_CHANGE.register((mc, level) -> {
@@ -91,24 +83,27 @@ public class Highlight {
         return 1;
     }
 
-    private static Iterable<Entity> getRenderEntities() {
-        if (!CONFIG.renderInList.getValue()) {
-            return client.level.entitiesForRendering();
-        }
-        return renderEntities;
-    }
-
     private static void updateRenderEntity() {
+        if (client.level == null || client.player == null) return;
         renderEntities.clear();
-        if (client.level == null) return;
+        int radius = CONFIG.renderRadius.getValue();
+
+        if (radius == 0) return;
 
         List<String> entityTypes = CONFIG.renderEntities.getValueAsList();
-        if (entityTypes.isEmpty()) return;
+        boolean renderInList = CONFIG.renderInList.getValue();
+        int radius2 = radius * radius;
+        Vec3 cameraPos = client.getCameraEntity().position();
 
         for (Entity entity : client.level.entitiesForRendering()) {
-            if (entityTypes.contains(entity.getType().toShortString())) {
-                renderEntities.add(entity);
+            if (radius != -1 && entity.distanceToSqr(cameraPos) > radius2) {
+                continue;
             }
+            if (renderInList && !entityTypes.contains(entity.getType().toShortString())) {
+                continue;
+            }
+
+            renderEntities.add(entity);
         }   
     }
 
@@ -132,6 +127,16 @@ public class Highlight {
                         GuiUtil.openYaclScreen(Makemoney.MOD_ID, MODULE_NAME);
                         return 1;
                     }))
+                .then(ClientCommandManager.literal("radius")
+                    .then(ClientCommandManager.argument("radius", IntegerArgumentType.integer(-1, 200))
+                        .executes(c -> {
+                            int radius = c.getArgument("radius", Integer.class);
+                            Message.clientSideMsg(T.tl("highlight.radius.message", radius));
+                            updateRenderEntity();
+                            CONFIG.renderRadius.setValue(radius);
+                            CONFIG.saveConfig();
+                            return 1;
+                        })))
             );
 
             dispatcher.register(ClientCommandManager.literal("hl")

@@ -10,10 +10,15 @@ import cn.taotxi.Makemoney.module.Highlight.HighlightConfig;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ShapeRenderer;
-import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ambient.Bat;
+import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.decoration.BlockAttachedEntity;
+import net.minecraft.world.entity.decoration.HangingEntity;
+import net.minecraft.world.entity.decoration.Mannequin;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -46,9 +51,9 @@ public class Drawing {
                 1 // width
             );
         }
-        if (!hasDrawn) return;
-
+        
         matrices.popPose();
+        if (!hasDrawn) return;
         CustomRenderPipeline.getInstance().startDrawing();
     }
 
@@ -58,18 +63,24 @@ public class Drawing {
 
     private static int getColor(Entity entity) {
         if (!colorful) return colorMap.get("default");
-
-        if (entity instanceof Monster) {
-            return colorMap.get("monster");
+        if (entity instanceof Enemy) {
+            return colorMap.get("enemy");
         }
-        if (entity instanceof AgeableMob) {
-            return colorMap.get("friendly");
-        }
-        if (entity instanceof Player) {
-            return colorMap.get("player");
+        if (entity instanceof Animal || entity instanceof Bat) {
+            return colorMap.get("animal");
         }
         if (entity instanceof ItemEntity) {
             return colorMap.get("item");
+        }
+        if (
+            entity instanceof ArmorStand ||
+            entity instanceof HangingEntity ||
+            entity instanceof BlockAttachedEntity
+        ) {
+            return colorMap.get("decoration");
+        }
+        if (entity instanceof Player || entity instanceof Mannequin) {
+            return colorMap.get("player");
         }
 
         return colorMap.get("default");
@@ -77,11 +88,11 @@ public class Drawing {
 
     public static void updateColorMap() {
         HighlightConfig CONFIG = HighlightConfig.getInstance();
-        colorMap.put("default", HighlightConfig.RGBA_StrToARBG(CONFIG.defaultColor.getValue()));
-        colorMap.put("monster", HighlightConfig.RGBA_StrToARBG(CONFIG.monsterColor.getValue()));
-        colorMap.put("player", HighlightConfig.RGBA_StrToARBG(CONFIG.playerColor.getValue()));
-        colorMap.put("friendly", HighlightConfig.RGBA_StrToARBG(CONFIG.friendlyColor.getValue()));
-        colorMap.put("item", HighlightConfig.RGBA_StrToARBG(CONFIG.itemColor.getValue()));
-        colorMap.put("neutral", HighlightConfig.RGBA_StrToARBG(CONFIG.neutralColor.getValue()));
+        colorMap.put("default",    HighlightConfig.RGBA_StrToARBG(CONFIG.defaultColor.getValue()));
+        colorMap.put("enemy",      HighlightConfig.RGBA_StrToARBG(CONFIG.enemyColor.getValue()));
+        colorMap.put("player",     HighlightConfig.RGBA_StrToARBG(CONFIG.playerColor.getValue()));
+        colorMap.put("animal",     HighlightConfig.RGBA_StrToARBG(CONFIG.animalColor.getValue()));
+        colorMap.put("decoration", HighlightConfig.RGBA_StrToARBG(CONFIG.decorationColor.getValue()));
+        colorMap.put("item",       HighlightConfig.RGBA_StrToARBG(CONFIG.itemColor.getValue()));
     }
 }

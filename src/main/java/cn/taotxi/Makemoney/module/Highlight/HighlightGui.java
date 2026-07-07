@@ -11,6 +11,7 @@ import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.OptionDescription;
 import dev.isxander.yacl3.api.OptionGroup;
 import dev.isxander.yacl3.api.controller.ColorControllerBuilder;
+import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
 import dev.isxander.yacl3.api.controller.StringControllerBuilder;
 import net.minecraft.client.gui.screens.Screen;
 
@@ -46,6 +47,20 @@ public class HighlightGui {
             CONFIG.renderInList::setValue
         ));
 
+        highlightCategory.option(Option.<Integer>createBuilder()
+                .name(T.tl("highlight.renderRadius"))
+                .description(OptionDescription.of(T.tl("highlight.renderRadius.desc")))
+                .binding(
+                    CONFIG.renderRadius.getDefaultValue(),
+                    CONFIG.renderRadius::getValue,
+                    CONFIG.renderRadius::setValue
+                )
+                .controller(opt -> IntegerSliderControllerBuilder.create(opt)
+                    .step(1)
+                    .range(-1, 200))
+                .build()
+        );
+
         OptionGroup.Builder colorGroup = OptionGroup.createBuilder()
                 .name(T.tl("highlight.color.name"))
                 .description(OptionDescription.of(T.tl("highlight.color.desc")));
@@ -63,11 +78,11 @@ public class HighlightGui {
         );
 
         colorGroup.option(Option.<Color>createBuilder()
-                .name(T.tl("highlight.color.monster"))
+                .name(T.tl("highlight.color.enemy"))
                 .binding(
-                    HighlightConfig.RGBA_StrToColor(CONFIG.monsterColor.getDefaultValue()),
-                    () -> HighlightConfig.RGBA_StrToColor(CONFIG.monsterColor.getValue()),
-                    color -> HighlightConfig.saveColor(CONFIG.monsterColor, color)
+                    HighlightConfig.RGBA_StrToColor(CONFIG.enemyColor.getDefaultValue()),
+                    () -> HighlightConfig.RGBA_StrToColor(CONFIG.enemyColor.getValue()),
+                    color -> HighlightConfig.saveColor(CONFIG.enemyColor, color)
                 )
                 .controller(opt ->ColorControllerBuilder.create(opt)
                     .allowAlpha(true))
@@ -87,11 +102,11 @@ public class HighlightGui {
         );
 
         colorGroup.option(Option.<Color>createBuilder()
-                .name(T.tl("highlight.color.friendly"))
+                .name(T.tl("highlight.color.animal"))
                 .binding(
-                    HighlightConfig.RGBA_StrToColor(CONFIG.friendlyColor.getDefaultValue()),
-                    () -> HighlightConfig.RGBA_StrToColor(CONFIG.friendlyColor.getValue()),
-                    color -> HighlightConfig.saveColor(CONFIG.friendlyColor, color)
+                    HighlightConfig.RGBA_StrToColor(CONFIG.animalColor.getDefaultValue()),
+                    () -> HighlightConfig.RGBA_StrToColor(CONFIG.animalColor.getValue()),
+                    color -> HighlightConfig.saveColor(CONFIG.animalColor, color)
                 )
                 .controller(opt ->ColorControllerBuilder.create(opt)
                     .allowAlpha(true))
@@ -104,6 +119,19 @@ public class HighlightGui {
                     HighlightConfig.RGBA_StrToColor(CONFIG.itemColor.getDefaultValue()),
                     () -> HighlightConfig.RGBA_StrToColor(CONFIG.itemColor.getValue()),
                     color -> HighlightConfig.saveColor(CONFIG.itemColor, color)
+                )
+                .controller(opt ->ColorControllerBuilder.create(opt)
+                    .allowAlpha(true))
+                .build()
+        );
+
+        colorGroup.option(Option.<Color>createBuilder()
+                .name(T.tl("highlight.color.decoration"))
+                .description(OptionDescription.of(T.tl("highlight.color.decoration.desc")))
+                .binding(
+                    HighlightConfig.RGBA_StrToColor(CONFIG.decorationColor.getDefaultValue()),
+                    () -> HighlightConfig.RGBA_StrToColor(CONFIG.decorationColor.getValue()),
+                    color -> HighlightConfig.saveColor(CONFIG.decorationColor, color)
                 )
                 .controller(opt ->ColorControllerBuilder.create(opt)
                     .allowAlpha(true))

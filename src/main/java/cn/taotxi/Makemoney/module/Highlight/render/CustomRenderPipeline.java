@@ -33,8 +33,9 @@ import net.minecraft.resources.Identifier;
 
 public class CustomRenderPipeline {
     private static CustomRenderPipeline instance = new CustomRenderPipeline();
-    private static final RenderPipeline FILLED_THROUGH_WALLS = RenderPipelines.register(RenderPipeline
-            .builder(RenderPipelines.DEBUG_FILLED_SNIPPET)
+    private static final RenderPipeline FILLED_THROUGH_WALLS = RenderPipelines.register(
+        RenderPipeline
+            .builder(RenderPipelines.LINES_SNIPPET)
             .withLocation(Identifier.fromNamespaceAndPath(Highlight.MODULE_NAME, "pipeline/debug_filled_box_through_walls"))
             .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.DEBUG_LINES)
             .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
@@ -42,7 +43,7 @@ public class CustomRenderPipeline {
     );
 
     private static final ByteBufferBuilder allocator = new ByteBufferBuilder(RenderType.SMALL_BUFFER_SIZE);
-    private BufferBuilder buffer = null;;
+    private BufferBuilder buffer = null;
 
     private static final Vector4f COLOR_MODULATOR = new Vector4f(1f, 1f, 1f, 1f);
     private static final Vector3f MODEL_OFFSET = new Vector3f();

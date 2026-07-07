@@ -7,9 +7,7 @@ import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
-import net.minecraft.network.protocol.game.ClientboundContainerClosePacket;
 import net.minecraft.network.protocol.game.ClientboundContainerSetContentPacket;
-import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
 import net.minecraft.network.protocol.game.ClientboundOpenScreenPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
@@ -111,25 +109,4 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
             calcServerTps.onSetTime(packet.gameTime());
         };
     }
-
-    // @Inject(method = "handleContainerClose", at = @At("HEAD"))
-    // public void onContainerClose(ClientboundContainerClosePacket packet, CallbackInfo ci) {
-    //     if (minecraft.isSameThread()) {
-    //         System.out.println("Close Container ID: " + packet.getContainerId());
-    //     };
-    // }
-
-    // @Inject(method = "handleContainerContent", at = @At("HEAD"))
-    // public void onContainerContent(ClientboundContainerSetContentPacket packet, CallbackInfo ci) {
-    //     if (minecraft.isSameThread()) {
-    //         System.out.println("[handleContainerContent] Container ID: " + packet.containerId());
-    //     };
-    // }
-
-    // @Inject(method = "handleContainerSetSlot", at = @At("HEAD"))
-    // public void onContainerSetSlot(ClientboundContainerSetSlotPacket packet, CallbackInfo ci) {
-    //     if (minecraft.isSameThread()) {
-    //         System.out.println("[handleContainerSetSlot] Container ID: " + packet.getContainerId());
-    //     };
-    // }
 }
