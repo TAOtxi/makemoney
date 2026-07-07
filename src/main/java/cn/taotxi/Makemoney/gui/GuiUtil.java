@@ -9,6 +9,7 @@ import cn.taotxi.Makemoney.module.AutoAFK.AutoAFK;
 import cn.taotxi.Makemoney.module.AutoDrop.AutoDrop;
 import cn.taotxi.Makemoney.module.AutoDrop.AutoDropConfigGui;
 import cn.taotxi.Makemoney.module.AutoFish.AutoFish;
+import cn.taotxi.Makemoney.module.Highlight.Highlight;
 import cn.taotxi.Makemoney.module.MendingHelper.MendingHelper;
 import cn.taotxi.Makemoney.module.MenuClick.MenuClick;
 import cn.taotxi.Makemoney.module.MessageCommand.MessageCommand;
@@ -35,7 +36,8 @@ public class GuiUtil {
             AutoAFK.MODULE_NAME, 2,
             IgnoreMessage.MODULE_NAME, 3,
             MessageCommand.MODULE_NAME, 4,
-            MenuClick.MODULE_NAME, 5
+            MenuClick.MODULE_NAME, 5,
+            Highlight.MODULE_NAME, 6
         );
     }
 

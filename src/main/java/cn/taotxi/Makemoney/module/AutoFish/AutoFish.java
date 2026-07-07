@@ -1,7 +1,5 @@
 package cn.taotxi.Makemoney.module.AutoFish;
 
-
-
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 

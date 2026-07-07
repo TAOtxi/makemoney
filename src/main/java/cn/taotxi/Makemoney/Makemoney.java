@@ -24,6 +24,7 @@ import cn.taotxi.Makemoney.module.MendingHelper.MendingHelper;
 import cn.taotxi.Makemoney.module.MenuClick.MenuClick;
 import cn.taotxi.Makemoney.module.MessageCommand.MessageCommand;
 import cn.taotxi.Makemoney.module.StrangeFunction.StrangeFunctionInit;
+import cn.taotxi.Makemoney.module.Highlight.Highlight;
 import cn.taotxi.Makemoney.module.Test.Test;
 import cn.taotxi.Makemoney.util.T;
 import cn.taotxi.Makemoney.util.TaskUtil;
@@ -64,6 +65,7 @@ public class Makemoney implements ModInitializer {
         AutoAFK.initialize();
         TaskUtil.initialize();
         TaskEntry.initialize();
+        Highlight.initialize();
         Test.initialize();
 	}
 

@@ -61,20 +61,6 @@ public class StringUtil {
         return strToList(str, ",").stream().map(Float::parseFloat).collect(Collectors.toList());
     }
 
-    public static String colorToStr(Color color) {
-        return String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue())
-            .toUpperCase();
-    }
-
-    public static Color strToColor(String str) {
-        if (!str.matches("#[0-9A-Fa-f]{6}")) {
-            return Color.WHITE;
-        }
-        str = str.substring(1);
-        int color = Integer.parseUnsignedInt(str, 16);
-        return new Color(color);
-    }
-
     public static boolean isRegex(String str) {
         return str.startsWith("/") && str.endsWith("/");
     }

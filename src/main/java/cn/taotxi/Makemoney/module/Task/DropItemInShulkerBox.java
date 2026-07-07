@@ -29,7 +29,7 @@ public class DropItemInShulkerBox {
 
     public static int enable(CommandContext<FabricClientCommandSource> context) {
         if (!TaskUtil.hasTimeTask(TASK_NAME)) {
-            TaskUtil.createTimeTask(TASK_NAME, DropItemInShulkerBox::run, 1);
+            TaskUtil.createTimeTask(TASK_NAME, DropItemInShulkerBox::run, 3);
         }
         enabled = true;
         Message.actionBarMsg(T.tl("task.dropItemInShulkerBox.on"));
@@ -81,21 +81,19 @@ public class DropItemInShulkerBox {
             client.player.containerMenu.containerId, slot, handSlot, ClickType.SWAP, client.player
         );
 
-        if (!client.player.isCrouching()) {
-            Input shiftInput = new Input(
-                client.player.input.keyPresses.forward(),
-                client.player.input.keyPresses.backward(),
-                client.player.input.keyPresses.left(),
-                client.player.input.keyPresses.right(),
-                client.player.input.keyPresses.jump(),
-                true,
-                client.player.input.keyPresses.sprint()
-            );
-            client.player.connection.send(new ServerboundPlayerInputPacket(shiftInput));
-        }
+        Input shiftInput = new Input(
+            client.player.input.keyPresses.forward(),
+            client.player.input.keyPresses.backward(),
+            client.player.input.keyPresses.left(),
+            client.player.input.keyPresses.right(),
+            client.player.input.keyPresses.jump(),
+            true,
+            client.player.input.keyPresses.sprint()
+        );
+        client.player.connection.send(new ServerboundPlayerInputPacket(shiftInput));
 
         client.gameMode.useItem(client.player, InteractionHand.MAIN_HAND);
-        Input shiftInput = new Input(
+        Input noShiftInput = new Input(
             client.player.input.keyPresses.forward(),
             client.player.input.keyPresses.backward(),
             client.player.input.keyPresses.left(),
@@ -104,7 +102,7 @@ public class DropItemInShulkerBox {
             false,
             client.player.input.keyPresses.sprint()
         );
-        client.player.connection.send(new ServerboundPlayerInputPacket(shiftInput));
+        client.player.connection.send(new ServerboundPlayerInputPacket(noShiftInput));
     }
 
     private static int findNotEmptyShulkerBox() {

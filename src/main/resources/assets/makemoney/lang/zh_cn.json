@@ -325,5 +325,26 @@
     "makemoney.autoAFK.tpsCheck.off.message": "§7[§dTps检测§7] §7已关闭tps检测",
 
     "makemoney.task.dropItemInShulkerBox.on": "§7[§d自定义任务§7] §7自动将背包内潜影盒物品全部丢出功能已开启",
-    "makemoney.task.dropItemInShulkerBox.off": "§7[§d自定义任务§7] §7自动将背包内潜影盒物品全部丢出功能已关闭"
+    "makemoney.task.dropItemInShulkerBox.off": "§7[§d自定义任务§7] §7自动将背包内潜影盒物品全部丢出功能已关闭",
+
+    "makemoney.highlight.name": "高亮生物边框",
+    "makemoney.highlight.desc": "类似发光效果",
+    "makemoney.highlight.enabled": "开关",
+    "makemoney.highlight.enabled.desc": "高亮生物开关，类似发光效果",
+    "makemoney.highlight.colorful": "使用颜色区分生物种类",
+    "makemoney.highlight.colorful.desc": "开启后, 将根据生物的种类使用不同的颜色高亮生物。\n\n例如僵尸等敌对生物使用红色, 友好生物使用绿色等等。\n\n关闭后，使用默认的高亮颜色",
+    "makemoney.highlight.renderInList": "仅高亮列表中的生物",
+    "makemoney.highlight.renderInList.desc": "开启后, 仅高亮生物种类列表中的生物。\n\n否则高亮客户端所有生物。",
+    "makemoney.highlight.color.name": "高亮生物边框颜色",
+    "makemoney.highlight.color.desc": "若开启了使用颜色区分生物种类, 则不同颜色来高亮生物。\n\n否则, 使用默认的高亮颜色。",
+    "makemoney.highlight.color.default": "默认高亮颜色",
+    "makemoney.highlight.color.monster": "敌对生物",
+    "makemoney.highlight.color.player": "玩家",
+    "makemoney.highlight.color.friendly": "友好生物",
+    "makemoney.highlight.color.item": "掉落物",
+    "makemoney.highlight.renderEntities": "高亮生物列表",
+    "makemoney.highlight.renderEntities.desc": "高亮生物列表。\n\n比如 player, item 等等。",
+    "makemoney.highlight.on.message": "§7[§d高亮生物边框§7] §7已开启高亮生物边框",
+    "makemoney.highlight.off.message": "§7[§d高亮生物边框§7] §7已关闭高亮生物边框",
+    "makemoney.highlight.help.message": "§7[§d高亮生物边框§7] §7帮助信息待完善..."
 }
