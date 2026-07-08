@@ -12,7 +12,7 @@ public class Test {
 
     public static void initialize() {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-            dispatcher.register(ClientCommandManager.literal("tt")
+            var cmd = ClientCommandManager.literal("tt")
                 .then(ClientCommandManager.literal("1")
                     .executes(context -> {
                         var camera = client.getCameraEntity();
@@ -39,8 +39,9 @@ public class Test {
                         TaskUtil.removeTimeTask("tt1");
                         TaskUtil.removeTimeTask("tt2");
                         return 1;
-                    }))
-            );
+                    }));
+
+            // dispatcher.register(cmd);
         });
     }
 }

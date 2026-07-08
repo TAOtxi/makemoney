@@ -1,13 +1,17 @@
 <div align="center"><center>
 
-<img alt="Icon" src="./icon.png" width="200">
+<img alt="Icon" src="./img/icon.png" width="200">
 
 # Makemoney
 
 </center></div>
 
+| <sub>EN</sub> [English](.en/README_EN.md) | <sub>ZH</sub> [中文](README.md) |
+| --- | --- |
+
 <br>
 专用于拾玖世界服务器的模组<br>
+但也有许多通用的功能<br>
 ohhhhhhh <br>
 
 拾玖世界Q群：`518271249`
@@ -25,7 +29,7 @@ ohhhhhhh <br>
 
 ### 🗑️ 自动丢弃 (AutoDrop)
 根据设置的匹配条件，将背包内的不需要的物品丢弃。<br>
-条件可设置名字、id、标签、附魔词条匹配。<br>
+条件可设置名字、id、耐久、标签、附魔词条匹配。<br>
 一般用于搞冲突附魔装备，或者钓鱼佬的懒人分类。<br>
 基础命令：
 ```bash
@@ -45,7 +49,6 @@ ohhhhhhh <br>
 /ad containerTrigger on | off  # 开启/关闭 打开容器时触发丢弃功能
 ```
 
-
 ### 🎣 自动钓鱼 (AutoFish)
 通过监听网络数据包判断是否上钩。<br>
 基础命令：
@@ -53,9 +56,7 @@ ohhhhhhh <br>
 /autofish                    # 别名 /fish
 /fish help                   # 查看帮助
 /fish on | off               # 开启/关闭自动钓鱼
-/fish config
-        ├── open             # 打开配置界面
-        └── reload           # 重新加载配置
+/fish config                 # 打开配置界面
 /fish randomDelay on | off   # 开启/关闭随机延迟功能
 /fish throwDelay <tick>      # 设置抛掷延迟（单位：tick）
 ```
@@ -91,7 +92,7 @@ ohhhhhhh <br>
 /afkk tpsCheck on | off         # 开启/关闭tps检查功能
 ```
 
-### 🐕 狗皮膏药 (AutoRide)
+### 🐕 狗皮膏药 (AutoRide) (需要服务器支持右键玩家即可坐到此玩家头上)
 像个狗皮膏药一样黏在其它玩家头上<br>
 也可以禁止别的玩家骑你头上<br>
 基础命令：
@@ -107,7 +108,6 @@ ohhhhhhh <br>
 /ar reset                  # 重置所有设置
 ```
 
-
 ### 📣 监听服务器聊天消息
 当服务器消息匹配到设定的正则表达式，将执行命令。<br>
 支持使用正则表达式捕获组的内容作为命令参数。<br>
@@ -115,13 +115,6 @@ ohhhhhhh <br>
 设置匹配规则: `^\[!\]\[拾玖世界同好会.*?\(腐竹Q号\)>&v (\w+) (\d+)块?钱?$`<br>
 其命令可以设置为 `/pay ${1} ${2}`，经过替换，将执行 `/pay TAOtxi 1000`。<br>
 更详细的介绍请参考游戏中，模组配置界面的介绍。<br>
-基础命令：
-```bash
-/messageCommand          # 别名 /mr
-/mr help                 # 查看帮助
-/mr on | off             # 开启/关闭消息命令功能
-/mr config               # 打开配置界面
-```
 
 ### 🚫 消息屏蔽 (ignoreMessage)
 可自定义屏蔽服务器消息 <br>

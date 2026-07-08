@@ -91,6 +91,7 @@ public class HighlightGui {
 
         colorGroup.option(Option.<Color>createBuilder()
                 .name(T.tl("highlight.color.player"))
+                .description(OptionDescription.of(T.tl("highlight.color.player.desc")))
                 .binding(
                     HighlightConfig.RGBA_StrToColor(CONFIG.playerColor.getDefaultValue()),
                     () -> HighlightConfig.RGBA_StrToColor(CONFIG.playerColor.getValue()),

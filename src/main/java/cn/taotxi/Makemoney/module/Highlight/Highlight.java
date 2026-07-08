@@ -38,7 +38,7 @@ public class Highlight {
         CONFIG.enabled.onChange(
             (oldValue, newValue) -> {
                 if (newValue && !TaskUtil.hasTimeTask(UPDATE_RENDER_ENTITY)) {
-                    TaskUtil.createTimeTask(UPDATE_RENDER_ENTITY, Highlight::updateRenderEntity, 40);
+                    TaskUtil.createTimeTask(UPDATE_RENDER_ENTITY, Highlight::updateRenderEntity, 20);
                 } else if (!newValue) {
                     TaskUtil.removeTimeTask(UPDATE_RENDER_ENTITY);
                 }

@@ -154,17 +154,10 @@ public class AutoFish {
                         return 1;
                     })))
                 .then(ClientCommandManager.literal("config")
-                    .then(ClientCommandManager.literal("reload")
-                        .executes(context -> {
-                            CONFIG.reloadConfig();
-                            context.getSource().sendFeedback(T.tl("autofish.config.reload.message"));
-                            return 1;
-                        }))
-                    .then(ClientCommandManager.literal("open")
-                        .executes(context -> {
-                            GuiUtil.openYaclScreen(Makemoney.MOD_ID, MODULE_NAME);
-                            return 1;
-                        })))
+                    .executes(context -> {
+                        GuiUtil.openYaclScreen(Makemoney.MOD_ID, MODULE_NAME);
+                        return 1;
+                    }))
             );
 
             dispatcher.register(ClientCommandManager.literal("fish")

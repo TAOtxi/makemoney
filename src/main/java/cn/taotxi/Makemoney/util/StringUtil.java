@@ -2,7 +2,6 @@ package cn.taotxi.Makemoney.util;
 
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;

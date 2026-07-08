@@ -5,16 +5,9 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.mojang.brigadier.context.CommandContext;
-
-import cn.taotxi.Makemoney.Makemoney;
-import cn.taotxi.Makemoney.gui.GuiUtil;
 import cn.taotxi.Makemoney.util.MLogger;
 import cn.taotxi.Makemoney.util.Message;
 import cn.taotxi.Makemoney.util.T;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 
@@ -43,7 +36,6 @@ public class MessageCommand {
             }
         );
         CONFIG.messageRules.triggerConfigChange();
-        registCommand();
     }
 
     public static void onMessage(String message) {
@@ -87,41 +79,5 @@ public class MessageCommand {
         // System.out.println("result: " + result.toString());
 
         Message.sendMessage(result.toString());
-    }
-
-    private static void registCommand() {
-        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-            var cmd = dispatcher.register(ClientCommandManager.literal(MODULE_NAME)
-                .executes(MessageCommand::showHelp)
-                .then(ClientCommandManager.literal("help")
-                    .executes(MessageCommand::showHelp))
-                .then(ClientCommandManager.literal("config")
-                    .executes(context -> {
-                        GuiUtil.openYaclScreen(Makemoney.MOD_ID, MODULE_NAME);
-                        return 1;
-                    }))
-                .then(ClientCommandManager.literal("on")
-                    .executes(context -> {
-                        CONFIG.enabled.enable();
-                        context.getSource().sendFeedback(T.tl("messageCommand.enabled.message"));
-                        return 1;
-                    }))
-                .then(ClientCommandManager.literal("off")
-                    .executes(context -> {
-                        CONFIG.enabled.disable();
-                        context.getSource().sendFeedback(T.tl("messageCommand.disabled.message"));
-                        return 1;
-                    }))
-            );
-            
-            dispatcher.register(ClientCommandManager.literal("mr")
-                    .executes(MessageCommand::showHelp)
-                    .redirect(cmd));
-        });
-    }
-
-    private static int showHelp(CommandContext<FabricClientCommandSource> context) {
-        context.getSource().sendFeedback(T.tl("messageCommand.help.message"));
-        return 1;
     }
 }
