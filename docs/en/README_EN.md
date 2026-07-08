@@ -1,24 +1,24 @@
 <div align="center"><center>
 
-<img alt="Icon" src="./img/icon.png" width="200">
+<img alt="Icon" src="../img/icon.png" width="200">
 
 # Makemoney
 
 </center></div>
 
-| <sub>EN</sub> [English](.en/README_en.md) | <sub>ZH</sub> [中文](README.md) |
+| <sub>EN</sub> [English](./README_en.md) | <sub>ZH</sub> [中文](../README.md) |
 | --- | --- |
 
 <br>
 Mod specifically designed for the `19 World` Server<br>
-But it also has many common features.<<br>
+But it also has many common features.<br>
 ohhhhhhh <br>
 
 ## Prerequisites
 [Yacl >=3.8.2+1.21.11-fabric](https://modrinth.com/mod/yacl)
 
 ## Changelog
-[changelog.md](./en/changelog_en.md)
+[changelog.md](./changelog_en.md)
 
 ### Config Gui
 Through command `/makemoney config` or `Mod Menu`.

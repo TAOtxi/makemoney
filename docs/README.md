@@ -6,7 +6,7 @@
 
 </center></div>
 
-| <sub>EN</sub> [English](.en/README_EN.md) | <sub>ZH</sub> [中文](README.md) |
+| <sub>EN</sub> [English](./en/README_EN.md) | <sub>ZH</sub> [中文](README.md) |
 | --- | --- |
 
 <br>
