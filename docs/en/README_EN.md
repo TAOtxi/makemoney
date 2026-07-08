@@ -112,7 +112,7 @@ Basic commands:
 When the server message matches the set regular expression, the command will be executed.<br>
 Support using regular expression to capture the content of the group as command parameters.<br>
 For example, someone sends a message to the server: `<Him> Hello bro !`<br>
-Set matching rule: `<(\w+)> (\w+)`<br>
+Set matching rule: `<(\w+)> (.*)`<br>
 command can be set to: `/say ${1} send a message: ${2}`<br>
 After replacement, it will execute: `/say Him send a message: Hello bro !`<br>
 More detailed introduction please refer to the mod config gui in the game.<br>
