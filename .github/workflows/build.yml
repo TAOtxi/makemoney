@@ -29,35 +29,24 @@ jobs:
       
       - name: build
         run: ./gradlew build
-      
-      - name: Determine release type
-        id: release-type
-        run: |
-          if [[ "${{ github.ref_name }}" == *beta* ]]; then
-            echo "is_beta=true" >> $GITHUB_OUTPUT
-            echo "output_name=Beta ${{ github.ref_name }}" >> $GITHUB_OUTPUT
-          else
-            echo "is_beta=false" >> $GITHUB_OUTPUT
-            echo "output_name=Release ${{ github.ref_name }}" >> $GITHUB_OUTPUT
-          fi
 
       - name: upload
         uses: Kir-Antipov/mc-publish@v3.3
         with:
-          files: build/libs/*.jar
 
           version: ${{ github.ref_name }}
           changelog-file: CHANGELOG.md
 
           modrinth-id: L0g6pT9H
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-          modrinth-files: build/libs/!(*-@(dev\|sources\|javadoc)).jar
+          modrinth-files: build/libs/!(*-@(dev|sources|javadoc)).jar
 
           curseforge-id: 1602408
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
-          curseforge-files: build/libs/!(*-@(dev\|sources\|javadoc)).jar
+          curseforge-files: build/libs/!(*-@(dev|sources|javadoc)).jar
 
           github-token: ${{ secrets.TOKEN }}
+          github-files: build/libs/*.jar
 
           dependencies: |
             YetAnotherConfigLib@3.8.2+1.21.11-fabric(required){modrinth:1eAoo2KR}{curseforge:667299}#(ignore:github)
