@@ -47,7 +47,7 @@ jobs:
           files: build/libs/*.jar
 
           version: ${{ github.ref_name }}
-          changelog-file: CHANGELOG.txt
+          changelog-file: CHANGELOG.md
 
           modrinth-id: L0g6pT9H
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
