@@ -45,7 +45,7 @@ jobs:
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
           curseforge-files: build/libs/!(*-@(dev|sources|javadoc)).jar
 
-          github-token: ${{ secrets.TOKEN }}
+          github-token: ${{ secrets.RELEASE_TOKEN }}
           github-files: build/libs/*.jar
 
           dependencies: |
