@@ -4,7 +4,7 @@ Update english translation
 
 ### v2.5.5+1.21.11
 Now MenuClick module can operate without delay.<br>
-Add task to automatically drop items in the inventory
+Add task to automatically drop items from shulker box in the inventory
 
 
 ### v2.5.0+1.21.11

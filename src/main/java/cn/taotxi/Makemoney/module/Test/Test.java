@@ -11,6 +11,12 @@ public class Test {
     private static final Minecraft client = Minecraft.getInstance();
 
     public static void initialize() {
+        // TaskUtil.createTimeTask("tttt", () -> {
+        //     System.out.println(client.screen.getClass().getName());
+        // }, 20);
+
+
+
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
             var cmd = ClientCommandManager.literal("tt")
                 .then(ClientCommandManager.literal("1")

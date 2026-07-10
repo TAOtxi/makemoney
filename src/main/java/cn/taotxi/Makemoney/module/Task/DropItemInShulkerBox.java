@@ -29,7 +29,7 @@ public class DropItemInShulkerBox {
 
     public static int enable(CommandContext<FabricClientCommandSource> context) {
         if (!TaskUtil.hasTimeTask(TASK_NAME)) {
-            TaskUtil.createTimeTask(TASK_NAME, DropItemInShulkerBox::run, 3);
+            TaskUtil.createTimeTask(TASK_NAME, DropItemInShulkerBox::run, 2);
         }
         enabled = true;
         Message.actionBarMsg(T.tl("task.dropItemInShulkerBox.on"));

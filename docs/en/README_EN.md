@@ -18,7 +18,7 @@ ohhhhhhh <br>
 [Yacl >=3.8.2+1.21.11-fabric](https://modrinth.com/mod/yacl)
 
 ## Changelog
-[changelog.md](./changelog_en.md)
+[history.md](./history_en.md)
 
 ### Config Gui
 Through command `/makemoney config` or `Mod Menu`.
@@ -26,7 +26,7 @@ Through command `/makemoney config` or `Mod Menu`.
 ## Feature
 
 ### 🗑️ AutoDrop
-Discard unnecessary items in the backpack according to the set matching criteria.<br>
+Discard unnecessary items in the inventory according to the set matching criteria.<br>
 Conditions can be set with names, id, durability, tags and enchantments.<br>
 Basic commands:
 ```bash

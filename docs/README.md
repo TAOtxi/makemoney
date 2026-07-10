@@ -20,7 +20,7 @@ ohhhhhhh <br>
 [Yacl >=3.8.2+1.21.11-fabric](https://modrinth.com/mod/yacl)
 
 ## 更新日志
-[changelog.md](./changelog.md)
+[history.md](./history.md)
 
 ### 配置界面
 通过 `/makemoney config` 指令或 `Mod Menu` 菜单打开配置界面。
