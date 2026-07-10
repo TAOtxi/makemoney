@@ -3,7 +3,7 @@
 
 ### Bug Fixes
 
-* 修复 highlight 模块开启问题 ([2802aea](https://github.com/TAOtxi/makemoney/commit/2802aeac132ecc014d1452b7f474d150f17afb2e))
+* 修复 highlight 模块开启问题 ([9c74a9c](https://github.com/TAOtxi/makemoney/commit/9c74a9c3e783ebfbf25a1127b7beefd22f8482b9))
 * 修复 readme 路径错误问题 ([181b731](https://github.com/TAOtxi/makemoney/commit/181b731b094dcc8e80b53f1e855ac83894251b24))
 
 
