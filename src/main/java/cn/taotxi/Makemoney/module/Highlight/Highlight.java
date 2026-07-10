@@ -37,6 +37,7 @@ public class Highlight {
 
         CONFIG.enabled.onChange(
             (oldValue, newValue) -> {
+                enabled = newValue;
                 if (newValue && !TaskUtil.hasTimeTask(UPDATE_RENDER_ENTITY)) {
                     TaskUtil.createTimeTask(UPDATE_RENDER_ENTITY, Highlight::updateRenderEntity, 20);
                 } else if (!newValue) {
@@ -53,10 +54,6 @@ public class Highlight {
         );
         CONFIG.colorful.triggerConfigChange();
 
-        if (CONFIG.enabled.getValue()) {
-            enabled = true;
-        }
-
         WorldRenderEvents.AFTER_ENTITIES.register(context -> {
             if (!enabled) return;
             Drawing.drawHighlightBox(context, renderEntities);
@@ -68,7 +65,6 @@ public class Highlight {
     }
 
     private static int enable(CommandContext<FabricClientCommandSource> context) {
-        enabled = true;
         Message.clientSideMsg(T.tl("highlight.on.message"));
         CONFIG.enabled.enable();
         CONFIG.saveConfig();
@@ -76,7 +72,6 @@ public class Highlight {
     }
 
     private static int disable(CommandContext<FabricClientCommandSource> context) {
-        enabled = false;
         Message.clientSideMsg(T.tl("highlight.off.message"));
         CONFIG.enabled.disable();
         CONFIG.saveConfig();
@@ -88,7 +83,7 @@ public class Highlight {
         renderEntities.clear();
         int radius = CONFIG.renderRadius.getValue();
 
-        if (radius == 0) return;
+        if (radius == 0 || radius < -1) return;
 
         List<String> entityTypes = CONFIG.renderEntities.getValueAsList();
         boolean renderInList = CONFIG.renderInList.getValue();
