@@ -444,9 +444,10 @@ public class AutoDropConfigGui {
         Item DEFAULT_MATCH_ITEM = CONFIG.getDefaultMatchItem();
         for (int i=0; i<CONFIG.matchItemLists.size(); i++) {
             final int index = i;
-            MutableComponent matchName = CONFIG.getMatchItemDescription(index).isEmpty() ? 
+            String desc = CONFIG.getMatchItemDescription(index);
+            MutableComponent matchName = desc.isEmpty() ? 
                 T.tl("autodrop.matchItem.description") : 
-                T.l(CONFIG.getMatchItemDescription(index));
+                T.l(desc);
 
             OptionGroup.Builder matchGroup = OptionGroup.createBuilder()
                     .name(matchName)
@@ -472,6 +473,18 @@ public class AutoDropConfigGui {
                 () -> CONFIG.isMatchItemEnabled(index),
                 val -> CONFIG.setMatchItemEnabled(index, val)
             ));
+
+            matchGroup.option(Option.<String>createBuilder()
+                    .name(T.tl("autodrop.matchItem.comment"))
+                    .description(OptionDescription.of(T.tl("autodrop.matchItem.comment.desc")))
+                    .binding(
+                        CONFIG.getMatchItemDescription(index),
+                        () -> CONFIG.getMatchItemDescription(index),
+                        val -> CONFIG.setMatchItemDescription(index, val)
+                    )
+                    .controller(StringControllerBuilder::create)
+                    .build()
+            );
 
             matchGroup.option(Option.<String>createBuilder()
                     .name(T.tl("autodrop.matchItem.itemName"))

@@ -3,11 +3,14 @@
 <img alt="Icon" src="./img/icon.png" width="200">
 
 # Makemoney
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/TAOtxi/makemoney)
 
 </center></div>
 
 | <sub>EN</sub> [English](./en/README_EN.md) | <sub>ZH</sub> [中文](README.md) |
 | --- | --- |
+
+
 
 <br>
 专用于拾玖世界服务器的模组<br>
