@@ -25,9 +25,9 @@ import cn.taotxi.Makemoney.module.MenuClick.MenuClickConfig;
 import cn.taotxi.Makemoney.module.MenuClick.MenuClickConfigGui;
 import cn.taotxi.Makemoney.module.MessageCommand.MessageCommandConfig;
 import cn.taotxi.Makemoney.module.MessageCommand.MessageCommandGui;
-import cn.taotxi.Makemoney.module.StrangeFunction.AutoRide;
-import cn.taotxi.Makemoney.module.StrangeFunction.IgnoreMessage;
-import cn.taotxi.Makemoney.module.StrangeFunction.StrangeConfig;
+import cn.taotxi.Makemoney.module.NineteenWorld.AutoRide;
+import cn.taotxi.Makemoney.module.NineteenWorld.IgnoreMessage;
+import cn.taotxi.Makemoney.module.NineteenWorld.NineteenWorldConfig;
 import cn.taotxi.Makemoney.module.AutoAFK.AutoAFKConfig;
 import cn.taotxi.Makemoney.module.AutoAFK.AutoAFKGui;
 import cn.taotxi.Makemoney.util.T;
@@ -50,7 +50,7 @@ import dev.isxander.yacl3.impl.utils.YACLConstants;
 
 // TODO: 设置验证字符串字段的提示信息
 public class ConfigScreen {
-    private static final StrangeConfig STRANGE_CONFIG = StrangeConfig.getInstance();
+    private static final NineteenWorldConfig NINETEEN_WORLD_CONFIG = NineteenWorldConfig.getInstance();
     private static final AutoFishConfig AUTOFISH_CONFIG = AutoFishConfig.getInstance();
     private static final MendingHelperConfig MENDING_HELPER_CONFIG = MendingHelperConfig.getInstance();
 
@@ -59,7 +59,7 @@ public class ConfigScreen {
             YetAnotherConfigLib.createBuilder()
                 .title(T.tl("gui.config.title"))
                 .save(() -> {
-                    STRANGE_CONFIG.saveConfig();
+                    NINETEEN_WORLD_CONFIG.saveConfig();
                     AUTOFISH_CONFIG.saveConfig();
                     MessageCommandConfig.getInstance().saveConfig();
                     MenuClickConfig.getInstance().saveConfig();
@@ -72,8 +72,8 @@ public class ConfigScreen {
                     MessageCommandConfig.getInstance().messageRules.triggerConfigChange();
                 });
 
-        ConfigCategory.Builder strangeCategory = createStrangeCategory(parent);
-        builder.category(strangeCategory.build());
+        ConfigCategory.Builder nineteenWorldCategory = createNineteenWorldCategory(parent);
+        builder.category(nineteenWorldCategory.build());
 
         ConfigCategory.Builder fishCategory = createFishCategory(parent);
         builder.category(fishCategory.build());
@@ -101,18 +101,34 @@ public class ConfigScreen {
         return yacl.generateScreen(parent);
     }
 
-    private static ConfigCategory.Builder createStrangeCategory(Screen parent) {
-        ConfigCategory.Builder strangeCategory = ConfigCategory.createBuilder()
-                .name(T.tl("strange.name"))
-                .tooltip(T.tl("strange.desc"));
+    private static ConfigCategory.Builder createNineteenWorldCategory(Screen parent) {
+        ConfigCategory.Builder nineteenWorldCategory = ConfigCategory.createBuilder()
+                .name(T.tl("nineteenworld.name"))
+                .tooltip(T.tl("nineteenworld.desc"));
 
-        strangeCategory.option(Factory.addToggleOption(
+        nineteenWorldCategory.option(Factory.addToggleOption(
             T.tl("rightClickRide"), 
             T.tl("rightClickRide.desc"), 
-            STRANGE_CONFIG.rightClickRideEnabled.getDefaultValue(), 
-            STRANGE_CONFIG.rightClickRideEnabled::getValue,
-            STRANGE_CONFIG.rightClickRideEnabled::setValue
+            NINETEEN_WORLD_CONFIG.rightClickRideEnabled.getDefaultValue(), 
+            NINETEEN_WORLD_CONFIG.rightClickRideEnabled::getValue,
+            NINETEEN_WORLD_CONFIG.rightClickRideEnabled::setValue
         ));
+
+        nineteenWorldCategory.option(Factory.addToggleOption(
+            T.tl("rightClickOpenShulkerBox.enabled"), 
+            T.tl("rightClickOpenShulkerBox.enabled.desc"), 
+            NINETEEN_WORLD_CONFIG.rightClickOpenShulkerBoxEnabled.getDefaultValue(), 
+            NINETEEN_WORLD_CONFIG.rightClickOpenShulkerBoxEnabled::getValue,
+            NINETEEN_WORLD_CONFIG.rightClickOpenShulkerBoxEnabled::setValue
+        ));
+
+        // nineteenWorldCategory.option(Factory.addToggleOption(
+        //     T.tl("fixSignInIssue"), 
+        //     T.tl("fixSignInIssue.desc"), 
+        //     NINETEEN_WORLD_CONFIG.fixSignInIssueEnabled.getDefaultValue(), 
+        //     NINETEEN_WORLD_CONFIG.fixSignInIssueEnabled::getValue,
+        //     NINETEEN_WORLD_CONFIG.fixSignInIssueEnabled::setValue
+        // ));
 
         OptionGroup.Builder autoRideGroup = OptionGroup.createBuilder()
                 .name(T.tl("autoride"))
@@ -130,9 +146,9 @@ public class ConfigScreen {
                 .name(T.tl("autoride.interval"))
                 .description(OptionDescription.of(T.tl("autoride.interval.desc")))
                 .binding(
-                    STRANGE_CONFIG.autoRideRunInterval.getDefaultValue(),
-                    STRANGE_CONFIG.autoRideRunInterval::getValue,
-                    STRANGE_CONFIG.autoRideRunInterval::setValue
+                    NINETEEN_WORLD_CONFIG.autoRideRunInterval.getDefaultValue(),
+                    NINETEEN_WORLD_CONFIG.autoRideRunInterval::getValue,
+                    NINETEEN_WORLD_CONFIG.autoRideRunInterval::setValue
                 )
                 .controller(opt -> IntegerSliderControllerBuilder.create(opt)
                     .range(1, 20)
@@ -146,9 +162,9 @@ public class ConfigScreen {
                 .name(T.tl("autoride.distance"))
                 .description(OptionDescription.of(T.tl("autoride.distance.desc")))
                 .binding(
-                    STRANGE_CONFIG.autoRideMinDistance.getDefaultValue(),
-                    STRANGE_CONFIG.autoRideMinDistance::getValue,
-                    STRANGE_CONFIG.autoRideMinDistance::setValue
+                    NINETEEN_WORLD_CONFIG.autoRideMinDistance.getDefaultValue(),
+                    NINETEEN_WORLD_CONFIG.autoRideMinDistance::getValue,
+                    NINETEEN_WORLD_CONFIG.autoRideMinDistance::setValue
                 )
                 .controller(opt -> FloatSliderControllerBuilder.create(opt)
                     .range(1.0f, 10.0f)
@@ -161,9 +177,9 @@ public class ConfigScreen {
                 .name(T.tl("autoride.target"))
                 .description(OptionDescription.of(T.tl("autoride.target.desc")))
                 .binding(
-                    STRANGE_CONFIG.autoRideTargetPlayer.getDefaultValue(),
-                    STRANGE_CONFIG.autoRideTargetPlayer::getValue,
-                    STRANGE_CONFIG.autoRideTargetPlayer::setValue
+                    NINETEEN_WORLD_CONFIG.autoRideTargetPlayer.getDefaultValue(),
+                    NINETEEN_WORLD_CONFIG.autoRideTargetPlayer::getValue,
+                    NINETEEN_WORLD_CONFIG.autoRideTargetPlayer::setValue
                 )
                 .controller(StringControllerBuilder::create)
                 .build()
@@ -172,14 +188,14 @@ public class ConfigScreen {
         autoRideGroup.option(Factory.addToggleOption(
             T.tl("autoride.enableShakeOffPlayer"), 
             T.tl("autoride.enableShakeOffPlayer.desc"), 
-            STRANGE_CONFIG.autoRideEnableShakeOffPlayer.getDefaultValue(),
-            STRANGE_CONFIG.autoRideEnableShakeOffPlayer::getValue,
-            STRANGE_CONFIG.autoRideEnableShakeOffPlayer::setValue
+            NINETEEN_WORLD_CONFIG.autoRideEnableShakeOffPlayer.getDefaultValue(),
+            NINETEEN_WORLD_CONFIG.autoRideEnableShakeOffPlayer::getValue,
+            NINETEEN_WORLD_CONFIG.autoRideEnableShakeOffPlayer::setValue
         ));
 
-        strangeCategory.group(autoRideGroup.build());
+        nineteenWorldCategory.group(autoRideGroup.build());
         
-        return strangeCategory;
+        return nineteenWorldCategory;
     }
 
     private static ConfigCategory.Builder createFishCategory(Screen parent) {
@@ -307,9 +323,9 @@ public class ConfigScreen {
         ignoreGroup.option(Factory.addToggleOption(
                 T.tl("ignore.enabled"),
                 T.tl("ignore.enabled.desc"),
-                STRANGE_CONFIG.ignoreEnabled.getDefaultValue(),
-                STRANGE_CONFIG.ignoreEnabled::getValue,
-                STRANGE_CONFIG.ignoreEnabled::setValue
+                NINETEEN_WORLD_CONFIG.ignoreEnabled.getDefaultValue(),
+                NINETEEN_WORLD_CONFIG.ignoreEnabled::getValue,
+                NINETEEN_WORLD_CONFIG.ignoreEnabled::setValue
         ));
 
         ignoreGroup.option(ButtonOption.createBuilder()
@@ -318,7 +334,7 @@ public class ConfigScreen {
                 .action((screen, option) -> {
                     savePending(screen);
                     IgnoreMessage.addPresetIgnoreList();
-                    STRANGE_CONFIG.saveConfig();
+                    NINETEEN_WORLD_CONFIG.saveConfig();
                     reload(screen, parent, false, ConfigScreen::getConfigScreen);
                 })
                 .build()
@@ -329,8 +345,8 @@ public class ConfigScreen {
                 .description(OptionDescription.of(T.tl("ignore.deleteAll.desc")))
                 .action((screen, option) -> {
                     savePending(screen);
-                    STRANGE_CONFIG.ignoreList.clear();
-                    STRANGE_CONFIG.saveConfig();
+                    NINETEEN_WORLD_CONFIG.ignoreList.clear();
+                    NINETEEN_WORLD_CONFIG.saveConfig();
                     reload(screen, parent, false, ConfigScreen::getConfigScreen);
                 })
                 .build()
@@ -343,8 +359,8 @@ public class ConfigScreen {
                     .description(OptionDescription.of(T.tl("ignore.regex.desc")))
                     .binding(
                         List.of(),
-                        STRANGE_CONFIG.ignoreList::getValueAsList,
-                        STRANGE_CONFIG.ignoreList::setValue
+                        NINETEEN_WORLD_CONFIG.ignoreList::getValueAsList,
+                        NINETEEN_WORLD_CONFIG.ignoreList::setValue
                     )
                     .initial("")
                     .controller(StringControllerBuilder::create)

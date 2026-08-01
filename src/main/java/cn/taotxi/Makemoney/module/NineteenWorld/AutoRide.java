@@ -1,4 +1,4 @@
-package cn.taotxi.Makemoney.module.StrangeFunction;
+package cn.taotxi.Makemoney.module.NineteenWorld;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -31,7 +31,7 @@ public class AutoRide {
     public static final String MODULE_NAME = "autoride";
     private static boolean enabled = false;
     private static final Minecraft client = Minecraft.getInstance();
-    private static final StrangeConfig CONFIG = StrangeConfig.getInstance();
+    private static final NineteenWorldConfig CONFIG = NineteenWorldConfig.getInstance();
     private static final String AUTORIDE_RUN_TASK = "autoRideRunTask";
     private static final String AUTORIDE_SHAKE_OFF_PLAYER_TASK = "autoRideShakeOffPlayerTask";
     private static final int SHAKE_OFF_PLAYER_INTERVAL = 5;

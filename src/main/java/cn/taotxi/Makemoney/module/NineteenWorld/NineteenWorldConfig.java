@@ -1,4 +1,4 @@
-package cn.taotxi.Makemoney.module.StrangeFunction;
+package cn.taotxi.Makemoney.module.NineteenWorld;
 
 import cn.taotxi.Makemoney.config.ConfigManager;
 import cn.taotxi.Makemoney.config.type.ConfigArray;
@@ -7,17 +7,17 @@ import cn.taotxi.Makemoney.config.type.ConfigFloat;
 import cn.taotxi.Makemoney.config.type.ConfigInteger;
 import cn.taotxi.Makemoney.config.type.ConfigString;
 
-public class StrangeConfig extends ConfigManager {
-    private static StrangeConfig instance = null;
+public class NineteenWorldConfig extends ConfigManager {
+    private static NineteenWorldConfig instance = null;
 
-    public static StrangeConfig getInstance() {
+    public static NineteenWorldConfig getInstance() {
         if (instance == null) {
-            instance = new StrangeConfig(StrangeFunctionInit.MODULE_NAME);
+            instance = new NineteenWorldConfig(NineteenWorld.MODULE_NAME);
         }
         return instance;
     }
 
-    public StrangeConfig(String moduleName) {
+    public NineteenWorldConfig(String moduleName) {
         super(moduleName);
     }
 
@@ -33,4 +33,7 @@ public class StrangeConfig extends ConfigManager {
 
     /******************* RightClickRide *******************/
     public final ConfigBoolean rightClickRideEnabled         = new ConfigBoolean("rightClickRideEnabled", true, "是否启用右键骑乘功能", this);
+    
+    public final ConfigBoolean rightClickOpenShulkerBoxEnabled = new ConfigBoolean("rightClickOpenShulkerBoxEnabled", false, "是否启用右键打开潜影盒功能", this);
+    public final ConfigBoolean fixSignInIssueEnabled         = new ConfigBoolean("fixSignInIssueEnabled", false, "是否启用修复拾玖世界签到引发的背包不同步功能", this);
 }

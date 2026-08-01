@@ -54,7 +54,7 @@ public class DropItemInShulkerBox {
         dropAllItemInShulkerBox();
         client.player.closeContainer();
         ItemStack handItem = client.player.getMainHandItem();
-        if (ItemStackUtil.equalId(handItem, "/^minecraft:.*?shulker_box$/")) {
+        if (ItemStackUtil.getId(handItem).endsWith("shulker_box")) {
             dropHandItem();
         }
     }

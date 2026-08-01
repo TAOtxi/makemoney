@@ -10,7 +10,7 @@ import cn.taotxi.Makemoney.Makemoney;
 import cn.taotxi.Makemoney.config.type.ConfigString;
 import cn.taotxi.Makemoney.module.AutoDrop.AutoDropConfig;
 import cn.taotxi.Makemoney.module.AutoFish.AutoFishConfig;
-import cn.taotxi.Makemoney.module.StrangeFunction.StrangeConfig;
+import cn.taotxi.Makemoney.module.NineteenWorld.NineteenWorldConfig;
 
 
 public class MakemoneyConfig extends ConfigManager {
@@ -30,7 +30,7 @@ public class MakemoneyConfig extends ConfigManager {
     public ConfigString makemoneyVersion          = new ConfigString("makemoneyVersion", "", "Makemoney版本", this);
     public ConfigString autoDropVersion           = new ConfigString("autodropVersion", "", "AutoDrop版本", this);
     public ConfigString autofishVersion           = new ConfigString("autofishVersion", "", "AutoFish版本", this);
-    public ConfigString strangefunctionVersion    = new ConfigString("strangefunctionVersion", "", "StrangeFunction版本", this);
+    public ConfigString nineteenworldVersion       = new ConfigString("nineteenworldVersion", "", "NineteenWorld版本", this);
     public ConfigString autoRepairVersion         = new ConfigString("autorepairVersion", "", "AutoRepair版本", this);
     public ConfigString entityHighlightBoxVersion = new ConfigString("entityhighlightboxVersion", "", "EntityHighlightBox版本", this);
     public ConfigString messageCommandVersion     = new ConfigString("messagecommandVersion", "", "MessageCommand版本", this);
@@ -41,7 +41,7 @@ public class MakemoneyConfig extends ConfigManager {
         map.put(makemoneyVersion.getKey(),          "");
         map.put(autoDropVersion.getKey(),           "1.2.9-beta.2+1.21.11");
         map.put(autofishVersion.getKey(),           "");
-        map.put(strangefunctionVersion.getKey(),    "1.2.9-beta.2+1.21.11");
+        map.put(nineteenworldVersion.getKey(),       "");
         map.put(autoRepairVersion.getKey(),         "");
         map.put(entityHighlightBoxVersion.getKey(), "");
         map.put(messageCommandVersion.getKey(),     "");
@@ -60,8 +60,8 @@ public class MakemoneyConfig extends ConfigManager {
         if (!autofishVersion.getValue().equals(getConfigVersionMap().get(autofishVersion.getKey()))) {
             list.add(autofishVersion.getKey());
         }
-        if (!strangefunctionVersion.getValue().equals(getConfigVersionMap().get(strangefunctionVersion.getKey()))) {
-            list.add(strangefunctionVersion.getKey());
+        if (!nineteenworldVersion.getValue().equals(getConfigVersionMap().get(nineteenworldVersion.getKey()))) {
+            list.add(nineteenworldVersion.getKey());
         }
         if (!autoRepairVersion.getValue().equals(getConfigVersionMap().get(autoRepairVersion.getKey()))) {
             list.add(autoRepairVersion.getKey());
@@ -81,7 +81,7 @@ public class MakemoneyConfig extends ConfigManager {
         makemoneyVersion.setValue(map.get(makemoneyVersion.getKey()));
         autoDropVersion.setValue(map.get(autoDropVersion.getKey()));
         autofishVersion.setValue(map.get(autofishVersion.getKey()));
-        strangefunctionVersion.setValue(map.get(strangefunctionVersion.getKey()));
+        nineteenworldVersion.setValue(map.get(nineteenworldVersion.getKey()));
         autoRepairVersion.setValue(map.get(autoRepairVersion.getKey()));
         entityHighlightBoxVersion.setValue(map.get(entityHighlightBoxVersion.getKey()));
         saveConfig();
@@ -103,8 +103,8 @@ public class MakemoneyConfig extends ConfigManager {
         if (configChangeNameList.contains(MakemoneyConfig.getInstance().autofishVersion.getKey())) {
             AutoFishConfig.getInstance().resetConfig();
         }
-        if (configChangeNameList.contains(MakemoneyConfig.getInstance().strangefunctionVersion.getKey())) {
-            StrangeConfig.getInstance().resetConfig();
+        if (configChangeNameList.contains(MakemoneyConfig.getInstance().nineteenworldVersion.getKey())) {
+            NineteenWorldConfig.getInstance().resetConfig();
         }
     }
 }

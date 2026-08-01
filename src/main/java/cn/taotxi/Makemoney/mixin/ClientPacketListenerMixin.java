@@ -7,6 +7,7 @@ import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
+import net.minecraft.network.protocol.game.ClientboundContainerClosePacket;
 import net.minecraft.network.protocol.game.ClientboundContainerSetContentPacket;
 import net.minecraft.network.protocol.game.ClientboundOpenScreenPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
@@ -16,6 +17,7 @@ import net.minecraft.network.TickablePacketListener;
 import net.minecraft.network.protocol.game.ClientboundSystemChatPacket;
 import net.minecraft.network.protocol.game.ClientboundTakeItemEntityPacket;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.item.ItemEntity;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -23,14 +25,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import cn.taotxi.Makemoney.module.StrangeFunction.AutoRide;
-import cn.taotxi.Makemoney.module.StrangeFunction.IgnoreMessage;
 import cn.taotxi.Makemoney.module.Task.DropItemInShulkerBox;
 import cn.taotxi.Makemoney.module.AutoAFK.calcServerTps;
 import cn.taotxi.Makemoney.module.AutoDrop.AutoDrop;
 import cn.taotxi.Makemoney.module.AutoDrop.Dropper;
 import cn.taotxi.Makemoney.module.AutoFish.AutoFish;
 import cn.taotxi.Makemoney.module.MessageCommand.MessageCommand;
+import cn.taotxi.Makemoney.module.NineteenWorld.AutoRide;
+import cn.taotxi.Makemoney.module.NineteenWorld.IgnoreMessage;
+// import cn.taotxi.Makemoney.module.NineteenWorld.NineteenWorld;
 import cn.taotxi.Makemoney.module.MendingHelper.AutoEnchantMending;
 import cn.taotxi.Makemoney.module.MendingHelper.AutoMendingReplace;
 import cn.taotxi.Makemoney.module.MendingHelper.AutoRepair;
@@ -72,7 +75,7 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
             if (entity == null) return;
             if (entity instanceof ItemEntity itemEntity) {
                 AutoDrop.onTakeItemEntity(itemEntity);
-            } else {    // Experience Orb
+            } else if (entity instanceof ExperienceOrb) {
                 AutoMendingReplace.tryToReplaceOffHand();
             }
         };
@@ -89,6 +92,14 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
     public void onOpenScreen(ClientboundOpenScreenPacket packet, CallbackInfo ci) {
         if (minecraft.isSameThread()) {
             AutoEnchantMending.onOpenAnvil();
+            // NineteenWorld.onOpenContainer(packet.getContainerId());
+        };
+    }
+    
+    @Inject(method = "handleContainerClose", at = @At("TAIL"))
+    public void onCloseContainer(ClientboundContainerClosePacket packet, CallbackInfo ci) {
+        if (minecraft.isSameThread()) {
+            // NineteenWorld.onCloseContainer(packet.getContainerId());
         };
     }
 

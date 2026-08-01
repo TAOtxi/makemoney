@@ -139,8 +139,8 @@
     "makemoney.autodrop.matchItem.enchantment.name": "Enchantment group",
     "makemoney.autodrop.matchItem.enchantment.name.desc": "Matching enchantments and levels.\n\nEnchantment with levels must be accompanied by levels, while enchantment without levels can be ignored or written as 1.\n\nThe enchanting level must be greater than or equal to this level in order to be matched.\n\nFor example: mending\n\nSharpness V：sharpness:5\n\nLotting III：looting:3\n\nFor detailed item IDs, please refer to: https://minecraft.wiki/w/Enchantment#Enchantments",
 
-    "makemoney.strange.name": "Strange and peculiar functions",
-    "makemoney.strange.desc": "Here, you can find some useful settings, hh",
+    "makemoney.nineteenworld.name": "Some thing for 19 world Server",
+    "makemoney.nineteenworld.desc": "Here, you can find some useful settings, hh",
 
     "makemoney.autoride": "Auto ride",
     "makemoney.autoride.desc": "Like a sticky note, it sticks to the player's head.\n\nWhen holding items, disable this feature.\n\n(Thanks to the Gzn who gave the name)\n\n(Tips: This feature only works in the 19 world)",
@@ -176,6 +176,10 @@
 
     "makemoney.rightClickRide": "Right click ride entity",
     "makemoney.rightClickRide.desc": "When enabled, right click the entity to ride it.\n\n(Server need to support /ride command)",
+    "makemoney.rightClickOpenShulkerBox.enabled": "Right click open shulker box",
+    "makemoney.rightClickOpenShulkerBox.enabled.desc": "After opening, right click the shulker box.\n\nWithout sneaking, it will work.",
+    "makemoney.fixSignInIssue": "修复签到后无法同步背包数据bug",
+    "makemoney.fixSignInIssue.desc": "在拾玖世界签到后，服务器可能未能正确关闭上一个容器界面，\n\n这导致了服务端认为玩家仍处于某个容器界面，\n\n发送的背包数据也是容器界面的数据。\n\n但客户端已经关闭了容器界面，所以会将收到的背包数据当作垃圾丢掉，\n\n但这也导致了客户端的背包数据无法同步服务器。\n\n\n此功能用于解决此 bug",
 
     "makemoney.fishCategory": "Fish category",
     "makemoney.fishCategory.desc": "Auto fish",

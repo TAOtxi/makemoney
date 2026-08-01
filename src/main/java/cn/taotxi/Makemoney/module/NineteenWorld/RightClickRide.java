@@ -1,4 +1,4 @@
-package cn.taotxi.Makemoney.module.StrangeFunction;
+package cn.taotxi.Makemoney.module.NineteenWorld;
 
 import cn.taotxi.Makemoney.util.Message;
 import net.minecraft.client.Minecraft;
@@ -14,7 +14,7 @@ import net.minecraft.world.entity.npc.villager.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 
 public class RightClickRide {
-    private static final StrangeConfig CONFIG = StrangeConfig.getInstance();
+    private static final NineteenWorldConfig CONFIG = NineteenWorldConfig.getInstance();
     private static final Minecraft client = Minecraft.getInstance();
 
     public static void handleInteract(

@@ -139,8 +139,8 @@
     "makemoney.autodrop.matchItem.enchantment.name": "附魔组",
     "makemoney.autodrop.matchItem.enchantment.name.desc": "匹配的魔咒和等级。\n\n有等级的魔咒必须带上等级，没有等级的魔咒可忽略，也可写为1。\n\n附魔等级需大于等于此等级才可通过匹配。\n\n比如经验修补：mending。\n\n比如锋利V：sharpness:5。\n\n比如抢夺III：looting:3。\n\n详细魔咒ID请查阅：https://zh.minecraft.wiki/w/Java版数据值#魔咒",
 
-    "makemoney.strange.name": "奇奇怪怪的功能",
-    "makemoney.strange.desc": "在这里，你将能看到一些实用的设置，嘻嘻",
+    "makemoney.nineteenworld.name": "拾玖世界妙妙小工具",
+    "makemoney.nineteenworld.desc": "在这里，你将能看到一些实用的设置，嘻嘻",
 
     "makemoney.autoride": "狗皮膏药",
     "makemoney.autoride.desc": "像一个狗皮膏药一样，黏在玩家头上。\n\n潜行或手持物品时，禁用该功能。\n\n（感谢搞直男贡献的名字）\n\n（Tips：该功能仅适用于拾玖世界。）",
@@ -163,6 +163,13 @@
     "makemoney.autoride.reset.message": "§7[§d狗皮膏药§7] §7已重置所有配置",
     "makemoney.autoride.help.message": "§7[§d狗皮膏药§7] §7用法: §e/autoride 阿巴阿巴",
 
+    "makemoney.rightClickRide": "空手右键生物骑乘",
+    "makemoney.rightClickRide.desc": "开启后，空手右键生物即可骑乘。\n\n原理为使用 /ride 命令。",
+    "makemoney.rightClickOpenShulkerBox.enabled": "右键开启潜影盒",
+    "makemoney.rightClickOpenShulkerBox.enabled.desc": "开启后，手拿潜影盒对着空气右键即可打开。\n\n不用潜行，嘿嘿",
+    "makemoney.fixSignInIssue": "修复签到后无法同步背包数据bug",
+    "makemoney.fixSignInIssue.desc": "在拾玖世界签到后，服务器可能未能正确关闭上一个容器界面，\n\n这导致了服务端认为玩家仍处于某个容器界面，\n\n发送的背包数据也是容器界面的数据。\n\n但客户端已经关闭了容器界面，所以会将收到的背包数据当作垃圾丢掉，\n\n但这也导致了客户端的背包数据无法同步服务器。\n\n\n此功能用于解决此 bug",
+
     "makemoney.ignore": "消息屏蔽",
     "makemoney.ignore.desc": "使用正则表达式匹配服务器中需要屏蔽的消息",
     "makemoney.ignore.enabled": "开关",
@@ -173,9 +180,6 @@
     "makemoney.ignore.deleteAll.desc": "开宫没有回头监~",
     "makemoney.ignore.regex": "正则表达式列表",
     "makemoney.ignore.regex.desc": "指定需要屏蔽的消息正则表达式列表，格式不正确的将忽略。",
-
-    "makemoney.rightClickRide": "空手右键生物骑乘",
-    "makemoney.rightClickRide.desc": "开启后，空手右键生物即可骑乘。\n\n原理为使用 /ride 命令。",
 
     "makemoney.fishCategory": "钓鱼相关",
     "makemoney.fishCategory.desc": "钓鱼佬辅助ohhhh",

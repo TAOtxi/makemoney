@@ -1,4 +1,4 @@
-package cn.taotxi.Makemoney.module.StrangeFunction;
+package cn.taotxi.Makemoney.module.NineteenWorld;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ import cn.taotxi.Makemoney.util.MLogger;
 public class IgnoreMessage {
     public static final String MODULE_NAME = "ignoremessage";
     private static final MLogger logger = new MLogger(MODULE_NAME);
-    private static final StrangeConfig CONFIG = StrangeConfig.getInstance();
+    private static final NineteenWorldConfig CONFIG = NineteenWorldConfig.getInstance();
     private static final List<Pattern> ignorePatterns = new ArrayList<>();
 
     public static void initialize() {

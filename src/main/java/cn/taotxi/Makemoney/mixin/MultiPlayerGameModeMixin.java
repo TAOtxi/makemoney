@@ -6,7 +6,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import cn.taotxi.Makemoney.module.AutoFish.AutoFish;
-import cn.taotxi.Makemoney.module.StrangeFunction.RightClickRide;
+import cn.taotxi.Makemoney.module.NineteenWorld.NineteenWorld;
+import cn.taotxi.Makemoney.module.NineteenWorld.RightClickRide;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -24,5 +25,6 @@ public class MultiPlayerGameModeMixin {
     @Inject(method = "useItem", at = @At("HEAD"))
     public void useItemBefore(Player player, InteractionHand interactionHand, CallbackInfoReturnable<InteractionResult> cir) {
         AutoFish.initRotaion(player, interactionHand);
+        NineteenWorld.onUseItem(interactionHand);
     }
 }
