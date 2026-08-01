@@ -153,7 +153,10 @@ public class Dropper {
             }
 
             // check durability
-            if (item.isDamageableItem()) {
+            if (check.durability != 0) {
+                if (!item.isDamageableItem()) {
+                    continue;
+                }
                 if (check.durability == -1 && item.getDamageValue() > 0) {
                     continue;
                 }

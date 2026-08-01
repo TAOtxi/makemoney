@@ -39,6 +39,7 @@ ohhhhhhh <br>
 /autodrop                      # 别名 /ad
 /ad help                       # 查看帮助
 /ad on | off                   # 开启/关闭丢弃功能
+/ad clean                      # 清空背包
 /ad config                     # 打开配置界面
 /ad reload                     # 重新加载配置
 /ad interval <tick>            # 设置定时触发丢弃的间隔（单位：tick）

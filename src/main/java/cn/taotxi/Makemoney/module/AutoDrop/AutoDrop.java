@@ -21,9 +21,11 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
 
@@ -199,6 +201,7 @@ public class AutoDrop {
                 .then(ClientCommandManager.literal("reload").executes(AutoDrop::reloadConfig))
                 .then(ClientCommandManager.literal("config").executes(AutoDrop::openConfigGui))
                 .then(ClientCommandManager.literal("test").executes(AutoDrop::test))
+                .then(ClientCommandManager.literal("clean").executes(AutoDrop::cleanInventory))
                 .then(ClientCommandManager.literal("on")
                     .executes(context -> toggleAutoDrop(context, true)))
                 .then(ClientCommandManager.literal("off")
@@ -279,6 +282,22 @@ public class AutoDrop {
                 T.tl("autodrop.disabled.message")
         );
         toggleSwitch(enable);
+        return 1;
+    }
+
+    private static int cleanInventory(CommandContext<FabricClientCommandSource> context) {
+        LocalPlayer player = context.getSource().getPlayer();
+        if (player.hasContainerOpen()) return 1;
+
+        InventoryMenu inventoryMenu = player.inventoryMenu;
+        for (int i = InventoryMenu.INV_SLOT_START; i < InventoryMenu.USE_ROW_SLOT_END; i++) {
+
+            ItemStack item = inventoryMenu.getSlot(i).getItem();
+            if (item.isEmpty()) continue;
+            client.gameMode.handleInventoryMouseClick(
+                inventoryMenu.containerId, i, 1, ClickType.THROW, player
+            );
+        };
         return 1;
     }
 
