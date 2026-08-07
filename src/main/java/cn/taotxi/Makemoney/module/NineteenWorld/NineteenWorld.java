@@ -22,25 +22,6 @@ public class NineteenWorld {
         IgnoreMessage.initialize();
     }
 
-    // public static void onOpenContainer(int currentContainerId) {
-    //     if (!CONFIG.fixSignInIssueEnabled.getValue()) {
-    //         return;
-    //     }
-    //     if (lastOpenContainerId == -1 || currentContainerId == lastOpenContainerId) {
-    //         lastOpenContainerId = currentContainerId;
-    //         return;
-    //     }
-
-    //     client.player.connection.send(new ServerboundContainerClosePacket(lastOpenContainerId));
-    //     lastOpenContainerId = -1;
-    // }
-
-    // public static void onCloseContainer(int currentContainerId) {
-    //     if (currentContainerId == lastOpenContainerId) {
-    //         lastOpenContainerId = -1;
-    //     }
-    // }
-
     public static void onUseItem(InteractionHand interactionHand) {
         if (
             !CONFIG.rightClickOpenShulkerBoxEnabled.getValue() ||

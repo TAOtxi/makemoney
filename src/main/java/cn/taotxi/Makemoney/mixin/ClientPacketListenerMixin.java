@@ -92,16 +92,14 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
     public void onOpenScreen(ClientboundOpenScreenPacket packet, CallbackInfo ci) {
         if (minecraft.isSameThread()) {
             AutoEnchantMending.onOpenAnvil();
-            // NineteenWorld.onOpenContainer(packet.getContainerId());
         };
     }
     
-    @Inject(method = "handleContainerClose", at = @At("TAIL"))
-    public void onCloseContainer(ClientboundContainerClosePacket packet, CallbackInfo ci) {
-        if (minecraft.isSameThread()) {
-            // NineteenWorld.onCloseContainer(packet.getContainerId());
-        };
-    }
+    // @Inject(method = "handleContainerClose", at = @At("TAIL"))
+    // public void onCloseContainer(ClientboundContainerClosePacket packet, CallbackInfo ci) {
+    //     if (minecraft.isSameThread()) {
+    //     };
+    // }
 
     @Inject(method = "handleContainerContent", at = @At("TAIL"))
     public void onContainerContent(ClientboundContainerSetContentPacket packet, CallbackInfo ci) {
