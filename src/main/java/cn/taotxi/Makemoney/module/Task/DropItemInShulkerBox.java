@@ -17,7 +17,7 @@ import net.minecraft.network.protocol.game.ServerboundPlayerInputPacket;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Input;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.ShulkerBoxMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
@@ -77,8 +77,8 @@ public class DropItemInShulkerBox {
         }
 
         int handSlot = client.player.getInventory().getSelectedSlot();
-        client.gameMode.handleInventoryMouseClick(
-            client.player.containerMenu.containerId, slot, handSlot, ClickType.SWAP, client.player
+        client.gameMode.handleContainerInput(
+            client.player.containerMenu.containerId, slot, handSlot, ContainerInput.SWAP, client.player
         );
 
         Input shiftInput = new Input(
@@ -141,8 +141,8 @@ public class DropItemInShulkerBox {
         );
 
         int handSlot = client.player.getInventory().getSelectedSlot() + 36;
-        client.gameMode.handleInventoryMouseClick(
-            client.player.inventoryMenu.containerId, handSlot, 1, ClickType.THROW, client.player
+        client.gameMode.handleContainerInput(
+            client.player.inventoryMenu.containerId, handSlot, 1, ContainerInput.THROW, client.player
         );
 
         client.player.connection.send(
@@ -168,8 +168,8 @@ public class DropItemInShulkerBox {
         int endSlot = slotRange.getValue();
         for (int i = startSlot; i <= endSlot; i++) {
             if (!menu.getSlot(i).getItem().isEmpty()) {
-                client.gameMode.handleInventoryMouseClick(
-                    menu.containerId, i, 1, ClickType.THROW, client.player
+                client.gameMode.handleContainerInput(
+                    menu.containerId, i, 1, ContainerInput.THROW, client.player
                 );
             }
         }

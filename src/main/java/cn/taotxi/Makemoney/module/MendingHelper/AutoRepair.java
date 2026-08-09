@@ -13,7 +13,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -90,7 +90,7 @@ public class AutoRepair {
         for (BlockPos pos : BlockPos.withinManhattan(
             BlockPos.containing(eyePos), searchRadius, searchRadius, searchRadius)
         ) {
-            if (eyePos.distanceToSqr(pos.getCenter()) > maxDistance2) continue;
+            if (eyePos.distanceToSqr(new Vec3(pos))  > maxDistance2) continue;
 
             if (isAnvilBlock(pos)) {
                 return pos;
@@ -168,8 +168,8 @@ public class AutoRepair {
             if (isMendingBook(item)) {
                 hasMendingBook = true;
                 toGetMendingBookCount--;
-                client.gameMode.handleInventoryMouseClick(
-                    containerMenu.containerId, i, 0, ClickType.QUICK_MOVE, client.player
+                client.gameMode.handleContainerInput(
+                    containerMenu.containerId, i, 0, ContainerInput.QUICK_MOVE, client.player
                 );
             }
             if (toGetMendingBookCount <= 0) break;
@@ -208,12 +208,12 @@ public class AutoRepair {
         }
 
         isGetingMendingBook = true;
-        BlockHitResult hitResult = new BlockHitResult(mendingBookPos.getCenter(), Direction.UP, mendingBookPos, false);
+        BlockHitResult hitResult = new BlockHitResult(new Vec3(mendingBookPos), Direction.UP, mendingBookPos, false);
         client.gameMode.useItemOn(client.player, InteractionHand.MAIN_HAND, hitResult);
     }
 
     private static boolean canInteract(BlockPos blockPos) {
-        return blockPos.getCenter().distanceToSqr(client.player.getEyePosition()) <= BLOCK_INTERACTION_RANGE * BLOCK_INTERACTION_RANGE;
+        return new Vec3(blockPos).distanceToSqr(client.player.getEyePosition()) <= BLOCK_INTERACTION_RANGE * BLOCK_INTERACTION_RANGE;
     }
 
     private static void tick() {
@@ -278,7 +278,7 @@ public class AutoRepair {
         }
 
         isRepairing = true;
-        BlockHitResult hitResult = new BlockHitResult(anvilPos.getCenter(), Direction.UP, anvilPos, false);
+        BlockHitResult hitResult = new BlockHitResult(new Vec3(anvilPos), Direction.UP, anvilPos, false);
         client.gameMode.useItemOn(client.player, InteractionHand.MAIN_HAND, hitResult);
     }
 }

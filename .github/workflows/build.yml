@@ -21,7 +21,7 @@ jobs:
       - name: setup jdk
         uses: actions/setup-java@v4
         with:
-          java-version: '21'
+          java-version: '25'
           distribution: 'microsoft'
       
       - name: make gradle wrapper executable
@@ -49,6 +49,6 @@ jobs:
           github-files: build/libs/*.jar
 
           dependencies: |
-            YetAnotherConfigLib@3.8.2+1.21.11-fabric(required){modrinth:1eAoo2KR}{curseforge:667299}#(ignore:github)
-            fabric-api@0.141.3+1.21.11(required){modrinth:P7dR8mSH}{curseforge:306612}#(ignore:github)
-            Mod Menu@17.0.0(optional){modrinth:mOgUt4GM}{curseforge:308702}#(ignore:github)
+            YetAnotherConfigLib@3.9.6+26.2-fabric(required){modrinth:1eAoo2KR}{curseforge:667299}#(ignore:github)
+            fabric-api@0.156.0+26.2(required){modrinth:P7dR8mSH}{curseforge:306612}#(ignore:github)
+            Mod Menu@20.0.1(optional){modrinth:mOgUt4GM}{curseforge:308702}#(ignore:github)

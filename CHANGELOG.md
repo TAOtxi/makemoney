@@ -1,4 +1,4 @@
-# [](https://github.com/TAOtxi/makemoney/compare/v2.6.2+1.21.11...v) (2026-08-01)
+# [Makemoney 2.6.2+26.2] (2026-08-10)
 
 
 ### Bug Fixes
@@ -8,7 +8,8 @@
 
 ### Features
 
-* **NineteenWorld:** 增加右键打开潜影盒功能; ([8ad713e](https://github.com/TAOtxi/makemoney/commit/8ad713e827c09e8c548fa0f6ab3655e3de3a0078))
+* 适配 26.2
+* highlight 模块涉及渲染，代码需重构，目前版本暂且删除
 
 
 

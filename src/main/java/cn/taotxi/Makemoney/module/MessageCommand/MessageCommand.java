@@ -52,9 +52,8 @@ public class MessageCommand {
                 try {
                     executeCommand(matcher, rules.get(pattern));
                 } catch (Exception e) {
-                    client.player.displayClientMessage(
-                        T.l("Error in pattern \"" + pattern.pattern() + "\": " + e.getMessage())
-                            .withStyle(ChatFormatting.RED), false);
+                    Message.clientSideMsg(T.l("Error in pattern \"" + pattern.pattern() + "\": " + e.getMessage())
+                            .withStyle(ChatFormatting.RED));
                 }
             }
         }

@@ -9,7 +9,7 @@ import com.mojang.brigadier.context.CommandContext;
 
 import java.util.List;
 
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -182,8 +182,8 @@ public class TaskUtil {
 
     private static void registerCommand() {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-            dispatcher.register(ClientCommandManager.literal("taskUtil")
-                .then(ClientCommandManager.literal("list")
+            dispatcher.register(ClientCommands.literal("taskUtil")
+                .then(ClientCommands.literal("list")
                     .executes(TaskUtil::listTimeTasks)));
         });
     }

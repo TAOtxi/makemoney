@@ -17,7 +17,7 @@ import cn.taotxi.Makemoney.util.MLogger;
 import cn.taotxi.Makemoney.util.Message;
 import cn.taotxi.Makemoney.util.T;
 import cn.taotxi.Makemoney.util.TaskUtil;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
@@ -130,7 +130,7 @@ public class MenuClick {
                 return false;
             }
 
-            client.gameMode.handleInventoryMouseClick(
+            client.gameMode.handleContainerInput(
                 chestMenu.containerId, 
                 action.slot, 
                 action.button, 
@@ -167,17 +167,17 @@ public class MenuClick {
 
     private static void registCommand() {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-            var cmd = dispatcher.register(ClientCommandManager.literal(MODULE_NAME)
+            var cmd = dispatcher.register(ClientCommands.literal(MODULE_NAME)
                 .executes(MenuClick::showHelp)
-                .then(ClientCommandManager.literal("help")
+                .then(ClientCommands.literal("help")
                     .executes(MenuClick::showHelp))
-                .then(ClientCommandManager.literal("config")
+                .then(ClientCommands.literal("config")
                     .executes(context -> {
                         GuiUtil.openYaclScreen(Makemoney.MOD_ID, MODULE_NAME);
                         return 1;
                     }))
-                .then(ClientCommandManager.literal("run")
-                    .then(ClientCommandManager.argument("task", StringArgumentType.string())
+                .then(ClientCommands.literal("run")
+                    .then(ClientCommands.argument("task", StringArgumentType.string())
                         .suggests(MenuClick::suggestTaskNames)
                         .executes(context -> {
                             String task = context.getArgument("task", String.class);
@@ -187,7 +187,7 @@ public class MenuClick {
                     )
             );
             
-            dispatcher.register(ClientCommandManager.literal("click")
+            dispatcher.register(ClientCommands.literal("click")
                     .executes(MenuClick::showHelp)
                     .redirect(cmd));
         });

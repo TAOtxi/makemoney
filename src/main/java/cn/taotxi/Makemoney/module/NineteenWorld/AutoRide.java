@@ -15,7 +15,7 @@ import cn.taotxi.Makemoney.gui.GuiUtil;
 import cn.taotxi.Makemoney.util.T;
 import cn.taotxi.Makemoney.util.TaskUtil;
 import cn.taotxi.Makemoney.util.game.GameUtil;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
@@ -162,8 +162,10 @@ public class AutoRide {
     }
 
     private static void rideTargetPlayer(Player playerCow) {
-        client.gameMode.interactAt(client.player, playerCow, 
+        client.gameMode.interact(client.player, playerCow, 
                 new EntityHitResult(playerCow), InteractionHand.MAIN_HAND);
+        client.gameMode.interact(client.player, playerCow, 
+                new EntityHitResult(playerCow), InteractionHand.OFF_HAND);
     }
 
     private static int showHelp(CommandContext<FabricClientCommandSource> context) {
@@ -183,12 +185,12 @@ public class AutoRide {
     // TODO: BUG: 插入的变量颜色是白色，即使设置为§e也无效。
     private static void registerCommand() {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-            var command = dispatcher.register(ClientCommandManager.literal("autoride")
+            var command = dispatcher.register(ClientCommands.literal("autoride")
                 .executes(AutoRide::showHelp)
-                .then(ClientCommandManager.literal("help")
+                .then(ClientCommands.literal("help")
                     .executes(AutoRide::showHelp))
-                .then(ClientCommandManager.literal("target")
-                    .then(ClientCommandManager.argument("player", StringArgumentType.string())
+                .then(ClientCommands.literal("target")
+                    .then(ClientCommands.argument("player", StringArgumentType.string())
                         .suggests((context, builder) -> suggestPlayerNames(context, builder))
                         .executes(context -> {
                             String target = context.getArgument("player", String.class);
@@ -197,8 +199,8 @@ public class AutoRide {
                             context.getSource().sendFeedback(T.tl("autoride.target.message", target));
                             return 1;
                         })))
-                .then(ClientCommandManager.literal("interval")
-                    .then(ClientCommandManager.argument("interval", IntegerArgumentType.integer())
+                .then(ClientCommands.literal("interval")
+                    .then(ClientCommands.argument("interval", IntegerArgumentType.integer())
                         .executes(context -> {
                             int interval = context.getArgument("interval", Integer.class);
                             CONFIG.autoRideRunInterval.setValue(interval);
@@ -206,8 +208,8 @@ public class AutoRide {
                             context.getSource().sendFeedback(T.tl("autoride.interval.message", interval));
                             return 1;
                         })))
-                .then(ClientCommandManager.literal("distance")
-                    .then(ClientCommandManager.argument("distance", FloatArgumentType.floatArg())
+                .then(ClientCommands.literal("distance")
+                    .then(ClientCommands.argument("distance", FloatArgumentType.floatArg())
                         .executes(context -> {
                             float distance = context.getArgument("distance", Float.class);
                             CONFIG.autoRideMinDistance.setValue(distance);
@@ -215,21 +217,21 @@ public class AutoRide {
                             context.getSource().sendFeedback(T.tl("autoride.distance.message", distance));
                             return 1;
                         })))
-                .then(ClientCommandManager.literal("reset").executes(context -> {
+                .then(ClientCommands.literal("reset").executes(context -> {
                     CONFIG.resetConfig();
                     setEnabled(false);
                     context.getSource().sendFeedback(T.tl("autoride.reset.message"));
                     return 1;
                 }))
-                .then(ClientCommandManager.literal("smoothHead")
-                    .then(ClientCommandManager.literal("on")
+                .then(ClientCommands.literal("smoothHead")
+                    .then(ClientCommands.literal("on")
                         .executes(context -> {
                             CONFIG.autoRideEnableShakeOffPlayer.enable();
                             CONFIG.saveConfig();
                             context.getSource().sendFeedback(T.tl("autoride.enableShakeOffPlayer.message", true));
                             return 1;
                         }))
-                    .then(ClientCommandManager.literal("off")
+                    .then(ClientCommands.literal("off")
                         .executes(context -> {
                             CONFIG.autoRideEnableShakeOffPlayer.disable();
                             CONFIG.saveConfig();
@@ -237,23 +239,23 @@ public class AutoRide {
                             return 1;
                         }))
                 )
-                .then(ClientCommandManager.literal("on").executes(context -> {
+                .then(ClientCommands.literal("on").executes(context -> {
                     setEnabled(true);
                     context.getSource().sendFeedback(T.tl("autoride.enabled.message"));
                     return 1;
                 }))
-                .then(ClientCommandManager.literal("off").executes(context -> {
+                .then(ClientCommands.literal("off").executes(context -> {
                     setEnabled(false);
                     context.getSource().sendFeedback(T.tl("autoride.disabled.message"));
                     return 1;
                 }))
-                .then(ClientCommandManager.literal("config").executes(context -> {
+                .then(ClientCommands.literal("config").executes(context -> {
                     GuiUtil.openYaclScreen(Makemoney.MOD_ID, MODULE_NAME);
                     return 1;
                 }))
             );
 
-            dispatcher.register(ClientCommandManager.literal("ar")
+            dispatcher.register(ClientCommands.literal("ar")
                     .executes(AutoRide::showHelp)
                     .redirect(command));
         });

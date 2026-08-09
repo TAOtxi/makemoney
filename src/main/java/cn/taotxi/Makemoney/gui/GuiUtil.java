@@ -9,7 +9,7 @@ import cn.taotxi.Makemoney.module.AutoAFK.AutoAFK;
 import cn.taotxi.Makemoney.module.AutoDrop.AutoDrop;
 import cn.taotxi.Makemoney.module.AutoDrop.AutoDropConfigGui;
 import cn.taotxi.Makemoney.module.AutoFish.AutoFish;
-import cn.taotxi.Makemoney.module.Highlight.Highlight;
+// import cn.taotxi.Makemoney.module.Highlight.Highlight;
 import cn.taotxi.Makemoney.module.MendingHelper.MendingHelper;
 import cn.taotxi.Makemoney.module.MenuClick.MenuClick;
 import cn.taotxi.Makemoney.module.MessageCommand.MessageCommand;
@@ -36,32 +36,32 @@ public class GuiUtil {
             AutoAFK.MODULE_NAME, 2,
             IgnoreMessage.MODULE_NAME, 3,
             MessageCommand.MODULE_NAME, 4,
-            MenuClick.MODULE_NAME, 5,
-            Highlight.MODULE_NAME, 6
+            MenuClick.MODULE_NAME, 5
+            // Highlight.MODULE_NAME, 6
         );
     }
 
     public static void openConfigChangeTipWindow(List<String> configChangeNameList) {
         TaskUtil.createTimeTask("configChangeTipWindow", () -> {
-            if (!(Minecraft.getInstance().screen instanceof TitleScreen)) {
+            if (!(client.gui.screen() instanceof TitleScreen)) {
                 return;
             }
 
-            Screen originScreen = Minecraft.getInstance().screen;
+            Screen originScreen = client.gui.screen();
             ConfirmScreen confirmScreen = new ConfirmScreen(
                 (isConfirm) -> {
                     if (isConfirm) {
                         MakemoneyConfig.getInstance().resetConfig(configChangeNameList);
                     }
                     MakemoneyConfig.getInstance().updateConfigVersionField();
-                    Minecraft.getInstance().setScreen(originScreen);
+                    client.gui.setScreen(originScreen);
                 },
                 T.tl("gui.dialog.configChange.title"),
                 T.tl("gui.dialog.configChange.message"),
                 T.tl("gui.dialog.configChange.confirm"),
                 T.tl("gui.dialog.configChange.cancel")
             );
-            Minecraft.getInstance().setScreen(confirmScreen);
+            client.gui.setScreen(confirmScreen);
             TaskUtil.removeTimeTask("configChangeTipWindow");
         }, 5);
     }
@@ -73,7 +73,7 @@ public class GuiUtil {
 
     public static void openYaclScreen(String key, int tabIndex) {
         TaskUtil.createTimeTask("openYaclScreen", () -> {
-            if (client.screen != null) return;
+            if (client.gui.screen() != null) return;
             TaskUtil.removeTimeTask("openYaclScreen");
             
             YACLScreen configScreen;
@@ -97,7 +97,7 @@ public class GuiUtil {
             }
 
             configScreen.tabNavigationBar.selectTab(tabIndex, true);
-            client.setScreen(configScreen);
+            client.gui.setScreen(configScreen);
         }, 1);
     }
 

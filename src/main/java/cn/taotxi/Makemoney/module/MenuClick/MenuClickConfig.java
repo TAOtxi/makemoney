@@ -11,7 +11,7 @@ import com.google.gson.JsonObject;
 
 import cn.taotxi.Makemoney.config.ConfigManager;
 import cn.taotxi.Makemoney.config.type.ConfigArray;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 
 public class MenuClickConfig extends ConfigManager {
     private static MenuClickConfig instance = null;
@@ -182,38 +182,38 @@ class MenuClickTask {
             if (button != 0 && button != 1) {
                 throw new IllegalArgumentException("Invalid action format: " + action);
             }
-            return new TaskAction(ClickType.PICKUP, button, slot, delay);
+            return new TaskAction(ContainerInput.PICKUP, button, slot, delay);
         }
         if (clickType.equals("throw")) {
             if (button != 0 && button != 1) {
                 throw new IllegalArgumentException("Invalid action format: " + action);
             }
-            return new TaskAction(ClickType.THROW, button, slot, delay);
+            return new TaskAction(ContainerInput.THROW, button, slot, delay);
         }
         if (clickType.equals("swap")) {
             if (button != 40 && (button < 0 || button >= 9)) {
                 throw new IllegalArgumentException("Invalid action format: " + action);
             }
-            return new TaskAction(ClickType.SWAP, button, slot, delay);
+            return new TaskAction(ContainerInput.SWAP, button, slot, delay);
         }
         if (clickType.equals("quickmove")) {
             if (button != 0 && button != 1) {
                 throw new IllegalArgumentException("Invalid action format: " + action);
             }
-            return new TaskAction(ClickType.QUICK_MOVE, button, slot, delay);
+            return new TaskAction(ContainerInput.QUICK_MOVE, button, slot, delay);
         }
         if (clickType.equals("clone")) {
-            return new TaskAction(ClickType.CLONE, button, slot, delay);   
+            return new TaskAction(ContainerInput.CLONE, button, slot, delay);   
         }
         if (clickType.equals("pickupall")) {
             if (button != 0 && button != 1) {
                 throw new IllegalArgumentException("Invalid action format: " + action);
             }
-            return new TaskAction(ClickType.PICKUP_ALL, button, slot, delay);
+            return new TaskAction(ContainerInput.PICKUP_ALL, button, slot, delay);
         }
         if (clickType.equals("quickcraft")) {
             // TODO: 完善约束条件
-            return new TaskAction(ClickType.QUICK_CRAFT, button, slot, delay);
+            return new TaskAction(ContainerInput.QUICK_CRAFT, button, slot, delay);
         }
         throw new IllegalArgumentException("Unknown action type: " + clickType);
     }
@@ -222,18 +222,18 @@ class MenuClickTask {
 
 class TaskAction {
     String command = "";
-    ClickType clickType = null;
+    ContainerInput clickType = null;
     int button = -1;
     int slot = -1;
     int delay = -1;
 
-    TaskAction(ClickType type, int button, int slot) {
+    TaskAction(ContainerInput type, int button, int slot) {
         this.clickType = type;
         this.button = button;
         this.slot = slot;
     }
 
-    TaskAction(ClickType type, int button, int slot, int delay) {
+    TaskAction(ContainerInput type, int button, int slot, int delay) {
         this.clickType = type;
         this.button = button;
         this.slot = slot;

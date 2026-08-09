@@ -17,9 +17,9 @@ import com.mojang.blaze3d.platform.Window;
 import cn.taotxi.Makemoney.Makemoney;
 import cn.taotxi.Makemoney.module.AutoDrop.AutoDropConfigGui;
 import cn.taotxi.Makemoney.module.AutoFish.AutoFishConfig;
-import cn.taotxi.Makemoney.module.Highlight.HighlightConfig;
-import cn.taotxi.Makemoney.module.Highlight.HighlightGui;
-import cn.taotxi.Makemoney.module.Highlight.render.Drawing;
+// import cn.taotxi.Makemoney.module.Highlight.HighlightConfig;
+// import cn.taotxi.Makemoney.module.Highlight.HighlightGui;
+// import cn.taotxi.Makemoney.module.Highlight.render.Drawing;
 import cn.taotxi.Makemoney.module.MendingHelper.MendingHelperConfig;
 import cn.taotxi.Makemoney.module.MenuClick.MenuClickConfig;
 import cn.taotxi.Makemoney.module.MenuClick.MenuClickConfigGui;
@@ -65,8 +65,8 @@ public class ConfigScreen {
                     MenuClickConfig.getInstance().saveConfig();
                     AutoAFKConfig.getInstance().saveConfig();
                     MENDING_HELPER_CONFIG.saveConfig();
-                    HighlightConfig.getInstance().saveConfig();
-                    Drawing.updateColorMap();
+                    // HighlightConfig.getInstance().saveConfig();
+                    // Drawing.updateColorMap();
 
                     // TODO: 待寻找更合适的触发方式
                     MessageCommandConfig.getInstance().messageRules.triggerConfigChange();
@@ -90,8 +90,8 @@ public class ConfigScreen {
         ConfigCategory.Builder menuClickCategory = MenuClickConfigGui.createMenuClickConfigCategory(parent);
         builder.category(menuClickCategory.build());
 
-        ConfigCategory.Builder highlightCategory = HighlightGui.createHighlightCategory(parent);
-        builder.category(highlightCategory.build());
+        // ConfigCategory.Builder highlightCategory = HighlightGui.createHighlightCategory(parent);
+        // builder.category(highlightCategory.build());
         
         ConfigCategory.Builder moduleCategory = createConfigCategory(parent);
         builder.category(moduleCategory.build());
@@ -386,7 +386,7 @@ public class ConfigScreen {
                     YACLScreen autodropScreen = (YACLScreen) AutoDropConfigGui.createScreen(screen);
                     Window window = Minecraft.getInstance().getWindow(); 
                     autodropScreen.init(window.getGuiScaledWidth(), window.getGuiScaledHeight());
-                    Minecraft.getInstance().setScreen(autodropScreen);
+                    Minecraft.getInstance().gui.setScreen(autodropScreen);
                 })
                 .build()
         );
@@ -421,11 +421,11 @@ public class ConfigScreen {
                         newScreen.tabNavigationBar.getTabs().size() - 1
                 );
             }
-            client.setScreen(newScreen);
+            client.gui.setScreen(newScreen);
             GLFW.glfwSetCursorPos(client.getWindow().handle(), x, y);
 
         } catch (Exception e) {
-            client.setScreen(parent);
+            client.gui.setScreen(parent);
             Makemoney.LOGGER.error("YACL reload hack failed with exception\n{}", e);
         }
     }
@@ -461,10 +461,10 @@ public class ConfigScreen {
     }
 
     public static boolean isOpenYaclScreen() {
-        return Minecraft.getInstance().screen instanceof YACLScreen;
+        return Minecraft.getInstance().gui.screen() instanceof YACLScreen;
     }
 
     public static void openConfigScreen(Screen parent) {
-        Minecraft.getInstance().setScreen(getConfigScreen(parent));
+        Minecraft.getInstance().gui.setScreen(getConfigScreen(parent));
     }
 }

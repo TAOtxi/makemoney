@@ -16,7 +16,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.InventoryMenu;
 
 
@@ -212,7 +212,7 @@ public class Dropper {
         LocalPlayer player = client.player;
         InventoryMenu inventoryMenu = player.inventoryMenu;
         for (int slot: slots) {
-            client.gameMode.handleInventoryMouseClick(inventoryMenu.containerId, slot, 1, ClickType.THROW, player);
+            client.gameMode.handleContainerInput(inventoryMenu.containerId, slot, 1, ContainerInput.THROW, player);
         }
     }
 
@@ -317,12 +317,12 @@ public class Dropper {
         boolean putItemInInventory = CONFIG.putItemInInventoryWhenOpenContainer.getValue();
         for (int slot: dropSlots) {
             if (!putItemInInventory) {
-                client.gameMode.handleInventoryMouseClick(
-                    containerMenu.containerId, slot, 1, ClickType.THROW, client.player);
+                client.gameMode.handleContainerInput(
+                    containerMenu.containerId, slot, 1, ContainerInput.THROW, client.player);
             }
             else {
-                client.gameMode.handleInventoryMouseClick(
-                    containerMenu.containerId, slot, 0, ClickType.QUICK_MOVE, client.player);
+                client.gameMode.handleContainerInput(
+                    containerMenu.containerId, slot, 0, ContainerInput.QUICK_MOVE, client.player);
             }
         }
 

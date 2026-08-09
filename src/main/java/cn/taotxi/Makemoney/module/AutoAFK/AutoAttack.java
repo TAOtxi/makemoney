@@ -11,7 +11,7 @@ import com.mojang.brigadier.context.CommandContext;
 import cn.taotxi.Makemoney.util.Message;
 import cn.taotxi.Makemoney.util.T;
 import cn.taotxi.Makemoney.util.TaskUtil;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
@@ -108,25 +108,25 @@ public class AutoAttack {
     }
 
     public static LiteralArgumentBuilder<FabricClientCommandSource> attackCommand() {
-        return ClientCommandManager.literal("attack")
+        return ClientCommands.literal("attack")
             .executes(AutoAttack::showHelp)
-            .then(ClientCommandManager.literal("help").executes(AutoAttack::showHelp))
-            .then(ClientCommandManager.literal("on")
+            .then(ClientCommands.literal("help").executes(AutoAttack::showHelp))
+            .then(ClientCommands.literal("on")
                 .executes(context -> {
                     CONFIG.autoAttackEnabled.enable();
                     CONFIG.saveConfig();
                     context.getSource().sendFeedback(T.tl("autoAFK.autoAttack.enabled.message"));
                     return 1;
                 }))
-            .then(ClientCommandManager.literal("off")
+            .then(ClientCommands.literal("off")
                 .executes(context -> {
                     CONFIG.autoAttackEnabled.disable();
                     CONFIG.saveConfig();
                     context.getSource().sendFeedback(T.tl("autoAFK.autoAttack.disabled.message"));
                     return 1;
                 }))
-            .then(ClientCommandManager.literal("interval")
-                .then(ClientCommandManager.argument("interval", IntegerArgumentType.integer(1))
+            .then(ClientCommands.literal("interval")
+                .then(ClientCommands.argument("interval", IntegerArgumentType.integer(1))
                 .executes(context -> {
                     int interval = context.getArgument("interval", Integer.class);
                     CONFIG.attackInterval.setValue(interval);
@@ -134,7 +134,7 @@ public class AutoAttack {
                     context.getSource().sendFeedback(T.tl("autoAFK.autoAttack.interval.message", interval));
                     return 1;
                 })))
-            .then(ClientCommandManager.literal("info")
+            .then(ClientCommands.literal("info")
                 .executes(context -> {
                     float tps = calcServerTps.getTps();
                     int attackInterval = getAttackInterval();

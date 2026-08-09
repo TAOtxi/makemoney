@@ -4,7 +4,7 @@ import java.util.Map;
 
 import com.mojang.brigadier.context.CommandContext;
 
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
@@ -33,36 +33,36 @@ public class MendingHelper {
 
     private static void registerCommand() {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-            var cmd = dispatcher.register(ClientCommandManager.literal(MODULE_NAME)
+            var cmd = dispatcher.register(ClientCommands.literal(MODULE_NAME)
                 .executes(MendingHelper::showHelp)
-                .then(ClientCommandManager.literal("autoreplace")
-                    .then(ClientCommandManager.literal("on")
+                .then(ClientCommands.literal("autoreplace")
+                    .then(ClientCommands.literal("on")
                         .executes(context -> setAutoReplaceEnabled(true)))
-                    .then(ClientCommandManager.literal("off")
+                    .then(ClientCommands.literal("off")
                         .executes(context -> setAutoReplaceEnabled(false))))
-                .then(ClientCommandManager.literal("autoenchant")
-                    .then(ClientCommandManager.literal("on")
+                .then(ClientCommands.literal("autoenchant")
+                    .then(ClientCommands.literal("on")
                         .executes(context -> setAutoEnchantEnabled(true)))
-                    .then(ClientCommandManager.literal("off")
+                    .then(ClientCommands.literal("off")
                         .executes(context -> setAutoEnchantEnabled(false))))
-                .then(ClientCommandManager.literal("autodecompose")
-                    .then(ClientCommandManager.literal("on")
+                .then(ClientCommands.literal("autodecompose")
+                    .then(ClientCommands.literal("on")
                         .executes(context -> setAutoDecomposeEnabled(true)))
-                    .then(ClientCommandManager.literal("off")
+                    .then(ClientCommands.literal("off")
                         .executes(context -> setAutoDecomposeEnabled(false))))
-                .then(ClientCommandManager.literal("autorepair")
-                    .then(ClientCommandManager.literal("on")
+                .then(ClientCommands.literal("autorepair")
+                    .then(ClientCommands.literal("on")
                         .executes(context -> setAutoRepairEnabled(true)))
-                    .then(ClientCommandManager.literal("off")
+                    .then(ClientCommands.literal("off")
                         .executes(context -> setAutoRepairEnabled(false)))
-                    .then(ClientCommandManager.literal("setMendingBookPos")
+                    .then(ClientCommands.literal("setMendingBookPos")
                         .executes(MendingHelper::setMendingBookPos))
                     )
-                .then(ClientCommandManager.literal("config")
+                .then(ClientCommands.literal("config")
                     .executes(MendingHelper::openConfigScreen))
             );
 
-            dispatcher.register(ClientCommandManager.literal("mh")
+            dispatcher.register(ClientCommands.literal("mh")
                 .executes(MendingHelper::showHelp)
                 .redirect(cmd)
             );

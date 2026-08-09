@@ -5,10 +5,10 @@ import com.mojang.brigadier.context.CommandContext;
 import cn.taotxi.Makemoney.Makemoney;
 import cn.taotxi.Makemoney.gui.GuiUtil;
 import cn.taotxi.Makemoney.util.T;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLevelEvents;
 
 public class AutoAFK {
     public static final String MODULE_NAME = "autoafk";
@@ -19,27 +19,27 @@ public class AutoAFK {
         TpsChecker.initialize();
         registerCommand();
 
-        ClientWorldEvents.AFTER_CLIENT_WORLD_CHANGE.register((mc, level) -> {
+        ClientLevelEvents.AFTER_CLIENT_LEVEL_CHANGE.register((mc, level) -> {
             calcServerTps.reset();
         });
     }
 
     private static void registerCommand() {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-            var cmd = dispatcher.register(ClientCommandManager.literal(MODULE_NAME)
+            var cmd = dispatcher.register(ClientCommands.literal(MODULE_NAME)
                 .executes(AutoAFK::showHelp)
-                .then(ClientCommandManager.literal("help")
+                .then(ClientCommands.literal("help")
                     .executes(AutoAFK::showHelp))
                 .then(AutoAttack.attackCommand())
                 .then(TpsChecker.tpsCheckCmd())
-                .then(ClientCommandManager.literal("config")
+                .then(ClientCommands.literal("config")
                     .executes(context -> {
                         GuiUtil.openYaclScreen(Makemoney.MOD_ID, MODULE_NAME);
                         return 1;
                     }))
             );
 
-            dispatcher.register(ClientCommandManager.literal("afkk")
+            dispatcher.register(ClientCommands.literal("afkk")
                 .executes(AutoAFK::showHelp)
                 .redirect(cmd)
             );

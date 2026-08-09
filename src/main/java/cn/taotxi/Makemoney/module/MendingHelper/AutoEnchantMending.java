@@ -6,7 +6,7 @@ import cn.taotxi.Makemoney.util.game.InventoryUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.AnvilMenu;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -50,15 +50,15 @@ public class AutoEnchantMending {
 
         ItemStack inputItem = anvilMenu.getSlot(AnvilMenu.INPUT_SLOT).getItem();
         if (!shouldAtSlot1(inputItem)) {
-            client.gameMode.handleInventoryMouseClick(
-                anvilMenu.containerId, AnvilMenu.INPUT_SLOT, 1, ClickType.THROW, client.player);
+            client.gameMode.handleContainerInput(
+                anvilMenu.containerId, AnvilMenu.INPUT_SLOT, 1, ContainerInput.THROW, client.player);
             isInputSlotValid = false;
         }
 
         ItemStack additionItem = anvilMenu.getSlot(AnvilMenu.ADDITIONAL_SLOT).getItem();
         if (!shouldAtSlot2(additionItem)) {
-            client.gameMode.handleInventoryMouseClick(
-                anvilMenu.containerId, AnvilMenu.ADDITIONAL_SLOT, 1, ClickType.THROW, client.player);
+            client.gameMode.handleContainerInput(
+                anvilMenu.containerId, AnvilMenu.ADDITIONAL_SLOT, 1, ContainerInput.THROW, client.player);
             isAdditionSlotValid = false;
         }
 
@@ -68,8 +68,8 @@ public class AutoEnchantMending {
             for (int i = l; i <= r; i++) {
                 ItemStack item = anvilMenu.getSlot(i).getItem();
                 if (!isInputSlotValid && shouldAtSlot1(item)) {
-                    client.gameMode.handleInventoryMouseClick(
-                        anvilMenu.containerId, i, 0, ClickType.QUICK_MOVE, client.player);
+                    client.gameMode.handleContainerInput(
+                        anvilMenu.containerId, i, 0, ContainerInput.QUICK_MOVE, client.player);
                     isInputSlotValid = true;
                     break;
                 }
@@ -85,8 +85,8 @@ public class AutoEnchantMending {
             for (int i = l; i <= r; i++) {
                 ItemStack item = anvilMenu.getSlot(i).getItem();
                 if (!isAdditionSlotValid && shouldAtSlot2(item)) {
-                    client.gameMode.handleInventoryMouseClick(
-                        anvilMenu.containerId, i, 0, ClickType.QUICK_MOVE, client.player);
+                    client.gameMode.handleContainerInput(
+                        anvilMenu.containerId, i, 0, ContainerInput.QUICK_MOVE, client.player);
                     isAdditionSlotValid = true;
                     break;
                 }
@@ -111,13 +111,13 @@ public class AutoEnchantMending {
                 AutoRepair.stopRepairing();
                 return;
             }
-            client.gameMode.handleInventoryMouseClick(
-                anvilMenu.containerId, AnvilMenu.RESULT_SLOT, 0, ClickType.QUICK_MOVE, client.player);
+            client.gameMode.handleContainerInput(
+                anvilMenu.containerId, AnvilMenu.RESULT_SLOT, 0, ContainerInput.QUICK_MOVE, client.player);
             return;
         }
 
-        client.gameMode.handleInventoryMouseClick(
-            anvilMenu.containerId, AnvilMenu.RESULT_SLOT, 1, ClickType.THROW, client.player);
+        client.gameMode.handleContainerInput(
+            anvilMenu.containerId, AnvilMenu.RESULT_SLOT, 1, ContainerInput.THROW, client.player);
     }
 
     private static boolean shouldAtSlot1(ItemStack item) {

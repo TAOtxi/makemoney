@@ -15,7 +15,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ChestMenu;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.CrafterMenu;
 import net.minecraft.world.inventory.DispenserMenu;
 import net.minecraft.world.inventory.HopperMenu;
@@ -54,9 +54,9 @@ public class InventoryUtil {
         };
         int containerId = client.player.inventoryMenu.containerId;
 
-        client.gameMode.handleInventoryMouseClick(containerId, slot1, 0, ClickType.SWAP, client.player);
-        client.gameMode.handleInventoryMouseClick(containerId, slot2, 0, ClickType.SWAP, client.player);
-        client.gameMode.handleInventoryMouseClick(containerId, slot1, 0, ClickType.SWAP, client.player);
+        client.gameMode.handleContainerInput(containerId, slot1, 0, ContainerInput.SWAP, client.player);
+        client.gameMode.handleContainerInput(containerId, slot2, 0, ContainerInput.SWAP, client.player);
+        client.gameMode.handleContainerInput(containerId, slot1, 0, ContainerInput.SWAP, client.player);
     }
 
     public static void swapItemToHand(InteractionHand hand, int slotNum) {
@@ -70,20 +70,20 @@ public class InventoryUtil {
                 inventory.setSelectedSlot(slotNum - InventoryMenu.USE_ROW_SLOT_START);
                 client.getConnection().send(new ServerboundSetCarriedItemPacket(inventory.getSelectedSlot()));
             } else {
-                client.gameMode.handleInventoryMouseClick(
+                client.gameMode.handleContainerInput(
                     client.player.inventoryMenu.containerId,
                     slotNum,
                     inventory.getSelectedSlot(),
-                    ClickType.SWAP,
+                    ContainerInput.SWAP,
                     client.player
                 );
             }
         } else {
-            client.gameMode.handleInventoryMouseClick(
+            client.gameMode.handleContainerInput(
                 client.player.inventoryMenu.containerId,
                 slotNum,
                 Inventory.SLOT_OFFHAND,
-                ClickType.SWAP,
+                ContainerInput.SWAP,
                 client.player
             );
         }

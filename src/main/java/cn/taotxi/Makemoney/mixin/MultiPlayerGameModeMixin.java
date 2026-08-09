@@ -13,17 +13,18 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.EntityHitResult;
 
 @Mixin(MultiPlayerGameMode.class)
 public class MultiPlayerGameModeMixin {
 
     @Inject(method = "interact", at = @At("HEAD"))
-    public void interactBefore(Player player, Entity entity, InteractionHand interactionHand, CallbackInfoReturnable<InteractionResult> cir) {
+    public void interactBefore(final Player player, final Entity entity, final EntityHitResult hitResult, final InteractionHand interactionHand, CallbackInfoReturnable<InteractionResult> cir) {
         RightClickRide.handleInteract(player, entity, interactionHand);
     }
 
     @Inject(method = "useItem", at = @At("HEAD"))
-    public void useItemBefore(Player player, InteractionHand interactionHand, CallbackInfoReturnable<InteractionResult> cir) {
+    public void useItemBefore(final Player player, final InteractionHand interactionHand, CallbackInfoReturnable<InteractionResult> cir) {
         AutoFish.initRotaion(player, interactionHand);
         NineteenWorld.onUseItem(interactionHand);
     }

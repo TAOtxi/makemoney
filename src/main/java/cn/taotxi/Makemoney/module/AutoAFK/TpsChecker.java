@@ -5,7 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import cn.taotxi.Makemoney.util.Message;
 import cn.taotxi.Makemoney.util.T;
 import cn.taotxi.Makemoney.util.TaskUtil;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
 
@@ -79,15 +79,15 @@ public class TpsChecker {
     }
 
     public static LiteralArgumentBuilder<FabricClientCommandSource> tpsCheckCmd() {
-        return ClientCommandManager.literal("tpsCheck")
-            .then(ClientCommandManager.literal("on")
+        return ClientCommands.literal("tpsCheck")
+            .then(ClientCommands.literal("on")
                 .executes(context -> {
                     CONFIG.tpsCheckEnabled.enable();
                     CONFIG.saveConfig();
                     context.getSource().sendFeedback(T.tl("autoAFK.tpsCheck.on.message"));
                     return 1;
                 }))
-            .then(ClientCommandManager.literal("off")
+            .then(ClientCommands.literal("off")
                 .executes(context -> {
                     CONFIG.tpsCheckEnabled.disable();
                     CONFIG.saveConfig();

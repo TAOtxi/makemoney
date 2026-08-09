@@ -1,7 +1,7 @@
 package cn.taotxi.Makemoney.module.Test;
 
 import cn.taotxi.Makemoney.util.TaskUtil;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
@@ -18,8 +18,8 @@ public class Test {
 
 
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-            var cmd = ClientCommandManager.literal("tt")
-                .then(ClientCommandManager.literal("1")
+            var cmd = ClientCommands.literal("tt")
+                .then(ClientCommands.literal("1")
                     .executes(context -> {
                         var camera = client.getCameraEntity();
                         System.out.println(camera);
@@ -31,7 +31,7 @@ public class Test {
 
                         return 1;
                     }))
-                .then(ClientCommandManager.literal("2")
+                .then(ClientCommands.literal("2")
                     .executes(context -> {
                         var it = client.level.entitiesForRendering();
                         for (Entity e : it) {
@@ -40,7 +40,7 @@ public class Test {
 
                         return 1;
                     }))
-                .then(ClientCommandManager.literal("clear")
+                .then(ClientCommands.literal("clear")
                     .executes(context -> {
                         TaskUtil.removeTimeTask("tt1");
                         TaskUtil.removeTimeTask("tt2");

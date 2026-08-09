@@ -16,16 +16,16 @@ import cn.taotxi.Makemoney.util.T;
 import cn.taotxi.Makemoney.util.TaskUtil;
 import cn.taotxi.Makemoney.util.game.InventoryUtil;
 import cn.taotxi.Makemoney.util.game.ItemStackUtil;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLevelEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
 
@@ -44,7 +44,7 @@ public class AutoDrop {
     public static void initialize() {
         CONFIG.loadConfig();
 
-        ClientWorldEvents.AFTER_CLIENT_WORLD_CHANGE.register((mc, level) -> {
+        ClientLevelEvents.AFTER_CLIENT_LEVEL_CHANGE.register((mc, level) -> {
             if (CONFIG.turnOffWhenChangeWorld.getValue()) {
                 toggleSwitch(false);
             }
@@ -196,51 +196,51 @@ public class AutoDrop {
     }
 
     public static void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
-        var command = dispatcher.register(ClientCommandManager.literal(MODULE_NAME).executes(AutoDrop::showHelp)
-                .then(ClientCommandManager.literal("help").executes(AutoDrop::showHelp))
-                .then(ClientCommandManager.literal("reload").executes(AutoDrop::reloadConfig))
-                .then(ClientCommandManager.literal("config").executes(AutoDrop::openConfigGui))
-                .then(ClientCommandManager.literal("test").executes(AutoDrop::test))
-                .then(ClientCommandManager.literal("clean").executes(AutoDrop::cleanInventory))
-                .then(ClientCommandManager.literal("on")
+        var command = dispatcher.register(ClientCommands.literal(MODULE_NAME).executes(AutoDrop::showHelp)
+                .then(ClientCommands.literal("help").executes(AutoDrop::showHelp))
+                .then(ClientCommands.literal("reload").executes(AutoDrop::reloadConfig))
+                .then(ClientCommands.literal("config").executes(AutoDrop::openConfigGui))
+                .then(ClientCommands.literal("test").executes(AutoDrop::test))
+                .then(ClientCommands.literal("clean").executes(AutoDrop::cleanInventory))
+                .then(ClientCommands.literal("on")
                     .executes(context -> toggleAutoDrop(context, true)))
-                .then(ClientCommandManager.literal("off")
+                .then(ClientCommands.literal("off")
                     .executes(context -> toggleAutoDrop(context, false)))
-                .then(ClientCommandManager.literal("ignore")
-                    .then(ClientCommandManager.literal("clear")
+                .then(ClientCommands.literal("ignore")
+                    .then(ClientCommands.literal("clear")
                         .executes(AutoDrop::resetIgnoreSlots))
-                    .then(ClientCommandManager.literal("set")
-                        .then(ClientCommandManager.argument("1,2,3,4,...", StringArgumentType.string())
+                    .then(ClientCommands.literal("set")
+                        .then(ClientCommands.argument("1,2,3,4,...", StringArgumentType.string())
                             .executes(AutoDrop::setIgnoreSlots)))
-                    .then(ClientCommandManager.literal("current")
+                    .then(ClientCommands.literal("current")
                         .executes(AutoDrop::ignoreNotEmptySlots))
                 )
-                .then(ClientCommandManager.literal("interval")
-                    .then(ClientCommandManager.argument("interval", IntegerArgumentType.integer(1))
+                .then(ClientCommands.literal("interval")
+                    .then(ClientCommands.argument("interval", IntegerArgumentType.integer(1))
                         .executes(AutoDrop::setTimeTriggerInterval)))
-                .then(ClientCommandManager.literal("debug")
-                    .then(ClientCommandManager.literal("on")
+                .then(ClientCommands.literal("debug")
+                    .then(ClientCommands.literal("on")
                         .executes(context -> setDebug(context, true)))
-                    .then(ClientCommandManager.literal("off")
+                    .then(ClientCommands.literal("off")
                         .executes(context -> setDebug(context, false))))
-                .then(ClientCommandManager.literal("itemTrigger")
-                    .then(ClientCommandManager.literal("on")
+                .then(ClientCommands.literal("itemTrigger")
+                    .then(ClientCommands.literal("on")
                         .executes(context -> setItemTrigger(context, true)))
-                    .then(ClientCommandManager.literal("off")
+                    .then(ClientCommands.literal("off")
                         .executes(context -> setItemTrigger(context, false))))
-                .then(ClientCommandManager.literal("timeTrigger")
-                    .then(ClientCommandManager.literal("on")
+                .then(ClientCommands.literal("timeTrigger")
+                    .then(ClientCommands.literal("on")
                         .executes(context -> setTimeTrigger(context, true)))
-                    .then(ClientCommandManager.literal("off")
+                    .then(ClientCommands.literal("off")
                         .executes(context -> setTimeTrigger(context, false))))
-                .then(ClientCommandManager.literal("containerTrigger")
-                    .then(ClientCommandManager.literal("on")
+                .then(ClientCommands.literal("containerTrigger")
+                    .then(ClientCommands.literal("on")
                         .executes(context -> setDropWhenOpenContainer(context, true)))
-                    .then(ClientCommandManager.literal("off")
+                    .then(ClientCommands.literal("off")
                         .executes(context -> setDropWhenOpenContainer(context, false))))
             );
 
-        dispatcher.register(ClientCommandManager.literal("ad")
+        dispatcher.register(ClientCommands.literal("ad")
                 .executes(AutoDrop::showHelp)
                 .redirect(command));
     }
@@ -294,8 +294,8 @@ public class AutoDrop {
 
             ItemStack item = inventoryMenu.getSlot(i).getItem();
             if (item.isEmpty()) continue;
-            client.gameMode.handleInventoryMouseClick(
-                inventoryMenu.containerId, i, 1, ClickType.THROW, player
+            client.gameMode.handleContainerInput(
+                inventoryMenu.containerId, i, 1, ContainerInput.THROW, player
             );
         };
         return 1;

@@ -14,7 +14,7 @@ public class ItemStackUtil {
     public static final Pattern HAS_NAMESPACE_PATTERN = Pattern.compile("^\\w+:\\w+$");
 
     public static String getId(ItemStack item) {
-        return item.getItemHolder().getRegisteredName();
+        return item.typeHolder().getRegisteredName();
     }
 
     public static String tryToGetTranslateName(ItemStack item) {
@@ -52,7 +52,7 @@ public class ItemStackUtil {
     }
 
     public static List<String> getTags(ItemStack item) {
-        return item.getTags().map(tagKey -> "#" + tagKey.location().toString()).toList();
+        return item.tags().map(tagKey -> "#" + tagKey.location().toString()).toList();
     }
 
     public static boolean isTag(String tag) {

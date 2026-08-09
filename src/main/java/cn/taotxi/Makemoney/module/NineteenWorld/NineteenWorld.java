@@ -2,19 +2,16 @@ package cn.taotxi.Makemoney.module.NineteenWorld;
 
 import cn.taotxi.Makemoney.util.game.ItemStackUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.protocol.game.ServerboundContainerClosePacket;
 import net.minecraft.network.protocol.game.ServerboundPlayerInputPacket;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Input;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.HitResult;
 
 public class NineteenWorld {
     private static final Minecraft client = Minecraft.getInstance();
     private static final NineteenWorldConfig CONFIG = NineteenWorldConfig.getInstance();
     public static final String MODULE_NAME = "nineteenworld";
-    public static int lastOpenContainerId = -1;
 
     public static void initialize() {
         NineteenWorldConfig.getInstance().loadConfig();

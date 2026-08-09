@@ -13,7 +13,7 @@ public class Message {
             Makemoney.LOGGER.error("Player is null");
             return;
         }
-        client.player.displayClientMessage(msg, false);
+        client.player.sendSystemMessage(msg);
     }
 
     public static void clientSideMsg(String msg) {
@@ -37,7 +37,7 @@ public class Message {
             Makemoney.LOGGER.error("Player is null");
             return;
         }
-        client.gui.setOverlayMessage(msg, false);
+        client.gui.hud.setOverlayMessage(msg, false);
     }
 
     public static void actionBarMsg(String msg) {

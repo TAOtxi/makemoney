@@ -51,7 +51,7 @@ public class calcServerTps {
     }
 
     public static float getMsTps() {
-        if (client.isSingleplayer()) {
+        if (client.hasSingleplayerServer()) {
             return client.getSingleplayerServer().getAverageTickTimeNanos() / 1e6f;
         }
 

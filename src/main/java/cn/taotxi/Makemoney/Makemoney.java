@@ -1,7 +1,7 @@
 package cn.taotxi.Makemoney;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.loader.api.FabricLoader;
@@ -24,7 +24,7 @@ import cn.taotxi.Makemoney.module.MendingHelper.MendingHelper;
 import cn.taotxi.Makemoney.module.MenuClick.MenuClick;
 import cn.taotxi.Makemoney.module.MessageCommand.MessageCommand;
 import cn.taotxi.Makemoney.module.NineteenWorld.NineteenWorld;
-import cn.taotxi.Makemoney.module.Highlight.Highlight;
+// import cn.taotxi.Makemoney.module.Highlight.Highlight;
 import cn.taotxi.Makemoney.module.Test.Test;
 import cn.taotxi.Makemoney.util.T;
 import cn.taotxi.Makemoney.util.TaskUtil;
@@ -65,7 +65,7 @@ public class Makemoney implements ModInitializer {
         AutoAFK.initialize();
         TaskUtil.initialize();
         TaskEntry.initialize();
-        Highlight.initialize();
+        // Highlight.initialize();
         Test.initialize();
 	}
 
@@ -73,16 +73,16 @@ public class Makemoney implements ModInitializer {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
             AutoDrop.registerCommand(dispatcher, registryAccess);
 
-            var command = dispatcher.register(ClientCommandManager.literal("makemoney")
+            var command = dispatcher.register(ClientCommands.literal("makemoney")
                 .executes(Makemoney::showHelp)
-                .then(ClientCommandManager.literal("help")
+                .then(ClientCommands.literal("help")
                     .executes(Makemoney::showHelp))
-                .then(ClientCommandManager.literal("config")
+                .then(ClientCommands.literal("config")
                     .executes(context -> {
                         GuiUtil.openYaclScreen(MOD_ID);
                         return 1;
                     })
-                    .then(ClientCommandManager.argument("tab", IntegerArgumentType.integer(0, 5))
+                    .then(ClientCommands.argument("tab", IntegerArgumentType.integer(0, 5))
                         .executes(context -> {
                             int tab = context.getArgument("tab", Integer.class);
                             GuiUtil.openYaclScreen(MOD_ID, tab);
@@ -91,15 +91,15 @@ public class Makemoney implements ModInitializer {
                 )
             );
 
-            dispatcher.register(ClientCommandManager.literal("mn")
+            dispatcher.register(ClientCommands.literal("mn")
                     .executes(Makemoney::showHelp)
                     .redirect(command));
 
-            // dispatcher.register(ClientCommandManager.literal("mk")
+            // dispatcher.register(ClientCommands.literal("mk")
             //         .executes(Makemoney::showHelp)
             //         .redirect(command));
 
-            // dispatcher.register(ClientCommandManager.literal("mkm")
+            // dispatcher.register(ClientCommands.literal("mkm")
             //         .executes(Makemoney::showHelp)
             //         .redirect(command)); 
         });

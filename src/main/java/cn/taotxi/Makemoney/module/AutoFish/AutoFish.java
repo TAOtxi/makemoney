@@ -9,10 +9,10 @@ import cn.taotxi.Makemoney.util.MLogger;
 import cn.taotxi.Makemoney.util.Message;
 import cn.taotxi.Makemoney.util.T;
 import cn.taotxi.Makemoney.util.TaskUtil;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLevelEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -21,7 +21,7 @@ import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.network.syncher.SynchedEntityData.DataValue;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.FishingHook;
 import net.minecraft.world.item.Item;
@@ -43,7 +43,7 @@ public class AutoFish {
     private static int bobberId = -1;
 
     public static void initialize() {
-        ClientWorldEvents.AFTER_CLIENT_WORLD_CHANGE.register((mc, level) -> {
+        ClientLevelEvents.AFTER_CLIENT_LEVEL_CHANGE.register((mc, level) -> {
             lastYaw = -1.0F;
             lastPitch = -1.0F;
             bobberId = -1;
@@ -83,68 +83,68 @@ public class AutoFish {
     // TODO: 优雅地保存配置文件
     private static void registerCommand() {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-            var cmd = dispatcher.register(ClientCommandManager.literal("autofish")
+            var cmd = dispatcher.register(ClientCommands.literal("autofish")
                 .executes(AutoFish::showHelp)
-                .then(ClientCommandManager.literal("help").executes(AutoFish::showHelp))
-                .then(ClientCommandManager.literal("on")
+                .then(ClientCommands.literal("help").executes(AutoFish::showHelp))
+                .then(ClientCommands.literal("on")
                     .executes(context -> {
                         CONFIG.enabled.enable();
                         CONFIG.saveConfig();
                         context.getSource().sendFeedback(T.tl("autofish.enabled.message"));
                         return 1;
                     }))
-                .then(ClientCommandManager.literal("off")
+                .then(ClientCommands.literal("off")
                     .executes(context -> {
                         CONFIG.enabled.disable();
                         CONFIG.saveConfig();
                         context.getSource().sendFeedback(T.tl("autofish.disabled.message"));
                         return 1;
                     }))
-                .then(ClientCommandManager.literal("rotation")
-                    .then(ClientCommandManager.literal("on")
+                .then(ClientCommands.literal("rotation")
+                    .then(ClientCommands.literal("on")
                         .executes(context -> {
                             CONFIG.rotation.enable();
                             CONFIG.saveConfig();
                             context.getSource().sendFeedback(T.tl("autofish.rotation.enabled.message"));
                             return 1;
                         }))
-                    .then(ClientCommandManager.literal("off")
+                    .then(ClientCommands.literal("off")
                         .executes(context -> {
                             CONFIG.rotation.disable();
                             CONFIG.saveConfig();
                             context.getSource().sendFeedback(T.tl("autofish.rotation.disabled.message"));
                             return 1;
                         })))
-                .then(ClientCommandManager.literal("randomDelay")
-                    .then(ClientCommandManager.literal("on")
+                .then(ClientCommands.literal("randomDelay")
+                    .then(ClientCommands.literal("on")
                         .executes(context -> {
                             CONFIG.randomDelay.enable();
                             CONFIG.saveConfig();
                             context.getSource().sendFeedback(T.tl("autofish.randomDelay.enabled.message"));
                             return 1;
                         }))
-                    .then(ClientCommandManager.literal("off")
+                    .then(ClientCommands.literal("off")
                         .executes(context -> {
                             CONFIG.randomDelay.disable();
                             CONFIG.saveConfig();
                             context.getSource().sendFeedback(T.tl("autofish.randomDelay.disabled.message"));
                             return 1;
                         })))
-                .then(ClientCommandManager.literal("debug")
-                    .then(ClientCommandManager.literal("on")
+                .then(ClientCommands.literal("debug")
+                    .then(ClientCommands.literal("on")
                         .executes(context -> {
                             logger.setDebug(true);
                             context.getSource().sendFeedback(T.l("[AutoFish] Debug mode enabled"));
                             return 1;
                         }))
-                    .then(ClientCommandManager.literal("off")
+                    .then(ClientCommands.literal("off")
                         .executes(context -> {
                             logger.setDebug(false);
                             context.getSource().sendFeedback(T.l("[AutoFish] Debug mode disabled"));
                             return 1;
                         })))
-                .then(ClientCommandManager.literal("throwDelay")
-                    .then(ClientCommandManager.argument("delay", IntegerArgumentType.integer(0))
+                .then(ClientCommands.literal("throwDelay")
+                    .then(ClientCommands.argument("delay", IntegerArgumentType.integer(0))
                     .executes(context -> {
                         int delay = context.getArgument("delay", Integer.class);
                         CONFIG.throwDelay.setValue(delay);
@@ -153,14 +153,14 @@ public class AutoFish {
 
                         return 1;
                     })))
-                .then(ClientCommandManager.literal("config")
+                .then(ClientCommands.literal("config")
                     .executes(context -> {
                         GuiUtil.openYaclScreen(Makemoney.MOD_ID, MODULE_NAME);
                         return 1;
                     }))
             );
 
-            dispatcher.register(ClientCommandManager.literal("fish")
+            dispatcher.register(ClientCommands.literal("fish")
                 .executes(AutoFish::showHelp)
                 .redirect(cmd)
             );
@@ -237,7 +237,7 @@ public class AutoFish {
     }
 
     public static void onEntityAdd(ClientboundAddEntityPacket clientboundAddEntityPacket) {
-        if (clientboundAddEntityPacket.getType() != EntityType.FISHING_BOBBER) return;
+        if (clientboundAddEntityPacket.getType() != EntityTypes.FISHING_BOBBER) return;
         FishingHook bobber = (FishingHook) client.level.getEntity(clientboundAddEntityPacket.getId());
         if (bobber.getPlayerOwner() == client.player) {
             bobberId = bobber.getId();
