@@ -20,7 +20,7 @@ ohhhhhhh <br>
 拾玖世界Q群：`518271249`
 
 ## 前置模组
-[Yacl >=3.8.2+1.21.11-fabric](https://modrinth.com/mod/yacl)
+[Yacl >=3.9.6+26.2-fabric](https://modrinth.com/mod/yacl)
 
 ## 更新日志
 [history.md](./history.md)
