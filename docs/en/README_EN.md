@@ -132,17 +132,6 @@ Customize the menu click slot, way, and interval. <br>
 /click run <task_name>      # Run task with specified name
 ```
 
-### 💡 Highlight
-Highlight entities in the game world. like be hit by spectral arrow<br>
-Basic commands:
-```bash
-/highlight                 # Alias /hl
-/hl help                   # Show help
-/hl on | off               # Enable/disable highlight
-/hl radius <radius>        # Set highlight radius
-/hl config                 # Open config gui
-```
-
 ### RightClickRide
 Server needs to support command `/ride`, which can be used to ride on a living entity when look at it.<br>
 Right-click a living entity to ride on it. <br>

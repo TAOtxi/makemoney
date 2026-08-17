@@ -134,17 +134,6 @@ ohhhhhhh <br>
 /click run <task_name>      # 执行指定任务
 ```
 
-### 💡 高亮实体 (highlight)
-可透视墙壁高亮实体边框 <br>
-基础命令：
-```bash
-/highlight                 # 别名 /hl
-/hl help                   # 查看帮助
-/hl on | off               # 开启/关闭 高亮实体功能
-/hl radius <radius>        # 设置高亮实体范围
-/hl config                 # 打开配置界面
-```
-
 ### 快捷骑乘 (RightClickRide)
 空手右键生物即可骑乘 <br>
 原理为使用服务器的 `/ride` 命令。

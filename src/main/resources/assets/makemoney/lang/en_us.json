@@ -326,32 +326,5 @@
     "makemoney.autoAFK.tpsCheck.off.message": "§7[§dTpsCheck§7] §cDisabled",
 
     "makemoney.task.dropItemInShulkerBox.on": "§7[§dCustomTask§7] §7The function of automatically discarding all items from the shulker box in the inventory has been enabled",
-    "makemoney.task.dropItemInShulkerBox.off": "§7[§dCustomTask§7] §7The function of automatically discarding all items from the shulker box in the inventory has been disabled",
-
-    "makemoney.highlight.name": "Highlight entity",
-    "makemoney.highlight.desc": "Similar to glowing",
-    "makemoney.highlight.enabled": "Enabled",
-    "makemoney.highlight.enabled.desc": "Highlight entity switch, similar to glowing effect",
-    "makemoney.highlight.colorful": "Colorful",
-    "makemoney.highlight.colorful.desc": "When enabled, use different colors to highlight entities based on their categories.\n\nFor example, zombies use red, animals use green, etc.\n\nIf disabled, use the default highlight color.\n\nNote that not all entities can be categorized, so unknown entities will use the default color.",
-    "makemoney.highlight.renderInList": "Only highlight entities in the list",
-    "makemoney.highlight.renderInList.desc": "When enabled, only highlight entities in the list.",
-    "makemoney.highlight.renderRadius": "Highlight radius",
-    "makemoney.highlight.renderRadius.desc": "Highlight radius.\n\n-1 means any range.",
-    "makemoney.highlight.color.name": "Highlight entity border color",
-    "makemoney.highlight.color.desc": "If colorful, use different colors to highlight entities based on their categories.\n\nOtherwise, use the default highlight color.",
-    "makemoney.highlight.color.default": "Default highlight color",
-    "makemoney.highlight.color.enemy": "Enemy",
-    "makemoney.highlight.color.player": "Player",
-    "makemoney.highlight.color.player.desc": "Mannequin is also classified as a player.",
-    "makemoney.highlight.color.animal": "Animal",
-    "makemoney.highlight.color.decoration": "Decoration entity",
-    "makemoney.highlight.color.decoration.desc": "Item display box, armor, etc.",
-    "makemoney.highlight.color.item": "Item",
-    "makemoney.highlight.renderEntities": "Highlight entity list",
-    "makemoney.highlight.renderEntities.desc": "Highlight entity list.\n\nFor example, player, item, etc.",
-    "makemoney.highlight.on.message": "§7[§dHighlight entity border§7] §aEnabled",
-    "makemoney.highlight.off.message": "§7[§dHighlight entity border§7] §cDisabled",
-    "makemoney.highlight.help.message": "§7[§dHighlight entity border§7] §7Help message pending...",
-    "makemoney.highlight.radius.message": "§7[§dHighlight entity border§7] §7Highlight radius set to §e%d"
+    "makemoney.task.dropItemInShulkerBox.off": "§7[§dCustomTask§7] §7The function of automatically discarding all items from the shulker box in the inventory has been disabled"
 }

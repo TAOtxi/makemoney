@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 public class ConfigMaker {
     private static final File configDir = new File(FabricLoader.getInstance().getConfigDir().toFile(), Makemoney.MOD_ID);
@@ -23,7 +24,7 @@ public class ConfigMaker {
         
         File file = new File(configDir, fileName + ".json");
         if (!file.exists()) {
-            try(FileWriter writer = new FileWriter(file)) {
+            try(FileWriter writer = new FileWriter(file, StandardCharsets.UTF_8)) {
                 Makemoney.LOGGER.info("Config not found, creating default config file {}", file);
                 gson.toJson(defaultConfig, writer);
                 writer.flush();
@@ -33,7 +34,7 @@ public class ConfigMaker {
             return defaultConfig;
         }
         
-        try(FileReader reader = new FileReader(file)) {
+        try(FileReader reader = new FileReader(file, StandardCharsets.UTF_8)) {
             Makemoney.LOGGER.info("Loading config file {}", file);
             return gson.fromJson(reader, JsonElement.class);
         } catch (IOException e) {
@@ -48,7 +49,7 @@ public class ConfigMaker {
         }
 
         File file = new File(configDir, fileName + ".json");
-        try(FileWriter writer = new FileWriter(file)) {
+        try(FileWriter writer = new FileWriter(file, StandardCharsets.UTF_8)) {
             Makemoney.LOGGER.info("Saving config file {}", file);
             gson.toJson(config, writer);
             writer.flush();
