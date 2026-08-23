@@ -64,9 +64,9 @@ public class ConfigScreen {
                     MessageCommandConfig.getInstance().saveConfig();
                     MenuClickConfig.getInstance().saveConfig();
                     AutoAFKConfig.getInstance().saveConfig();
+                    AutoAFKConfig.getInstance().positionCheckItems.triggerConfigChange();;
+
                     MENDING_HELPER_CONFIG.saveConfig();
-                    // HighlightConfig.getInstance().saveConfig();
-                    // Drawing.updateColorMap();
 
                     // TODO: 待寻找更合适的触发方式
                     MessageCommandConfig.getInstance().messageRules.triggerConfigChange();

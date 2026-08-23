@@ -17,6 +17,7 @@ public class AutoAFK {
         AutoAFKConfig.getInstance().loadConfig();
         AutoAttack.initialize();
         TpsChecker.initialize();
+        PositionChecker.initialize();
         registerCommand();
 
         ClientLevelEvents.AFTER_CLIENT_LEVEL_CHANGE.register((mc, level) -> {

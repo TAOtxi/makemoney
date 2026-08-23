@@ -77,9 +77,7 @@ public class ConfigManager {
     }
 
     public ConfigManager set(String key, JsonElement value) {
-        if (config.has(key)) {
-            config.remove(key);
-        }
+        config.remove(key);
         config.add(key, value);
         return this;
     }

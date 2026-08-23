@@ -523,6 +523,7 @@ public class AutoDropConfigGui {
                     .build()
             );
 
+            
             matchGroup.option(Option.<String>createBuilder()
                     .name(T.tl("autodrop.matchItem.itemTags"))
                     .description(OptionDescription.of(T.tl("autodrop.matchItem.itemTags.desc")))

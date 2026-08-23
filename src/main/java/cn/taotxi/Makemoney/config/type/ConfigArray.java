@@ -6,6 +6,7 @@ import java.util.function.BiConsumer;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import cn.taotxi.Makemoney.config.ConfigManager;
 
@@ -119,6 +120,10 @@ public class ConfigArray<T> implements IConfigBase<JsonArray> {
             list.add(convertJsonElement(element, elementType));
         }
         return list;
+    }
+
+    public JsonObject getValueAsObject(int index) {
+        return getValue().get(index).getAsJsonObject();
     }
 
     public void add(T element) {
