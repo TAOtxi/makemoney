@@ -78,9 +78,10 @@ Basic commands:
 ```
 
 ### 🌐 AutoAFK
-Adjust attack interval dynamically based on server tps.<br>
-When server tps falls below the danger threshold, trigger the rescue command.<br>
-After triggering the rescue command, if the tps recovers to a good threshold, trigger the home command.<br>
+- Adjust attack interval dynamically based on server tps.<br>
+- When server tps falls below the danger threshold, trigger the rescue command.<br>
+  - After triggering the rescue command, if the tps recovers to a good threshold, trigger the home command.<br>
+- Position check feature: trigger a command when the player is inside the specified area (usually to prevent the player from idling in the lobby).<br>
 Basic commands:
 ```bash
 /autoafk                        # Alias /afkk
@@ -95,7 +96,7 @@ Basic commands:
 ### 🐕 AutoRide
 The server needs to support right-click players to ride on this player.<br>
 Stick it on other players' heads like a dog skin ointment.<br>
-You can also prohibit other players from riding on your head.<br>
+You can also prohibit other players from riding on your head (maybe I really should delete this feature).<br>
 Basic commands:
 ```bash
 /autoride                  # Alias /ar

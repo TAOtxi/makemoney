@@ -1,3 +1,10 @@
+### v2.7.2+26.2
+Force config file to be read and written in utf-8
+Add position check feature
+
+### v2.7.0+26.2
+Adapt to 26.2
+
 ### v2.6.0+1.21.11
 Add highlight entity module<br>
 Update english translation
