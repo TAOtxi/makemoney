@@ -131,7 +131,7 @@ public class MendingHelper {
     }
 
     private static int showHelp(CommandContext<FabricClientCommandSource> context) {
-        context.getSource().sendFeedback(T.tl("mendinghelper.help.message"));
+        context.getSource().sendFeedback(T.tl("mendingHelper.help.message"));
         return 1;
     }
 }

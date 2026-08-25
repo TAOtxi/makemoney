@@ -205,7 +205,7 @@ public class MenuClick {
     }
 
     private static int showHelp(CommandContext<FabricClientCommandSource> context) {
-        context.getSource().sendFeedback(T.tl("menuclick.help.message"));
+        context.getSource().sendFeedback(T.tl("menuClick.help.message"));
         return 1;
     }
 }

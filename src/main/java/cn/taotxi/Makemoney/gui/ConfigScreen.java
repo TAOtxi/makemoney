@@ -17,9 +17,6 @@ import com.mojang.blaze3d.platform.Window;
 import cn.taotxi.Makemoney.Makemoney;
 import cn.taotxi.Makemoney.module.AutoDrop.AutoDropConfigGui;
 import cn.taotxi.Makemoney.module.AutoFish.AutoFishConfig;
-// import cn.taotxi.Makemoney.module.Highlight.HighlightConfig;
-// import cn.taotxi.Makemoney.module.Highlight.HighlightGui;
-// import cn.taotxi.Makemoney.module.Highlight.render.Drawing;
 import cn.taotxi.Makemoney.module.MendingHelper.MendingHelperConfig;
 import cn.taotxi.Makemoney.module.MenuClick.MenuClickConfig;
 import cn.taotxi.Makemoney.module.MenuClick.MenuClickConfigGui;
@@ -454,9 +451,9 @@ public class ConfigScreen {
         if (screen.tabManager.getCurrentTab() instanceof CategoryTab categoryTab) {
             categoryTab.undoButton.active = false;
             categoryTab.saveFinishedButton.setMessage(GuiUtils.translatableFallback("yacl.gui.done", CommonComponents.GUI_DONE));
-            categoryTab.saveFinishedButton.setTooltip(Tooltip.create(T.tl("yacl.gui.finished.tooltip")));
-            categoryTab.cancelResetButton.setMessage(T.tl("controls.reset"));
-            categoryTab.cancelResetButton.setTooltip(Tooltip.create(T.tl("yacl.gui.reset.tooltip")));
+            categoryTab.saveFinishedButton.setTooltip(Tooltip.create(T.ttl("yacl.gui.finished.tooltip")));
+            categoryTab.cancelResetButton.setMessage(T.ttl("controls.reset"));
+            categoryTab.cancelResetButton.setTooltip(Tooltip.create(T.ttl("yacl.gui.reset.tooltip")));
         }
     }
 
