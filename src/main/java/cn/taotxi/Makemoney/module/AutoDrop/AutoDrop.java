@@ -16,6 +16,7 @@ import cn.taotxi.Makemoney.util.T;
 import cn.taotxi.Makemoney.util.TaskUtil;
 import cn.taotxi.Makemoney.util.game.InventoryUtil;
 import cn.taotxi.Makemoney.util.game.ItemStackUtil;
+import cn.taotxi.Makemoney.util.help.HelpMenu;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLevelEvents;
@@ -32,6 +33,23 @@ import net.minecraft.world.item.ItemStack;
 // TODO: 添加在容器中也可以应用此功能的选项
 public class AutoDrop {
     public static final String MODULE_NAME = "autodrop";
+    private static final HelpMenu HELP = HelpMenu.of(MODULE_NAME, MODULE_NAME + ".help")
+        .alias("ad")
+        .entry("on", MODULE_NAME + ".help.on")
+        .entry("off", MODULE_NAME + ".help.off")
+        .runEntry("config", MODULE_NAME + ".help.config")
+        .runEntry("reload", MODULE_NAME + ".help.reload")
+        .entry("timeTrigger <on|off>", MODULE_NAME + ".help.timeTrigger")
+        .entry("interval <tick>", MODULE_NAME + ".help.interval")
+        .entry("itemTrigger <on|off>", MODULE_NAME + ".help.itemTrigger")
+        .entry("containerTrigger <on|off>", MODULE_NAME + ".help.containerTrigger")
+        .entry("ignore current", MODULE_NAME + ".help.ignoreCurrent")
+        .entry("ignore set <1,2,3>", MODULE_NAME + ".help.ignoreSet")
+        .entry("ignore clear", MODULE_NAME + ".help.ignoreClear")
+        .entry("test", MODULE_NAME + ".help.test")
+        .entry("clean", MODULE_NAME + ".help.clean")
+        .entry("debug <on|off>", MODULE_NAME + ".help.debug")
+        .build();
     public static final MLogger LOGGER = new MLogger(MODULE_NAME);
     public static boolean enabled = false;
     private static boolean dropThrottleFlag = true;
@@ -196,8 +214,8 @@ public class AutoDrop {
     }
 
     public static void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
-        var command = dispatcher.register(ClientCommands.literal(MODULE_NAME).executes(AutoDrop::showHelp)
-                .then(ClientCommands.literal("help").executes(AutoDrop::showHelp))
+        var command = dispatcher.register(ClientCommands.literal(MODULE_NAME).executes(HELP::executeFirstPage)
+                .then(HELP.helpCommand())
                 .then(ClientCommands.literal("reload").executes(AutoDrop::reloadConfig))
                 .then(ClientCommands.literal("config").executes(AutoDrop::openConfigGui))
                 .then(ClientCommands.literal("test").executes(AutoDrop::test))
@@ -241,7 +259,7 @@ public class AutoDrop {
             );
 
         dispatcher.register(ClientCommands.literal("ad")
-                .executes(AutoDrop::showHelp)
+                .executes(HELP::executeFirstPage)
                 .redirect(command));
     }
 
@@ -260,11 +278,6 @@ public class AutoDrop {
                 T.tl("autodrop.debug.enabled.message") : 
                 T.tl("autodrop.debug.disabled.message")
         );
-        return 1;
-    }
-
-    private static int showHelp(CommandContext<FabricClientCommandSource> context) {
-        context.getSource().sendFeedback(T.tl(MODULE_NAME + ".help.message"));
         return 1;
     }
 

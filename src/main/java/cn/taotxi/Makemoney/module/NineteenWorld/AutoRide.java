@@ -15,6 +15,7 @@ import cn.taotxi.Makemoney.gui.GuiUtil;
 import cn.taotxi.Makemoney.util.T;
 import cn.taotxi.Makemoney.util.TaskUtil;
 import cn.taotxi.Makemoney.util.game.GameUtil;
+import cn.taotxi.Makemoney.util.help.HelpMenu;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -29,6 +30,17 @@ import net.minecraft.world.phys.EntityHitResult;
 
 public class AutoRide {
     public static final String MODULE_NAME = "autoride";
+    private static final HelpMenu HELP = HelpMenu.of(MODULE_NAME, MODULE_NAME + ".help")
+        .alias("ar")
+        .entry("on", MODULE_NAME + ".help.on")
+        .entry("off", MODULE_NAME + ".help.off")
+        .runEntry("config", MODULE_NAME + ".help.config")
+        .entry("target <player>", MODULE_NAME + ".help.target")
+        .entry("interval <tick>", MODULE_NAME + ".help.interval")
+        .entry("distance <block>", MODULE_NAME + ".help.distance")
+        .entry("smoothHead <on|off>", MODULE_NAME + ".help.smoothHead")
+        .entry("reset", MODULE_NAME + ".help.reset")
+        .build();
     private static boolean enabled = false;
     private static final Minecraft client = Minecraft.getInstance();
     private static final NineteenWorldConfig CONFIG = NineteenWorldConfig.getInstance();
@@ -168,11 +180,6 @@ public class AutoRide {
                 new EntityHitResult(playerCow), InteractionHand.OFF_HAND);
     }
 
-    private static int showHelp(CommandContext<FabricClientCommandSource> context) {
-        context.getSource().sendFeedback(T.tl("autoride.help.message"));
-        return 1;
-    }
-
     public static void resetConfig() {
         CONFIG.autoRideTargetPlayer.resetValue();
         CONFIG.autoRideRunInterval.resetValue();
@@ -186,9 +193,8 @@ public class AutoRide {
     private static void registerCommand() {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
             var command = dispatcher.register(ClientCommands.literal("autoride")
-                .executes(AutoRide::showHelp)
-                .then(ClientCommands.literal("help")
-                    .executes(AutoRide::showHelp))
+                .executes(HELP::executeFirstPage)
+                .then(HELP.helpCommand())
                 .then(ClientCommands.literal("target")
                     .then(ClientCommands.argument("player", StringArgumentType.string())
                         .suggests((context, builder) -> suggestPlayerNames(context, builder))
@@ -256,7 +262,7 @@ public class AutoRide {
             );
 
             dispatcher.register(ClientCommands.literal("ar")
-                    .executes(AutoRide::showHelp)
+                    .executes(HELP::executeFirstPage)
                     .redirect(command));
         });
 

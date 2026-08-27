@@ -17,6 +17,7 @@ import cn.taotxi.Makemoney.util.MLogger;
 import cn.taotxi.Makemoney.util.Message;
 import cn.taotxi.Makemoney.util.T;
 import cn.taotxi.Makemoney.util.TaskUtil;
+import cn.taotxi.Makemoney.util.help.HelpMenu;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -25,6 +26,11 @@ import net.minecraft.world.inventory.ChestMenu;
 
 public class MenuClick {
     public static final String MODULE_NAME = "menuclick";
+    private static final HelpMenu HELP = HelpMenu.of(MODULE_NAME, "menuClick.help")
+        .alias("click")
+        .runEntry("config", "menuClick.help.config")
+        .entry("run <task>", "menuClick.help.run")
+        .build();
     public static final MLogger logger = new MLogger(MODULE_NAME);
     private static final Minecraft client = Minecraft.getInstance();
     private static final MenuClickConfig CONFIG = MenuClickConfig.getInstance();
@@ -167,9 +173,8 @@ public class MenuClick {
     private static void registCommand() {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
             var cmd = dispatcher.register(ClientCommands.literal(MODULE_NAME)
-                .executes(MenuClick::showHelp)
-                .then(ClientCommands.literal("help")
-                    .executes(MenuClick::showHelp))
+                .executes(HELP::executeFirstPage)
+                .then(HELP.helpCommand())
                 .then(ClientCommands.literal("config")
                     .executes(context -> {
                         GuiUtil.openYaclScreen(Makemoney.MOD_ID, MODULE_NAME);
@@ -187,7 +192,7 @@ public class MenuClick {
             );
             
             dispatcher.register(ClientCommands.literal("click")
-                    .executes(MenuClick::showHelp)
+                    .executes(HELP::executeFirstPage)
                     .redirect(cmd));
         });
     }
@@ -203,8 +208,4 @@ public class MenuClick {
         return builder.buildFuture();
     }
 
-    private static int showHelp(CommandContext<FabricClientCommandSource> context) {
-        context.getSource().sendFeedback(T.tl("menuClick.help.message"));
-        return 1;
-    }
 }

@@ -6,11 +6,11 @@ import java.util.List;
 import com.google.gson.JsonElement;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.context.CommandContext;
 
 import cn.taotxi.Makemoney.util.Message;
 import cn.taotxi.Makemoney.util.T;
 import cn.taotxi.Makemoney.util.TaskUtil;
+import cn.taotxi.Makemoney.util.help.HelpMenu;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
@@ -20,6 +20,13 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
 public class AutoAttack {
+    private static final HelpMenu HELP =
+        HelpMenu.of(AutoAFK.MODULE_NAME + " attack", "autoAFK.autoAttack.help")
+            .entry("on", "autoAFK.autoAttack.help.on")
+            .entry("off", "autoAFK.autoAttack.help.off")
+            .entry("interval <tick>", "autoAFK.autoAttack.help.interval")
+            .runEntry("info", "autoAFK.autoAttack.help.info")
+            .build();
     private static final AutoAFKConfig CONFIG = AutoAFKConfig.getInstance();
     private static final String AUTO_ATTACK_TASK = "autoAttack";
     private static final String AUTO_ATTACK_SHOW_INFO = "autoAttackShowInfo";
@@ -109,8 +116,8 @@ public class AutoAttack {
 
     public static LiteralArgumentBuilder<FabricClientCommandSource> attackCommand() {
         return ClientCommands.literal("attack")
-            .executes(AutoAttack::showHelp)
-            .then(ClientCommands.literal("help").executes(AutoAttack::showHelp))
+            .executes(HELP::executeFirstPage)
+            .then(HELP.helpCommand())
             .then(ClientCommands.literal("on")
                 .executes(context -> {
                     CONFIG.autoAttackEnabled.enable();
@@ -143,8 +150,4 @@ public class AutoAttack {
                 }));
     }
 
-    private static int showHelp(CommandContext<FabricClientCommandSource> context) {
-        context.getSource().sendFeedback(T.tl("autoAFK.autoAttack.help.message"));
-        return 1;
-    }
 }

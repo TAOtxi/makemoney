@@ -17,9 +17,19 @@ import cn.taotxi.Makemoney.gui.GuiUtil;
 import cn.taotxi.Makemoney.util.Message;
 import cn.taotxi.Makemoney.util.T;
 import cn.taotxi.Makemoney.util.game.InventoryUtil;
+import cn.taotxi.Makemoney.util.help.HelpMenu;
 
 public class MendingHelper {
     public static final String MODULE_NAME = "mendinghelper";
+    private static final HelpMenu HELP = HelpMenu.of(MODULE_NAME, "mendingHelper.help")
+        .alias("mh")
+        .runEntry("config", "mendingHelper.help.config")
+        .entry("autoreplace <on|off>", "mendingHelper.help.autoreplace")
+        .entry("autoenchant <on|off>", "mendingHelper.help.autoenchant")
+        .entry("autodecompose <on|off>", "mendingHelper.help.autodecompose")
+        .entry("autorepair <on|off>", "mendingHelper.help.autorepair")
+        .runEntry("autorepair setMendingBookPos", "mendingHelper.help.setMendingBookPos")
+        .build();
     public static final MendingHelperConfig CONFIG = MendingHelperConfig.getInstance();
 
     public static void initialize() {
@@ -34,7 +44,8 @@ public class MendingHelper {
     private static void registerCommand() {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
             var cmd = dispatcher.register(ClientCommands.literal(MODULE_NAME)
-                .executes(MendingHelper::showHelp)
+                .executes(HELP::executeFirstPage)
+                .then(HELP.helpCommand())
                 .then(ClientCommands.literal("autoreplace")
                     .then(ClientCommands.literal("on")
                         .executes(context -> setAutoReplaceEnabled(true)))
@@ -63,7 +74,7 @@ public class MendingHelper {
             );
 
             dispatcher.register(ClientCommands.literal("mh")
-                .executes(MendingHelper::showHelp)
+                .executes(HELP::executeFirstPage)
                 .redirect(cmd)
             );
         });
@@ -130,8 +141,4 @@ public class MendingHelper {
         return 1;
     }
 
-    private static int showHelp(CommandContext<FabricClientCommandSource> context) {
-        context.getSource().sendFeedback(T.tl("mendingHelper.help.message"));
-        return 1;
-    }
 }

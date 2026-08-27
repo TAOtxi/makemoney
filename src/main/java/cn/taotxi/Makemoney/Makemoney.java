@@ -3,7 +3,6 @@ package cn.taotxi.Makemoney;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.File;
@@ -13,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import com.mojang.brigadier.context.CommandContext;
 
 import cn.taotxi.Makemoney.config.MakemoneyConfig;
 import cn.taotxi.Makemoney.gui.GuiUtil;
@@ -24,15 +22,27 @@ import cn.taotxi.Makemoney.module.MendingHelper.MendingHelper;
 import cn.taotxi.Makemoney.module.MenuClick.MenuClick;
 import cn.taotxi.Makemoney.module.MessageCommand.MessageCommand;
 import cn.taotxi.Makemoney.module.NineteenWorld.NineteenWorld;
-import cn.taotxi.Makemoney.module.Test.Test;
-import cn.taotxi.Makemoney.util.T;
 import cn.taotxi.Makemoney.util.TaskUtil;
+import cn.taotxi.Makemoney.util.help.HelpMenu;
 import cn.taotxi.Makemoney.module.Task.TaskEntry;
 
 
 public class Makemoney implements ModInitializer {
 	public static final String MOD_ID = "makemoney";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+
+    private static final HelpMenu HELP = HelpMenu.of(MOD_ID, "main.help")
+        .alias("mn")
+        .runEntry("config", "main.help.config")
+        .entry("config <0-5>", "main.help.configTab")
+        .runEntry("/autodrop help", "main.help.autodrop")
+        .runEntry("/autofish help", "main.help.autofish")
+        .runEntry("/mendinghelper help", "main.help.mendinghelper")
+        .runEntry("/menuclick help", "main.help.menuclick")
+        .runEntry("/autoafk help", "main.help.autoafk")
+        .runEntry("/autoride help", "main.help.autoride")
+        .runEntry("/task help", "main.help.task")
+        .build();
 
 	@Override
 	public void onInitialize() {
@@ -72,9 +82,8 @@ public class Makemoney implements ModInitializer {
             AutoDrop.registerCommand(dispatcher, registryAccess);
 
             var command = dispatcher.register(ClientCommands.literal("makemoney")
-                .executes(Makemoney::showHelp)
-                .then(ClientCommands.literal("help")
-                    .executes(Makemoney::showHelp))
+                .executes(HELP::executeFirstPage)
+                .then(HELP.helpCommand())
                 .then(ClientCommands.literal("config")
                     .executes(context -> {
                         GuiUtil.openYaclScreen(MOD_ID);
@@ -90,14 +99,8 @@ public class Makemoney implements ModInitializer {
             );
 
             dispatcher.register(ClientCommands.literal("mn")
-                    .executes(Makemoney::showHelp)
+                    .executes(HELP::executeFirstPage)
                     .redirect(command));
         });
-    }
-
-
-    private static int showHelp(CommandContext<FabricClientCommandSource> context) {
-        context.getSource().sendFeedback(T.tl("help.message"));
-        return 1;
     }
 }

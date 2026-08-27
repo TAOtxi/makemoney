@@ -1,0 +1,745 @@
+<title>Makemoney 帮助菜单预览</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500&display=swap">
+
+<style>
+:root {
+  /* 页面底色：带暖偏的近黑，呼应聊天覆盖层压在泥土色世界上的观感 */
+  --ground: #12100f;
+  --panel: #1a1817;
+  --panel-2: #211e1c;
+  --rule: #2e2a26;
+  --ink: #e9e5df;
+  --muted: #8d857a;
+  --faint: #635c53;
+
+  /* Minecraft 原版 § 颜色，直接取游戏内数值 */
+  --mc-gray: #aaaaaa;        /* §7 */
+  --mc-dgray: #555555;       /* §8 */
+  --mc-yellow: #ffff55;      /* §e */
+  --mc-purple: #ff55ff;      /* §d */
+  --mc-aqua: #55ffff;        /* §b */
+  --mc-green: #55ff55;       /* §a */
+  --mc-gold: #ffaa00;        /* §6 */
+
+  --chat-bg: rgba(0, 0, 0, .55);
+  --tip-bg: #100010;
+  --tip-edge: #2d0a63;
+  --tip-edge-2: #50238c;
+
+  --sans: "IBM Plex Sans", "Noto Sans SC", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, monospace;
+  --chat: "Noto Sans SC", "IBM Plex Mono", monospace;
+
+  --measure: 66ch;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap {
+  max-width: 940px;
+  margin: 0 auto;
+  padding: 56px 24px 96px;
+  display: flex;
+  flex-direction: column;
+  gap: 44px;
+}
+
+a { color: var(--mc-aqua); }
+
+h1, h2, h3 { text-wrap: balance; margin: 0; font-weight: 600; }
+h1 { font-size: 30px; letter-spacing: -.01em; }
+h2 { font-size: 19px; }
+h3 { font-size: 15px; }
+
+p { margin: 0; }
+
+.lede { color: var(--muted); max-width: var(--measure); }
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  color: var(--faint);
+}
+
+/* ── 控制条 ───────────────────────────────────────────── */
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px 32px;
+  align-items: flex-end;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--rule);
+}
+.ctl { display: flex; flex-direction: column; gap: 7px; }
+.ctl-label {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: .13em;
+  color: var(--faint);
+}
+.seg { display: flex; gap: 4px; flex-wrap: wrap; }
+.seg button {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--muted);
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  padding: 6px 11px;
+  cursor: pointer;
+  transition: color .13s, border-color .13s, background .13s;
+}
+.seg button:hover { color: var(--ink); border-color: #443e38; }
+.seg button[aria-pressed="true"] {
+  color: var(--ground);
+  background: var(--mc-gold);
+  border-color: var(--mc-gold);
+  font-weight: 500;
+}
+.seg button:focus-visible { outline: 2px solid var(--mc-aqua); outline-offset: 2px; }
+
+/* ── 聊天窗 ───────────────────────────────────────────── */
+.screen {
+  position: relative;
+  background:
+    linear-gradient(180deg, #3b4d63 0%, #55708f 45%, #6d5741 45%, #4a3628 100%);
+  padding: 26px 22px 22px;
+  border: 1px solid var(--rule);
+  overflow: hidden;
+}
+.screen::after {
+  /* 极淡的扫描线，暗示这是游戏画面而非网页组件 */
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    180deg, rgba(0,0,0,.11) 0 1px, transparent 1px 3px);
+  pointer-events: none;
+}
+.chat {
+  position: relative;
+  background: var(--chat-bg);
+  font-family: var(--chat);
+  font-size: 15px;
+  line-height: 1.72;
+  padding: 7px 8px;
+  width: min(100%, 560px);
+}
+.chat-line { white-space: pre-wrap; word-break: break-word; }
+
+/* § 颜色 */
+.c-gray   { color: var(--mc-gray); }
+.c-dgray  { color: var(--mc-dgray); }
+.c-yellow { color: var(--mc-yellow); }
+.c-purple { color: var(--mc-purple); font-weight: 500; }
+.c-aqua   { color: var(--mc-aqua); }
+.c-green  { color: var(--mc-green); }
+.c-gold   { color: var(--mc-gold); font-weight: 500; }
+
+/* 可点击目标 */
+.hit { cursor: pointer; }
+.hit:hover { text-decoration: underline; }
+.pagenum { text-decoration: underline; }
+.entry { display: inline; }
+.entry.hit:hover .c-yellow { color: #ffffaa; }
+.entry.hit:hover .c-gray { color: #c8c8c8; }
+.nav-off { color: var(--mc-dgray); }
+
+/* 320px 折行边界标尺 */
+.ruler {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  border-left: 1px dashed rgba(255, 85, 85, .6);
+  pointer-events: none;
+}
+.ruler span {
+  position: absolute;
+  top: -19px;
+  left: 3px;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: .06em;
+  color: #ff8080;
+  white-space: nowrap;
+}
+.over { background: rgba(255, 85, 85, .13); }
+
+/* Minecraft 风格悬停提示 */
+.tip {
+  position: fixed;
+  z-index: 40;
+  max-width: 330px;
+  background: var(--tip-bg);
+  border: 1px solid var(--tip-edge);
+  outline: 1px solid var(--tip-edge-2);
+  outline-offset: -2px;
+  padding: 6px 9px;
+  font-family: var(--chat);
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--mc-gray);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .1s;
+}
+.tip.on { opacity: 1; }
+.tip b { color: var(--mc-yellow); font-weight: 400; }
+
+/* 聊天输入栏 */
+.inputbar {
+  margin-top: 9px;
+  width: min(100%, 560px);
+  background: rgba(0, 0, 0, .68);
+  border-top: 1px solid rgba(255, 255, 255, .13);
+  padding: 6px 8px;
+  font-family: var(--chat);
+  font-size: 15px;
+  color: #fff;
+  min-height: 31px;
+}
+.caret {
+  display: inline-block;
+  width: 7px;
+  margin-left: 1px;
+  background: #d8d8d8;
+  animation: blink 1.1s step-end infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .caret { animation: none; } }
+
+.hint {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--faint);
+  margin-top: 11px;
+}
+.hint b { color: var(--muted); font-weight: 400; }
+
+/* ── 全量页面网格 ─────────────────────────────────────── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 15px;
+}
+@media (max-width: 620px) { .grid { grid-template-columns: 1fr; } }
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  display: flex;
+  flex-direction: column;
+}
+.card-head {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--rule);
+  background: var(--panel-2);
+}
+.card-cmd { font-family: var(--mono); font-size: 12.5px; color: var(--mc-yellow); }
+.card-meta {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--faint);
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+}
+.card .chat {
+  width: 100%;
+  background: rgba(0, 0, 0, .3);
+  font-size: 13.5px;
+  line-height: 1.66;
+}
+
+/* ── 说明区 ───────────────────────────────────────────── */
+.notes { display: flex; flex-direction: column; gap: 16px; }
+.note {
+  display: grid;
+  grid-template-columns: 118px 1fr;
+  gap: 18px;
+  padding-top: 15px;
+  border-top: 1px solid var(--rule);
+}
+@media (max-width: 620px) { .note { grid-template-columns: 1fr; gap: 5px; } }
+.note dt { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+.note dd { margin: 0; color: var(--muted); max-width: var(--measure); }
+.note dd code, code.k {
+  font-family: var(--mono);
+  font-size: .88em;
+  color: var(--mc-aqua);
+  background: var(--panel-2);
+  padding: 1px 5px;
+}
+.warn { color: #ff9a8a; }
+</style>
+
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">Makemoney · Fabric 26.2</p>
+    <h1 style="margin-top:6px">帮助菜单预览</h1>
+    <p class="lede" style="margin-top:12px">
+      下面的聊天窗按 <code class="k">HelpMenu.java</code> 的真实排版逻辑渲染，
+      文案直接读取 <code class="k">zh_cn.json</code> / <code class="k">en_us.json</code>。
+      页码和翻页按钮可以点，条目可以悬停看提示 —— 与游戏内行为一致。
+    </p>
+  </header>
+
+  <section class="controls" aria-label="预览设置">
+    <div class="ctl">
+      <span class="ctl-label" id="lbl-mod">模块</span>
+      <div class="seg" id="seg-mod" role="group" aria-labelledby="lbl-mod"></div>
+    </div>
+    <div class="ctl">
+      <span class="ctl-label" id="lbl-loc">语言</span>
+      <div class="seg" id="seg-loc" role="group" aria-labelledby="lbl-loc">
+        <button type="button" data-loc="zh_cn" aria-pressed="true">zh_cn</button>
+        <button type="button" data-loc="en_us" aria-pressed="false">en_us</button>
+      </div>
+    </div>
+    <div class="ctl">
+      <span class="ctl-label" id="lbl-ruler">320px 折行边界</span>
+      <div class="seg" id="seg-ruler" role="group" aria-labelledby="lbl-ruler">
+        <button type="button" data-ruler="on" aria-pressed="true">显示</button>
+        <button type="button" data-ruler="off" aria-pressed="false">隐藏</button>
+      </div>
+    </div>
+  </section>
+
+  <section aria-label="交互预览">
+    <div class="screen">
+      <div class="chat" id="chat"></div>
+      <div class="inputbar" id="inputbar"><span class="caret">&nbsp;</span></div>
+    </div>
+    <p class="hint" id="hint">
+      <b>点击黄色指令</b>：无副作用的会直接执行，其余填入下方输入栏 ·
+      <b>点击页码</b>：翻页
+    </p>
+  </section>
+
+  <section>
+    <p class="eyebrow">全部页面</p>
+    <h2 style="margin:6px 0 16px">9 个菜单 · 56 个条目</h2>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section class="notes">
+    <p class="eyebrow">实现要点</p>
+    <dl class="notes" style="margin:0">
+      <div class="note">
+        <dt>翻页链路</dt>
+        <dd>点击页码触发 <code>ClickEvent.RunCommand</code>，客户端走
+          <code>Screen.clickCommandAction</code> → <code>sendUnattendedCommand</code>，
+          被 Fabric 的 <code>ClientPacketListenerMixin</code> 拦截成客户端指令，
+          等价于重新执行 <code>/&lt;模块&gt; help &lt;页码&gt;</code>。</dd>
+      </div>
+      <div class="note">
+        <dt>不弹确认框</dt>
+        <dd>Fabric 对 unattended 指令会用受限权限再解析一次，两次结果不同才弹窗。
+          本项目指令均未设 <code>requires()</code>，两次解析一致。</dd>
+      </div>
+      <div class="note">
+        <dt>点击安全</dt>
+        <dd>默认 <code>SUGGEST</code>（填入输入栏），只有 <code>config</code>、
+          <code>info</code>、<code>reload</code> 这类无副作用的用 <code>RUN</code>。
+          <code>/autodrop clean</code> 会清空背包，不能让它一点就跑。</dd>
+      </div>
+      <div class="note">
+        <dt>分页均摊</dt>
+        <dd>每页上限 6 条，且条目在各页间均摊 —— 8 条分 2 页是 4+4 而非 6+2。
+          整数除法的余数正好让首页少一条，抵消首页多出的简介与别名行。</dd>
+      </div>
+      <div class="note">
+        <dt class="warn">已知折行</dt>
+        <dd>默认聊天栏宽 <code>floor(chatWidth × 280 + 40)</code> = 320px。
+          红色标尺右侧的高亮行会在游戏内折成两行：中文 4 行、英文 35 行，
+          主因是描述文案长度。折行有悬挂缩进，可读性尚可。</dd>
+      </div>
+    </dl>
+  </section>
+
+</div>
+
+<div class="tip" id="tip" role="status" aria-live="polite"></div>
+
+<script>
+const DATA = {"menus":[{"file":"Makemoney.java","root":"makemoney","prefix":"main.help","aliases":["mn"],"entries":[{"usage":"config","key":"main.help.config","mode":"RUN"},{"usage":"config <0-5>","key":"main.help.configTab","mode":"SUGGEST"},{"usage":"/autodrop help","key":"main.help.autodrop","mode":"RUN"},{"usage":"/autofish help","key":"main.help.autofish","mode":"RUN"},{"usage":"/mendinghelper help","key":"main.help.mendinghelper","mode":"RUN"},{"usage":"/menuclick help","key":"main.help.menuclick","mode":"RUN"},{"usage":"/autoafk help","key":"main.help.autoafk","mode":"RUN"},{"usage":"/autoride help","key":"main.help.autoride","mode":"RUN"},{"usage":"/task help","key":"main.help.task","mode":"RUN"}]},{"file":"AutoAFK.java","root":"autoafk","prefix":"autoAFK.help","aliases":["afkk"],"entries":[{"usage":"config","key":"autoAFK.help.config","mode":"RUN"},{"usage":"attack help","key":"autoAFK.help.attack","mode":"RUN"},{"usage":"tpsCheck on","key":"autoAFK.help.tpsCheckOn","mode":"SUGGEST"},{"usage":"tpsCheck off","key":"autoAFK.help.tpsCheckOff","mode":"SUGGEST"}]},{"file":"AutoAttack.java","root":"autoafk attack","prefix":"autoAFK.autoAttack.help","aliases":[],"entries":[{"usage":"on","key":"autoAFK.autoAttack.help.on","mode":"SUGGEST"},{"usage":"off","key":"autoAFK.autoAttack.help.off","mode":"SUGGEST"},{"usage":"interval <tick>","key":"autoAFK.autoAttack.help.interval","mode":"SUGGEST"},{"usage":"info","key":"autoAFK.autoAttack.help.info","mode":"RUN"}]},{"file":"AutoDrop.java","root":"autodrop","prefix":"autodrop.help","aliases":["ad"],"entries":[{"usage":"on","key":"autodrop.help.on","mode":"SUGGEST"},{"usage":"off","key":"autodrop.help.off","mode":"SUGGEST"},{"usage":"config","key":"autodrop.help.config","mode":"RUN"},{"usage":"reload","key":"autodrop.help.reload","mode":"RUN"},{"usage":"timeTrigger <on|off>","key":"autodrop.help.timeTrigger","mode":"SUGGEST"},{"usage":"interval <tick>","key":"autodrop.help.interval","mode":"SUGGEST"},{"usage":"itemTrigger <on|off>","key":"autodrop.help.itemTrigger","mode":"SUGGEST"},{"usage":"containerTrigger <on|off>","key":"autodrop.help.containerTrigger","mode":"SUGGEST"},{"usage":"ignore current","key":"autodrop.help.ignoreCurrent","mode":"SUGGEST"},{"usage":"ignore set <1,2,3>","key":"autodrop.help.ignoreSet","mode":"SUGGEST"},{"usage":"ignore clear","key":"autodrop.help.ignoreClear","mode":"SUGGEST"},{"usage":"test","key":"autodrop.help.test","mode":"SUGGEST"},{"usage":"clean","key":"autodrop.help.clean","mode":"SUGGEST"},{"usage":"debug <on|off>","key":"autodrop.help.debug","mode":"SUGGEST"}]},{"file":"AutoFish.java","root":"autofish","prefix":"autofish.help","aliases":["fish"],"entries":[{"usage":"on","key":"autofish.help.on","mode":"SUGGEST"},{"usage":"off","key":"autofish.help.off","mode":"SUGGEST"},{"usage":"config","key":"autofish.help.config","mode":"RUN"},{"usage":"throwDelay <tick>","key":"autofish.help.throwDelay","mode":"SUGGEST"},{"usage":"randomDelay <on|off>","key":"autofish.help.randomDelay","mode":"SUGGEST"},{"usage":"rotation <on|off>","key":"autofish.help.rotation","mode":"SUGGEST"},{"usage":"debug <on|off>","key":"autofish.help.debug","mode":"SUGGEST"}]},{"file":"MendingHelper.java","root":"mendinghelper","prefix":"mendingHelper.help","aliases":["mh"],"entries":[{"usage":"config","key":"mendingHelper.help.config","mode":"RUN"},{"usage":"autoreplace <on|off>","key":"mendingHelper.help.autoreplace","mode":"SUGGEST"},{"usage":"autoenchant <on|off>","key":"mendingHelper.help.autoenchant","mode":"SUGGEST"},{"usage":"autodecompose <on|off>","key":"mendingHelper.help.autodecompose","mode":"SUGGEST"},{"usage":"autorepair <on|off>","key":"mendingHelper.help.autorepair","mode":"SUGGEST"},{"usage":"autorepair setMendingBookPos","key":"mendingHelper.help.setMendingBookPos","mode":"RUN"}]},{"file":"MenuClick.java","root":"menuclick","prefix":"menuClick.help","aliases":["click"],"entries":[{"usage":"config","key":"menuClick.help.config","mode":"RUN"},{"usage":"run <task>","key":"menuClick.help.run","mode":"SUGGEST"}]},{"file":"AutoRide.java","root":"autoride","prefix":"autoride.help","aliases":["ar"],"entries":[{"usage":"on","key":"autoride.help.on","mode":"SUGGEST"},{"usage":"off","key":"autoride.help.off","mode":"SUGGEST"},{"usage":"config","key":"autoride.help.config","mode":"RUN"},{"usage":"target <player>","key":"autoride.help.target","mode":"SUGGEST"},{"usage":"interval <tick>","key":"autoride.help.interval","mode":"SUGGEST"},{"usage":"distance <block>","key":"autoride.help.distance","mode":"SUGGEST"},{"usage":"smoothHead <on|off>","key":"autoride.help.smoothHead","mode":"SUGGEST"},{"usage":"reset","key":"autoride.help.reset","mode":"SUGGEST"}]},{"file":"TaskEntry.java","root":"task","prefix":"task.help","aliases":[],"entries":[{"usage":"dropAllItemFromShulkerBox on","key":"task.help.dropShulkerOn","mode":"SUGGEST"},{"usage":"dropAllItemFromShulkerBox off","key":"task.help.dropShulkerOff","mode":"SUGGEST"}]}],"zh_cn":{"help.ui.alias":"别名:","help.ui.prev":"« 上一页","help.ui.next":"下一页 »","help.ui.hover.suggest":"点击将 %s 填入聊天栏","help.ui.hover.run":"点击执行 %s","help.ui.hover.page":"跳转到第 %s 页","main.help.title":"Makemoney 总览","main.help.desc":"拾玖世界搬砖辅助合集，下列为各功能模块，点击即可查看模块帮助。","main.help.config":"打开模组配置界面","main.help.configTab":"打开指定序号的配置分页","main.help.autodrop":"自动丢弃：清理背包内不需要的物品","main.help.autofish":"自动钓鱼：自动抛竿收竿","main.help.mendinghelper":"装备分解辅助：自动修补、附魔与分解","main.help.menuclick":"菜单点击：自动完成固定的菜单点击流程","main.help.autoafk":"自动挂机：自适应攻击与 TPS 检测","main.help.autoride":"狗皮膏药：自动骑乘并跟随指定玩家","main.help.task":"自定义任务：一些零散的小功能","autodrop.help.title":"自动丢弃","autodrop.help.desc":"按设定的匹配条件清理背包，把不需要的物品丢出去。","autodrop.help.on":"开启模块（每次进入游戏都会自动关闭）","autodrop.help.off":"关闭模块","autodrop.help.config":"打开配置界面，设置匹配条件","autodrop.help.reload":"从配置文件重新加载设置","autodrop.help.clean":"立即丢出背包内全部物品（危险，慎用）","autodrop.help.test":"立即执行一次清理，用于测试匹配条件","autodrop.help.interval":"设置定时触发的间隔，单位 tick","autodrop.help.timeTrigger":"定时触发开关","autodrop.help.itemTrigger":"拾取到指定掉落物时触发开关","autodrop.help.containerTrigger":"打开容器时清理容器内物品开关","autodrop.help.ignoreCurrent":"把当前背包中有物品的槽位设为忽略","autodrop.help.ignoreSet":"手动指定忽略的槽位，如 \"9,10,11\"","autodrop.help.ignoreClear":"清空忽略槽位设置","autodrop.help.debug":"调试输出开关","autoride.help.title":"狗皮膏药","autoride.help.desc":"自动跟随并骑乘指定玩家，距离过远时自动靠近。","autoride.help.on":"开启自动骑乘","autoride.help.off":"关闭自动骑乘","autoride.help.config":"打开配置界面","autoride.help.target":"设置要跟随的目标玩家","autoride.help.interval":"设置骑乘尝试的间隔，单位 tick","autoride.help.distance":"设置触发骑乘的最小距离","autoride.help.smoothHead":"平滑转头开关，减少视角突变","autoride.help.reset":"重置本模块的全部配置","autofish.help.title":"自动钓鱼","autofish.help.desc":"自动抛竿与收竿，检测到鱼儿咬钩后自动重新抛出。","autofish.help.on":"开启自动钓鱼","autofish.help.off":"关闭自动钓鱼","autofish.help.config":"打开配置界面","autofish.help.throwDelay":"设置收竿后再次抛竿的延迟，单位 tick","autofish.help.randomDelay":"随机延迟开关，降低操作规律性","autofish.help.rotation":"抛竿时随机转动视角开关","autofish.help.debug":"调试输出开关","menuClick.help.title":"菜单点击","menuClick.help.desc":"把重复的菜单点击流程录成任务，一条指令自动跑完。","menuClick.help.config":"打开配置界面，编辑点击任务","menuClick.help.run":"执行指定名称的点击任务","mendingHelper.help.title":"装备分解辅助","mendingHelper.help.desc":"自动替换、附魔、修补与分解装备，配合经验修补刷取材料。","mendingHelper.help.config":"打开配置界面","mendingHelper.help.autoreplace":"自动替换经验修补装备开关","mendingHelper.help.autoenchant":"自动附魔经验修补开关","mendingHelper.help.autodecompose":"自动分解装备开关","mendingHelper.help.autorepair":"自动修补装备开关","mendingHelper.help.setMendingBookPos":"将准星所指的容器设为经验修补书存放点","autoAFK.help.title":"自动挂机","autoAFK.help.desc":"挂机时的辅助功能，包含自适应攻击与服务器 TPS 检测。","autoAFK.help.config":"打开配置界面","autoAFK.help.attack":"自适应攻击子模块，查看其帮助","autoAFK.help.tpsCheckOn":"开启 TPS 检测，过低时执行补救命令","autoAFK.help.tpsCheckOff":"关闭 TPS 检测","autoAFK.autoAttack.help.title":"自适应攻击","autoAFK.autoAttack.help.desc":"按服务器 TPS 动态调整攻击周期，卡服时也能稳定触发横扫。","autoAFK.autoAttack.help.on":"开启自适应攻击","autoAFK.autoAttack.help.off":"关闭自适应攻击","autoAFK.autoAttack.help.interval":"设置攻击周期，单位 tick","autoAFK.autoAttack.help.info":"查看当前 TPS 与调整后的攻击周期","task.help.title":"自定义任务","task.help.desc":"一些不好归类的零散小功能，按需单独开启。","task.help.dropShulkerOn":"开启自动丢出背包内潜影盒物品","task.help.dropShulkerOff":"关闭自动丢出背包内潜影盒物品"},"en_us":{"help.ui.alias":"Aliases:","help.ui.prev":"« Prev","help.ui.next":"Next »","help.ui.hover.suggest":"Click to put %s into the chat box","help.ui.hover.run":"Click to run %s","help.ui.hover.page":"Jump to page %s","main.help.title":"Makemoney Overview","main.help.desc":"A toolkit for grinding on NineteenWorld. Click a module below to see its help.","main.help.config":"Open the mod config screen","main.help.configTab":"Open the config screen at the given tab index","main.help.autodrop":"AutoDrop: clean unwanted items out of your inventory","main.help.autofish":"AutoFish: cast and reel in automatically","main.help.mendinghelper":"MendingHelper: auto repair, enchant and decompose gear","main.help.menuclick":"MenuClick: replay a fixed sequence of menu clicks","main.help.autoafk":"AutoAFK: adaptive attack and server TPS checking","main.help.autoride":"AutoRide: follow and ride a chosen player","main.help.task":"Tasks: assorted small utilities","autodrop.help.title":"AutoDrop","autodrop.help.desc":"Cleans your inventory by dropping items that do not match your filters.","autodrop.help.on":"Enable the module (always off again on game start)","autodrop.help.off":"Disable the module","autodrop.help.config":"Open the config screen to set up filters","autodrop.help.reload":"Reload settings from the config file","autodrop.help.clean":"Drop every item in your inventory right now (dangerous)","autodrop.help.test":"Run one cleanup pass to test your filters","autodrop.help.interval":"Set the timed trigger interval, in ticks","autodrop.help.timeTrigger":"Toggle the timed trigger","autodrop.help.itemTrigger":"Toggle triggering when a chosen item is picked up","autodrop.help.containerTrigger":"Toggle cleaning containers when you open them","autodrop.help.ignoreCurrent":"Ignore every slot that currently holds an item","autodrop.help.ignoreSet":"Set ignored slots manually, e.g. \"9,10,11\"","autodrop.help.ignoreClear":"Clear the ignored slot list","autodrop.help.debug":"Toggle debug logging","autoride.help.title":"AutoRide","autoride.help.desc":"Follows a chosen player and rides them, closing the gap when they get too far away.","autoride.help.on":"Enable auto riding","autoride.help.off":"Disable auto riding","autoride.help.config":"Open the config screen","autoride.help.target":"Set the player to follow","autoride.help.interval":"Set the ride retry interval, in ticks","autoride.help.distance":"Set the minimum distance that triggers riding","autoride.help.smoothHead":"Toggle smooth head turning","autoride.help.reset":"Reset every setting in this module","autofish.help.title":"AutoFish","autofish.help.desc":"Casts and reels in for you, then recasts once a fish bites.","autofish.help.on":"Enable auto fishing","autofish.help.off":"Disable auto fishing","autofish.help.config":"Open the config screen","autofish.help.throwDelay":"Set the delay before recasting, in ticks","autofish.help.randomDelay":"Toggle random delay to look less mechanical","autofish.help.rotation":"Toggle random view rotation when casting","autofish.help.debug":"Toggle debug logging","menuClick.help.title":"MenuClick","menuClick.help.desc":"Record a repetitive menu click sequence as a task and replay it with one command.","menuClick.help.config":"Open the config screen to edit click tasks","menuClick.help.run":"Run the click task with the given name","mendingHelper.help.title":"MendingHelper","mendingHelper.help.desc":"Automatically replaces, enchants, repairs and decomposes gear to farm materials with Mending.","mendingHelper.help.config":"Open the config screen","mendingHelper.help.autoreplace":"Toggle auto replacing Mending gear","mendingHelper.help.autoenchant":"Toggle auto enchanting Mending","mendingHelper.help.autodecompose":"Toggle auto decomposing gear","mendingHelper.help.autorepair":"Toggle auto repairing gear","mendingHelper.help.setMendingBookPos":"Use the container you are looking at as the Mending book storage","autoAFK.help.title":"AutoAFK","autoAFK.help.desc":"Helpers for AFK grinding: adaptive attacking and server TPS checks.","autoAFK.help.config":"Open the config screen","autoAFK.help.attack":"Adaptive attack submodule, view its help","autoAFK.help.tpsCheckOn":"Enable TPS checking and run your fallback command when it drops","autoAFK.help.tpsCheckOff":"Disable TPS checking","autoAFK.autoAttack.help.title":"Adaptive Attack","autoAFK.autoAttack.help.desc":"Scales the attack interval with server TPS so sweep attacks still land on a laggy server.","autoAFK.autoAttack.help.on":"Enable adaptive attack","autoAFK.autoAttack.help.off":"Disable adaptive attack","autoAFK.autoAttack.help.interval":"Set the attack interval, in ticks","autoAFK.autoAttack.help.info":"Show the current TPS and adjusted attack interval","task.help.title":"Tasks","task.help.desc":"Assorted small utilities that do not fit anywhere else. Enable them one by one.","task.help.dropShulkerOn":"Enable auto dropping shulker box contents from your inventory","task.help.dropShulkerOff":"Disable auto dropping shulker box contents from your inventory"}};
+
+const PER_PAGE = 6;
+const DIVIDER = "━".repeat(8);
+const CHAT_PX = 320;
+
+// Minecraft 默认字体的字形步进宽度（字形宽 + 1px 间隙）
+const NARROW = {
+  " ":4, "!":2, '"':5, "'":3, "(":5, ")":5, "*":5, ",":2, ".":2, "/":6,
+  ":":2, ";":2, "<":5, ">":5, "[":4, "]":4, "`":3, "f":5, "i":2, "k":5,
+  "l":3, "t":4, "{":5, "|":2, "}":5, "I":4, "~":7, "@":7,
+};
+const adv = (ch) =>
+  ch.codePointAt(0) < 128 ? (NARROW[ch] ?? 6) : 9;
+const px = (s, bold = false) =>
+  [...s].reduce((n, c) => n + adv(c) + (bold ? 1 : 0), 0);
+
+let locale = "zh_cn";
+let modIdx = 0;
+let page = 1;
+let showRuler = true;
+
+const T = (key, arg) => {
+  let s = DATA[locale][key] ?? `«${key}»`;
+  return arg === undefined ? s : s.replace("%s", arg);
+};
+
+const totalPages = (n) => (n === 0 ? 1 : Math.ceil(n / PER_PAGE));
+const pageStart = (p, n, tp) => Math.floor(((p - 1) * n) / tp);
+
+const resolveCmd = (root, usage) =>
+  usage.startsWith("/") ? usage : usage ? `/${root} ${usage}` : `/${root}`;
+
+const el = (cls, text) => {
+  const s = document.createElement("span");
+  if (cls) s.className = cls;
+  if (text !== undefined) s.textContent = text;
+  return s;
+};
+
+/** 构建一页的行数组；每行是 {node, width} */
+function buildPage(menu, pageNo) {
+  const n = menu.entries.length;
+  const tp = totalPages(n);
+  const p = Math.max(1, Math.min(pageNo, tp));
+  const rows = [];
+
+  // 页头
+  {
+    const line = document.createElement("div");
+    line.className = "chat-line";
+    let w = 0;
+    line.append(el("c-dgray", DIVIDER)); w += px(DIVIDER);
+    line.append(el("c-gray", " ")); w += px(" ");
+    const title = T(menu.prefix + ".title");
+    line.append(el("c-purple", title)); w += px(title, true);
+    if (tp > 1) {
+      line.append(el("c-gray", " ")); w += px(" ");
+      const pg = `${p}/${tp}`;
+      line.append(el("c-dgray", pg)); w += px(pg);
+    }
+    line.append(el("c-gray", " ")); w += px(" ");
+    line.append(el("c-dgray", DIVIDER)); w += px(DIVIDER);
+    rows.push({ node: line, width: w });
+  }
+
+  // 简介与别名，仅首页
+  if (p === 1) {
+    const desc = T(menu.prefix + ".desc");
+    const d = document.createElement("div");
+    d.className = "chat-line";
+    d.append(el("c-gray", desc));
+    rows.push({ node: d, width: px(desc) });
+
+    if (menu.aliases.length) {
+      const a = document.createElement("div");
+      a.className = "chat-line";
+      let w = 0;
+      const lbl = T("help.ui.alias");
+      a.append(el("c-dgray", lbl)); w += px(lbl);
+      a.append(el("c-gray", " ")); w += px(" ");
+      menu.aliases.forEach((al, i) => {
+        if (i) { a.append(el("c-dgray", ", ")); w += px(", "); }
+        a.append(el("c-aqua", "/" + al)); w += px("/" + al);
+      });
+      rows.push({ node: a, width: w });
+    }
+  }
+
+  // 条目
+  const lo = pageStart(p, n, tp);
+  const hi = pageStart(p + 1, n, tp);
+  for (const e of menu.entries.slice(lo, hi)) {
+    const cmd = resolveCmd(menu.root, e.usage);
+    const desc = T(e.key);
+    const line = document.createElement("div");
+    line.className = "chat-line";
+
+    const span = el("entry");
+    span.append(el("c-dgray", " "));
+    span.append(el("c-yellow", cmd));
+    span.append(el("c-dgray", " - "));
+    span.append(el("c-gray", desc));
+
+    if (e.mode !== "NONE") {
+      span.classList.add("hit");
+      span.tabIndex = 0;
+      span.dataset.cmd = cmd;
+      span.dataset.mode = e.mode;
+      const tipKey = e.mode === "RUN" ? "help.ui.hover.run" : "help.ui.hover.suggest";
+      span.dataset.tip = T(tipKey, cmd);
+      span.dataset.tipCmd = cmd;
+    }
+    line.append(span);
+    rows.push({ node: line, width: px(" ") + px(cmd) + px(" - ") + px(desc) });
+  }
+
+  // 页脚
+  if (tp > 1) {
+    const f = document.createElement("div");
+    f.className = "chat-line";
+    let w = 0;
+
+    const navBtn = (labelKey, target, enabled) => {
+      const label = T(labelKey);
+      w += px(label);
+      if (!enabled) return el("nav-off", label);
+      const b = el("c-green hit", label);
+      b.tabIndex = 0;
+      b.dataset.page = String(target);
+      b.dataset.tip = T("help.ui.hover.page", String(target));
+      return b;
+    };
+
+    f.append(navBtn("help.ui.prev", p - 1, p > 1));
+    f.append(el("c-gray", " ")); w += px(" ");
+    for (let i = 1; i <= tp; i++) {
+      if (i > 1) { f.append(el("c-dgray", " ")); w += px(" "); }
+      w += px(String(i));
+      if (i === p) {
+        f.append(el("c-gold", String(i)));
+      } else {
+        const b = el("c-gray hit pagenum", String(i));
+        b.tabIndex = 0;
+        b.dataset.page = String(i);
+        b.dataset.tip = T("help.ui.hover.page", String(i));
+        f.append(b);
+      }
+    }
+    f.append(el("c-gray", " ")); w += px(" ");
+    f.append(navBtn("help.ui.next", p + 1, p < tp));
+    rows.push({ node: f, width: w });
+  }
+
+  return { rows, tp, p, n };
+}
+
+/** 把行数组渲染进容器，超宽行加高亮，并按需画标尺 */
+function paint(container, built, withRuler) {
+  container.textContent = "";
+  for (const { node, width } of built.rows) {
+    if (width > CHAT_PX) node.classList.add("over");
+    container.append(node);
+  }
+  if (!withRuler) return;
+
+  // 自校准：取最宽的一行，用它「CSS 宽度 ÷ 游戏像素宽度」反推比例。
+  // 网页是比例字体、游戏是位图字体，比例并非常数，故标尺仅为近似位置。
+  let ref = null;
+  for (const row of built.rows) {
+    if (row.width > 0 && (!ref || row.width > ref.width)) ref = row;
+  }
+  if (!ref) return;
+  const cssW = ref.node.getBoundingClientRect().width;
+  if (!cssW) return;
+
+  const r = document.createElement("div");
+  r.className = "ruler";
+  r.style.left = 8 + (CHAT_PX * cssW) / ref.width + "px";
+  r.append(el("", "320px 折行"));
+  container.append(r);
+}
+
+/* ── 交互 ─────────────────────────────────────────────── */
+const chat = document.getElementById("chat");
+const inputbar = document.getElementById("inputbar");
+const tip = document.getElementById("tip");
+const grid = document.getElementById("grid");
+
+function renderChat() {
+  const menu = DATA.menus[modIdx];
+  const built = buildPage(menu, page);
+  page = built.p;
+  paint(chat, built, showRuler);
+}
+
+function setInput(text) {
+  inputbar.textContent = "";
+  if (text) inputbar.append(el("", text));
+  inputbar.append(el("caret", " "));
+}
+
+function flashRun(cmd) {
+  const line = document.createElement("div");
+  line.className = "chat-line";
+  line.append(el("c-dgray", "› "));
+  line.append(el("c-aqua", cmd));
+  line.append(el("c-dgray", "  ← 已执行"));
+  chat.append(line);
+}
+
+function showTip(target) {
+  const text = target.dataset.tip;
+  if (!text) return;
+  tip.textContent = "";
+  const cmd = target.dataset.tipCmd;
+  if (cmd && text.includes(cmd)) {
+    const [before, after] = text.split(cmd);
+    tip.append(document.createTextNode(before));
+    const b = document.createElement("b");
+    b.textContent = cmd;
+    tip.append(b, document.createTextNode(after ?? ""));
+  } else {
+    tip.textContent = text;
+  }
+  tip.classList.add("on");
+}
+
+function moveTip(e) {
+  const pad = 14;
+  let x = e.clientX + pad;
+  let y = e.clientY + pad;
+  const r = tip.getBoundingClientRect();
+  if (x + r.width > innerWidth - 8) x = e.clientX - r.width - pad;
+  if (y + r.height > innerHeight - 8) y = e.clientY - r.height - pad;
+  tip.style.left = x + "px";
+  tip.style.top = y + "px";
+}
+
+const hideTip = () => tip.classList.remove("on");
+
+function activate(target) {
+  if (target.dataset.page) {
+    page = Number(target.dataset.page);
+    hideTip();
+    renderChat();
+    return;
+  }
+  const cmd = target.dataset.cmd;
+  if (!cmd) return;
+  if (target.dataset.mode === "RUN") {
+    setInput("");
+    flashRun(cmd);
+  } else {
+    setInput(cmd + " ");
+  }
+}
+
+chat.addEventListener("click", (e) => {
+  const t = e.target.closest(".hit");
+  if (t) activate(t);
+});
+chat.addEventListener("keydown", (e) => {
+  if (e.key !== "Enter" && e.key !== " ") return;
+  const t = e.target.closest?.(".hit");
+  if (t) { e.preventDefault(); activate(t); }
+});
+chat.addEventListener("mouseover", (e) => {
+  const t = e.target.closest(".hit");
+  if (t) { showTip(t); moveTip(e); }
+});
+chat.addEventListener("mousemove", (e) => {
+  if (tip.classList.contains("on")) moveTip(e);
+});
+chat.addEventListener("mouseout", (e) => {
+  if (e.target.closest(".hit")) hideTip();
+});
+chat.addEventListener("focusin", (e) => {
+  const t = e.target.closest?.(".hit");
+  if (!t) return;
+  const r = t.getBoundingClientRect();
+  showTip(t);
+  tip.style.left = r.left + "px";
+  tip.style.top = r.bottom + 8 + "px";
+});
+chat.addEventListener("focusout", hideTip);
+
+/* ── 控制条 ───────────────────────────────────────────── */
+const segMod = document.getElementById("seg-mod");
+DATA.menus.forEach((m, i) => {
+  const b = document.createElement("button");
+  b.type = "button";
+  b.textContent = "/" + m.root;
+  b.setAttribute("aria-pressed", String(i === 0));
+  b.addEventListener("click", () => {
+    modIdx = i;
+    page = 1;
+    [...segMod.children].forEach((c, j) =>
+      c.setAttribute("aria-pressed", String(j === i)));
+    setInput("");
+    renderChat();
+  });
+  segMod.append(b);
+});
+
+document.getElementById("seg-loc").addEventListener("click", (e) => {
+  const b = e.target.closest("button[data-loc]");
+  if (!b) return;
+  locale = b.dataset.loc;
+  [...b.parentElement.children].forEach((c) =>
+    c.setAttribute("aria-pressed", String(c === b)));
+  renderChat();
+  renderGrid();
+});
+
+document.getElementById("seg-ruler").addEventListener("click", (e) => {
+  const b = e.target.closest("button[data-ruler]");
+  if (!b) return;
+  showRuler = b.dataset.ruler === "on";
+  [...b.parentElement.children].forEach((c) =>
+    c.setAttribute("aria-pressed", String(c === b)));
+  renderChat();
+  renderGrid();
+});
+
+/* ── 全量网格 ─────────────────────────────────────────── */
+function renderGrid() {
+  grid.textContent = "";
+  for (const menu of DATA.menus) {
+    const tp = totalPages(menu.entries.length);
+    for (let p = 1; p <= tp; p++) {
+      const card = document.createElement("div");
+      card.className = "card";
+
+      const head = document.createElement("div");
+      head.className = "card-head";
+      head.append(el("card-cmd", `/${menu.root} help${tp > 1 ? " " + p : ""}`));
+      const meta = el("card-meta",
+        `${menu.file} · ${menu.entries.length} 条 / ${tp} 页`);
+      head.append(meta);
+      card.append(head);
+
+      const box = document.createElement("div");
+      box.className = "chat";
+      const built = buildPage(menu, p);
+      // 静态卡片里不需要可点击目标
+      built.rows.forEach(({ node }) =>
+        node.querySelectorAll?.(".hit").forEach((h) => {
+          h.classList.remove("hit");
+          h.removeAttribute("tabindex");
+        }));
+      card.append(box);
+      grid.append(card);
+      paint(box, built, showRuler);
+    }
+  }
+}
+
+setInput("");
+renderChat();
+renderGrid();
+addEventListener("resize", () => { renderChat(); renderGrid(); });
+</script>

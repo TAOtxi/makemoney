@@ -9,6 +9,7 @@ import cn.taotxi.Makemoney.util.MLogger;
 import cn.taotxi.Makemoney.util.Message;
 import cn.taotxi.Makemoney.util.T;
 import cn.taotxi.Makemoney.util.TaskUtil;
+import cn.taotxi.Makemoney.util.help.HelpMenu;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -31,6 +32,16 @@ import net.minecraft.world.level.material.FluidState;
 
 public class AutoFish {
     public static final String MODULE_NAME = "autofish";
+    private static final HelpMenu HELP = HelpMenu.of(MODULE_NAME, MODULE_NAME + ".help")
+        .alias("fish")
+        .entry("on", MODULE_NAME + ".help.on")
+        .entry("off", MODULE_NAME + ".help.off")
+        .runEntry("config", MODULE_NAME + ".help.config")
+        .entry("throwDelay <tick>", MODULE_NAME + ".help.throwDelay")
+        .entry("randomDelay <on|off>", MODULE_NAME + ".help.randomDelay")
+        .entry("rotation <on|off>", MODULE_NAME + ".help.rotation")
+        .entry("debug <on|off>", MODULE_NAME + ".help.debug")
+        .build();
     public static final MLogger logger = new MLogger(MODULE_NAME);
     private static final Minecraft client = Minecraft.getInstance();
     private static final AutoFishConfig CONFIG = AutoFishConfig.getInstance();
@@ -84,8 +95,8 @@ public class AutoFish {
     private static void registerCommand() {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
             var cmd = dispatcher.register(ClientCommands.literal("autofish")
-                .executes(AutoFish::showHelp)
-                .then(ClientCommands.literal("help").executes(AutoFish::showHelp))
+                .executes(HELP::executeFirstPage)
+                .then(HELP.helpCommand())
                 .then(ClientCommands.literal("on")
                     .executes(context -> {
                         CONFIG.enabled.enable();
@@ -161,15 +172,10 @@ public class AutoFish {
             );
 
             dispatcher.register(ClientCommands.literal("fish")
-                .executes(AutoFish::showHelp)
+                .executes(HELP::executeFirstPage)
                 .redirect(cmd)
             );
         });
-    }
-
-    private static int showHelp(CommandContext<FabricClientCommandSource> context) {
-        context.getSource().sendFeedback(T.tl("autofish.help.message"));
-        return 1;
     }
 
     private static void fishingStatusCheck() {
