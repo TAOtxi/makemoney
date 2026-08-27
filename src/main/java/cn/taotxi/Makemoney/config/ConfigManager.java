@@ -2,6 +2,7 @@ package cn.taotxi.Makemoney.config;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
@@ -40,6 +41,19 @@ public class ConfigManager {
         config = ConfigMaker
             .loadConfig(MODULE_NAME, defaultConfig)
             .getAsJsonObject();
+
+        // 补齐新版本新增的字段：否则 getValue() 会一直回退到默认值，
+        // 而针对这些字段的写入会落在默认值对象上而非配置里
+        boolean added = false;
+        for (Map.Entry<String, JsonElement> entry : defaultConfig.entrySet()) {
+            if (!config.has(entry.getKey())) {
+                config.add(entry.getKey(), entry.getValue().deepCopy());
+                added = true;
+            }
+        }
+        if (added) {
+            saveConfig();
+        }
     }
 
     public void reloadConfig() {

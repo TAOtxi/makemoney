@@ -92,12 +92,16 @@ public class ConfigArray<T> implements IConfigBase<JsonArray> {
         return defaultValue;
     }
     
+    /**
+     * 返回配置中实际存储的数组。key 不存在时先把默认值的副本写入配置，
+     * 因此返回的始终是配置里的实体，调用方就地修改不会污染默认值。
+     */
     @Override
     public JsonArray getValue() {
-        if (configManager.has(key)) {
-            return configManager.get(key).getAsJsonArray();
+        if (!configManager.has(key)) {
+            configManager.set(key, defaultValue.deepCopy());
         }
-        return defaultValue;
+        return configManager.get(key).getAsJsonArray();
     }
 
     @SuppressWarnings("unchecked")
@@ -144,8 +148,9 @@ public class ConfigArray<T> implements IConfigBase<JsonArray> {
     }
 
     public JsonElement remove(int index) {
-        JsonElement element = getValue().get(index);
-        getValue().remove(index);
+        JsonArray value = getValue();
+        JsonElement element = value.get(index);
+        value.remove(index);
         triggerConfigChange();
         return element;
     }

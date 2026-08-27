@@ -37,10 +37,10 @@ public class ConfigDouble implements IConfigBase<Double> {
     
     @Override
     public Double getValue() {
-        if (configManager.has(key)) {
-            return configManager.get(key).getAsDouble();
+        if (!configManager.has(key)) {
+            configManager.set(key, new JsonPrimitive(defaultValue));
         }
-        return defaultValue;
+        return configManager.get(key).getAsDouble();
     }
     
     @Override

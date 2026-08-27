@@ -37,10 +37,10 @@ public class ConfigBoolean implements IConfigBase<Boolean> {
     
     @Override
     public Boolean getValue() {
-        if (configManager.has(key)) {
-            return configManager.get(key).getAsBoolean();
+        if (!configManager.has(key)) {
+            configManager.set(key, new JsonPrimitive(defaultValue));
         }
-        return defaultValue;
+        return configManager.get(key).getAsBoolean();
     }
     
     @Override

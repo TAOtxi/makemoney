@@ -37,10 +37,10 @@ public class ConfigString implements IConfigBase<String> {
     
     @Override
     public String getValue() {
-        if (configManager.has(key)) {
-            return configManager.get(key).getAsString();
+        if (!configManager.has(key)) {
+            configManager.set(key, new JsonPrimitive(defaultValue));
         }
-        return defaultValue;
+        return configManager.get(key).getAsString();
     }
     
     @Override

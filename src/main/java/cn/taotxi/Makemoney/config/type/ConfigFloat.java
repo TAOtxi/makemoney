@@ -37,10 +37,10 @@ public class ConfigFloat implements IConfigBase<Float> {
     
     @Override
     public Float getValue() {
-        if (configManager.has(key)) {
-            return configManager.get(key).getAsFloat();
+        if (!configManager.has(key)) {
+            configManager.set(key, new JsonPrimitive(defaultValue));
         }
-        return defaultValue;
+        return configManager.get(key).getAsFloat();
     }
     
     @Override

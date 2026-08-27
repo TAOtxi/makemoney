@@ -37,10 +37,10 @@ public class ConfigInteger implements IConfigBase<Integer> {
     
     @Override
     public Integer getValue() {
-        if (configManager.has(key)) {
-            return configManager.get(key).getAsInt();
+        if (!configManager.has(key)) {
+            configManager.set(key, new JsonPrimitive(defaultValue));
         }
-        return defaultValue;
+        return configManager.get(key).getAsInt();
     }
     
     @Override
