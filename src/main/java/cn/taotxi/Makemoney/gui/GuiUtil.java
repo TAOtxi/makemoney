@@ -1,7 +1,7 @@
 package cn.taotxi.Makemoney.gui;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import cn.taotxi.Makemoney.Makemoney;
 import cn.taotxi.Makemoney.config.MakemoneyConfig;
@@ -9,7 +9,6 @@ import cn.taotxi.Makemoney.module.AutoAFK.AutoAFK;
 import cn.taotxi.Makemoney.module.AutoDrop.AutoDrop;
 import cn.taotxi.Makemoney.module.AutoDrop.AutoDropConfigGui;
 import cn.taotxi.Makemoney.module.AutoFish.AutoFish;
-// import cn.taotxi.Makemoney.module.Highlight.Highlight;
 import cn.taotxi.Makemoney.module.MendingHelper.MendingHelper;
 import cn.taotxi.Makemoney.module.MenuClick.MenuClick;
 import cn.taotxi.Makemoney.module.MessageCommand.MessageCommand;
@@ -37,11 +36,14 @@ public class GuiUtil {
             IgnoreMessage.MODULE_NAME, 3,
             MessageCommand.MODULE_NAME, 4,
             MenuClick.MODULE_NAME, 5
-            // Highlight.MODULE_NAME, 6
         );
     }
 
-    public static void openConfigChangeTipWindow(List<String> configChangeNameList) {
+    public static void openConfigChangeTipWindow(Set<String> configChangeNameSet) {
+        TaskUtil.createOnceTimeTask("removeConfigChangeTipWindow", () -> {
+            TaskUtil.removeTimeTask("configChangeTipWindow");
+        }, 20 * 60);
+
         TaskUtil.createTimeTask("configChangeTipWindow", () -> {
             if (!(client.gui.screen() instanceof TitleScreen)) {
                 return;
@@ -51,7 +53,7 @@ public class GuiUtil {
             ConfirmScreen confirmScreen = new ConfirmScreen(
                 (isConfirm) -> {
                     if (isConfirm) {
-                        MakemoneyConfig.getInstance().resetConfig(configChangeNameList);
+                        MakemoneyConfig.getInstance().resetConfig(configChangeNameSet);
                     }
                     MakemoneyConfig.getInstance().updateConfigVersionField();
                     client.gui.setScreen(originScreen);
@@ -63,6 +65,7 @@ public class GuiUtil {
             );
             client.gui.setScreen(confirmScreen);
             TaskUtil.removeTimeTask("configChangeTipWindow");
+            TaskUtil.removeTimeTask("removeConfigChangeTipWindow");
         }, 5);
     }
 
@@ -72,6 +75,7 @@ public class GuiUtil {
     }
 
     public static void openYaclScreen(String key, int tabIndex) {
+        TaskUtil.removeTimeTask("openYaclScreen");
         TaskUtil.createTimeTask("openYaclScreen", () -> {
             if (client.gui.screen() != null) return;
             TaskUtil.removeTimeTask("openYaclScreen");

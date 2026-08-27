@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.mojang.brigadier.context.CommandContext;
 
+import cn.taotxi.Makemoney.Makemoney;
 import cn.taotxi.Makemoney.util.Message;
 import cn.taotxi.Makemoney.util.T;
 import cn.taotxi.Makemoney.util.TaskUtil;
@@ -109,13 +110,15 @@ public class DropItemInShulkerBox {
         AbstractContainerMenu menu = client.player.containerMenu;
         Map.Entry<Integer, Integer> slotRange = InventoryUtil.getContainerSlotRange(menu);
         if (slotRange == null) {
-            throw new IllegalArgumentException("Not support menu");
+            Makemoney.LOGGER.warn("Unsupported container {}, stop searching shulker box",
+                menu.getClass().getSimpleName());
+            return -1;
         }
         int startSlot = slotRange.getKey();
         int endSlot = slotRange.getValue();
         for (int i = startSlot; i <= endSlot; i++) {
             ItemStack item = menu.getSlot(i).getItem();
-            if (!ItemStackUtil.equalId(item, "/^minecraft:.*?shulker_box$/")) {
+            if (!ItemStackUtil.IdEndsWithName(item, "shulker_box")) {
                 continue;
             }
             ItemContainerContents container = item.getComponents().get(DataComponents.CONTAINER);
@@ -162,7 +165,9 @@ public class DropItemInShulkerBox {
         AbstractContainerMenu menu = client.player.containerMenu;
         Map.Entry<Integer, Integer> slotRange = InventoryUtil.getContainerSlotRange(menu);
         if (slotRange == null) {
-            throw new IllegalArgumentException("Not in Shulker Box");
+            Makemoney.LOGGER.warn("Unsupported container {}, skip dropping items",
+                menu.getClass().getSimpleName());
+            return;
         }
         int startSlot = slotRange.getKey();
         int endSlot = slotRange.getValue();

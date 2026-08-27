@@ -51,6 +51,14 @@ public class ItemStackUtil {
         return StringUtil.regMatch(getId(item), withDefaultNamespace(id));
     }
 
+    public static boolean IdStartsWithName(ItemStack item, String id) {
+        return getId(item).startsWith(id);
+    }
+
+    public static boolean IdEndsWithName(ItemStack item, String id) {
+        return getId(item).endsWith(id);
+    }
+
     public static List<String> getTags(ItemStack item) {
         return item.tags().map(tagKey -> "#" + tagKey.location().toString()).toList();
     }

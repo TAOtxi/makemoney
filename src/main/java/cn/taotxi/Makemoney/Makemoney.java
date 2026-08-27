@@ -7,7 +7,7 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.File;
-import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,10 +44,10 @@ public class Makemoney implements ModInitializer {
         
         if (!isNewUser) {
             LOGGER.info("Not a new user, check config change.");
-            List<String> configChangeNameList = MakemoneyConfig.getInstance().getConfigChangeNameList();
-            if (!configChangeNameList.isEmpty()) {
-                LOGGER.info("Config change detected: {}", configChangeNameList);
-                GuiUtil.openConfigChangeTipWindow(configChangeNameList);
+            Set<String> configChangeNameSet = MakemoneyConfig.getInstance().getConfigChangeNameSet();
+            if (!configChangeNameSet.isEmpty()) {
+                LOGGER.info("Config change detected: {}", configChangeNameSet);
+                GuiUtil.openConfigChangeTipWindow(configChangeNameSet);
             }
         } else {
             LOGGER.info("New user, update config version field.");
@@ -64,8 +64,7 @@ public class Makemoney implements ModInitializer {
         AutoAFK.initialize();
         TaskUtil.initialize();
         TaskEntry.initialize();
-        // Highlight.initialize();
-        Test.initialize();
+        // Test.initialize();
 	}
 
     private void registerCommand() {
@@ -93,14 +92,6 @@ public class Makemoney implements ModInitializer {
             dispatcher.register(ClientCommands.literal("mn")
                     .executes(Makemoney::showHelp)
                     .redirect(command));
-
-            // dispatcher.register(ClientCommands.literal("mk")
-            //         .executes(Makemoney::showHelp)
-            //         .redirect(command));
-
-            // dispatcher.register(ClientCommands.literal("mkm")
-            //         .executes(Makemoney::showHelp)
-            //         .redirect(command)); 
         });
     }
 

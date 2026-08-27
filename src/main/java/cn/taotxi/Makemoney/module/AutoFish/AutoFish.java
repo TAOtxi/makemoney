@@ -239,7 +239,7 @@ public class AutoFish {
     public static void onEntityAdd(ClientboundAddEntityPacket clientboundAddEntityPacket) {
         if (clientboundAddEntityPacket.getType() != EntityTypes.FISHING_BOBBER) return;
         FishingHook bobber = (FishingHook) client.level.getEntity(clientboundAddEntityPacket.getId());
-        if (bobber.getPlayerOwner() == client.player) {
+        if (bobber != null && bobber.getPlayerOwner() == client.player) {
             bobberId = bobber.getId();
         }
     }
@@ -298,7 +298,6 @@ public class AutoFish {
 
             TaskUtil.resetNextRunTick(FISHING_STATUS_CHECK_TASK_ID);
 
-            // TODO: Bug: 转向有点问题
             if (!CONFIG.rotation.getValue() || !rotation) {
                 return;
             }

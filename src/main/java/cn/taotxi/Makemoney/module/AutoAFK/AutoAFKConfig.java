@@ -39,7 +39,7 @@ public class AutoAFKConfig extends ConfigManager {
     public final ConfigString   triggerCommand       = new ConfigString("triggerCommand", "/spawn", "低于阈值时触发的命令", this);
     public final ConfigString   greenTriggerCommand  = new ConfigString("greenTriggerCommand", "/back", "绿色阈值时触发的命令", this);
 
-    public final ConfigBoolean positionCheckEnabled = new ConfigBoolean("positionCheckEnabled", false, "是否启用位置检查", this);
+    public final ConfigBoolean positionCheckEnabled  = new ConfigBoolean("positionCheckEnabled", false, "是否启用位置检查", this);
     public final ConfigInteger positionCheckInterval = new ConfigInteger("positionCheckInterval", 20 * 10, "位置检测周期（tick）", this);
     public final ConfigArray<PositionCheckItem> positionCheckItems = new ConfigArray<>("positionCheckItems", "位置检查项目列表", this, PositionCheckItem.class);
     
@@ -87,7 +87,7 @@ public class AutoAFKConfig extends ConfigManager {
         }
 
         public boolean isInSameWorld(String world) {
-            if (world.equals("*")) {
+            if (this.world.equals("*")) {
                 return true;
             }
             return this.world.equals(world);
@@ -141,11 +141,15 @@ public class AutoAFKConfig extends ConfigManager {
         }
 
         public String getPosition1() {
-            return x1 + ", " + y1 + ", " + z1;
+            return StringUtil.posToString(
+                List.of(x1, y1, z1)
+            );
         }
 
         public String getPosition2() {
-            return x2 + ", " + y2 + ", " + z2;
+            return StringUtil.posToString(
+                List.of(x2, y2, z2)
+            );
         }
 
         public boolean isInner() {

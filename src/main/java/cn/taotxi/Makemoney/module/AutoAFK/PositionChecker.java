@@ -57,7 +57,7 @@ public class PositionChecker {
 
         String world = client.level.dimension().identifier().toString();
         for (PositionCheckItem item : positionCheckItems) {
-            if (!item.isInSameWorld("*") && !item.isInSameWorld(world)) {
+            if (!item.isInSameWorld(world)) {
                 continue;
             }
             if (item.isInArea(x, y, z)) {

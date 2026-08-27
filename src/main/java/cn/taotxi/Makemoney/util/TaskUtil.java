@@ -9,6 +9,7 @@ import com.mojang.brigadier.context.CommandContext;
 
 import java.util.List;
 
+import cn.taotxi.Makemoney.Makemoney;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -25,11 +26,14 @@ public class TaskUtil {
                 return;
             }
             ticker++;
-            for (int i = 0; i < timeTasks.size(); i++) {
-                if (i >= timeTasks.size()) {
-                    break;
+            for (TimeTask task : new ArrayList<>(timeTasks)) {
+                try {
+                    task.tick(ticker);
+                } catch (Exception e) {
+                    Makemoney.LOGGER.error(
+                        "Time task '{}' threw an exception and has been removed", task.getId(), e);
+                    removeTimeTask(task.getId());
                 }
-                timeTasks.get(i).tick(ticker);
             }
         });
         registerCommand();

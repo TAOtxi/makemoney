@@ -58,10 +58,7 @@ public class MenuClick {
             TaskUtil.createTimeTask(CONTROL_LISTENER, () -> {
                 if (!client.hasControlDown()) return;
 
-                for (String _taskName : taskMap.keySet()) {
-                    cancelTask(_taskName);
-                    Message.clientSideMsg(T.tl("menuClick.cancel.message", _taskName));
-                }
+                cancelAllTask();
             }, 1);
         }
 
@@ -140,7 +137,9 @@ public class MenuClick {
         } else if (action.isCommand()) {
             Message.sendMessage(action.command);
         } else {
-            throw new IllegalArgumentException("Unknown action: " + taskName);
+            // 返回 false 由调用方取消任务，不要在 tick 回调里抛异常
+            logger.error("Unknown action in task: {}", taskName);
+            return false;
         }
         return true;
     }
@@ -159,7 +158,7 @@ public class MenuClick {
     }
 
     private static void cancelAllTask() {
-        for (String taskName : taskMap.keySet()) {
+        for (String taskName : new ArrayList<>(taskMap.keySet())) {
             cancelTask(taskName);
             Message.clientSideMsg(T.tl("menuClick.cancel.message", taskName));
         }
