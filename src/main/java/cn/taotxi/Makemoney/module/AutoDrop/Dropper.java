@@ -1,8 +1,10 @@
 package cn.taotxi.Makemoney.module.AutoDrop;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.gson.JsonElement;
 
@@ -22,7 +24,7 @@ import net.minecraft.world.inventory.InventoryMenu;
 
 public class Dropper {
     private static final AutoDropConfig CONFIG = AutoDropConfig.getInstance();
-    private static final List<Integer> ignoreSlots = new ArrayList<>();
+    private static final Set<Integer> ignoreSlots = new HashSet<>();
     private static final List<Item> matchItemList = new ArrayList<>();
     private static final Minecraft client = Minecraft.getInstance();
 
