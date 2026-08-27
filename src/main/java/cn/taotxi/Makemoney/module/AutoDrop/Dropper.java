@@ -216,10 +216,6 @@ public class Dropper {
         }
     }
 
-    private static void dropItemAnywhere(int slot, Direction direction) {
-        dropItemAnywhere(List.of(slot), direction);
-    }
-
     private static void dropItemAnywhere(List<Integer> slots, float yaw, float pitch) {
         float xRot = client.player.getXRot();
         float yRot = client.player.getYRot();

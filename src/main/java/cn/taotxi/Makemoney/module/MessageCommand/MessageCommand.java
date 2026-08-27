@@ -9,12 +9,10 @@ import cn.taotxi.Makemoney.util.MLogger;
 import cn.taotxi.Makemoney.util.Message;
 import cn.taotxi.Makemoney.util.T;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 
 public class MessageCommand {
     public static final String MODULE_NAME = "messagecommand";
     public static final MLogger logger = new MLogger(MODULE_NAME);
-    private static final Minecraft client = Minecraft.getInstance();
     private static final MessageCommandConfig CONFIG = MessageCommandConfig.getInstance();
 
     private static final Pattern placeholderPattern = Pattern.compile("\\$\\{(\\d+)(?::([^}]*))?\\}");

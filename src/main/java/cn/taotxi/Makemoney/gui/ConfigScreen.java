@@ -87,9 +87,6 @@ public class ConfigScreen {
         ConfigCategory.Builder menuClickCategory = MenuClickConfigGui.createMenuClickConfigCategory(parent);
         builder.category(menuClickCategory.build());
 
-        // ConfigCategory.Builder highlightCategory = HighlightGui.createHighlightCategory(parent);
-        // builder.category(highlightCategory.build());
-        
         ConfigCategory.Builder moduleCategory = createConfigCategory(parent);
         builder.category(moduleCategory.build());
 
