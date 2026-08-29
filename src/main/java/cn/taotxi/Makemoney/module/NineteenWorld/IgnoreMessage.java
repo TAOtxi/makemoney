@@ -48,6 +48,7 @@ public class IgnoreMessage {
     public static void addPresetIgnoreList() {
         List<String> list = List.of(
             "^\\[拾玖福彩\\]",
+            "^Server\\s?已为你打开了",
             "^【猜单词游戏】|^拾玖喵不太认识这个单词|^提示：|^用 /word|^当前词库：|^-----------",
             "^地震|^ 20\\d{2}年\\d{2}月\\d{2}日 \\d{2}时\\d{2}分\\d{2}秒 发生|^ (?:震中|震级|深度|最大震度|海啸信息|最大烈度|更新时间)|^紧急地震|^中国地震|^台湾地震",
             "^拾玖喵小道消息",
