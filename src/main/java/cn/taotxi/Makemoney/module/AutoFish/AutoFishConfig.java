@@ -21,7 +21,7 @@ public class AutoFishConfig extends ConfigManager {
     }
 
     public final ConfigBoolean enabled     = new ConfigBoolean("enabled", true, "是否启用自动钓鱼", this);
-    public final ConfigBoolean rotation    = new ConfigBoolean("rotation", true, "是否启用自动转向", this);
+    public final ConfigBoolean rotation    = new ConfigBoolean("rotation", false, "是否启用自动转向", this);
     public final ConfigBoolean randomDelay = new ConfigBoolean("randomDelay", false, "是否随机延迟", this);
     public final ConfigInteger throwDelay  = new ConfigInteger("throwDelay", 5, "抛竿延迟", this);
 }

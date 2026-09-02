@@ -32,7 +32,6 @@ import cn.taotxi.Makemoney.module.AutoFish.AutoFish;
 import cn.taotxi.Makemoney.module.MessageCommand.MessageCommand;
 import cn.taotxi.Makemoney.module.NineteenWorld.AutoRide;
 import cn.taotxi.Makemoney.module.NineteenWorld.IgnoreMessage;
-// import cn.taotxi.Makemoney.module.NineteenWorld.NineteenWorld;
 import cn.taotxi.Makemoney.module.MendingHelper.AutoEnchantMending;
 import cn.taotxi.Makemoney.module.MendingHelper.AutoMendingReplace;
 import cn.taotxi.Makemoney.module.MendingHelper.AutoRepair;
@@ -93,12 +92,6 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
             AutoEnchantMending.onOpenAnvil();
         };
     }
-    
-    // @Inject(method = "handleContainerClose", at = @At("TAIL"))
-    // public void onCloseContainer(ClientboundContainerClosePacket packet, CallbackInfo ci) {
-    //     if (minecraft.isSameThread()) {
-    //     };
-    // }
 
     @Inject(method = "handleContainerContent", at = @At("TAIL"))
     public void onContainerContent(ClientboundContainerSetContentPacket packet, CallbackInfo ci) {
