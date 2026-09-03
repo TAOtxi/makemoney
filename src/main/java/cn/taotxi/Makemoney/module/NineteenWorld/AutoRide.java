@@ -3,7 +3,6 @@ package cn.taotxi.Makemoney.module.NineteenWorld;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -26,6 +25,7 @@ import net.minecraft.world.entity.player.Input;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 
 public class AutoRide {
     public static final String MODULE_NAME = "autoride";
@@ -148,7 +148,7 @@ public class AutoRide {
         LocalPlayer player = client.player;
         List<String> onlinePlayers = GameUtil.getOnlinePlayerNames();
         return client.level.getNearestPlayer(
-            player.getX(), player.getY(), player.getZ(), CONFIG.autoRideMinDistance.getValue(),
+            player.getX(), player.getY(), player.getZ(), player.getAttributeValue(Attributes.ENTITY_INTERACTION_RANGE),
             cow -> {
                 if (
                     targetPlayer.isEmpty() && 
@@ -176,7 +176,6 @@ public class AutoRide {
     public static void resetConfig() {
         CONFIG.autoRideTargetPlayer.resetValue();
         CONFIG.autoRideRunInterval.resetValue();
-        CONFIG.autoRideMinDistance.resetValue();
         CONFIG.autoRideEnableShakeOffPlayer.resetValue();
         setEnabled(false);
         CONFIG.saveConfig();
@@ -206,15 +205,6 @@ public class AutoRide {
                             CONFIG.autoRideRunInterval.setValue(interval);
                             CONFIG.saveConfig();
                             context.getSource().sendFeedback(T.tl("autoride.interval.message", interval));
-                            return 1;
-                        })))
-                .then(ClientCommands.literal("distance")
-                    .then(ClientCommands.argument("distance", FloatArgumentType.floatArg())
-                        .executes(context -> {
-                            float distance = context.getArgument("distance", Float.class);
-                            CONFIG.autoRideMinDistance.setValue(distance);
-                            CONFIG.saveConfig();
-                            context.getSource().sendFeedback(T.tl("autoride.distance.message", distance));
                             return 1;
                         })))
                 .then(ClientCommands.literal("reset").executes(context -> {

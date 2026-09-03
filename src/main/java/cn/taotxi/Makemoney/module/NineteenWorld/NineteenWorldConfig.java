@@ -3,7 +3,6 @@ package cn.taotxi.Makemoney.module.NineteenWorld;
 import cn.taotxi.Makemoney.config.ConfigManager;
 import cn.taotxi.Makemoney.config.type.ConfigArray;
 import cn.taotxi.Makemoney.config.type.ConfigBoolean;
-import cn.taotxi.Makemoney.config.type.ConfigFloat;
 import cn.taotxi.Makemoney.config.type.ConfigInteger;
 import cn.taotxi.Makemoney.config.type.ConfigString;
 
@@ -25,7 +24,6 @@ public class NineteenWorldConfig extends ConfigManager {
     public final ConfigString   autoRideTargetPlayer         = new ConfigString("autoRideTargetPlayer", "", "需要黏住的目标目标玩家", this);
     public final ConfigInteger  autoRideRunInterval          = new ConfigInteger("autoRideRunInterval", 5, "检测周期", this);
     public final ConfigBoolean  autoRideEnableShakeOffPlayer = new ConfigBoolean("autoRideEnableShakeOffPlayer", false, "是否启用光滑的头顶", this);
-    public final ConfigFloat    autoRideMinDistance          = new ConfigFloat("autoRideMinDistance", 6, "检测范围最小距离", this);
 
     /******************* Ignore *******************/
     public final ConfigBoolean ignoreEnabled                 = new ConfigBoolean("ignoreEnabled", false, "是否启用屏蔽消息功能", this);

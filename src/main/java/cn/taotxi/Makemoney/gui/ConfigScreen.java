@@ -152,21 +152,6 @@ public class ConfigScreen {
                 .build()
         );
 
-        autoRideGroup.option(Option.<Float>createBuilder()
-                .name(T.tl("autoride.distance"))
-                .description(OptionDescription.of(T.tl("autoride.distance.desc")))
-                .binding(
-                    NINETEEN_WORLD_CONFIG.autoRideMinDistance.getDefaultValue(),
-                    NINETEEN_WORLD_CONFIG.autoRideMinDistance::getValue,
-                    NINETEEN_WORLD_CONFIG.autoRideMinDistance::setValue
-                )
-                .controller(opt -> FloatSliderControllerBuilder.create(opt)
-                    .range(1.0f, 10.0f)
-                    .step(1.0f)
-                )
-                .build()
-        );
-
         autoRideGroup.option(Option.<String>createBuilder()
                 .name(T.tl("autoride.target"))
                 .description(OptionDescription.of(T.tl("autoride.target.desc")))
