@@ -1,9 +1,13 @@
 package cn.taotxi.Makemoney.module.NineteenWorld;
 
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import cn.taotxi.Makemoney.util.Message;
 import cn.taotxi.Makemoney.util.game.ItemStackUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.protocol.game.ServerboundPlayerInputPacket;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Input;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.HitResult;
@@ -45,5 +49,26 @@ public class NineteenWorld {
             client.player.input.keyPresses.sprint()
         );
         client.player.connection.send(new ServerboundPlayerInputPacket(shiftInput));
+    }
+
+    public static void onPlayerDeath(int playerId, CallbackInfo ci) {
+        Entity player = client.level.getEntity(playerId);
+        if (
+            player == client.player && 
+            client.player.shouldShowDeathScreen() && 
+            CONFIG.autorespawnEnabled.getValue()
+        ) {
+            client.player.respawn();
+            ci.cancel();
+        }
+    }
+
+    public static void onPlayerRespawn() {
+        if (
+            CONFIG.runCommandWhenRespawn.getValue() &&
+            !CONFIG.commandWhenRespawnToRun.isEmpty()
+        ) {
+            Message.sendMessage(CONFIG.commandWhenRespawnToRun.getValue());
+        }
     }
 }

@@ -110,6 +110,8 @@ Basic commands:
 /ar reset                  # Reset all settings
 ```
 
+### 😇 AutoRespawn
+Skip the death interface and execute a command after resurrection.
 
 ### 📣 Listen Server Chat Messages
 When the server message matches the set regular expression, the command will be executed.<br>

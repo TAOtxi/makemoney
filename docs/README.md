@@ -26,7 +26,7 @@ ohhhhhhh <br>
 [history.md](./history.md)
 
 ### 配置界面
-通过 `/makemoney config` 指令或 `Mod Menu` 菜单打开配置界面。
+通过 `/makemoney config` / `/mn config` 指令或 `Mod Menu` 菜单打开配置界面。
 
 ## Feature
 
@@ -112,6 +112,9 @@ ohhhhhhh <br>
 /ar interval <tick>        # 设置判断周期（单位：tick）
 /ar reset                  # 重置所有设置
 ```
+
+### 😇自动复活
+跳过死亡界面，并在复活后执行某个命令。
 
 ### 📣 监听服务器聊天消息
 当服务器消息匹配到设定的正则表达式，将执行命令。<br>

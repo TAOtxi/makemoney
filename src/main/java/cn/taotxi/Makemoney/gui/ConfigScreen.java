@@ -36,7 +36,6 @@ import dev.isxander.yacl3.api.OptionDescription;
 import dev.isxander.yacl3.api.OptionFlag;
 import dev.isxander.yacl3.api.OptionGroup;
 import dev.isxander.yacl3.api.YetAnotherConfigLib;
-import dev.isxander.yacl3.api.controller.FloatSliderControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
 import dev.isxander.yacl3.api.controller.StringControllerBuilder;
 import dev.isxander.yacl3.api.utils.OptionUtils;
@@ -116,14 +115,6 @@ public class ConfigScreen {
             NINETEEN_WORLD_CONFIG.rightClickOpenShulkerBoxEnabled::setValue
         ));
 
-        // nineteenWorldCategory.option(Factory.addToggleOption(
-        //     T.tl("fixSignInIssue"), 
-        //     T.tl("fixSignInIssue.desc"), 
-        //     NINETEEN_WORLD_CONFIG.fixSignInIssueEnabled.getDefaultValue(), 
-        //     NINETEEN_WORLD_CONFIG.fixSignInIssueEnabled::getValue,
-        //     NINETEEN_WORLD_CONFIG.fixSignInIssueEnabled::setValue
-        // ));
-
         OptionGroup.Builder autoRideGroup = OptionGroup.createBuilder()
                 .name(T.tl("autoride"))
                 .description(OptionDescription.of(T.tl("autoride.desc")));
@@ -173,7 +164,41 @@ public class ConfigScreen {
         ));
 
         nineteenWorldCategory.group(autoRideGroup.build());
-        
+
+        OptionGroup.Builder autoRespawnGroup = OptionGroup.createBuilder()
+                .name(T.tl("autorespawn"))
+                .description(OptionDescription.of(T.tl("autorespawn.desc")));
+
+        autoRespawnGroup.option(Factory.addToggleOption(
+                T.tl("autorespawn.enabled"),
+                T.tl("autorespawn.enabled.desc"),
+                NINETEEN_WORLD_CONFIG.autorespawnEnabled.getDefaultValue(),
+                NINETEEN_WORLD_CONFIG.autorespawnEnabled::getValue,
+                NINETEEN_WORLD_CONFIG.autorespawnEnabled::setValue
+        ));
+
+        autoRespawnGroup.option(Factory.addToggleOption(
+                T.tl("autorespawn.runCommand"),
+                T.tl("autorespawn.runCommand.desc"),
+                NINETEEN_WORLD_CONFIG.runCommandWhenRespawn.getDefaultValue(),
+                NINETEEN_WORLD_CONFIG.runCommandWhenRespawn::getValue,
+                NINETEEN_WORLD_CONFIG.runCommandWhenRespawn::setValue
+        ));
+
+        autoRespawnGroup.option(Option.<String>createBuilder()
+                .name(T.tl("autorespawn.command"))
+                .description(OptionDescription.of(T.tl("autorespawn.command.desc")))
+                .binding(
+                    NINETEEN_WORLD_CONFIG.commandWhenRespawnToRun.getDefaultValue(),
+                    NINETEEN_WORLD_CONFIG.commandWhenRespawnToRun::getValue,
+                    NINETEEN_WORLD_CONFIG.commandWhenRespawnToRun::setValue
+                )
+                .controller(StringControllerBuilder::create)
+                .build()
+        );
+
+        nineteenWorldCategory.group(autoRespawnGroup.build());
+
         return nineteenWorldCategory;
     }
 

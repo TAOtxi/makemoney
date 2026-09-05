@@ -9,6 +9,8 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.protocol.game.ClientboundContainerSetContentPacket;
 import net.minecraft.network.protocol.game.ClientboundOpenScreenPacket;
+import net.minecraft.network.protocol.game.ClientboundPlayerCombatKillPacket;
+import net.minecraft.network.protocol.game.ClientboundRespawnPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.network.protocol.game.ClientboundSetTimePacket;
@@ -32,6 +34,7 @@ import cn.taotxi.Makemoney.module.AutoFish.AutoFish;
 import cn.taotxi.Makemoney.module.MessageCommand.MessageCommand;
 import cn.taotxi.Makemoney.module.NineteenWorld.AutoRide;
 import cn.taotxi.Makemoney.module.NineteenWorld.IgnoreMessage;
+import cn.taotxi.Makemoney.module.NineteenWorld.NineteenWorld;
 import cn.taotxi.Makemoney.module.MendingHelper.AutoEnchantMending;
 import cn.taotxi.Makemoney.module.MendingHelper.AutoMendingReplace;
 import cn.taotxi.Makemoney.module.MendingHelper.AutoRepair;
@@ -108,6 +111,20 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
     public void onSetTime(ClientboundSetTimePacket packet, CallbackInfo ci) {
         if (minecraft.isSameThread()) {
             calcServerTps.onSetTime(packet.gameTime());
+        };
+    }
+
+    @Inject(method = "handleRespawn", at = @At("HEAD"))
+    public void onRespawn(ClientboundRespawnPacket packet, CallbackInfo ci) {
+        if (minecraft.isSameThread() && !packet.shouldKeep((byte)2)) {
+            NineteenWorld.onPlayerRespawn();
+        };
+    }
+
+    @Inject(method = "handlePlayerCombatKill", at = @At("HEAD"), cancellable = true)
+    public void onDeath(ClientboundPlayerCombatKillPacket packet, CallbackInfo ci) {
+        if (minecraft.isSameThread()) {
+            NineteenWorld.onPlayerDeath(packet.playerId(), ci);
         };
     }
 }
