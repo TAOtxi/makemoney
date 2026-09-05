@@ -167,7 +167,7 @@
     "makemoney.rightClickOpenShulkerBox.enabled.desc": "开启后，手拿潜影盒对着空气右键即可打开。\n\n不用潜行，嘿嘿",
     "makemoney.autorespawn": "自动重生",
     "makemoney.autorespawn.desc": "死亡后自动重生。",
-    "makemoney.autorespawn.enabled": "自动重试开关",
+    "makemoney.autorespawn.enabled": "自动重生开关",
     "makemoney.autorespawn.enabled.desc": "开启后，死亡时将自动重生，无需手动点击重生按钮。",
     "makemoney.autorespawn.runCommand": "重生后是否执行命令",
     "makemoney.autorespawn.runCommand.desc": "开启后，重生完成时将自动执行下方指定的命令。",
