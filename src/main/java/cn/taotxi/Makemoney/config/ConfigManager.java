@@ -10,6 +10,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import cn.taotxi.Makemoney.Makemoney;
 import cn.taotxi.Makemoney.config.type.IConfigBase;
 
 // TODO: 配置文件不再存储为JsonElement的形式
@@ -42,8 +43,7 @@ public class ConfigManager {
             .loadConfig(MODULE_NAME, defaultConfig)
             .getAsJsonObject();
 
-        // 补齐新版本新增的字段：否则 getValue() 会一直回退到默认值，
-        // 而针对这些字段的写入会落在默认值对象上而非配置里
+        // 补齐新版本新增的字段
         boolean added = false;
         for (Map.Entry<String, JsonElement> entry : defaultConfig.entrySet()) {
             if (!config.has(entry.getKey())) {
@@ -51,9 +51,34 @@ public class ConfigManager {
                 added = true;
             }
         }
-        if (added) {
+
+        boolean removed = pruneUnusedFields(defaultConfig);
+
+        if (added || removed) {
             saveConfig();
         }
+    }
+
+    // 清理配置文件里已经没有对应 option 的字段（旧版本遗留）
+    private boolean pruneUnusedFields(JsonObject defaultConfig) {
+        // 没有注册任何 option 时不做清理，避免把整个配置文件清空
+        if (options.isEmpty()) {
+            return false;
+        }
+
+        List<String> unusedKeys = new ArrayList<>();
+        for (String key : config.keySet()) {
+            if (!defaultConfig.has(key)) {
+                unusedKeys.add(key);
+            }
+        }
+        if (unusedKeys.isEmpty()) {
+            return false;
+        }
+
+        unusedKeys.forEach(config::remove);
+        Makemoney.LOGGER.info("Removed unused config field of {}: {}", MODULE_NAME, unusedKeys);
+        return true;
     }
 
     public void reloadConfig() {

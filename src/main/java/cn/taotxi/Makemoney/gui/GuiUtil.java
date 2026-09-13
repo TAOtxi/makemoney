@@ -1,10 +1,8 @@
 package cn.taotxi.Makemoney.gui;
 
 import java.util.Map;
-import java.util.Set;
 
 import cn.taotxi.Makemoney.Makemoney;
-import cn.taotxi.Makemoney.config.MakemoneyConfig;
 import cn.taotxi.Makemoney.module.AutoAFK.AutoAFK;
 import cn.taotxi.Makemoney.module.AutoDrop.AutoDrop;
 import cn.taotxi.Makemoney.module.AutoDrop.AutoDropConfigGui;
@@ -15,13 +13,9 @@ import cn.taotxi.Makemoney.module.MessageCommand.MessageCommand;
 import cn.taotxi.Makemoney.module.NineteenWorld.AutoRide;
 import cn.taotxi.Makemoney.module.NineteenWorld.IgnoreMessage;
 import cn.taotxi.Makemoney.util.Message;
-import cn.taotxi.Makemoney.util.T;
 import cn.taotxi.Makemoney.util.TaskUtil;
 import dev.isxander.yacl3.gui.YACLScreen;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.ConfirmScreen;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.TitleScreen;
 
 public class GuiUtil {
     private static final Minecraft client = Minecraft.getInstance();
@@ -37,36 +31,6 @@ public class GuiUtil {
             MessageCommand.MODULE_NAME, 4,
             MenuClick.MODULE_NAME, 5
         );
-    }
-
-    public static void openConfigChangeTipWindow(Set<String> configChangeNameSet) {
-        TaskUtil.createOnceTimeTask("removeConfigChangeTipWindow", () -> {
-            TaskUtil.removeTimeTask("configChangeTipWindow");
-        }, 20 * 60);
-
-        TaskUtil.createTimeTask("configChangeTipWindow", () -> {
-            if (!(client.gui.screen() instanceof TitleScreen)) {
-                return;
-            }
-
-            Screen originScreen = client.gui.screen();
-            ConfirmScreen confirmScreen = new ConfirmScreen(
-                (isConfirm) -> {
-                    if (isConfirm) {
-                        MakemoneyConfig.getInstance().resetConfig(configChangeNameSet);
-                    }
-                    MakemoneyConfig.getInstance().updateConfigVersionField();
-                    client.gui.setScreen(originScreen);
-                },
-                T.tl("gui.dialog.configChange.title"),
-                T.tl("gui.dialog.configChange.message"),
-                T.tl("gui.dialog.configChange.confirm"),
-                T.tl("gui.dialog.configChange.cancel")
-            );
-            client.gui.setScreen(confirmScreen);
-            TaskUtil.removeTimeTask("configChangeTipWindow");
-            TaskUtil.removeTimeTask("removeConfigChangeTipWindow");
-        }, 5);
     }
 
     public static void openYaclScreen(String key, String tabName) {

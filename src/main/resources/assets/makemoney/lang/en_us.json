@@ -16,10 +16,11 @@
     "makemoney.gui.config.open.autodrop": "AutoDrop submodule config gui",
     "makemoney.gui.config.module": "Module configuration index interface",
     
-    "makemoney.gui.dialog.configChange.title": "§7[§dMakemoney§7] §aMod configuration file change notice",
-    "makemoney.gui.dialog.configChange.message": "Config file field has been changed, suggest you to reset it. (Actually, it doesn't affect normal gameplay)",
-    "makemoney.gui.dialog.configChange.confirm": "Reset",
-    "makemoney.gui.dialog.configChange.cancel": "Next time~",
+    "makemoney.gui.dialog.update.title": "§7[§dMakemoney§7] §aA new version is available! %s §f→ %s",
+    "makemoney.gui.dialog.update.message": "A new version of Makemoney can be downloaded now.\n\n(Press ESC to close, you will be reminded again next launch)",
+    "makemoney.gui.dialog.update.modrinth": "Download from Modrinth",
+    "makemoney.gui.dialog.update.github": "Open GitHub repository",
+    "makemoney.gui.dialog.update.ignore": "Got it, stop reminding me",
 
     "makemoney.autodrop.name": "AutoDrop",
     "makemoney.autodrop.desc": "清理掉背包内不符合匹配条件的物品",
@@ -184,6 +185,11 @@
     "makemoney.autorespawn.runCommand.desc": "When enabled, the command below will be executed automatically after respawning.",
     "makemoney.autorespawn.command": "Command to run on respawn",
     "makemoney.autorespawn.command.desc": "The command to run automatically after respawning, e.g. /back to return to the death point.\n\nNo command is run when empty.",
+
+    "makemoney.updateCheck": "Mod update",
+    "makemoney.updateCheck.desc": "Check whether a new version of Makemoney is available.",
+    "makemoney.updateCheck.notify": "Notify when an update is found",
+    "makemoney.updateCheck.notify.desc": "When enabled, the latest Makemoney version for your Minecraft version is queried from Modrinth on every launch.\n\nIf a newer version exists, a dialog is shown once the main menu appears.\n\nClicking \"Got it, stop reminding me\" silences that version only, newer versions will still be reported.\n\nRequires a game restart to take effect.",
 
     "makemoney.fishCategory": "Fish category",
     "makemoney.fishCategory.desc": "Auto fish",

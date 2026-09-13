@@ -4,10 +4,6 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.fabricmc.loader.api.FabricLoader;
-
-import java.io.File;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +21,7 @@ import cn.taotxi.Makemoney.module.MenuClick.MenuClick;
 import cn.taotxi.Makemoney.module.MessageCommand.MessageCommand;
 import cn.taotxi.Makemoney.module.NineteenWorld.NineteenWorld;
 import cn.taotxi.Makemoney.module.Test.Test;
+import cn.taotxi.Makemoney.module.UpdateCheck.UpdateCheck;
 import cn.taotxi.Makemoney.util.T;
 import cn.taotxi.Makemoney.util.TaskUtil;
 import cn.taotxi.Makemoney.module.Task.TaskEntry;
@@ -38,21 +35,7 @@ public class Makemoney implements ModInitializer {
 	public void onInitialize() {
 		LOGGER.info("Starting mod...");
 
-        File folder = new File(FabricLoader.getInstance().getConfigDir().toFile(), MOD_ID);
-        boolean isNewUser = !folder.exists();
         MakemoneyConfig.getInstance().loadConfig();
-        
-        if (!isNewUser) {
-            LOGGER.info("Not a new user, check config change.");
-            Set<String> configChangeNameSet = MakemoneyConfig.getInstance().getConfigChangeNameSet();
-            if (!configChangeNameSet.isEmpty()) {
-                LOGGER.info("Config change detected: {}", configChangeNameSet);
-                GuiUtil.openConfigChangeTipWindow(configChangeNameSet);
-            }
-        } else {
-            LOGGER.info("New user, update config version field.");
-            MakemoneyConfig.getInstance().updateConfigVersionField();
-        }
 
         registerCommand();
         AutoDrop.initialize();
@@ -64,6 +47,7 @@ public class Makemoney implements ModInitializer {
         AutoAFK.initialize();
         TaskUtil.initialize();
         TaskEntry.initialize();
+        UpdateCheck.initialize();
         // Test.initialize();
 	}
 

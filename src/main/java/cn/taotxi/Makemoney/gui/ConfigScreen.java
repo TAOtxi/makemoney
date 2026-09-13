@@ -15,6 +15,7 @@ import com.google.common.base.Function;
 import com.mojang.blaze3d.platform.Window;
 
 import cn.taotxi.Makemoney.Makemoney;
+import cn.taotxi.Makemoney.config.MakemoneyConfig;
 import cn.taotxi.Makemoney.module.AutoDrop.AutoDropConfigGui;
 import cn.taotxi.Makemoney.module.AutoFish.AutoFishConfig;
 import cn.taotxi.Makemoney.module.MendingHelper.MendingHelperConfig;
@@ -49,6 +50,7 @@ public class ConfigScreen {
     private static final NineteenWorldConfig NINETEEN_WORLD_CONFIG = NineteenWorldConfig.getInstance();
     private static final AutoFishConfig AUTOFISH_CONFIG = AutoFishConfig.getInstance();
     private static final MendingHelperConfig MENDING_HELPER_CONFIG = MendingHelperConfig.getInstance();
+    private static final MakemoneyConfig MAKEMONEY_CONFIG = MakemoneyConfig.getInstance();
 
     public static Screen getConfigScreen(Screen parent) {
         YetAnotherConfigLib.Builder builder = 
@@ -63,6 +65,7 @@ public class ConfigScreen {
                     AutoAFKConfig.getInstance().positionCheckItems.triggerConfigChange();;
 
                     MENDING_HELPER_CONFIG.saveConfig();
+                    MakemoneyConfig.getInstance().saveConfig();
 
                     // TODO: 待寻找更合适的触发方式
                     MessageCommandConfig.getInstance().messageRules.triggerConfigChange();
@@ -198,6 +201,20 @@ public class ConfigScreen {
         );
 
         nineteenWorldCategory.group(autoRespawnGroup.build());
+
+        OptionGroup.Builder updateCheckGroup = OptionGroup.createBuilder()
+                .name(T.tl("updateCheck"))
+                .description(OptionDescription.of(T.tl("updateCheck.desc")));
+
+        updateCheckGroup.option(Factory.addToggleOption(
+                T.tl("updateCheck.notify"),
+                T.tl("updateCheck.notify.desc"),
+                MAKEMONEY_CONFIG.updateNotifyEnabled.getDefaultValue(),
+                MAKEMONEY_CONFIG.updateNotifyEnabled::getValue,
+                MAKEMONEY_CONFIG.updateNotifyEnabled::setValue
+        ));
+
+        nineteenWorldCategory.group(updateCheckGroup.build());
 
         return nineteenWorldCategory;
     }

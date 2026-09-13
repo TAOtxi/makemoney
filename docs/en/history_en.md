@@ -1,3 +1,11 @@
+### v2.8.0+26.2
+Add mod update check:
+- Query the latest version for the current Minecraft version from Modrinth on launch, and show a dialog once the main menu appears when a newer version exists
+- The dialog provides Modrinth download and GitHub repository links, and an option to stop reminding about that version
+- Release users are only notified about releases, pre-release users are also notified about pre-releases<br>
+Remove the config change notice dialog, unused config fields are now pruned automatically on load<br>
+AutoRide now searches for the target player within 1.5x the player entity interaction range
+
 ### v2.7.2+26.2
 Force config file to be read and written in utf-8
 Add position check feature

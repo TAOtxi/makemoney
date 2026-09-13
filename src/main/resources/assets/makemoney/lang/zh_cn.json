@@ -16,10 +16,11 @@
     "makemoney.gui.config.open.autodrop": "自动丢弃子模块配置界面",
     "makemoney.gui.config.module": "模块配置索引界面",
     
-    "makemoney.gui.dialog.configChange.title": "§7[§dMakemoney§7] §a模组配置文件变更提示",
-    "makemoney.gui.dialog.configChange.message": "配置文件字段发生了重大变更，建议您重置配置文件。（其实不重置也不影响正常游玩）",
-    "makemoney.gui.dialog.configChange.confirm": "立即重置",
-    "makemoney.gui.dialog.configChange.cancel": "下次一定",
+    "makemoney.gui.dialog.update.title": "§7[§dMakemoney§7] §a发现新版本！ %s §f→ %s",
+    "makemoney.gui.dialog.update.message": "Makemoney 有新版本可以下载了，更新一下说不定能多赚点钱。\n\n（按 ESC 关闭，下次启动仍会提醒）",
+    "makemoney.gui.dialog.update.modrinth": "前往 Modrinth 下载",
+    "makemoney.gui.dialog.update.github": "前往 GitHub 仓库",
+    "makemoney.gui.dialog.update.ignore": "知道了，不再提醒此版本",
 
     "makemoney.autodrop.name": "自动丢弃",
     "makemoney.autodrop.desc": "清理掉背包内不符合匹配条件的物品",
@@ -173,6 +174,11 @@
     "makemoney.autorespawn.runCommand.desc": "开启后，重生完成时将自动执行下方指定的命令。",
     "makemoney.autorespawn.command": "重生后执行的命令",
     "makemoney.autorespawn.command.desc": "重生后自动执行的命令，例如 /back 回到死亡点。\n\n为空时不执行任何命令。",
+
+    "makemoney.updateCheck": "模组更新",
+    "makemoney.updateCheck.desc": "检查 Makemoney 自身是否有新版本。",
+    "makemoney.updateCheck.notify": "检测到更新时通知",
+    "makemoney.updateCheck.notify.desc": "开启后，每次启动游戏时会从 Modrinth 查询当前 Minecraft 版本下最新的 Makemoney 版本，\n\n如果有新版本，会在进入主菜单时弹出提示窗口。\n\n在提示窗口里点击“不再提醒此版本”后，该版本就不会再提醒，但更新的版本仍会提醒。\n\n此选项修改后需要重启游戏生效。",
 
     "makemoney.ignore": "消息屏蔽",
     "makemoney.ignore.desc": "使用正则表达式匹配服务器中需要屏蔽的消息",
