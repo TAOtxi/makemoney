@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	开发环境日志降噪配置（仅影响 runClient / runServer，不会打进 jar）。
+	Loom 会把它和自己生成的 .gradle/loom-cache/log4j.xml 一起用逗号传给
+	-Dlog4j.configurationFile，log4j2 以 CompositeConfiguration 方式合并：
+	这里只声明 <Loggers>，Appender（控制台 / latest.log / debug.log）沿用 Loom 的定义。
+
+	怎么加新的屏蔽项：
+	  看 run/logs/latest.log，行首格式是 [时间] [线程/级别] (logger名)，
+	  括号里是 logger 名的最后一段；完整名字在 run/logs/debug.log 里。
+	  按完整名字（或它的包名前缀）加一行 <Logger name="..." level="..."/> 即可。
+	  level 可用：off / fatal / error / warn / info / debug。
+	注意：logger 名的层级只按 "." 切分，"Sodium-GlSurface" 不是 "Sodium" 的子 logger，需单列。
+-->
+<Configuration status="WARN">
+	<Loggers>
+		<!-- ===== 刷屏最严重的（连 WARN 都是噪音，压到 error） ===== -->
+		<!-- TweakerMore: 大量 "Found missing translation for the comment of config ..." -->
+		<Logger name="me.fallenbreath.tweakermore" level="error"/>
+		<!-- Iris: 大量 "Found okay program match for ..." -->
+		<Logger name="Iris" level="error"/>
+
+		<!-- ===== 其它模组：只保留 WARN 及以上 ===== -->
+		<Logger name="malilib" level="warn"/>
+		<Logger name="litematica" level="warn"/>
+		<Logger name="tweakeroo" level="warn"/>
+		<Logger name="itemscroller" level="warn"/>
+		<Logger name="autoharvest" level="warn"/>
+		<Logger name="moreculling" level="warn"/>
+		<Logger name="paragraphs-port" level="warn"/>
+		<Logger name="voicechat" level="warn"/>
+		<Logger name="Voxy" level="warn"/>
+		<Logger name="REI" level="warn"/>
+		<Logger name="IAS" level="warn"/>
+		<Logger name="IAS/IASStorage" level="warn"/>
+		<Logger name="IAS/IFabric" level="warn"/>
+		<Logger name="Mod Menu/Update Checker" level="warn"/>
+		<Logger name="snownee.jade" level="warn"/>
+		<Logger name="xaero" level="warn"/>
+		<Logger name="dev.architectury" level="warn"/>
+		<Logger name="Sodium" level="warn"/>
+		<Logger name="Sodium-GlSurface" level="warn"/>
+		<Logger name="Sodium-GraphicsAdapterProbe" level="warn"/>
+		<Logger name="Sodium-NvidiaWorkarounds" level="warn"/>
+		<Logger name="Sodium-Workarounds" level="warn"/>
+		<Logger name="net.caffeinemc" level="warn"/>
+		<Logger name="me.jellysquid.mods.sodium" level="warn"/>
+
+		<!-- ===== Mixin / Loader 的 DEBUG（原本只进 debug.log，顺手也关掉） ===== -->
+		<Logger name="FabricLoader/Mixin" level="warn"/>
+		<Logger name="FabricLoader/Knot" level="info"/>
+		<Logger name="FabricLoader/Entrypoint" level="info"/>
+		<Logger name="FabricLoader/GamePatch" level="info"/>
+		<Logger name="mixin" level="warn"/>
+		<Logger name="io.netty" level="info"/>
+
+		<!-- ===== 本模组保持完整输出 ===== -->
+		<Logger name="makemoney" level="debug"/>
+		<Logger name="cn.taotxi" level="debug"/>
+	</Loggers>
+</Configuration>

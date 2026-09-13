@@ -10,6 +10,12 @@ base {
 	archivesName = project.archives_base_name
 }
 
+loom {
+	// 开发环境运行（runClient/runServer）时追加一份 log4j 配置，用于屏蔽其它模组的刷屏日志。
+	// Loom 会把所有 log4jConfigs 以逗号拼接传给 -Dlog4j.configurationFile，由 log4j2 合并。
+	log4jConfigs.from file('log4j-dev.xml')
+}
+
 repositories {
 	// Add repositories to retrieve artifacts from in here.
 	// You should only use this when depending on other mods because
