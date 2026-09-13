@@ -148,7 +148,7 @@ public class AutoRide {
         LocalPlayer player = client.player;
         List<String> onlinePlayers = GameUtil.getOnlinePlayerNames();
         return client.level.getNearestPlayer(
-            player.getX(), player.getY(), player.getZ(), player.getAttributeValue(Attributes.ENTITY_INTERACTION_RANGE),
+            player.getX(), player.getY(), player.getZ(), player.getAttributeValue(Attributes.ENTITY_INTERACTION_RANGE) * 1.5,
             cow -> {
                 if (
                     targetPlayer.isEmpty() && 
