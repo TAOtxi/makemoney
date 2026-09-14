@@ -1,3 +1,9 @@
+### v2.8.1+26.2
+Add tab list sorting by player display name:
+- Disabled by default. When enabled, the player list shown while holding Tab is sorted by the player display name, which is the prefix a plugin server puts in front of the player name
+- On 19 world that prefix is the sub-server the player is on, so players on the same sub-server are grouped together
+- Falls back to the player name when the display name is empty, and the vanilla order is kept when disabled
+
 ### v2.8.0+26.2
 Add mod update check:
 - Query the latest version for the current Minecraft version from Modrinth on launch, and show a dialog once the main menu appears when a newer version exists

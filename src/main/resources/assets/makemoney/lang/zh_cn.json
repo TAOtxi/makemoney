@@ -166,6 +166,8 @@
     "makemoney.rightClickRide.desc": "开启后，空手右键生物即可骑乘。\n\n原理为使用 /ride 命令。",
     "makemoney.rightClickOpenShulkerBox.enabled": "右键开启潜影盒",
     "makemoney.rightClickOpenShulkerBox.enabled.desc": "开启后，手拿潜影盒对着空气右键即可打开。\n\n不用潜行，嘿嘿",
+    "makemoney.tabList.sortByDisplayName": "Tab 列表按玩家显示名排序",
+    "makemoney.tabList.sortByDisplayName.desc": "开启后，按住 Tab 显示的玩家列表将按玩家的显示名排序，\n\n也就是插件服挂在玩家名前面的前缀，\n\n在拾玖世界，前缀为玩家所在子服。\n\n显示名为空时，退回使用玩家名排序。\n\n关闭后保持原版排序。",
     "makemoney.autorespawn": "自动重生",
     "makemoney.autorespawn.desc": "死亡后自动重生。",
     "makemoney.autorespawn.enabled": "自动重生开关",

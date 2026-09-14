@@ -4,7 +4,8 @@
 	"compatibilityLevel": "JAVA_25",
 	"mixins": [
         "MultiPlayerGameModeMixin",
-        "ClientPacketListenerMixin"
+        "ClientPacketListenerMixin",
+        "PlayerTabOverlayMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

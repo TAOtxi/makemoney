@@ -34,6 +34,9 @@ public class NineteenWorldConfig extends ConfigManager {
     
     public final ConfigBoolean rightClickOpenShulkerBoxEnabled = new ConfigBoolean("rightClickOpenShulkerBoxEnabled", false, "是否启用右键打开潜影盒功能", this);
 
+    /******************* TabList *******************/
+    public final ConfigBoolean tabListSortByDisplayName      = new ConfigBoolean("tabListSortByDisplayName", false, "Tab 列表是否按玩家的显示名（含称号前缀）排序", this);
+
     public final ConfigBoolean autorespawnEnabled            = new ConfigBoolean("autorespawnEnabled", false, "死亡后是否自动重生", this);
     public final ConfigBoolean runCommandWhenRespawn         = new ConfigBoolean("runCommandWhenRespawn", false, "重生后是否执行命令", this);
     public final ConfigString  commandWhenRespawnToRun       = new ConfigString("commandWhenRespawnToRun", "/back", "重生后自动执行的命令", this);

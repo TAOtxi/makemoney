@@ -177,6 +177,8 @@
     "makemoney.rightClickRide.desc": "When enabled, right click the entity to ride it.\n\n(Server need to support /ride command)",
     "makemoney.rightClickOpenShulkerBox.enabled": "Right click open shulker box",
     "makemoney.rightClickOpenShulkerBox.enabled.desc": "After opening, right click the shulker box.\n\nWithout sneaking, it will work.",
+    "makemoney.tabList.sortByDisplayName": "Sort tab list by player display name",
+    "makemoney.tabList.sortByDisplayName.desc": "When enabled, the player list shown while holding Tab is sorted by the player display name,\n\nwhich is the prefix a plugin server puts in front of the player name.\n\nOn 19 world, that prefix is the sub-server the player is on.\n\nFalls back to the player name when the display name is empty.\n\nThe vanilla order is kept when disabled.",
     "makemoney.autorespawn": "Auto respawn",
     "makemoney.autorespawn.desc": "Automatically respawn after death, and optionally run a command after respawning.",
     "makemoney.autorespawn.enabled": "Enabled",

@@ -118,6 +118,14 @@ public class ConfigScreen {
             NINETEEN_WORLD_CONFIG.rightClickOpenShulkerBoxEnabled::setValue
         ));
 
+        nineteenWorldCategory.option(Factory.addToggleOption(
+            T.tl("tabList.sortByDisplayName"), 
+            T.tl("tabList.sortByDisplayName.desc"), 
+            NINETEEN_WORLD_CONFIG.tabListSortByDisplayName.getDefaultValue(), 
+            NINETEEN_WORLD_CONFIG.tabListSortByDisplayName::getValue,
+            NINETEEN_WORLD_CONFIG.tabListSortByDisplayName::setValue
+        ));
+
         OptionGroup.Builder autoRideGroup = OptionGroup.createBuilder()
                 .name(T.tl("autoride"))
                 .description(OptionDescription.of(T.tl("autoride.desc")));
