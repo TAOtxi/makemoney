@@ -61,7 +61,7 @@
     "makemoney.autodrop.help.itemTrigger": "Toggle triggering when a chosen item is picked up",
     "makemoney.autodrop.help.containerTrigger": "Toggle cleaning containers when you open them",
     "makemoney.autodrop.help.ignoreCurrent": "Ignore every slot that currently holds an item",
-    "makemoney.autodrop.help.ignoreSet": "Set ignored slots manually, e.g. \"9,10,11\"",
+    "makemoney.autodrop.help.ignoreSet": "Set ignored slots manually, comma-separated, e.g. 9,10,11",
     "makemoney.autodrop.help.ignoreClear": "Clear the ignored slot list",
     "makemoney.autodrop.help.debug": "Toggle debug logging",
     "makemoney.autodrop.enabled.message": "§7[§dAutoDrop§7] §aEnabled",
@@ -118,6 +118,7 @@
     "makemoney.autodrop.ignoreSlots.desc": "Specify the slots to ignore.\n\nSpecific slot distribution is as shown in the image above, with slots separated by \",\". \n\nExample: 0, 1, 2, 3",
     "makemoney.autodrop.ignore.current.message": "§7[§dAutoDrop§7] §7Current ignore slots: §e%s",
     "makemoney.autodrop.ignore.reset.message": "§7[§dAutoDrop§7] §7Ignore slots cleared",
+    "makemoney.autodrop.ignore.invalid.message": "§7[§dAutoDrop§7] §cCannot parse the slot list §e%s§c. Use comma-separated numbers, e.g. 9,10,11",
     "makemoney.autodrop.debug.enabled.message": "§7[§dAutoDrop§7] §aDebug mode enabled",
     "makemoney.autodrop.debug.disabled.message": "§7[§dAutoDrop§7] §cDebug mode disabled",
 

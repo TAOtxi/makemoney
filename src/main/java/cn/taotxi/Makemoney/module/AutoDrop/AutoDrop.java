@@ -2,11 +2,15 @@ package cn.taotxi.Makemoney.module.AutoDrop;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
+import com.google.gson.JsonArray;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
 import cn.taotxi.Makemoney.gui.GuiUtil;
 import cn.taotxi.Makemoney.util.MLogger;
@@ -44,7 +48,7 @@ public class AutoDrop {
         .entry("itemTrigger <on|off>", MODULE_NAME + ".help.itemTrigger")
         .entry("containerTrigger <on|off>", MODULE_NAME + ".help.containerTrigger")
         .entry("ignore current", MODULE_NAME + ".help.ignoreCurrent")
-        .entry("ignore set <1,2,3>", MODULE_NAME + ".help.ignoreSet")
+        .entry("ignore set 1,2,3", MODULE_NAME + ".help.ignoreSet")
         .entry("ignore clear", MODULE_NAME + ".help.ignoreClear")
         .entry("test", MODULE_NAME + ".help.test")
         .entry("clean", MODULE_NAME + ".help.clean")
@@ -228,7 +232,8 @@ public class AutoDrop {
                     .then(ClientCommands.literal("clear")
                         .executes(AutoDrop::resetIgnoreSlots))
                     .then(ClientCommands.literal("set")
-                        .then(ClientCommands.argument("1,2,3,4,...", StringArgumentType.string())
+                        .then(ClientCommands.argument("slots", StringArgumentType.greedyString())
+                            .suggests(AutoDrop::suggestIgnoreSlots)
                             .executes(AutoDrop::setIgnoreSlots)))
                     .then(ClientCommands.literal("current")
                         .executes(AutoDrop::ignoreNotEmptySlots))
@@ -376,9 +381,26 @@ public class AutoDrop {
         return 1;
     }
 
+    /** 把当前的忽略槽位作为补全项给出，方便玩家在现有基础上增删 */
+    private static CompletableFuture<Suggestions> suggestIgnoreSlots(
+            CommandContext<FabricClientCommandSource> context, SuggestionsBuilder builder) {
+        JsonArray current = CONFIG.ignoreSlots.getValue();
+        if (!current.isEmpty()) {
+            builder.suggest(StringUtil.join(current.asList(), ","));
+        }
+        return builder.buildFuture();
+    }
+
     private static int setIgnoreSlots(CommandContext<FabricClientCommandSource> context) {
         String value = context.getArgument("slots", String.class);
-        List<Integer> slots = StringUtil.strToIntList(value);
+
+        List<Integer> slots;
+        try {
+            slots = StringUtil.strToIntList(value);
+        } catch (NumberFormatException e) {
+            context.getSource().sendError(T.tl("autodrop.ignore.invalid.message", value));
+            return 0;
+        }
 
         slots.sort(Comparator.naturalOrder());
         for (int i=slots.size()-1; i>=0; i--) {

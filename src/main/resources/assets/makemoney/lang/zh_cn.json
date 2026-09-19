@@ -61,7 +61,7 @@
     "makemoney.autodrop.help.itemTrigger": "拾取到指定掉落物时触发开关",
     "makemoney.autodrop.help.containerTrigger": "打开容器时清理容器内物品开关",
     "makemoney.autodrop.help.ignoreCurrent": "把当前背包中有物品的槽位设为忽略",
-    "makemoney.autodrop.help.ignoreSet": "手动指定忽略的槽位，如 \"9,10,11\"",
+    "makemoney.autodrop.help.ignoreSet": "手动指定忽略的槽位，逗号分隔，如 9,10,11",
     "makemoney.autodrop.help.ignoreClear": "清空忽略槽位设置",
     "makemoney.autodrop.help.debug": "调试输出开关",
     "makemoney.autodrop.enabled.message": "§7[§d自动丢弃§7] §a已开启",
@@ -118,6 +118,7 @@
     "makemoney.autodrop.ignoreSlots.desc": "指定要忽略的物品槽位。\n\n具体的槽位分布如上图所示，使用逗号分隔多个物品槽位，比如 0, 1, 2, 3。",
     "makemoney.autodrop.ignore.current.message": "§7[§d自动丢弃§7] §7当前忽略的槽位设置为 §e%s",
     "makemoney.autodrop.ignore.reset.message": "§7[§d自动丢弃§7] §7已清空忽略的槽位",
+    "makemoney.autodrop.ignore.invalid.message": "§7[§d自动丢弃§7] §c无法解析槽位列表 §e%s§c，请使用逗号分隔的数字，如 9,10,11",
     "makemoney.autodrop.debug.enabled.message": "§7[§d自动丢弃§7] §a已开启调试模式",
     "makemoney.autodrop.debug.disabled.message": "§7[§d自动丢弃§7] §c已关闭调试模式",
 
