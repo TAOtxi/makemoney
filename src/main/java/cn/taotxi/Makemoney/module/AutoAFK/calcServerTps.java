@@ -15,11 +15,6 @@ public class calcServerTps {
             return;
         }
 
-        // if (msTps == Float.POSITIVE_INFINITY || msTps == Float.NEGATIVE_INFINITY) {
-        //     msTps = 50f;
-        //     return;
-        // }
-
         long currentTime = System.nanoTime();
         long deltaTick = currentTick - lastTick;
 

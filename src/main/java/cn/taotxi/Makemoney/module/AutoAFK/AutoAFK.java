@@ -1,17 +1,21 @@
 package cn.taotxi.Makemoney.module.AutoAFK;
 
-import com.mojang.brigadier.context.CommandContext;
-
 import cn.taotxi.Makemoney.Makemoney;
 import cn.taotxi.Makemoney.gui.GuiUtil;
-import cn.taotxi.Makemoney.util.T;
+import cn.taotxi.Makemoney.util.help.HelpMenu;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLevelEvents;
 
 public class AutoAFK {
     public static final String MODULE_NAME = "autoafk";
+    private static final HelpMenu HELP = HelpMenu.of(MODULE_NAME, "autoAFK.help")
+        .alias("afkk")
+        .runEntry("config", "autoAFK.help.config")
+        .runEntry("attack help", "autoAFK.help.attack")
+        .entry("tpsCheck on", "autoAFK.help.tpsCheckOn")
+        .entry("tpsCheck off", "autoAFK.help.tpsCheckOff")
+        .build();
 
     public static void initialize() {
         AutoAFKConfig.getInstance().loadConfig();
@@ -28,9 +32,8 @@ public class AutoAFK {
     private static void registerCommand() {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
             var cmd = dispatcher.register(ClientCommands.literal(MODULE_NAME)
-                .executes(AutoAFK::showHelp)
-                .then(ClientCommands.literal("help")
-                    .executes(AutoAFK::showHelp))
+                .executes(HELP::executeFirstPage)
+                .then(HELP.helpCommand())
                 .then(AutoAttack.attackCommand())
                 .then(TpsChecker.tpsCheckCmd())
                 .then(ClientCommands.literal("config")
@@ -41,14 +44,9 @@ public class AutoAFK {
             );
 
             dispatcher.register(ClientCommands.literal("afkk")
-                .executes(AutoAFK::showHelp)
+                .executes(HELP::executeFirstPage)
                 .redirect(cmd)
             );
         });
-    }
-
-    private static int showHelp(CommandContext<FabricClientCommandSource> context) {
-        context.getSource().sendFeedback(T.tl("autoAFK.help.message"));
-        return 1;
     }
 }
