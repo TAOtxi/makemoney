@@ -199,7 +199,6 @@
     "makemoney.autoride.help.config": "Open the config screen",
     "makemoney.autoride.help.target": "Set the player to follow",
     "makemoney.autoride.help.interval": "Set the ride retry interval, in ticks",
-    "makemoney.autoride.help.distance": "Set the minimum distance that triggers riding",
     "makemoney.autoride.help.smoothHead": "Toggle smooth head turning",
     "makemoney.autoride.help.reset": "Reset every setting in this module",
 

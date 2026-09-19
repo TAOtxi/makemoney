@@ -37,7 +37,6 @@ public class AutoRide {
         .runEntry("config", MODULE_NAME + ".help.config")
         .entry("target <player>", MODULE_NAME + ".help.target")
         .entry("interval <tick>", MODULE_NAME + ".help.interval")
-        .entry("distance <block>", MODULE_NAME + ".help.distance")
         .entry("smoothHead <on|off>", MODULE_NAME + ".help.smoothHead")
         .entry("reset", MODULE_NAME + ".help.reset")
         .build();

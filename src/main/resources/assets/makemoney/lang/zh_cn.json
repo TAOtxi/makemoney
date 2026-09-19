@@ -199,7 +199,6 @@
     "makemoney.autoride.help.config": "打开配置界面",
     "makemoney.autoride.help.target": "设置要跟随的目标玩家",
     "makemoney.autoride.help.interval": "设置骑乘尝试的间隔，单位 tick",
-    "makemoney.autoride.help.distance": "设置触发骑乘的最小距离",
     "makemoney.autoride.help.smoothHead": "平滑转头开关，减少视角突变",
     "makemoney.autoride.help.reset": "重置本模块的全部配置",
 
