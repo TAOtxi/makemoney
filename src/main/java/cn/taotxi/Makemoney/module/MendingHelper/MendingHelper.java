@@ -28,7 +28,7 @@ public class MendingHelper {
         .entry("autoenchant <on|off>", "mendingHelper.help.autoenchant")
         .entry("autodecompose <on|off>", "mendingHelper.help.autodecompose")
         .entry("autorepair <on|off>", "mendingHelper.help.autorepair")
-        .runEntry("autorepair setMendingBookPos", "mendingHelper.help.setMendingBookPos")
+        .entry("autorepair setMendingBookPos", "mendingHelper.help.setMendingBookPos")
         .build();
     public static final MendingHelperConfig CONFIG = MendingHelperConfig.getInstance();
 
