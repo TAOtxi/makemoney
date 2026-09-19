@@ -13,7 +13,7 @@
     "makemoney.help.ui.hover.page": "跳转到第 %s 页",
 
     "makemoney.main.help.title": "Makemoney 总览",
-    "makemoney.main.help.desc": "拾玖世界搬砖辅助合集，下列为各功能模块，点击即可查看模块帮助。",
+    "makemoney.main.help.desc": "点击即可查看各模块帮助。",
     "makemoney.main.help.config": "打开模组配置界面",
     "makemoney.main.help.configTab": "打开指定序号的配置分页",
     "makemoney.main.help.autodrop": "自动丢弃：清理背包内不需要的物品",

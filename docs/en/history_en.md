@@ -1,3 +1,10 @@
+### v2.8.2+26.2
+Add help menu:
+- The `help` sub-command of every module now shows a generated help menu listing all sub-commands with their descriptions
+- Clicking an entry fills the command into the chat box, while safe commands such as opening a screen or printing info run right away
+- Long menus are paginated, and `/makemoney help` is the overview that links to each module help<br>
+Fix `/autodrop ignore set` which never worked because of a mismatched argument name, the slot list no longer needs quotes
+
 ### v2.8.1+26.2
 Add tab list sorting by player display name:
 - Disabled by default. When enabled, the player list shown while holding Tab is sorted by the player display name, which is the prefix a plugin server puts in front of the player name
