@@ -41,14 +41,14 @@ public class MessageCommand {
             return;
         }
 
-        // System.out.println("原始消息: " + message);
         for (Pattern pattern : rules.keySet()) {
+            String command = rules.get(pattern);
+            if (command.isEmpty()) continue;
+
             Matcher matcher = pattern.matcher(message);
-            // System.out.println("当前匹配规则: " + pattern.pattern());
             if (matcher.find()) {
-                // System.out.println("匹配成功消息: " + matcher.group());
                 try {
-                    executeCommand(matcher, rules.get(pattern));
+                    executeCommand(matcher, command);
                 } catch (Exception e) {
                     Message.clientSideMsg(T.l("Error in pattern \"" + pattern.pattern() + "\": " + e.getMessage())
                             .withStyle(ChatFormatting.RED));

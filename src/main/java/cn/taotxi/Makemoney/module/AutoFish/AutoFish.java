@@ -221,7 +221,8 @@ public class AutoFish {
     public static boolean throwRod(InteractionHand hand) {
         outOfWaterTime = 0;
         ItemStack fishingRod = client.player.getItemInHand(hand);
-        if (fishingRod.nextDamageWillBreak()) {
+
+        if (fishingRod.getMaxDamage() - fishingRod.getDamageValue() <= 5) {
             Message.clientSideMsg(T.tl("autofish.warn.message"));
             CONFIG.enabled.disable();
             CONFIG.saveConfig();
